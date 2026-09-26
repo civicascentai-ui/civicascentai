@@ -32,7 +32,15 @@ textarea{min-height:100px}
 .step span{display:inline-block;font-weight:900;color:#0d64c8;margin-right:8px}
 .promise{background:#061a3a;color:#fff;border-radius:20px;padding:26px;margin-top:28px}
 .promise h2{color:#fff}
-@media(max-width:800px){.mentor-grid,.choice-grid{grid-template-columns:1fr}.mentor-hero{padding-top:105px}}
+.roadmap{margin-top:28px;background:#fff;border-radius:22px;padding:30px;box-shadow:0 12px 38px rgba(6,26,58,.10)}
+.roadmap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.road-stage{border:1px solid #d7e1eb;border-radius:16px;padding:20px;background:#f8fbfd}
+.road-stage h3{margin-top:0;color:#061a3a}
+.road-stage .level{display:inline-block;padding:5px 10px;border-radius:999px;background:#e4f3ff;color:#0d64c8;font-weight:900;font-size:.82rem;margin-bottom:10px}
+.road-stage ul{padding-left:20px;line-height:1.65}
+.road-controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;align-items:end}
+.road-output{display:none;margin-top:24px}
+@media(max-width:800px){.mentor-grid,.choice-grid,.roadmap-grid,.road-controls{grid-template-columns:1fr}.mentor-hero{padding-top:105px}}
 </style>
 </head>
 <body>
@@ -96,6 +104,52 @@ textarea{min-height:100px}
 </section>
 </div>
 
+
+<section class="roadmap" id="study-roadmap">
+<p class="eyebrow">CUSTOMIZED STUDY ROADMAP</p>
+<h2>Build a step-by-step learning path for any skill.</h2>
+<p>Enter the skill you want to master. The mentor will organize it into beginner, intermediate, and advanced phases with tasks, practice targets, and a timeline.</p>
+
+<div class="road-controls">
+<div>
+<label for="skillName">Skill to master</label>
+<input id="skillName" placeholder="Example: AI prompting, Excel, public speaking, coding">
+</div>
+<div>
+<label for="weeks">Timeline</label>
+<select id="weeks">
+<option value="4">4 weeks</option>
+<option value="8" selected>8 weeks</option>
+<option value="12">12 weeks</option>
+</select>
+</div>
+<div>
+<label for="hours">Hours / week</label>
+<select id="hours">
+<option value="2">2 hours</option>
+<option value="4" selected>4 hours</option>
+<option value="6">6 hours</option>
+<option value="8">8 hours</option>
+</select>
+</div>
+</div>
+
+<label for="roadGoal">What do you want to be able to do with this skill?</label>
+<textarea id="roadGoal" placeholder="Example: I want to use it confidently at work and complete a real project without help."></textarea>
+
+<button class="button" id="roadmapBtn" type="button">Create My Study Roadmap →</button>
+
+<div class="road-output" id="roadmapOutput" aria-live="polite">
+<h3 id="roadmapTitle"></h3>
+<p id="roadmapSummary"></p>
+<div class="roadmap-grid" id="roadmapStages"></div>
+<div class="promise" style="margin-top:20px">
+<h2>Final mastery checkpoint</h2>
+<p id="roadmapCheckpoint"></p>
+</div>
+</div>
+</section>
+
 <section class="promise">
 <h2>The mentor rule: one clear priority at a time.</h2>
 <p>Progress comes from completing the next important action, measuring what happened, and then adjusting. The mentor is designed to keep the plan focused and practical.</p>
@@ -152,6 +206,56 @@ const body=encodeURIComponent('My goal: '+goal+'\nMy stage: '+stage+'\nMy situat
 document.getElementById('emailMentor').href='mailto:civicascentai@gmail.com?subject='+subject+'&body='+body;
 document.getElementById('mentorOutput').scrollIntoView({behavior:'smooth',block:'start'});
 });
+
+function roadmapTasks(skill,level){
+const base={
+beginner:[
+'Learn the core vocabulary and the 20% of concepts used most often.',
+'Follow one guided tutorial or lesson and reproduce the example yourself.',
+'Complete three short practice exercises without copying the solution.',
+'Write down mistakes, questions, and the key rules you keep forgetting.'
+],
+intermediate:[
+'Complete a small real-world project using '+skill+'.',
+'Practice solving problems without step-by-step instructions.',
+'Compare two different methods and explain when you would use each one.',
+'Get feedback, correct weak areas, and repeat the hardest task.'
+],
+advanced:[
+'Complete a larger project that combines several parts of '+skill+'.',
+'Work under realistic constraints such as time, quality, or audience needs.',
+'Explain or teach the skill to someone else in plain language.',
+'Create a reusable checklist, template, or workflow that proves you can work independently.'
+]};
+return base[level];
+}
+document.getElementById('roadmapBtn').addEventListener('click',()=>{
+const skill=document.getElementById('skillName').value.trim();
+const weeks=parseInt(document.getElementById('weeks').value,10);
+const hours=parseInt(document.getElementById('hours').value,10);
+const desired=document.getElementById('roadGoal').value.trim();
+if(!skill){document.getElementById('skillName').focus();return;}
+const beginner=Math.max(1,Math.round(weeks*.30));
+const intermediate=Math.max(1,Math.round(weeks*.40));
+const advanced=Math.max(1,weeks-beginner-intermediate);
+const totalHours=weeks*hours;
+const stages=[
+['Beginner',beginner,roadmapTasks(skill,'beginner')],
+['Intermediate',intermediate,roadmapTasks(skill,'intermediate')],
+['Advanced',advanced,roadmapTasks(skill,'advanced')]
+];
+document.getElementById('roadmapTitle').textContent=skill+' — '+weeks+'-Week Roadmap';
+document.getElementById('roadmapSummary').textContent='Plan for about '+hours+' hours per week ('+totalHours+' total hours). '+(desired ? 'Target outcome: '+desired : 'Your goal is steady progression from fundamentals to independent use.');
+document.getElementById('roadmapStages').innerHTML=stages.map((s,i)=>{
+const start=i===0?1:(i===1?beginner+1:beginner+intermediate+1);
+const end=i===0?beginner:(i===1?beginner+intermediate:weeks);
+return '<article class="road-stage"><span class="level">'+esc(s[0])+'</span><h3>Weeks '+start+'–'+end+'</h3><ul>'+s[2].map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><p><b>Weekly target:</b> '+hours+' focused hours with at least one hands-on practice session.</p></article>';
+}).join('');
+document.getElementById('roadmapCheckpoint').textContent='By week '+weeks+', complete one independent project using '+skill+' and explain your process, decisions, mistakes, and improvements without relying on a step-by-step guide.';
+document.getElementById('roadmapOutput').style.display='block';
+document.getElementById('roadmapOutput').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
 document.getElementById('resetBtn').addEventListener('click',()=>{
 document.getElementById('situation').value='';
 document.getElementById('mentorOutput').style.display='none';
