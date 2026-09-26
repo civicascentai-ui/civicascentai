@@ -1,0 +1,63 @@
+name: Build Beginner Audio
+
+on:
+  push:
+    paths:
+      - '.github/workflows/build-beginner-audio.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-audio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install free speech tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y espeak ffmpeg
+
+      - name: Generate CivicAscent beginner MP3 lessons
+        shell: bash
+        run: |
+          mkdir -p assets/audio /tmp/civicascent-audio
+
+          cat > /tmp/civicascent-audio/lesson-1.txt <<'EOF'
+          Welcome to CivicAscent AI. ChatGPT is a conversational AI assistant. You can ask a question in ordinary language, read the response, and continue the conversation until the answer becomes useful. Start with a topic you already care about. Ask for a simple explanation, then ask for an example. One important habit begins today: a confident answer can still be wrong. When a fact matters, verify it.
+          EOF
+
+          cat > /tmp/civicascent-audio/lesson-2.txt <<'EOF'
+          A prompt is simply what you ask ChatGPT to do. There are no magic words. When you want a stronger answer, give four things: your goal, useful context, any limits or requirements, and the kind of output you want. If the first response misses the mark, say what needs to change. Good prompting is not perfection. It is clear communication followed by refinement.
+          EOF
+
+          cat > /tmp/civicascent-audio/lesson-3.txt <<'EOF'
+          You do not have to squeeze everything into one perfect prompt. Keep talking. Ask ChatGPT to explain something more simply, give an example, organize the answer into steps, or compare options. If it misunderstands you, correct it. Follow-up questions give you control and help turn a generic answer into something useful.
+          EOF
+
+          cat > /tmp/civicascent-audio/lesson-4.txt <<'EOF'
+          Typing is only one way to interact with AI. When voice or dictation is available, you can speak naturally. That can be useful when typing is difficult, inconvenient, or simply not your preference. The same privacy rules still apply. Do not share passwords, verification codes, or private information that the task does not require.
+          EOF
+
+          cat > /tmp/civicascent-audio/lesson-5.txt <<'EOF'
+          Now choose a real task: learn something, organize notes, plan an activity, improve a draft, or brainstorm ideas. State your goal. Add the context that matters. Give your requirements. Say what you want the final answer to look like. Then use follow-up questions to improve it. Before relying on important factual information, verify it. AI should support your judgment, not replace it.
+          EOF
+
+          for i in 1 2 3 4 5; do
+            espeak -v en-us+m3 -s 145 -p 45 -f /tmp/civicascent-audio/lesson-$i.txt -w /tmp/civicascent-audio/lesson-$i.wav
+            ffmpeg -y -loglevel error -i /tmp/civicascent-audio/lesson-$i.wav -codec:a libmp3lame -b:a 128k assets/audio/lesson-$i.mp3
+          done
+
+      - name: Commit generated audio
+        run: |
+          git config user.name "CivicAscent AI Automation"
+          git config user.email "civicascentai@gmail.com"
+          git add assets/audio/lesson-*.mp3
+          if git diff --cached --quiet; then
+            echo "Audio already current."
+            exit 0
+          fi
+          git commit -m "Add free generated beginner audio lessons"
+          git push
