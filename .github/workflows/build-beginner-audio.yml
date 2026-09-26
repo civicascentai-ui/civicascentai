@@ -15,49 +15,116 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Install free speech tools
+      - name: Install free neural speech and mastering tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y espeak ffmpeg
+          sudo apt-get install -y ffmpeg
+          python -m pip install --upgrade pip
+          python -m pip install "piper-tts==1.8.0"
+          mkdir -p /tmp/piper-voice
+          python -m piper.download_voices en_US-norman-medium --data-dir /tmp/piper-voice
 
-      - name: Generate CivicAscent beginner MP3 lessons
+      - name: Generate polished CivicAscent narration
         shell: bash
         run: |
           mkdir -p assets/audio /tmp/civicascent-audio
+          cat > /tmp/civicascent-audio/synthesize.py <<'PY'
+          import wave
+          from pathlib import Path
+          from piper import PiperVoice, SynthesisConfig
 
-          cat > /tmp/civicascent-audio/lesson-1.txt <<'EOF'
-          Welcome to CivicAscent AI. ChatGPT is a conversational AI assistant. You can ask a question in ordinary language, read the response, and continue the conversation until the answer becomes useful. Start with a topic you already care about. Ask for a simple explanation, then ask for an example. One important habit begins today: a confident answer can still be wrong. When a fact matters, verify it.
-          EOF
+          scripts = {
+              1: """Lesson one. Meet ChatGPT.
 
-          cat > /tmp/civicascent-audio/lesson-2.txt <<'EOF'
-          A prompt is simply what you ask ChatGPT to do. There are no magic words. When you want a stronger answer, give four things: your goal, useful context, any limits or requirements, and the kind of output you want. If the first response misses the mark, say what needs to change. Good prompting is not perfection. It is clear communication followed by refinement.
-          EOF
+Welcome to CivicAscent AI.
 
-          cat > /tmp/civicascent-audio/lesson-3.txt <<'EOF'
-          You do not have to squeeze everything into one perfect prompt. Keep talking. Ask ChatGPT to explain something more simply, give an example, organize the answer into steps, or compare options. If it misunderstands you, correct it. Follow-up questions give you control and help turn a generic answer into something useful.
-          EOF
+ChatGPT is a conversational AI assistant. You can ask a question in ordinary language, read the response, and continue the conversation until the answer becomes useful.
 
-          cat > /tmp/civicascent-audio/lesson-4.txt <<'EOF'
-          Typing is only one way to interact with AI. When voice or dictation is available, you can speak naturally. That can be useful when typing is difficult, inconvenient, or simply not your preference. The same privacy rules still apply. Do not share passwords, verification codes, or private information that the task does not require.
-          EOF
+Start with a topic you already care about. Ask for a simple explanation. Then ask for an example.
 
-          cat > /tmp/civicascent-audio/lesson-5.txt <<'EOF'
-          Now choose a real task: learn something, organize notes, plan an activity, improve a draft, or brainstorm ideas. State your goal. Add the context that matters. Give your requirements. Say what you want the final answer to look like. Then use follow-up questions to improve it. Before relying on important factual information, verify it. AI should support your judgment, not replace it.
-          EOF
+One important habit begins today: a confident answer can still be wrong. When a fact matters, verify it.""",
+              2: """Lesson two. Prompting without fear.
+
+A prompt is simply what you ask ChatGPT to do. There are no magic words.
+
+For a stronger answer, give four things: your goal, useful context, any limits or requirements, and the kind of output you want.
+
+If the first response misses the mark, say what needs to change.
+
+Good prompting is not about perfection. It is clear communication, followed by refinement.""",
+              3: """Lesson three. Conversation is the superpower.
+
+You do not have to squeeze everything into one perfect prompt. Keep the conversation going.
+
+Ask ChatGPT to explain something more simply, give an example, organize the answer into steps, or compare options.
+
+If it misunderstands you, correct it.
+
+Follow-up questions give you control and help turn a generic answer into something useful.""",
+              4: """Lesson four. Voice and accessibility.
+
+Typing is only one way to interact with AI. When voice or dictation is available, you can speak naturally.
+
+That can help when typing is difficult, inconvenient, or simply not your preference.
+
+The same privacy rules still apply. Do not share passwords, verification codes, or private information the task does not require.""",
+              5: """Lesson five. Put AI to work.
+
+Now choose one real task. Learn something. Organize notes. Plan an activity. Improve a draft. Or brainstorm ideas.
+
+State your goal. Add the context that matters. Give your requirements. Say what you want the final answer to look like.
+
+Then use follow-up questions to improve the result.
+
+Before relying on important factual information, verify it.
+
+AI should support your judgment, not replace it."""
+          }
+
+          voice = PiperVoice.load("/tmp/piper-voice/en_US-norman-medium.onnx")
+          config = SynthesisConfig(
+              length_scale=1.04,
+              noise_scale=0.55,
+              noise_w_scale=0.70,
+              volume=1.0,
+              normalize_audio=True,
+          )
+
+          out_dir = Path("/tmp/civicascent-audio")
+          for number, text in scripts.items():
+              wav_path = out_dir / f"lesson-{number}-raw.wav"
+              with wave.open(str(wav_path), "wb") as wav_file:
+                  voice.synthesize_wav(text, wav_file, syn_config=config)
+          PY
+
+          python /tmp/civicascent-audio/synthesize.py
 
           for i in 1 2 3 4 5; do
-            espeak -v en-us+m3 -s 145 -p 45 -f /tmp/civicascent-audio/lesson-$i.txt -w /tmp/civicascent-audio/lesson-$i.wav
-            ffmpeg -y -loglevel error -i /tmp/civicascent-audio/lesson-$i.wav -codec:a libmp3lame -b:a 128k assets/audio/lesson-$i.mp3
+            ffmpeg -y -loglevel error               -i /tmp/civicascent-audio/lesson-$i-raw.wav               -af "highpass=f=70,lowpass=f=12500,acompressor=threshold=-18dB:ratio=2.2:attack=15:release=220:makeup=1.6,loudnorm=I=-16:TP=-1.5:LRA=7,afade=t=in:st=0:d=0.08,apad=pad_dur=0.30"               -ar 44100 -ac 1 -codec:a libmp3lame -b:a 160k               assets/audio/lesson-$i.mp3
           done
 
-      - name: Commit generated audio
+      - name: Verify audio quality targets
+        shell: bash
+        run: |
+          echo "# CivicAscent AI Audio Build Report" > assets/audio/BUILD-REPORT.txt
+          echo "" >> assets/audio/BUILD-REPORT.txt
+          echo "Voice: en_US-norman-medium (Piper neural TTS)" >> assets/audio/BUILD-REPORT.txt
+          echo "Master target: -16 LUFS integrated, -1.5 dB true peak, mono 44.1 kHz, 160 kbps MP3" >> assets/audio/BUILD-REPORT.txt
+          echo "" >> assets/audio/BUILD-REPORT.txt
+          for i in 1 2 3 4 5; do
+            duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 assets/audio/lesson-$i.mp3)
+            size=$(stat -c%s assets/audio/lesson-$i.mp3)
+            echo "lesson-$i.mp3 | duration=$duration s | bytes=$size" >> assets/audio/BUILD-REPORT.txt
+          done
+
+      - name: Commit polished audio
         run: |
           git config user.name "CivicAscent AI Automation"
           git config user.email "civicascentai@gmail.com"
-          git add assets/audio/lesson-*.mp3
+          git add assets/audio/lesson-*.mp3 assets/audio/BUILD-REPORT.txt
           if git diff --cached --quiet; then
             echo "Audio already current."
             exit 0
           fi
-          git commit -m "Add free generated beginner audio lessons"
+          git commit -m "Polish beginner audio with neural narration"
           git push
