@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="CivicAscent AI Mentor — practical guidance for learning AI, career growth, business, and community impact.">
+<meta name="theme-color" content="#061a3a">
+<title>CivicAscent AI Mentor</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.mentor-hero{padding:125px 7% 70px;background:linear-gradient(135deg,#061a3a,#0d64c8);color:#fff}
+.mentor-hero .inner,.mentor-wrap{max-width:1100px;margin:auto}
+.mentor-hero h1{font-size:clamp(2.8rem,6vw,5.2rem);line-height:1.02;margin:.18em 0}
+.mentor-hero p{max-width:800px;font-size:1.15rem;line-height:1.65}
+.mentor-wrap{padding:55px 7% 80px}
+.mentor-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:28px}
+.card{background:#fff;border-radius:22px;padding:28px;box-shadow:0 12px 38px rgba(6,26,58,.10)}
+.card h2,.card h3{color:#061a3a;margin-top:0}
+.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.choice{border:1px solid #cdd9e6;background:#f6f9fc;border-radius:14px;padding:16px;cursor:pointer;text-align:left;font:inherit}
+.choice:hover,.choice.active{border-color:#0d64c8;box-shadow:0 0 0 2px rgba(13,100,200,.08)}
+.choice b{display:block;color:#061a3a;margin-bottom:4px}
+label{display:block;font-weight:800;margin:16px 0 7px;color:#061a3a}
+textarea,input,select{width:100%;box-sizing:border-box;padding:13px;border:1px solid #b8c4d2;border-radius:10px;font:inherit}
+textarea{min-height:100px}
+.mentor-output{display:none;margin-top:22px;padding:22px;border-radius:16px;background:#eef8f8;border-left:5px solid #0d7f82}
+.mentor-output h3{margin-top:0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.small{font-size:.92rem;color:#596575;line-height:1.55}
+.step{padding:15px 0;border-bottom:1px solid #dbe5ee}
+.step:last-child{border-bottom:0}
+.step span{display:inline-block;font-weight:900;color:#0d64c8;margin-right:8px}
+.promise{background:#061a3a;color:#fff;border-radius:20px;padding:26px;margin-top:28px}
+.promise h2{color:#fff}
+@media(max-width:800px){.mentor-grid,.choice-grid{grid-template-columns:1fr}.mentor-hero{padding-top:105px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+<a class="brand" href="index.html"><span class="logo">A↗</span><span><b>CivicAscent <i>AI</i></b><small>People. Skills. Stronger Communities.</small></span></a>
+<nav><a href="index.html">Home</a><a href="programs.html">Programs</a><a class="active" href="mentor.html">Mentor</a><a href="capabilities.html">Organizations</a><a href="course.html">Course Store</a><a href="index.html#contact">Contact</a></nav>
+</header>
+
+<main>
+<section class="mentor-hero">
+<div class="inner">
+<p class="eyebrow">GUIDANCE • ACCOUNTABILITY • NEXT ACTION</p>
+<h1>Meet your CivicAscent AI Mentor.</h1>
+<p>A practical mentor for people who want a clear next step—not more jargon. Choose your goal, describe where you are, and get a focused action plan you can use immediately.</p>
+</div>
+</section>
+
+<section class="mentor-wrap">
+<div class="mentor-grid">
+<aside class="card">
+<h2>How the mentor works</h2>
+<div class="step"><span>1.</span>Choose your goal.</div>
+<div class="step"><span>2.</span>Describe the situation in plain language.</div>
+<div class="step"><span>3.</span>Get one priority, three next actions, and a simple checkpoint.</div>
+<div class="step"><span>4.</span>Do the work, then come back for the next step.</div>
+<p class="small">This tool gives educational and planning guidance. It does not replace legal, tax, medical, financial, or other licensed professional advice.</p>
+</aside>
+
+<section class="card">
+<h2>What do you want help with?</h2>
+<div class="choice-grid" id="choices">
+<button class="choice active" data-goal="learn"><b>Learn AI</b>Build confidence from the basics.</button>
+<button class="choice" data-goal="career"><b>Career & Work</b>Use AI to improve productivity and job readiness.</button>
+<button class="choice" data-goal="business"><b>Start or Grow a Business</b>Turn an idea into customers, systems, and revenue.</button>
+<button class="choice" data-goal="community"><b>Community & Organization</b>Plan workshops, training, and partnerships.</button>
+</div>
+
+<label for="stage">Where are you now?</label>
+<select id="stage">
+<option value="starting">I am just starting</option>
+<option value="moving">I have started but need direction</option>
+<option value="stuck">I am stuck on a specific problem</option>
+<option value="growing">I am ready to grow</option>
+</select>
+
+<label for="situation">Describe what you need help with</label>
+<textarea id="situation" placeholder="Example: I have a website and a business idea, but I need to know what to do next to get paying customers."></textarea>
+
+<button class="button" id="mentorBtn" type="button">Build My Next-Step Plan →</button>
+
+<div class="mentor-output" id="mentorOutput" aria-live="polite">
+<h3 id="priority"></h3>
+<p id="focus"></p>
+<div id="actions"></div>
+<p><b>Checkpoint:</b> <span id="checkpoint"></span></p>
+<div class="actions">
+<a class="button" id="emailMentor" href="mailto:civicascentai@gmail.com">Ask CivicAscent AI for help</a>
+<button class="choice" type="button" id="resetBtn">Start another plan</button>
+</div>
+</div>
+</section>
+</div>
+
+<section class="promise">
+<h2>The mentor rule: one clear priority at a time.</h2>
+<p>Progress comes from completing the next important action, measuring what happened, and then adjusting. The mentor is designed to keep the plan focused and practical.</p>
+</section>
+</section>
+</main>
+
+<footer><b>CivicAscent AI</b><span>People. Skills. Stronger Communities.</span><span>© 2026 CivicAscent AI · James K. Peters</span></footer>
+
+<script>
+let goal='learn';
+document.querySelectorAll('.choice[data-goal]').forEach(btn=>btn.addEventListener('click',()=>{
+document.querySelectorAll('.choice[data-goal]').forEach(x=>x.classList.remove('active'));
+btn.classList.add('active'); goal=btn.dataset.goal;
+}));
+const plans={
+learn:{
+starting:['Start with one useful task, not every AI feature.',['Choose one everyday task you already do.','Practice one prompt, then improve it with clearer details.','Verify the result before using or sharing it.'],'You can complete the same task with AI three times and explain what changed.'],
+moving:['Turn practice into a repeatable AI routine.',['Pick your three most common AI tasks.','Create a reusable prompt for each task.','Keep a short note of what works and what fails.'],'You have three reusable prompts that consistently produce useful results.'],
+stuck:['Reduce the problem to one specific AI task.',['State exactly what result you want.','Remove unnecessary instructions and add the missing context.','Test one change at a time and compare the output.'],'You can identify which instruction improved the result.'],
+growing:['Build skill through real projects.',['Choose one project with a real outcome.','Use AI at multiple stages: plan, draft, check, improve.','Document your process so you can repeat it.'],'You finish one project and have a repeatable workflow.']
+},
+career:{
+starting:['Use AI to improve one work skill immediately.',['Choose writing, research, organization, or interview practice.','Use AI on a real example from that skill.','Review the result for accuracy and professionalism.'],'You can show one concrete before-and-after improvement.'],
+moving:['Create a dependable work-AI workflow.',['Identify repetitive tasks that consume time.','Build prompts or templates for two of them.','Measure whether they save time without lowering quality.'],'Two recurring tasks are faster and still accurate.'],
+stuck:['Solve the bottleneck before adding more tools.',['Name the exact task blocking progress.','Break it into smaller steps.','Use AI only on the step where it adds value.'],'The blocked task moves forward with a clear next action.'],
+growing:['Turn AI skills into visible career value.',['Document successful AI-assisted work.','Create a small portfolio or examples of outcomes.','Practice explaining your process and safeguards.'],'You have evidence of results you can discuss with an employer or client.']
+},
+business:{
+starting:['Validate a customer problem before spending heavily.',['Write one sentence describing who you help and what problem you solve.','Talk to or survey five potential customers.','Create one simple paid offer based on what you learn.'],'At least one real prospect clearly wants the result you offer.'],
+moving:['Focus the business on sales and delivery.',['Choose one primary offer.','Create one clear way to buy or request it.','Contact qualified prospects every week and track replies.'],'You can see leads, conversations, proposals, and sales in one simple tracker.'],
+stuck:['Find the single constraint slowing revenue.',['Decide whether the problem is offer, traffic, trust, sales, or delivery.','Choose one measurable fix for that constraint.','Work only that fix until the metric changes.'],'The key metric improves or you have enough evidence to change direction.'],
+growing:['Build systems before adding complexity.',['Document how leads become customers.','Standardize delivery for your main offer.','Track cash, pipeline, fulfillment, and follow-up every week.'],'The business can repeat its sales and delivery process without improvising every step.']
+},
+community:{
+starting:['Start with one audience and one measurable learning outcome.',['Define who the workshop is for.','Choose the one skill participants should leave with.','Design a short hands-on activity around that skill.'],'Participants can demonstrate the target skill at the end.'],
+moving:['Standardize the program so partners can trust it.',['Create a repeatable agenda and learning materials.','Collect attendance and participant feedback.','Prepare a short partner overview with outcomes and logistics.'],'You can deliver the same program consistently and show results.'],
+stuck:['Clarify the partner or participant need.',['Identify who is saying no or not engaging.','Ask what outcome, schedule, cost, or trust issue is blocking them.','Change only the part causing the friction.'],'You receive a specific yes/no response based on the revised offer.'],
+growing:['Turn successful programs into partnerships.',['Document outcomes and testimonials.','Package the program for schools, nonprofits, employers, or agencies.','Build a consistent outreach and follow-up process.'],'You have active partner conversations and a repeatable program package.']
+}
+};
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+document.getElementById('mentorBtn').addEventListener('click',()=>{
+const stage=document.getElementById('stage').value;
+const situation=document.getElementById('situation').value.trim();
+const p=plans[goal][stage];
+document.getElementById('priority').textContent='Priority: '+p[0];
+document.getElementById('focus').textContent=situation ? 'Based on what you wrote, keep the plan centered on this situation: “'+situation+'”' : 'Keep the plan narrow enough to complete this week.';
+document.getElementById('actions').innerHTML='<h3>Your next 3 actions</h3>'+p[1].map((x,i)=>'<p><b>'+(i+1)+'.</b> '+esc(x)+'</p>').join('');
+document.getElementById('checkpoint').textContent=p[2];
+document.getElementById('mentorOutput').style.display='block';
+const subject=encodeURIComponent('CivicAscent AI Mentor Help');
+const body=encodeURIComponent('My goal: '+goal+'\nMy stage: '+stage+'\nMy situation: '+(situation||'Not provided')+'\n\nPlease help me with the next step.');
+document.getElementById('emailMentor').href='mailto:civicascentai@gmail.com?subject='+subject+'&body='+body;
+document.getElementById('mentorOutput').scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+document.getElementById('situation').value='';
+document.getElementById('mentorOutput').style.display='none';
+window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+</body>
+</html>
