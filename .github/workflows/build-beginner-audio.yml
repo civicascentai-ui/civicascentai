@@ -32,75 +32,24 @@ jobs:
           import wave
           from pathlib import Path
           from piper import PiperVoice, SynthesisConfig
-
           scripts = {
-              1: """Lesson one. Meet ChatGPT.
-
-Welcome to CivicAscent AI.
-
-ChatGPT is a conversational AI assistant. You can ask a question in ordinary language, read the response, and continue the conversation until the answer becomes useful.
-
-Start with a topic you already care about. Ask for a simple explanation. Then ask for an example.
-
-One important habit begins today: a confident answer can still be wrong. When a fact matters, verify it.""",
-              2: """Lesson two. Prompting without fear.
-
-A prompt is simply what you ask ChatGPT to do. There are no magic words.
-
-For a stronger answer, give four things: your goal, useful context, any limits or requirements, and the kind of output you want.
-
-If the first response misses the mark, say what needs to change.
-
-Good prompting is not about perfection. It is clear communication, followed by refinement.""",
-              3: """Lesson three. Conversation is the superpower.
-
-You do not have to squeeze everything into one perfect prompt. Keep the conversation going.
-
-Ask ChatGPT to explain something more simply, give an example, organize the answer into steps, or compare options.
-
-If it misunderstands you, correct it.
-
-Follow-up questions give you control and help turn a generic answer into something useful.""",
-              4: """Lesson four. Voice and accessibility.
-
-Typing is only one way to interact with AI. When voice or dictation is available, you can speak naturally.
-
-That can help when typing is difficult, inconvenient, or simply not your preference.
-
-The same privacy rules still apply. Do not share passwords, verification codes, or private information the task does not require.""",
-              5: """Lesson five. Put AI to work.
-
-Now choose one real task. Learn something. Organize notes. Plan an activity. Improve a draft. Or brainstorm ideas.
-
-State your goal. Add the context that matters. Give your requirements. Say what you want the final answer to look like.
-
-Then use follow-up questions to improve the result.
-
-Before relying on important factual information, verify it.
-
-AI should support your judgment, not replace it."""
+              1: "Lesson one. Meet ChatGPT.\n\nWelcome to CivicAscent AI.\n\nChatGPT is a conversational AI assistant. You can ask a question in ordinary language, read the response, and continue the conversation until the answer becomes useful.\n\nStart with a topic you already care about. Ask for a simple explanation. Then ask for an example.\n\nOne important habit begins today: a confident answer can still be wrong. When a fact matters, verify it.",
+              2: "Lesson two. Prompting without fear.\n\nA prompt is simply what you ask ChatGPT to do. There are no magic words.\n\nFor a stronger answer, give four things: your goal, useful context, any limits or requirements, and the kind of output you want.\n\nIf the first response misses the mark, say what needs to change.\n\nGood prompting is not about perfection. It is clear communication, followed by refinement.",
+              3: "Lesson three. Conversation is the superpower.\n\nYou do not have to squeeze everything into one perfect prompt. Keep the conversation going.\n\nAsk ChatGPT to explain something more simply, give an example, organize the answer into steps, or compare options.\n\nIf it misunderstands you, correct it.\n\nFollow-up questions give you control and help turn a generic answer into something useful.",
+              4: "Lesson four. Voice and accessibility.\n\nTyping is only one way to interact with AI. When voice or dictation is available, you can speak naturally.\n\nThat can help when typing is difficult, inconvenient, or simply not your preference.\n\nThe same privacy rules still apply. Do not share passwords, verification codes, or private information the task does not require.",
+              5: "Lesson five. Put AI to work.\n\nNow choose one real task. Learn something. Organize notes. Plan an activity. Improve a draft. Or brainstorm ideas.\n\nState your goal. Add the context that matters. Give your requirements. Say what you want the final answer to look like.\n\nThen use follow-up questions to improve the result.\n\nBefore relying on important factual information, verify it.\n\nAI should support your judgment, not replace it."
           }
-
           voice = PiperVoice.load("/tmp/piper-voice/en_US-norman-medium.onnx")
-          config = SynthesisConfig(
-              length_scale=1.04,
-              noise_scale=0.55,
-              noise_w_scale=0.70,
-              volume=1.0,
-              normalize_audio=True,
-          )
-
+          config = SynthesisConfig(length_scale=1.04, noise_scale=0.55, noise_w_scale=0.70, volume=1.0, normalize_audio=True)
           out_dir = Path("/tmp/civicascent-audio")
           for number, text in scripts.items():
               wav_path = out_dir / f"lesson-{number}-raw.wav"
               with wave.open(str(wav_path), "wb") as wav_file:
                   voice.synthesize_wav(text, wav_file, syn_config=config)
           PY
-
           python /tmp/civicascent-audio/synthesize.py
-
           for i in 1 2 3 4 5; do
-            ffmpeg -y -loglevel error               -i /tmp/civicascent-audio/lesson-$i-raw.wav               -af "highpass=f=70,lowpass=f=12500,acompressor=threshold=-18dB:ratio=2.2:attack=15:release=220:makeup=1.6,loudnorm=I=-16:TP=-1.5:LRA=7,afade=t=in:st=0:d=0.08,apad=pad_dur=0.30"               -ar 44100 -ac 1 -codec:a libmp3lame -b:a 160k               assets/audio/lesson-$i.mp3
+            ffmpeg -y -loglevel error -i /tmp/civicascent-audio/lesson-$i-raw.wav -af "highpass=f=70,lowpass=f=12500,acompressor=threshold=-18dB:ratio=2.2:attack=15:release=220:makeup=1.6,loudnorm=I=-16:TP=-1.5:LRA=7,afade=t=in:st=0:d=0.08,apad=pad_dur=0.30" -ar 44100 -ac 1 -codec:a libmp3lame -b:a 160k assets/audio/lesson-$i.mp3
           done
 
       - name: Verify audio quality targets
