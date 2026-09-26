@@ -1,6 +1,7 @@
 # CivicAscent AI Audio Build Report
 
-Voice: en_US-norman-medium (Piper neural TTS)
+Voice source: en_US-norman-medium (Piper neural TTS)
+Cleanup: rumble reduction, gentle presence EQ, sibilance softening, light compression
 Master target: -16 LUFS integrated, -1.5 dB true peak, mono 44.1 kHz, 160 kbps MP3
 
 lesson-1.mp3 | duration=30.772245 s | bytes=616012
