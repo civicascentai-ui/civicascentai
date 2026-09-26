@@ -1,0 +1,71 @@
+name: Clean Course Voice
+
+on:
+  push:
+    paths:
+      - '.github/workflows/clean-voice.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  polish-audio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+
+      - name: Polish lesson narration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/cleaned-audio
+
+          for f in assets/audio/lesson-*.mp3; do
+            base="$(basename "$f")"
+            echo "Cleaning $base"
+
+            ffmpeg -hide_banner -loglevel error -y -i "$f" \
+              -af "highpass=f=75,lowpass=f=12500,equalizer=f=180:t=q:w=1:g=-1.5,equalizer=f=2800:t=q:w=1:g=1.4,equalizer=f=7000:t=q:w=1.2:g=-0.8,acompressor=threshold=-20dB:ratio=2.2:attack=15:release=180:makeup=1.5,loudnorm=I=-16:TP=-1.5:LRA=7" \
+              -ac 1 -ar 44100 -b:a 160k -map_metadata -1 \
+              "/tmp/cleaned-audio/$base"
+
+            mv "/tmp/cleaned-audio/$base" "$f"
+          done
+
+      - name: Rebuild audio report
+        shell: bash
+        run: |
+          {
+            echo "# CivicAscent AI Audio Build Report"
+            echo
+            echo "Voice source: en_US-norman-medium (Piper neural TTS)"
+            echo "Cleanup: rumble reduction, gentle presence EQ, sibilance softening, light compression"
+            echo "Master target: -16 LUFS integrated, -1.5 dB true peak, mono 44.1 kHz, 160 kbps MP3"
+            echo
+            for f in assets/audio/lesson-*.mp3; do
+              d="$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$f")"
+              b="$(stat -c%s "$f")"
+              echo "$(basename "$f") | duration=$d s | bytes=$b"
+            done
+          } > assets/audio/BUILD-REPORT.txt
+
+      - name: Commit cleaned narration
+        shell: bash
+        run: |
+          git config user.name "CivicAscent Audio Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/audio/lesson-*.mp3 assets/audio/BUILD-REPORT.txt
+          if git diff --cached --quiet; then
+            echo "No audio changes to commit."
+            exit 0
+          fi
+          git commit -m "Polish course narration audio"
+          git push
