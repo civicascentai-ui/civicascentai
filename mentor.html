@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="CivicAscent AI Mentor — practical guidance for learning AI, career growth, business, and community impact.">
+<meta name="description" content="CivicAscent Guided Planner — practical guidance for learning AI, career growth, business, and community impact.">
 <meta name="theme-color" content="#061a3a">
-<title>CivicAscent AI Mentor</title><link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<title>CivicAscent Guided Planner</title><link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 <style>
 .mentor-hero{padding:125px 7% 70px;background:linear-gradient(135deg,#061a3a,#0d64c8);color:#fff}
@@ -46,15 +46,15 @@ textarea{min-height:100px}
 <body>
 <header class="site-header">
 <a class="brand" href="index.html"><span class="logo"><img src="assets/civicascent-logo.svg" alt="" aria-hidden="true"></span><span><b>CivicAscent <i>AI</i></b><small>People. Skills. Stronger Communities.</small></span></a>
-<nav><a href="index.html">Home</a><a href="programs.html">Programs</a><a class="active" href="mentor.html">Mentor</a><a href="capabilities.html">Organizations</a><a href="course.html">Course Store</a><a href="index.html#contact">Contact</a></nav>
+<nav><a href="index.html">Home</a><a href="programs.html">Programs</a><a href="course.html">Courses</a><a class="active" href="mentor.html">Guided Planner</a><a href="capabilities.html">Organizations</a><a href="es.html" lang="es">Español</a><a href="register.html">Free Workshop</a></nav>
 </header>
 
 <main>
 <section class="mentor-hero">
 <div class="inner">
 <p class="eyebrow">GUIDANCE • ACCOUNTABILITY • NEXT ACTION</p>
-<h1>Meet your CivicAscent AI Mentor.</h1>
-<p>A practical mentor for people who want a clear next step—not more jargon. Choose your goal, describe where you are, and get a focused action plan you can use immediately.</p>
+<h1>Meet your CivicAscent Guided Planner.</h1>
+<p>A structured planning tool for people who want a clear next step—not more jargon. Choose your goal, describe where you are, and get a focused action plan you can use immediately.</p><p style="max-width:760px;margin:14px auto 0;padding:14px 16px;border-radius:12px;background:#eef7fb;color:#28415f"><b>How it works:</b> this planner uses structured decision rules to generate next-step plans. It is not a live AI chat assistant.</p>
 </div>
 </section>
 
@@ -151,7 +151,7 @@ textarea{min-height:100px}
 </section>
 
 <section class="promise">
-<h2>The mentor rule: one clear priority at a time.</h2>
+<h2>The planner rule: one clear priority at a time.</h2>
 <p>Progress comes from completing the next important action, measuring what happened, and then adjusting. The mentor is designed to keep the plan focused and practical.</p>
 </section>
 </section>
@@ -201,7 +201,7 @@ document.getElementById('focus').textContent=situation ? 'Based on what you wrot
 document.getElementById('actions').innerHTML='<h3>Your next 3 actions</h3>'+p[1].map((x,i)=>'<p><b>'+(i+1)+'.</b> '+esc(x)+'</p>').join('');
 document.getElementById('checkpoint').textContent=p[2];
 document.getElementById('mentorOutput').style.display='block';
-const subject=encodeURIComponent('CivicAscent AI Mentor Help');
+const subject=encodeURIComponent('CivicAscent Guided Planner Help');
 const body=encodeURIComponent('My goal: '+goal+'\nMy stage: '+stage+'\nMy situation: '+(situation||'Not provided')+'\n\nPlease help me with the next step.');
 document.getElementById('emailMentor').href='mailto:info@civicascentai.com?subject='+subject+'&body='+body;
 document.getElementById('mentorOutput').scrollIntoView({behavior:'smooth',block:'start'});
