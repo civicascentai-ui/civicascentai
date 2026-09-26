@@ -97,7 +97,7 @@ textarea{min-height:100px}
 <div id="actions"></div>
 <p><b>Checkpoint:</b> <span id="checkpoint"></span></p>
 <div class="actions">
-<a class="button" id="emailMentor" href="mailto:civicascentai@gmail.com">Ask CivicAscent AI for help</a>
+<a class="button" id="emailMentor" href="mailto:info@civicascentai.com">Ask CivicAscent AI for help</a>
 <button class="choice" type="button" id="resetBtn">Start another plan</button>
 </div>
 </div>
@@ -203,7 +203,7 @@ document.getElementById('checkpoint').textContent=p[2];
 document.getElementById('mentorOutput').style.display='block';
 const subject=encodeURIComponent('CivicAscent AI Mentor Help');
 const body=encodeURIComponent('My goal: '+goal+'\nMy stage: '+stage+'\nMy situation: '+(situation||'Not provided')+'\n\nPlease help me with the next step.');
-document.getElementById('emailMentor').href='mailto:civicascentai@gmail.com?subject='+subject+'&body='+body;
+document.getElementById('emailMentor').href='mailto:info@civicascentai.com?subject='+subject+'&body='+body;
 document.getElementById('mentorOutput').scrollIntoView({behavior:'smooth',block:'start'});
 });
 
