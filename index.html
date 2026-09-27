@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="description" content="CivicAscent AI helps beginners, families, workers and organizations build practical AI skills in English and Spanish.">
-  <meta name="theme-color" content="#050507">
+  <meta name="theme-color" content="#11151c">
   <meta name="color-scheme" content="dark">
-  <meta name="civicascent-build" content="20260926-webgl-1">
+  <meta name="civicascent-build" content="20260926-mobile-clean-2">
   <meta property="og:title" content="CivicAscent AI | Learn AI with confidence">
   <meta property="og:description" content="Practical, guided AI learning for beginners, working adults, families and communities — in English and Spanish.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://civicascentai.com/">
-  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-webgl-1">
+  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-mobile-clean-2">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://civicascentai.com/">
-  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-webgl-1" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/cinematic.css?v=20260926-webgl-1">
+  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-mobile-clean-2" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/cinematic.css?v=20260926-mobile-clean-2">
   <title>CivicAscent AI | Learn AI with confidence</title>
 </head>
 <body>
@@ -27,7 +27,7 @@
 
   <header class="hud">
     <a class="brand" href="index.html" aria-label="CivicAscent AI home">
-      <img src="assets/civicascent-logo.svg?v=20260926-webgl-1" alt="">
+      <img src="assets/civicascent-logo.svg?v=20260926-mobile-clean-2" alt="">
       <span>CivicAscent AI</span>
     </a>
     <div class="hud-center" id="chapterName">00 · Begin</div>
@@ -224,7 +224,7 @@
           </div>
           <div class="scene-body">
             <div class="human-strip">
-              <img src="assets/civicascent-campus.webp?v=20260926-webgl-1" alt="CivicAscent AI learning environment" loading="lazy">
+              <img src="assets/civicascent-campus.webp?v=20260926-mobile-clean-2" alt="CivicAscent AI learning environment" loading="lazy">
               <div class="human-copy">
                 <p class="lang-en">Use the Guided Planner for a structured next step or request a consultation for workforce and community learning.</p>
                 <p class="lang-es">Usa el Planificador Guiado para un siguiente paso estructurado o solicita una consulta para aprendizaje laboral y comunitario.</p>
@@ -307,8 +307,30 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="assets/cinematic.js?v=20260926-webgl-1"></script>
+  <script>
+    (function(){
+      const heavy = matchMedia("(min-width: 901px) and (pointer: fine) and (prefers-reduced-motion: no-preference)").matches;
+      const app = () => {
+        const s = document.createElement("script");
+        s.src = "assets/cinematic.js?v=20260926-mobile-clean-2";
+        s.defer = true;
+        document.body.appendChild(s);
+      };
+      const load = (src,next) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = next;
+        s.onerror = next;
+        document.body.appendChild(s);
+      };
+      if(heavy){
+        load("https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js",() =>
+          load("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js",app)
+        );
+      }else{
+        app();
+      }
+    })();
+  </script>
 </body>
 </html>
