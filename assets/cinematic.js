@@ -30,6 +30,7 @@
   let logoSequenceFinished=false;
   let introSequenceStarted=false;
   let introSequenceFinished=false;
+  let showcaseFallbackTimer=0;
 
   const goalCopy={
     everyday:{en:"Plan, compare options, organize information, draft messages and turn a confusing task into clear steps.",es:"Planifica, compara opciones, organiza información, redacta mensajes y convierte una tarea confusa en pasos claros."},
@@ -303,6 +304,7 @@
   }
 
   function showHeroImmediately(){
+    if(showcaseFallbackTimer){clearTimeout(showcaseFallbackTimer);showcaseFallbackTimer=0}
     if(introSequenceFinished)return;
     introSequenceStarted=true;
     introSequenceFinished=true;
@@ -313,6 +315,7 @@
   }
 
   function startShowcaseReveal(){
+    if(showcaseFallbackTimer){clearTimeout(showcaseFallbackTimer);showcaseFallbackTimer=0}
     if(introSequenceStarted||introSequenceFinished)return;
     introSequenceStarted=true;
 
@@ -361,6 +364,14 @@
 
   setupStars();
   updateScenes();
+
+  // Hard fail-safe: the intro must always complete even if animation frames are throttled.
+  if(!reduced){
+    showcaseFallbackTimer=setTimeout(()=>{
+      if(!introSequenceStarted&&!introSequenceFinished)startShowcaseReveal();
+    },5200);
+  }
+
   if(reduced)showHeroImmediately();
   if(!reduced)raf=requestAnimationFrame(frame);
   else drawStars(0,true);
