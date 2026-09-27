@@ -907,3 +907,32 @@ html,body{background:#02050a!important}
     pointer-events:auto!important
   }
 }
+
+
+/* Showcase reliability fix — 20260927-ai-showcase-fix-8 */
+.hero .chapter-inner{
+  opacity:1!important;
+  filter:none!important;
+  transform:none!important
+}
+.intro-pending .hud-actions{
+  opacity:0;
+  transform:translateY(-8px);
+  pointer-events:none
+}
+.hud-actions{
+  transition:opacity .42s ease,transform .5s cubic-bezier(.16,1,.3,1)
+}
+.intro-revealing .hud-actions,
+.intro-live .hud-actions{
+  opacity:1;
+  transform:none;
+  pointer-events:auto
+}
+@media(prefers-reduced-motion:reduce){
+  .intro-pending .hud-actions{
+    opacity:1!important;
+    transform:none!important;
+    pointer-events:auto!important
+  }
+}
