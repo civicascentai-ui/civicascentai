@@ -2,254 +2,427 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="civicascent-build" content="20260926-4"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="CivicAscent AI helps beginners, families, workers and organizations build practical AI skills in English and Spanish.">
+  <meta name="theme-color" content="#050507">
+  <meta name="civicascent-build" content="20260926-5">
   <meta property="og:title" content="CivicAscent AI | Practical AI Skills for Real Life">
   <meta property="og:description" content="Beginner-friendly AI learning for real life, work and stronger communities — in English and Spanish.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-4">
+  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-5">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="alternate" hreflang="es" href="https://civicascentai.com/es.html">
   <link rel="canonical" href="https://civicascentai.com/">
-  <meta name="theme-color" content="#071a38">
+  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-5" type="image/svg+xml">
   <title>CivicAscent AI | Practical AI Skills for Real Life</title>
-  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-4" type="image/svg+xml">
   <style>
     :root{
-      --navy:#071a38;
-      --blue:#1457d9;
-      --cyan:#1fb6d5;
-      --green:#59c13d;
-      --ink:#152239;
-      --muted:#607086;
-      --line:#dfe7ef;
-      --soft:#f5f8fb;
-      --white:#fff;
-      --shadow:0 20px 60px rgba(7,26,56,.12);
+      --bg:#050507;
+      --bg2:#0a0a0d;
+      --panel:#101015;
+      --text:#f1f1ee;
+      --muted:#a7a7a1;
+      --line:rgba(255,255,255,.12);
+      --orange:#ff6a00;
+      --amber:#fecb8b;
+      --blue:#5da8ff;
+      --green:#8fe388;
+      --max:1180px;
     }
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#fff}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
     a{color:inherit}
-    .skip{position:absolute;left:-9999px}
-    .skip:focus{left:16px;top:16px;z-index:99;background:#fff;padding:12px 16px;border-radius:10px}
-    .header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-    .nav{max-width:1180px;margin:auto;min-height:76px;padding:10px 24px;display:flex;align-items:center;gap:24px}
-    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:max-content}
-    .brand img{width:48px;height:48px}
-    .brand strong{display:block;font-size:1.2rem;letter-spacing:-.02em;color:var(--navy)}
-    .brand small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}
-    .links{margin-left:auto;display:flex;align-items:center;gap:24px}
-    .links a{text-decoration:none;font-weight:750;font-size:.92rem;color:#33445b}
-    .links a:hover{color:var(--blue)}
-    .cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:850;background:var(--navy);color:#fff;padding:13px 18px;border-radius:12px;white-space:nowrap}
-    .cta:hover{background:#0c2d61}
-    .hero{background:linear-gradient(135deg,#f8fbfe 0%,#fff 58%,#eff8f5 100%);border-bottom:1px solid var(--line)}
-    .hero-inner{max-width:1180px;margin:auto;padding:82px 24px 74px;display:grid;grid-template-columns:1.05fr .95fr;gap:58px;align-items:center}
-    .kicker{display:inline-flex;align-items:center;gap:9px;font-size:.8rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#0e6f86;margin:0 0 20px}
-    .kicker:before{content:"";width:28px;height:2px;background:var(--cyan)}
-    h1{font-size:clamp(3rem,6.2vw,5.8rem);line-height:.96;letter-spacing:-.055em;margin:0;color:var(--navy);max-width:760px}
-    h1 span{color:var(--blue)}
-    .lead{font-size:clamp(1.05rem,1.8vw,1.32rem);line-height:1.65;color:var(--muted);max-width:680px;margin:24px 0 30px}
+    button{font:inherit}
+    .skip{position:fixed;left:-9999px;top:12px;z-index:200;background:#fff;color:#000;padding:10px 14px;border-radius:10px}
+    .skip:focus{left:12px}
+    .progress{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--orange),var(--amber));z-index:180}
+    .hud{position:fixed;inset:0 0 auto 0;z-index:120;pointer-events:none}
+    .hud-inner{max-width:var(--max);margin:auto;padding:18px 24px;display:flex;align-items:center;gap:16px}
+    .brand{pointer-events:auto;display:flex;align-items:center;gap:10px;text-decoration:none}
+    .brand img{width:38px;height:38px}
+    .brand b{font-size:1rem;letter-spacing:-.02em}
+    .brand small{display:block;color:var(--muted);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
+    .hud-tools{margin-left:auto;display:flex;gap:8px;pointer-events:auto}
+    .hud-btn{border:1px solid var(--line);background:rgba(5,5,7,.72);backdrop-filter:blur(14px);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:800;font-size:.76rem;letter-spacing:.04em}
+    .hud-btn:hover,.hud-btn:focus-visible{border-color:var(--orange);outline:none}
+    .chapter-nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:110;display:flex;flex-direction:column;gap:9px}
+    .chapter-nav a{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;text-decoration:none;color:#8f8f8b;background:rgba(5,5,7,.62);backdrop-filter:blur(10px);font-size:.68rem;font-weight:800;transition:.2s}
+    .chapter-nav a.active,.chapter-nav a:hover{border-color:var(--orange);color:#fff;background:rgba(255,106,0,.12)}
+    main{position:relative}
+    .chapter{min-height:100svh;display:flex;align-items:center;position:relative;padding:120px 7vw 90px;border-bottom:1px solid rgba(255,255,255,.05)}
+    .chapter-inner{width:min(100%,var(--max));margin:auto}
+    .eyebrow{margin:0 0 22px;color:var(--amber);font-size:.74rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+    .chapter-number{position:absolute;left:7vw;bottom:34px;font-size:clamp(5rem,16vw,13rem);line-height:.78;font-weight:900;color:rgba(255,255,255,.035);letter-spacing:-.08em;user-select:none}
+    .hero{overflow:hidden;background:
+      radial-gradient(circle at 72% 28%,rgba(255,106,0,.16),transparent 28%),
+      radial-gradient(circle at 25% 70%,rgba(93,168,255,.08),transparent 25%),
+      linear-gradient(180deg,#050507 0%,#09090c 100%)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:8vw;align-items:end}
+    .hero h1{font-size:clamp(4.5rem,11vw,10.6rem);line-height:.78;letter-spacing:-.075em;margin:0;max-width:900px}
+    .hero h1 span{display:block;color:var(--orange)}
+    .hero-copy{padding-bottom:10px}
+    .hero-copy p{font-size:clamp(1rem,1.8vw,1.35rem);line-height:1.65;color:#c9c9c3;max-width:520px;margin:0 0 28px}
+    .hero-stat{font-size:clamp(4.8rem,11vw,9rem);font-weight:900;letter-spacing:-.07em;line-height:.8;color:var(--amber);margin-top:54px}
+    .hero-stat small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:18px}
     .actions{display:flex;gap:12px;flex-wrap:wrap}
-    .primary,.secondary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:850;padding:15px 20px;border-radius:12px}
-    .primary{background:linear-gradient(135deg,var(--blue),#1672df);color:#fff;box-shadow:0 10px 28px rgba(20,87,217,.22)}
-    .secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}
-    .micro{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;color:#5d6a7c;font-size:.9rem;font-weight:700}
-    .micro span{display:flex;align-items:center;gap:8px}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-    .visual{position:relative;min-height:510px;border-radius:30px;overflow:hidden;background:var(--navy);box-shadow:var(--shadow)}
-    .visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7}
-    .visual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,26,56,.05),rgba(7,26,56,.78))}
-    .visual-card{position:absolute;z-index:2;left:24px;right:24px;bottom:24px;background:rgba(255,255,255,.95);border:1px solid rgba(255,255,255,.5);border-radius:20px;padding:22px;box-shadow:0 14px 40px rgba(0,0,0,.18)}
-    .visual-card p{margin:0 0 6px;color:var(--muted);font-weight:750;font-size:.83rem;text-transform:uppercase;letter-spacing:.08em}
-    .visual-card h2{margin:0;color:var(--navy);font-size:1.55rem;letter-spacing:-.03em}
-    .path-section{max-width:1180px;margin:auto;padding:78px 24px}
-    .section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:32px}
-    .section-head h2,.org h2{margin:0;font-size:clamp(2rem,4vw,3.6rem);letter-spacing:-.045em;line-height:1.02;color:var(--navy)}
-    .section-head p{max-width:520px;margin:0;color:var(--muted);line-height:1.6}
-    .paths{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .path{position:relative;min-height:300px;border:1px solid var(--line);border-radius:22px;padding:28px;background:#fff;display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-    .path:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#c8d8ea}
-    .num{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#eef3ff;color:var(--blue);font-weight:900}
-    .path h3{font-size:1.55rem;letter-spacing:-.03em;color:var(--navy);margin:24px 0 10px}
-    .path p{color:var(--muted);line-height:1.6;margin:0 0 24px}
-    .path a{margin-top:auto;font-weight:900;text-decoration:none;color:var(--blue)}
-    .path.spanish{background:linear-gradient(145deg,#071a38,#0d3f7d);border-color:transparent;color:#fff}
-    .path.spanish .num{background:rgba(255,255,255,.13);color:#8ee8ff}
-    .path.spanish h3,.path.spanish a{color:#fff}
-    .path.spanish p{color:#d6e3f1}
-    .org-wrap{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-    .org{max-width:1180px;margin:auto;padding:74px 24px;display:grid;grid-template-columns:1fr .9fr;gap:54px;align-items:center}
-    .org p{color:var(--muted);font-size:1.08rem;line-height:1.7}
-    .org-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .org-list div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;font-weight:800;color:#304158}
-    .contact{max-width:1180px;margin:auto;padding:72px 24px;text-align:center}
-    .contact h2{font-size:clamp(2.2rem,4vw,3.8rem);letter-spacing:-.045em;color:var(--navy);margin:0 0 14px}
-    .contact p{color:var(--muted);font-size:1.08rem;line-height:1.7;margin:0 auto 26px;max-width:720px}
-    .contact-meta{margin-top:26px;color:#5b6c82;font-weight:700}
-    footer{background:var(--navy);color:#c9d5e5}
-    .footer{max-width:1180px;margin:auto;padding:30px 24px;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
-    .footer strong{color:#fff}
+    .primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 18px;border-radius:999px;text-decoration:none;font-weight:900}
+    .primary{background:var(--orange);color:#080808}
+    .primary:hover{background:#ff7e22}
+    .secondary{border:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .secondary:hover{border-color:var(--amber)}
+    .scroll-cue{position:absolute;left:7vw;bottom:32px;color:var(--muted);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase}
+    .scroll-cue:after{content:"";display:inline-block;width:46px;height:1px;background:var(--orange);vertical-align:middle;margin-left:14px}
+    .essay-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:9vw;align-items:start}
+    .essay-grid h2{font-size:clamp(3.2rem,7.5vw,7.4rem);line-height:.9;letter-spacing:-.06em;margin:0}
+    .copy{max-width:720px}
+    .copy p{font-size:clamp(1.15rem,2.1vw,1.62rem);line-height:1.62;color:#c4c4bf;margin:0 0 24px}
+    .copy strong{color:#fff}
+    .pull{margin:48px 0 0;padding-left:20px;border-left:2px solid var(--orange);font-size:clamp(1.4rem,2.7vw,2.3rem);line-height:1.35;color:#fff}
+    .metric{font-size:clamp(5rem,14vw,12rem);font-weight:950;letter-spacing:-.08em;line-height:.85;color:var(--orange)}
+    .metric-label{max-width:420px;color:var(--muted);font-size:.95rem;line-height:1.5;margin-top:20px}
+    .steps{display:grid;gap:16px;margin-top:42px}
+    .step{display:grid;grid-template-columns:70px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line)}
+    .step:last-child{border-bottom:1px solid var(--line)}
+    .step-num{font-weight:900;color:var(--orange);font-size:.88rem}
+    .step h3{margin:0 0 6px;font-size:1.2rem}
+    .step p{margin:0;color:var(--muted);line-height:1.55}
+    .paths{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+    .path{background:var(--bg);padding:30px;min-height:280px;display:flex;flex-direction:column;text-decoration:none}
+    .path:hover{background:#0c0c10}
+    .path .n{color:var(--orange);font-size:.75rem;font-weight:900;letter-spacing:.1em}
+    .path h3{font-size:1.7rem;letter-spacing:-.035em;margin:52px 0 12px}
+    .path p{color:var(--muted);line-height:1.55;margin:0 0 20px}
+    .path span:last-child{margin-top:auto;color:var(--amber);font-weight:900}
+    .org-list{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
+    .org-list div{background:var(--bg);padding:24px;font-weight:800;color:#d9d9d3}
+    .chapter.dark2{background:linear-gradient(180deg,#08080b,#050507)}
+    .chapter.orange-wash{background:
+      radial-gradient(circle at 80% 20%,rgba(255,106,0,.12),transparent 30%),
+      #050507}
+    .final{background:linear-gradient(180deg,#050507 0%,#0b0b0f 60%,#120905 100%)}
+    .final h2{font-size:clamp(4rem,10vw,9rem);line-height:.84;letter-spacing:-.07em;max-width:1000px;margin:0 0 32px}
+    .final h2 span{color:var(--orange)}
+    .footer{padding:34px 7vw 50px;background:#050507;color:var(--muted);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);font-size:.8rem}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .lang-es{display:none}
+    body.es .lang-en{display:none}
+    body.es .lang-es{display:initial}
+    body.es .lang-es.block{display:block}
+    .mobile-chapter{display:none}
     @media(max-width:900px){
-      .links{display:none}
-      .nav{padding:10px 18px}
-      .nav>.cta{margin-left:auto}
-      .brand small{display:none}
-      .hero-inner,.org{grid-template-columns:1fr}
-      .hero-inner{padding-top:58px}
-      .visual{min-height:380px}
+      .chapter{padding:110px 22px 80px}
+      .hero-grid,.essay-grid{grid-template-columns:1fr;gap:44px}
+      .hero h1{font-size:clamp(4.4rem,17vw,7rem)}
+      .hero-copy{max-width:680px}
+      .chapter-nav{display:none}
+      .mobile-chapter{display:block;color:var(--orange);font-size:.76rem;font-weight:900;margin-bottom:18px;letter-spacing:.12em}
+      .chapter-number{left:22px;bottom:28px}
+      .scroll-cue{left:22px}
       .paths{grid-template-columns:1fr}
-      .path{min-height:240px}
-      .section-head{align-items:start;flex-direction:column}
+      .org-list{grid-template-columns:1fr}
+      .hud-inner{padding:14px 18px}
+      .brand small{display:none}
     }
     @media(max-width:560px){
-      .nav>.cta{font-size:.78rem;padding:11px 12px}
-      .brand strong{font-size:1rem}
-      .brand img{width:40px;height:40px}
-      .hero-inner,.path-section,.org,.contact{padding-left:18px;padding-right:18px}
-      .hero-inner{padding-top:46px;padding-bottom:52px}
-      h1{font-size:3.15rem}
-      .visual{min-height:330px;border-radius:22px}
-      .visual-card{left:14px;right:14px;bottom:14px}
-      .org-list{grid-template-columns:1fr}
+      .brand b{font-size:.9rem}
+      .brand img{width:34px;height:34px}
+      .hud-btn{padding:8px 10px;font-size:.68rem}
+      .hero h1{font-size:4.15rem}
+      .hero-stat{font-size:5rem}
+      .copy p{font-size:1.13rem}
+      .step{grid-template-columns:46px 1fr;gap:14px}
     }
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.path{transition:none}}
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      .reveal{opacity:1;transform:none;transition:none}
+    }
   </style>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" id="progress" aria-hidden="true"></div>
 
-  <header class="header">
-    <nav class="nav" aria-label="Primary navigation">
+  <header class="hud" aria-label="Site controls">
+    <div class="hud-inner">
       <a class="brand" href="index.html" aria-label="CivicAscent AI home">
-        <img src="assets/civicascent-logo.svg?v=20260926-4" alt="">
+        <img src="assets/civicascent-logo.svg?v=20260926-5" alt="">
         <span>
-          <strong>CivicAscent AI</strong>
-          <small>People. Skills. Stronger Communities.</small>
+          <b>CivicAscent AI</b>
+          <small>People · Skills · Opportunity</small>
         </span>
       </a>
-      <div class="links">
-        <a href="programs.html">Programs</a>
-        <a href="course.html">Courses</a>
-        <a href="mentor.html">Guided Planner</a>
-        <a href="capabilities.html">Organizations</a>
-        <a href="es.html" lang="es">Español</a>
-        <a href="#contact">Contact</a>
+      <div class="hud-tools">
+        <button class="hud-btn" id="langToggle" type="button" aria-pressed="false">ES</button>
+        <a class="hud-btn" href="register.html">Free Workshop</a>
       </div>
-      <a class="cta" href="register.html">Free Workshop</a>
-    </nav>
+    </div>
   </header>
 
+  <nav class="chapter-nav" aria-label="Chapter navigation">
+    <a href="#c0" data-section="c0">00</a>
+    <a href="#c1" data-section="c1">01</a>
+    <a href="#c2" data-section="c2">02</a>
+    <a href="#c3" data-section="c3">03</a>
+    <a href="#c4" data-section="c4">04</a>
+    <a href="#c5" data-section="c5">05</a>
+    <a href="#c6" data-section="c6">06</a>
+    <a href="#c7" data-section="c7">07</a>
+  </nav>
+
   <main id="main">
-    <section class="hero">
-      <div class="hero-inner">
+    <section class="chapter hero" id="c0">
+      <div class="chapter-inner hero-grid reveal">
         <div>
-          <p class="kicker">Practical AI learning</p>
-          <h1>AI skills for <span>real life.</span></h1>
-          <p class="lead">Clear, guided learning for people who want to use AI with confidence at home, at work and in their communities. Start from zero. Build skills you can actually use.</p>
+          <p class="mobile-chapter">00 · CivicAscent AI</p>
+          <p class="eyebrow lang-en">Practical AI learning</p>
+          <p class="eyebrow lang-es block">Aprendizaje práctico de IA</p>
+          <h1>
+            <span class="lang-en">Learn AI.<br><span>Use it.</span></span>
+            <span class="lang-es">Aprende IA.<br><span>Úsala.</span></span>
+          </h1>
+        </div>
+        <div class="hero-copy">
+          <p class="lang-en">AI is changing everyday life and work. CivicAscent AI turns that change into practical, guided skills for beginners, families, workers and organizations.</p>
+          <p class="lang-es block">La IA está cambiando la vida diaria y el trabajo. CivicAscent AI convierte ese cambio en habilidades prácticas y guiadas para principiantes, familias, trabajadores y organizaciones.</p>
           <div class="actions">
-            <a class="primary" href="register.html">Start with a Free Workshop</a>
-            <a class="secondary" href="course.html#enroll">View Courses & Pricing</a>
+            <a class="primary lang-en" href="register.html">Start free</a>
+            <a class="primary lang-es" href="registro.html">Comienza gratis</a>
+            <a class="secondary lang-en" href="course.html">Explore courses</a>
+            <a class="secondary lang-es" href="curso-es.html">Explorar cursos</a>
           </div>
-          <div class="micro" aria-label="Program highlights">
-            <span><i class="dot"></i> Beginner-first</span>
-            <span><i class="dot"></i> English + Español</span>
-            <span><i class="dot"></i> Responsible AI</span>
-          </div>
-        </div>
-        <div class="visual" aria-label="CivicAscent AI learning environment">
-          <img src="assets/civicascent-campus.webp?v=20260926-4" alt="CivicAscent AI learning environment">
-          <div class="visual-card">
-            <p>Our approach</p>
-            <h2>Learn it. Practice it. Use it.</h2>
-          </div>
+          <div class="hero-stat">01<small class="lang-en">Useful skill is enough to begin</small><small class="lang-es">Una habilidad útil es suficiente para comenzar</small></div>
         </div>
       </div>
+      <div class="scroll-cue lang-en">Scroll to explore</div>
+      <div class="scroll-cue lang-es">Desplázate para explorar</div>
+      <div class="chapter-number">00</div>
     </section>
 
-    <section class="path-section" aria-labelledby="paths-title">
-      <div class="section-head">
+    <section class="chapter dark2" id="c1">
+      <div class="chapter-inner essay-grid reveal">
         <div>
-          <p class="kicker">Choose your path</p>
-          <h2 id="paths-title">Start where you are.</h2>
+          <p class="mobile-chapter">01 · Why now</p>
+          <p class="eyebrow lang-en">01 · Why now</p>
+          <p class="eyebrow lang-es block">01 · Por qué ahora</p>
+          <h2 class="lang-en">AI is already here.</h2>
+          <h2 class="lang-es">La IA ya está aquí.</h2>
         </div>
-        <p>Three simple ways to begin. No crowded menus, no technical jargon, and no need to know AI before you arrive.</p>
+        <div class="copy">
+          <p class="lang-en">The useful question is no longer whether AI will matter. It already affects writing, research, planning, customer service, education and work.</p>
+          <p class="lang-es block">La pregunta útil ya no es si la IA importará. Ya afecta la escritura, la investigación, la planificación, el servicio al cliente, la educación y el trabajo.</p>
+          <p class="lang-en"><strong>You do not need to become a programmer.</strong> You need a reliable way to ask, evaluate, verify and apply.</p>
+          <p class="lang-es block"><strong>No necesitas convertirte en programador.</strong> Necesitas una forma confiable de preguntar, evaluar, verificar y aplicar.</p>
+          <div class="pull lang-en">Confidence comes from practice, not jargon.</div>
+          <div class="pull lang-es">La confianza viene de la práctica, no de la jerga.</div>
+        </div>
       </div>
-
-      <div class="paths">
-        <article class="path">
-          <span class="num">01</span>
-          <h3>Start Free</h3>
-          <p>Join a beginner-friendly workshop and learn what AI can do, how to ask better questions and how to verify important answers.</p>
-          <a href="register.html">Reserve your free seat →</a>
-        </article>
-
-        <article class="path">
-          <span class="num">02</span>
-          <h3>Build Real Skills</h3>
-          <p>Move from beginner basics into guided practice, useful projects and Level 1 or Level 2 training for work and everyday life.</p>
-          <a href="programs.html">Explore learning paths →</a>
-        </article>
-
-        <article class="path spanish" lang="es">
-          <span class="num">03</span>
-          <h3>Aprende en Español</h3>
-          <p>Capacitación práctica de IA para principiantes, familias, trabajadores y organizaciones — con una experiencia bilingüe integrada.</p>
-          <a href="es.html">Explorar en Español →</a>
-        </article>
-      </div>
+      <div class="chapter-number">01</div>
     </section>
 
-    <section class="org-wrap">
-      <div class="org">
+    <section class="chapter orange-wash" id="c2">
+      <div class="chapter-inner essay-grid reveal">
         <div>
-          <p class="kicker">For organizations</p>
-          <h2>Bring practical AI training to your people.</h2>
-          <p>CivicAscent AI supports workforce teams, nonprofits, libraries, churches, agencies and community groups with beginner-friendly instruction, bilingual options and responsible-use practices.</p>
+          <p class="mobile-chapter">02 · Learn</p>
+          <p class="eyebrow lang-en">02 · Learn</p>
+          <p class="eyebrow lang-es block">02 · Aprende</p>
+          <div class="metric">LEARN</div>
+          <div class="metric-label lang-en">Start with the task in front of you, not every feature AI can offer.</div>
+          <div class="metric-label lang-es">Comienza con la tarea que tienes delante, no con todas las funciones que ofrece la IA.</div>
+        </div>
+        <div class="copy">
+          <p class="lang-en">CivicAscent begins with clear language and one practical outcome. We explain what the tool can do, what it cannot do, and where human judgment still matters.</p>
+          <p class="lang-es block">CivicAscent comienza con lenguaje claro y un resultado práctico. Explicamos lo que la herramienta puede hacer, lo que no puede hacer y dónde sigue importando el criterio humano.</p>
+          <div class="steps">
+            <div class="step"><div class="step-num">01</div><div><h3>Understand</h3><p>Know the goal, the limits and the risk.</p></div></div>
+            <div class="step"><div class="step-num">02</div><div><h3>Prompt</h3><p>Give context, constraints and the output you actually need.</p></div></div>
+            <div class="step"><div class="step-num">03</div><div><h3>Verify</h3><p>Check important claims before relying on them.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chapter-number">02</div>
+    </section>
+
+    <section class="chapter" id="c3">
+      <div class="chapter-inner essay-grid reveal">
+        <div>
+          <p class="mobile-chapter">03 · Practice</p>
+          <p class="eyebrow lang-en">03 · Practice</p>
+          <p class="eyebrow lang-es block">03 · Practica</p>
+          <h2 class="lang-en">Turn knowledge into repetition.</h2>
+          <h2 class="lang-es">Convierte el conocimiento en repetición.</h2>
+        </div>
+        <div class="copy">
+          <p class="lang-en">One demonstration is not a skill. A skill is something you can repeat, explain and adapt to a new situation.</p>
+          <p class="lang-es block">Una demostración no es una habilidad. Una habilidad es algo que puedes repetir, explicar y adaptar a una situación nueva.</p>
+          <p class="lang-en">Our learning paths use guided practice, real tasks, feedback and checkpoints so progress is visible.</p>
+          <p class="lang-es block">Nuestras rutas de aprendizaje usan práctica guiada, tareas reales, retroalimentación y puntos de control para que el progreso sea visible.</p>
           <div class="actions">
-            <a class="primary" href="consultation.html">Request a Consultation</a>
-            <a class="secondary" href="capabilities.html">View Organization Training</a>
+            <a class="primary" href="mentor.html"><span class="lang-en">Try the Guided Planner</span><span class="lang-es">Prueba el Planificador</span></a>
+            <a class="secondary" href="level2.html"><span class="lang-en">See Level 2</span><span class="lang-es">Ver Nivel 2</span></a>
           </div>
         </div>
-        <div class="org-list" aria-label="Organization capabilities">
-          <div>Live workshops</div>
-          <div>Workforce training</div>
-          <div>Bilingual delivery</div>
-          <div>Responsible AI</div>
-          <div>Custom learning paths</div>
-          <div>Community programs</div>
-        </div>
       </div>
+      <div class="chapter-number">03</div>
     </section>
 
-    <section class="contact" id="contact">
-      <p class="kicker">Ready to begin?</p>
-      <h2>Start with one useful AI skill.</h2>
-      <p>Join the free workshop, continue into a course, or talk with CivicAscent AI about training for your organization.</p>
-      <div class="actions" style="justify-content:center">
-        <a class="primary" href="register.html">Register Free — $0</a>
-        <a class="secondary" href="mailto:info@civicascentai.com?subject=CivicAscent%20AI%20Inquiry">Email CivicAscent AI</a>
+    <section class="chapter dark2" id="c4">
+      <div class="chapter-inner reveal">
+        <p class="mobile-chapter">04 · Choose your path</p>
+        <p class="eyebrow lang-en">04 · Choose your path</p>
+        <p class="eyebrow lang-es block">04 · Elige tu camino</p>
+        <h2 style="font-size:clamp(3.2rem,7vw,7rem);line-height:.9;letter-spacing:-.06em;margin:0;max-width:900px" class="lang-en">Start where you are.</h2>
+        <h2 style="font-size:clamp(3.2rem,7vw,7rem);line-height:.9;letter-spacing:-.06em;margin:0;max-width:900px" class="lang-es">Empieza donde estás.</h2>
+        <div class="paths">
+          <a class="path" href="register.html">
+            <span class="n">01</span>
+            <h3 class="lang-en">Start Free</h3><h3 class="lang-es">Comienza Gratis</h3>
+            <p class="lang-en">A beginner workshop for your first practical AI skills.</p>
+            <p class="lang-es">Un taller para principiantes con tus primeras habilidades prácticas de IA.</p>
+            <span>→</span>
+          </a>
+          <a class="path" href="course.html">
+            <span class="n">02</span>
+            <h3 class="lang-en">Build Skills</h3><h3 class="lang-es">Desarrolla Habilidades</h3>
+            <p class="lang-en">Guided courses, practice and real-world applications.</p>
+            <p class="lang-es">Cursos guiados, práctica y aplicaciones del mundo real.</p>
+            <span>→</span>
+          </a>
+          <a class="path" href="es.html">
+            <span class="n">03</span>
+            <h3>Español</h3>
+            <p class="lang-en">A bilingual path built into CivicAscent from the start.</p>
+            <p class="lang-es">Una ruta bilingüe integrada en CivicAscent desde el principio.</p>
+            <span>→</span>
+          </a>
+        </div>
       </div>
-      <div class="contact-meta">
-        <a href="mailto:info@civicascentai.com">info@civicascentai.com</a>
-        &nbsp;•&nbsp;
-        <a href="tel:+18179839404">817-983-9404</a>
-        &nbsp;•&nbsp;
-        Fort Worth, Texas
+      <div class="chapter-number">04</div>
+    </section>
+
+    <section class="chapter" id="c5">
+      <div class="chapter-inner essay-grid reveal">
+        <div>
+          <p class="mobile-chapter">05 · Organizations</p>
+          <p class="eyebrow lang-en">05 · Organizations</p>
+          <p class="eyebrow lang-es block">05 · Organizaciones</p>
+          <h2 class="lang-en">Train people, not just systems.</h2>
+          <h2 class="lang-es">Capacita personas, no solo sistemas.</h2>
+        </div>
+        <div class="copy">
+          <p class="lang-en">CivicAscent AI supports workforce teams, nonprofits, libraries, churches, agencies and community groups with beginner-friendly instruction and responsible-use practices.</p>
+          <p class="lang-es block">CivicAscent AI apoya a equipos laborales, organizaciones sin fines de lucro, bibliotecas, iglesias, agencias y grupos comunitarios con capacitación accesible y prácticas de uso responsable.</p>
+          <div class="org-list">
+            <div>Live workshops</div>
+            <div>Workforce training</div>
+            <div>Bilingual delivery</div>
+            <div>Responsible AI</div>
+            <div>Custom learning paths</div>
+            <div>Community programs</div>
+          </div>
+          <div class="actions" style="margin-top:28px">
+            <a class="primary" href="consultation.html"><span class="lang-en">Request a consultation</span><span class="lang-es">Solicitar consulta</span></a>
+            <a class="secondary" href="capabilities.html"><span class="lang-en">View capabilities</span><span class="lang-es">Ver capacidades</span></a>
+          </div>
+        </div>
       </div>
+      <div class="chapter-number">05</div>
+    </section>
+
+    <section class="chapter orange-wash" id="c6">
+      <div class="chapter-inner essay-grid reveal">
+        <div>
+          <p class="mobile-chapter">06 · Responsible use</p>
+          <p class="eyebrow lang-en">06 · Responsible use</p>
+          <p class="eyebrow lang-es block">06 · Uso responsable</p>
+          <h2 class="lang-en">Useful does not mean unquestioned.</h2>
+          <h2 class="lang-es">Útil no significa incuestionable.</h2>
+        </div>
+        <div class="copy">
+          <p class="lang-en">AI can produce confident answers that are incomplete, biased or wrong. CivicAscent treats verification, privacy and human judgment as core skills—not optional extras.</p>
+          <p class="lang-es block">La IA puede producir respuestas seguras de sí mismas que sean incompletas, sesgadas o incorrectas. CivicAscent trata la verificación, la privacidad y el criterio humano como habilidades centrales.</p>
+          <div class="pull lang-en">Use AI to strengthen judgment, not replace it.</div>
+          <div class="pull lang-es">Usa la IA para fortalecer el criterio, no para reemplazarlo.</div>
+        </div>
+      </div>
+      <div class="chapter-number">06</div>
+    </section>
+
+    <section class="chapter final" id="c7">
+      <div class="chapter-inner reveal">
+        <p class="mobile-chapter">07 · Begin</p>
+        <p class="eyebrow lang-en">07 · Begin</p>
+        <p class="eyebrow lang-es block">07 · Comienza</p>
+        <h2 class="lang-en">One skill.<br><span>Then another.</span></h2>
+        <h2 class="lang-es">Una habilidad.<br><span>Luego otra.</span></h2>
+        <p class="lang-en" style="max-width:680px;color:#c4c4bf;font-size:1.2rem;line-height:1.65">You do not need to master AI all at once. Start with one real task, practice it until it becomes repeatable, and build from there.</p>
+        <p class="lang-es block" style="max-width:680px;color:#c4c4bf;font-size:1.2rem;line-height:1.65">No necesitas dominar la IA de una vez. Comienza con una tarea real, practícala hasta que sea repetible y construye desde ahí.</p>
+        <div class="actions" style="margin-top:30px">
+          <a class="primary lang-en" href="register.html">Join the free workshop</a>
+          <a class="primary lang-es" href="registro.html">Únete al taller gratis</a>
+          <a class="secondary" href="mailto:info@civicascentai.com?subject=CivicAscent%20AI%20Inquiry"><span class="lang-en">Contact CivicAscent AI</span><span class="lang-es">Contactar CivicAscent AI</span></a>
+        </div>
+      </div>
+      <div class="chapter-number">07</div>
     </section>
   </main>
 
-  <footer>
-    <div class="footer">
-      <strong>CivicAscent AI</strong>
-      <span>People. Skills. Stronger Communities.</span>
-      <span>English • Español</span>
-      <span>© <span id="year"></span> CivicAscent AI · James K. Peters</span>
-    </div>
+  <footer class="footer">
+    <span><strong style="color:#fff">CivicAscent AI</strong> · Fort Worth, Texas</span>
+    <span>info@civicascentai.com · 817-983-9404</span>
+    <span>© <span id="year"></span> CivicAscent AI · James K. Peters</span>
   </footer>
 
-  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+  <script>
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const progress = document.getElementById('progress');
+    const navLinks = [...document.querySelectorAll('.chapter-nav a')];
+    const sections = [...document.querySelectorAll('.chapter')];
+    const reveals = [...document.querySelectorAll('.reveal')];
+
+    function updateProgress(){
+      const max = document.documentElement.scrollHeight - innerHeight;
+      const pct = max > 0 ? (scrollY / max) * 100 : 0;
+      progress.style.width = pct + '%';
+    }
+
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(!entry.isIntersecting) return;
+        navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === entry.target.id));
+      });
+    }, {threshold:.55});
+
+    sections.forEach(s => sectionObserver.observe(s));
+
+    if(reduced){
+      reveals.forEach(el => el.classList.add('visible'));
+    }else{
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, {threshold:.16});
+      reveals.forEach(el => revealObserver.observe(el));
+    }
+
+    addEventListener('scroll', updateProgress, {passive:true});
+    updateProgress();
+
+    const langToggle = document.getElementById('langToggle');
+    langToggle.addEventListener('click', () => {
+      const isEs = document.body.classList.toggle('es');
+      document.documentElement.lang = isEs ? 'es' : 'en';
+      langToggle.textContent = isEs ? 'EN' : 'ES';
+      langToggle.setAttribute('aria-pressed', String(isEs));
+    });
+
+    const year = document.getElementById('year');
+    if(year) year.textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
