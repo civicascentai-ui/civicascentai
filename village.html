@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#07162a">
+  <meta name="description" content="Explore the CivicAscent AI village: practical AI learning, workforce development, guided support and community pathways.">
+  <title>Explore the Village | CivicAscent AI</title>
+  <link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/village.css?v=20260927-village-1">
+</head>
+<body>
+  <a class="skip" href="#scene">Skip to village</a>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="CivicAscent AI home">
+      <img src="assets/civicascent-logo.svg" alt="">
+      <span>CivicAscent <b>AI</b></span>
+    </a>
+    <div class="top-actions">
+      <button id="lang" class="pill" type="button" aria-pressed="false">ES</button>
+      <button id="menuBtn" class="pill menu-btn" type="button" aria-expanded="false" aria-controls="menu">MENU <span aria-hidden="true">☰</span></button>
+    </div>
+  </header>
+
+  <div class="menu" id="menu" aria-hidden="true">
+    <nav>
+      <a href="index.html"><span data-en="AI Showcase" data-es="Experiencia de IA">AI Showcase</span></a>
+      <a href="programs.html"><span data-en="Programs" data-es="Programas">Programs</span></a>
+      <a href="course.html"><span data-en="Courses" data-es="Cursos">Courses</span></a>
+      <a href="mentor.html"><span data-en="Guided Planner" data-es="Planificador Guiado">Guided Planner</span></a>
+      <a href="consultation.html"><span data-en="Consultation" data-es="Consulta">Consultation</span></a>
+    </nav>
+  </div>
+
+  <main id="scene" class="scene" aria-label="Interactive CivicAscent AI village">
+    <img class="scene-bg" src="assets/civicascent-campus.webp" alt="CivicAscent AI alpine learning village">
+    <div class="scene-shade" aria-hidden="true"></div>
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="snow" id="snow" aria-hidden="true"></div>
+
+    <section class="intro">
+      <p class="eyebrow" data-en="EXPLORE THE VILLAGE" data-es="EXPLORA LA ALDEA">EXPLORE THE VILLAGE</p>
+      <h1 data-en="Your next step lives here." data-es="Tu próximo paso vive aquí.">Your next step lives here.</h1>
+      <p class="lede" data-en="Tap a destination to discover practical AI learning, support, and workforce pathways." data-es="Toca un destino para descubrir aprendizaje práctico de IA, apoyo y rutas laborales.">Tap a destination to discover practical AI learning, support, and workforce pathways.</p>
+    </section>
+
+    <div class="ambient" aria-hidden="true">
+      <span class="walker w1"></span><span class="walker w2"></span><span class="walker w3"></span>
+      <span class="walker w4"></span><span class="walker w5"></span>
+      <span class="deer d1"></span><span class="deer d2"></span>
+    </div>
+
+    <div class="hotspots">
+      <button class="hotspot hs-learn" data-key="learn" type="button"><span class="icon">▰</span><span data-en="Learn AI Skills" data-es="Aprender IA">Learn AI Skills</span><i></i></button>
+      <button class="hotspot hs-work" data-key="workforce" type="button"><span class="icon">▦</span><span data-en="Workforce Development" data-es="Desarrollo Laboral">Workforce Development</span><i></i></button>
+      <button class="hotspot hs-community" data-key="community" type="button"><span class="icon">●●</span><span data-en="Community Learning" data-es="Aprendizaje Comunitario">Community Learning</span><i></i></button>
+      <button class="hotspot hs-support" data-key="support" type="button"><span class="icon">•••</span><span data-en="Guided Support" data-es="Apoyo Guiado">Guided Support</span><i></i></button>
+      <button class="hotspot hs-planner active" data-key="planner" type="button"><span class="icon">◇</span><span data-en="Guided Planner" data-es="Planificador Guiado">Guided Planner</span><i></i></button>
+      <button class="hotspot hs-family" data-key="family" type="button"><span class="icon">●●</span><span data-en="Family Learning" data-es="Aprendizaje Familiar">Family Learning</span><i></i></button>
+      <button class="hotspot hs-consult" data-key="consultation" type="button"><span class="icon">◌</span><span data-en="Consultation" data-es="Consulta">Consultation</span><i></i></button>
+    </div>
+
+    <div class="hint" data-en="Tap a destination to continue." data-es="Toca un destino para continuar.">Tap a destination to continue.</div>
+  </main>
+
+  <aside class="sheet open" id="sheet" aria-live="polite">
+    <button class="sheet-close" id="sheetClose" type="button" aria-label="Close details">×</button>
+    <div class="sheet-mark" id="sheetMark">◇</div>
+    <div class="sheet-copy">
+      <small id="sheetKicker">GUIDED PLANNER</small>
+      <h2 id="sheetTitle">Plan Your Next Step</h2>
+      <p id="sheetText">Get a structured plan for education, workforce, or community goals.</p>
+      <a class="sheet-cta" id="sheetLink" href="mentor.html">Open Guided Planner <span aria-hidden="true">→</span></a>
+    </div>
+  </aside>
+
+  <script src="assets/village.js?v=20260927-village-1" defer></script>
+</body>
+</html>
