@@ -21,8 +21,8 @@
   let ctx=null;
   let stars=[];
   let cw=0,ch=0,dpr=1;
-  const STAR_COUNT=mobile?250:620;
-  const STAR_FPS=mobile?40:60;
+  const STAR_COUNT=mobile?750:1860;
+  const STAR_FPS=mobile?45:60;
   const launchStarted=performance.now();
 
   const goalCopy={
@@ -164,13 +164,13 @@
     const cx=cw*(mobile?.56:.59);
     const cy=ch*(mobile?.53:.52);
 
-    // Hyperspace ramp: begin cinematic, then build into a stronger forward rush.
+    // Strong hyperspace ramp: accelerate rapidly toward the central light.
     const elapsed=Math.max(0,time-launchStarted);
-    const launch=smoothstep(450,3200,elapsed);
-    const heroPresence=clamp(1-scrollProgress*4.6,0,1);
-    const intensity=.82 + launch*1.55*heroPresence + heroPresence*.34;
+    const launch=smoothstep(180,2200,elapsed);
+    const heroPresence=clamp(1-scrollProgress*4.8,0,1);
+    const intensity=1.05 + heroPresence*1.1 + launch*2.75*heroPresence;
 
-    const baseSpeed=mobile?5.8:8.4;
+    const baseSpeed=mobile?6.6:9.4;
     const speed=staticOnly?0:baseSpeed*intensity;
 
     ctx.fillStyle="#07111f";
@@ -185,21 +185,27 @@
     ctx.fillRect(0,0,cw,ch);
 
     for(const s of stars){
-      const depthBefore=clamp(1-s.z/(cw*1.4),0,1);
-      const layerSpeed=s.layer===0?.72:(s.layer===1?1.08:1.58);
-      const approachBoost=.72+depthBefore*2.35;
+      const depthBefore=clamp(1-s.z/(cw*1.45),0,1);
+      const layerSpeed=s.layer===0?.85:(s.layer===1?1.35:2.15);
+      const approachBoost=.95+depthBefore*3.6;
       const step=staticOnly?0:speed*layerSpeed*approachBoost;
 
       s.pz=s.z;
       if(!staticOnly)s.z-=step;
+
+      // Pull stars toward the vanishing point as they accelerate into the light.
+      const pull=(0.0008 + depthBefore*0.0038 + intensity*0.0009) * (s.layer===2?1.3:1);
+      s.x*=1-pull;
+      s.y*=1-pull;
+
       if(s.z<2){
         resetStar(s,false);
-        s.z=cw*1.15;
-        s.pz=s.z+step*5;
+        s.z=cw*1.2;
+        s.pz=s.z+step*7;
       }
 
-      const depth=clamp(1-s.z/(cw*1.4),0,1);
-      const trailBoost=1.4 + intensity*1.9 + depth*5.6 + s.layer*.8;
+      const depth=clamp(1-s.z/(cw*1.45),0,1);
+      const trailBoost=2.2 + intensity*3.1 + depth*8.2 + s.layer*1.15;
       const tailZ=s.z + Math.max(1,step)*trailBoost;
 
       const sx=cx+(s.x/s.z)*cw;
@@ -211,8 +217,8 @@
         continue;
       }
 
-      const twinkle=.88+.12*Math.sin(time*.003+s.twinkle);
-      const alpha=clamp(s.alpha*(.3+depth*1.02)*twinkle,0,1);
+      const twinkle=.9+.14*Math.sin(time*.0032+s.twinkle);
+      const alpha=clamp(s.alpha*(.36+depth*1.25)*(1+intensity*.08)*twinkle,0,1);
       let color;
       if(s.kind===2)color="rgba(248,198,88,"+alpha.toFixed(3)+")";
       else if(s.kind===1)color="rgba(76,165,255,"+alpha.toFixed(3)+")";
@@ -220,15 +226,15 @@
 
       ctx.strokeStyle=color;
       ctx.lineCap="round";
-      ctx.lineWidth=Math.max(.42,s.size*(.38+depth*1.75)*(1+intensity*.08));
+      ctx.lineWidth=Math.max(.5,s.size*(.46+depth*2.15)*(1+intensity*.14));
       ctx.beginPath();
       ctx.moveTo(px,py);
       ctx.lineTo(sx,sy);
       ctx.stroke();
 
       // Closest stars flare as they rush by, creating a true hyperspace pass.
-      if(depth>.62 || s.layer===2){
-        const flareSize=Math.min(4.4,s.size*(.62+depth*1.65));
+      if(depth>.55 || s.layer===2){
+        const flareSize=Math.min(6.2,s.size*(.8+depth*2.2)*(s.layer===2?1.18:1));
         ctx.fillStyle=color;
         ctx.beginPath();
         ctx.arc(sx,sy,flareSize,0,Math.PI*2);
@@ -237,11 +243,12 @@
     }
 
     if(!staticOnly){
-      const flareRadius=Math.min(cw,ch)*(.10+intensity*.025);
+      const flareRadius=Math.min(cw,ch)*(.13+intensity*.07);
       const flare=ctx.createRadialGradient(cx,cy,0,cx,cy,flareRadius);
-      flare.addColorStop(0,"rgba(255,229,164,"+clamp(.22+intensity*.11,.22,.58).toFixed(3)+")");
-      flare.addColorStop(.22,"rgba(240,196,95,"+clamp(.10+intensity*.045,.10,.24).toFixed(3)+")");
-      flare.addColorStop(.48,"rgba(63,151,255,"+clamp(.07+intensity*.035,.07,.18).toFixed(3)+")");
+      flare.addColorStop(0,"rgba(255,245,215,"+clamp(.34+intensity*.16,.34,.92).toFixed(3)+")");
+      flare.addColorStop(.12,"rgba(255,223,145,"+clamp(.24+intensity*.11,.24,.62).toFixed(3)+")");
+      flare.addColorStop(.28,"rgba(240,196,95,"+clamp(.14+intensity*.08,.14,.34).toFixed(3)+")");
+      flare.addColorStop(.52,"rgba(63,151,255,"+clamp(.08+intensity*.05,.08,.24).toFixed(3)+")");
       flare.addColorStop(1,"rgba(0,0,0,0)");
       ctx.fillStyle=flare;
       ctx.fillRect(0,0,cw,ch);
