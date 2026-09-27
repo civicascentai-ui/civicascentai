@@ -17,6 +17,8 @@ The complete prior site state is frozen at:
 - Webflow — approved design/reference/implementation tool for interaction research, motion ideas, layout inspiration, staging, and future production experiments.
 - Framer — approved design/reference/prototyping tool for cinematic motion, transitions, immersive storytelling, advanced interactions, and rapid concept exploration.
 - Google Stitch — approved suggested design/UX ideation and prototyping reference, subject to the zero-fee rule.
+- GSAP — approved motion/animation toolkit for scroll-driven transitions, camera-like sequencing, morphing, timeline control, and cinematic choreography.
+- Three.js — approved real-time 3D/WebGL toolkit for interactive environments, depth, particles, spatial scenes, and visual AI demonstrations.
 - UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
 
 ## Core UX rule
@@ -29,8 +31,19 @@ Every cinematic moment must still make the next action obvious to someone who is
 6. Provide clear progress and next-step guidance.
 7. Design mobile-first and test mobile behavior before presentation.
 8. Visual spectacle must never come at the cost of clarity.
-9. Every hotspot must lead to a purposeful, flowing experience with pertinent information.
+9. Every interaction must lead to a purposeful, flowing experience with pertinent information.
 10. UX review is required before any module is considered complete.
+
+## Visual interaction rule
+Primary interactions must feel like part of the cinematic world, not like ordinary website buttons or pill-shaped hotspot labels.
+1. Prefer environmental interaction: glowing objects, moving light, animated surfaces, portals, doors, screens, pathways, characters, spatial cues, and camera travel.
+2. A user should feel like they are entering or affecting a scene, not clicking a floating UI sticker.
+3. Text labels may support an interaction, but the visual object/scene must carry the experience.
+4. Clicking or tapping should trigger a visible transformation, transition, reveal, camera move, or guided sequence whenever practical.
+5. Hotspots should be discovered through motion, lighting, depth, or environmental behavior instead of boxed callouts.
+6. Mobile interactions must remain obvious and touch-friendly without reverting to cluttered cards.
+7. Use progressive disclosure so only the right amount of information appears at each moment.
+8. Each interaction should show an AI capability in action before explaining it.
 
 ## Zero-fee add-on rule
 CivicAscent AI must use NO-FEE add-ons by default.
@@ -40,6 +53,22 @@ CivicAscent AI must use NO-FEE add-ons by default.
 4. If a feature would create a new charge, stop and surface the cost before implementation.
 5. Existing paid tools the user already has may be used only when they do not create additional charges beyond the existing plan.
 6. Do not use credit-consuming services when a no-fee path can meet the need.
+
+## GSAP role
+GSAP may be used to:
+1. Choreograph scene transitions and scroll-driven storytelling.
+2. Coordinate camera-like movement, fades, reveals, zooms, and object motion.
+3. Animate SVG, text, DOM, and Three.js properties in a controlled timeline.
+4. Replace abrupt section changes with fluid cinematic sequencing.
+5. Support reduced-motion fallbacks for accessibility.
+
+## Three.js role
+Three.js may be used to:
+1. Build spatial 3D scenes and real-time visual environments.
+2. Create interactive AI demonstrations using depth, particles, lighting, and camera movement.
+3. Turn visual objects into experiential navigation instead of standard hotspot buttons.
+4. Add cinematic backgrounds and responsive 3D elements while maintaining performance budgets.
+5. Work with GSAP for controlled scene choreography.
 
 ## Webflow role
 Webflow may be used to:
@@ -65,7 +94,7 @@ Google Stitch may be used to:
 4. Support rapid experimentation when it stays within a no-fee path.
 5. Serve as a reference source only; any final CivicAscent AI implementation must remain original and pass the project UX/testing rules.
 
-Webflow, Framer, and Google Stitch are reference and implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+Webflow, Framer, Google Stitch, GSAP, and Three.js are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
@@ -81,11 +110,12 @@ The current ASTRA6 implementation remains scaffold-only until a supported remote
 Nothing is presented as a preview, test build, module, or completed experience until the exact rendered version has been verified. Before presentation:
 1. Confirm the intended build/branch is actually being served.
 2. Inspect the rendered page visually.
-3. Test primary navigation, hotspots, buttons, and routes.
+3. Test primary navigation, interactions, buttons, and routes.
 4. Check mobile behavior and readability.
 5. Confirm the visual changes requested are actually visible.
 6. Complete UX review for clarity, flow, accessibility, and next-step guidance.
-7. Present only after those checks pass.
+7. Run a page-screen test after each true build and use it as the visual reference for review.
+8. Present only after those checks pass.
 
 ## Rebuild rule
 Do not modify the archive branch. Build the new CivicAscent AI experience here, then review and test before replacing production.
