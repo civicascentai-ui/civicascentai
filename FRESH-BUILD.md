@@ -16,6 +16,7 @@ The complete prior site state is frozen at:
 - Bilingual capability — English/Spanish remains part of the product direction.
 - Webflow — approved design/reference/implementation tool for interaction research, motion ideas, layout inspiration, staging, and future production experiments.
 - Framer — approved design/reference/prototyping tool for cinematic motion, transitions, immersive storytelling, advanced interactions, and rapid concept exploration.
+- Google Stitch — approved suggested design/UX ideation and prototyping reference, subject to the zero-fee rule.
 - UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
 
 ## Core UX rule
@@ -56,7 +57,15 @@ Framer may be used to:
 4. Test alternate visual directions before committing them to the core build.
 5. Serve as an inspiration/reference source for interaction ideas while preserving original CivicAscent AI design language.
 
-Webflow and Framer are reference and implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+## Google Stitch role
+Google Stitch may be used to:
+1. Generate and compare early UI/UX directions.
+2. Explore layouts and interface ideas before implementation.
+3. Translate prompts or screenshots into design concepts for discussion.
+4. Support rapid experimentation when it stays within a no-fee path.
+5. Serve as a reference source only; any final CivicAscent AI implementation must remain original and pass the project UX/testing rules.
+
+Webflow, Framer, and Google Stitch are reference and implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
