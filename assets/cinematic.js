@@ -21,8 +21,9 @@
   let ctx=null;
   let stars=[];
   let cw=0,ch=0,dpr=1;
-  const STAR_COUNT=mobile?150:320;
-  const STAR_FPS=mobile?30:55;
+  const STAR_COUNT=mobile?250:620;
+  const STAR_FPS=mobile?40:60;
+  const launchStarted=performance.now();
 
   const goalCopy={
     everyday:{en:"Plan, compare options, organize information, draft messages and turn a confusing task into clear steps.",es:"Planifica, compara opciones, organiza información, redacta mensajes y convierte una tarea confusa en pasos claros."},
@@ -125,15 +126,22 @@
   }
 
   function resetStar(s,far){
-    const spread=mobile?1.12:1.35;
+    const spread=mobile?1.18:1.42;
     s.x=(Math.random()-.5)*cw*spread;
     s.y=(Math.random()-.5)*ch*spread;
-    s.z=far?(Math.random()*cw+cw*.35):cw;
-    s.pz=s.z+20;
-    const r=Math.random();
-    s.kind=r<.12?2:(r<.42?1:0);
-    s.alpha=.22+Math.random()*.72;
-    s.size=.55+Math.random()*1.7;
+    s.z=far?(Math.random()*cw*1.2+cw*.2):cw*1.15;
+    s.pz=s.z+30;
+
+    const layerRoll=Math.random();
+    s.layer=layerRoll<.56?0:(layerRoll<.87?1:2); // far / mid / near
+    const colorRoll=Math.random();
+    s.kind=colorRoll<.14?2:(colorRoll<.46?1:0); // gold / blue / white
+
+    const layerSize=s.layer===0?.7:(s.layer===1?1.15:1.75);
+    const layerAlpha=s.layer===0?.64:(s.layer===1?.82:1);
+    s.alpha=(.26+Math.random()*.7)*layerAlpha;
+    s.size=(.5+Math.random()*1.55)*layerSize;
+    s.twinkle=Math.random()*Math.PI*2;
   }
 
   function setupStars(){
@@ -155,9 +163,16 @@
     if(!ctx)return;
     const cx=cw*(mobile?.56:.59);
     const cy=ch*(mobile?.53:.52);
-    const baseSpeed=mobile?5.2:7.6;
-    const heroBoost=1+Math.max(0,1-scrollProgress*5)*1.65;
-    const speed=staticOnly?0:baseSpeed*heroBoost;
+
+    // Hyperspace ramp: begin cinematic, then build into a stronger forward rush.
+    const elapsed=Math.max(0,time-launchStarted);
+    const launch=smoothstep(450,3200,elapsed);
+    const heroPresence=clamp(1-scrollProgress*4.6,0,1);
+    const intensity=.82 + launch*1.55*heroPresence + heroPresence*.34;
+
+    const baseSpeed=mobile?5.8:8.4;
+    const speed=staticOnly?0:baseSpeed*intensity;
+
     ctx.fillStyle="#07111f";
     ctx.fillRect(0,0,cw,ch);
 
@@ -170,41 +185,63 @@
     ctx.fillRect(0,0,cw,ch);
 
     for(const s of stars){
+      const depthBefore=clamp(1-s.z/(cw*1.4),0,1);
+      const layerSpeed=s.layer===0?.72:(s.layer===1?1.08:1.58);
+      const approachBoost=.72+depthBefore*2.35;
+      const step=staticOnly?0:speed*layerSpeed*approachBoost;
+
       s.pz=s.z;
-      if(!staticOnly)s.z-=speed;
-      if(s.z<2){resetStar(s,false);s.z=cw;s.pz=s.z+speed*3}
+      if(!staticOnly)s.z-=step;
+      if(s.z<2){
+        resetStar(s,false);
+        s.z=cw*1.15;
+        s.pz=s.z+step*5;
+      }
+
+      const depth=clamp(1-s.z/(cw*1.4),0,1);
+      const trailBoost=1.4 + intensity*1.9 + depth*5.6 + s.layer*.8;
+      const tailZ=s.z + Math.max(1,step)*trailBoost;
+
       const sx=cx+(s.x/s.z)*cw;
       const sy=cy+(s.y/s.z)*cw;
-      const px=cx+(s.x/s.pz)*cw;
-      const py=cy+(s.y/s.pz)*cw;
-      if(sx<-80||sx>cw+80||sy<-80||sy>ch+80){resetStar(s,false);continue}
+      const px=cx+(s.x/tailZ)*cw;
+      const py=cy+(s.y/tailZ)*cw;
+      if(sx<-110||sx>cw+110||sy<-110||sy>ch+110){
+        resetStar(s,false);
+        continue;
+      }
 
-      const depth=clamp(1-s.z/(cw*1.35),0,1);
-      const alpha=s.alpha*(.35+depth*.85);
+      const twinkle=.88+.12*Math.sin(time*.003+s.twinkle);
+      const alpha=clamp(s.alpha*(.3+depth*1.02)*twinkle,0,1);
       let color;
-      if(s.kind===2)color="rgba(244,194,84,"+alpha.toFixed(3)+")";
-      else if(s.kind===1)color="rgba(86,164,255,"+alpha.toFixed(3)+")";
-      else color="rgba(235,243,255,"+alpha.toFixed(3)+")";
+      if(s.kind===2)color="rgba(248,198,88,"+alpha.toFixed(3)+")";
+      else if(s.kind===1)color="rgba(76,165,255,"+alpha.toFixed(3)+")";
+      else color="rgba(238,246,255,"+alpha.toFixed(3)+")";
 
       ctx.strokeStyle=color;
-      ctx.lineWidth=Math.max(.45,s.size*(.45+depth*1.25));
+      ctx.lineCap="round";
+      ctx.lineWidth=Math.max(.42,s.size*(.38+depth*1.75)*(1+intensity*.08));
       ctx.beginPath();
       ctx.moveTo(px,py);
       ctx.lineTo(sx,sy);
       ctx.stroke();
 
-      if(depth>.72){
+      // Closest stars flare as they rush by, creating a true hyperspace pass.
+      if(depth>.62 || s.layer===2){
+        const flareSize=Math.min(4.4,s.size*(.62+depth*1.65));
         ctx.fillStyle=color;
         ctx.beginPath();
-        ctx.arc(sx,sy,Math.min(2.4,s.size*(.7+depth)),0,Math.PI*2);
+        ctx.arc(sx,sy,flareSize,0,Math.PI*2);
         ctx.fill();
       }
     }
 
     if(!staticOnly){
-      const flare=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.min(cw,ch)*.12);
-      flare.addColorStop(0,"rgba(255,224,154,.34)");
-      flare.addColorStop(.3,"rgba(77,154,255,.12)");
+      const flareRadius=Math.min(cw,ch)*(.10+intensity*.025);
+      const flare=ctx.createRadialGradient(cx,cy,0,cx,cy,flareRadius);
+      flare.addColorStop(0,"rgba(255,229,164,"+clamp(.22+intensity*.11,.22,.58).toFixed(3)+")");
+      flare.addColorStop(.22,"rgba(240,196,95,"+clamp(.10+intensity*.045,.10,.24).toFixed(3)+")");
+      flare.addColorStop(.48,"rgba(63,151,255,"+clamp(.07+intensity*.035,.07,.18).toFixed(3)+")");
       flare.addColorStop(1,"rgba(0,0,0,0)");
       ctx.fillStyle=flare;
       ctx.fillRect(0,0,cw,ch);
