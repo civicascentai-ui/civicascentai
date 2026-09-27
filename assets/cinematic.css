@@ -84,7 +84,7 @@ button,a{-webkit-tap-highlight-color:transparent}
   cursor:pointer
 }
 .control:hover{border-color:rgba(214,168,75,.52)}
-.menu-toggle{display:none}
+.menu-toggle{display:inline-flex;align-items:center}
 
 .menu{
   position:fixed;inset:0;z-index:680;background:rgba(15,18,24,.97);
