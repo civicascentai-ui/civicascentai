@@ -19,7 +19,7 @@
     community:{mark:"●●",en:{k:"COMMUNITY LEARNING",t:"Learn together",d:"Find beginner-friendly programs for adults, families, community organizations and lifelong learners.",c:"Explore programs",u:"programs.html"},es:{k:"APRENDIZAJE COMUNITARIO",t:"Aprendan juntos",d:"Encuentra programas accesibles para adultos, familias, organizaciones comunitarias y aprendizaje continuo.",c:"Explorar programas",u:"programs.html"}},
     support:{mark:"•••",en:{k:"GUIDED SUPPORT",t:"Get help choosing a path",d:"Use CivicAscent support to identify the right next step and turn a broad goal into an actionable learning path.",c:"Request support",u:"consultation.html"},es:{k:"APOYO GUIADO",t:"Obtén ayuda para elegir una ruta",d:"Usa el apoyo de CivicAscent para convertir una meta amplia en un siguiente paso claro.",c:"Solicitar apoyo",u:"consultation.html"}},
     planner:{mark:"◇",en:{k:"GUIDED PLANNER",t:"Plan Your Next Step",d:"Get a structured plan for education, workforce, business or community goals.",c:"Open Guided Planner",u:"mentor.html"},es:{k:"PLANIFICADOR GUIADO",t:"Planifica tu próximo paso",d:"Obtén un plan estructurado para metas educativas, laborales, empresariales o comunitarias.",c:"Abrir Planificador",u:"mentor.html"}},
-    family:{mark:"●●",en:{k:"FAMILY LEARNING",t:"Build confidence together",d:"Explore approachable AI learning that supports multiple generations and different levels of digital confidence.",c:"Explore programs",u:"programs.html"},es:{k:"APRENDIZAJE FAMILIAR",t:"Desarrollen confianza juntos",d:"Explora aprendizaje accesible de IA para varias generaciones y distintos niveles de confianza digital.",c:"Explorar programas",u:"programs.html"}},
+    lab:{mark:"◎",en:{k:"LIVING AI LAB",t:"See what AI can do",d:"Enter four large, beginner-friendly demonstrations for images, voice, translation, and planning.",c:"Open Living AI Lab",u:"lab.html"},es:{k:"LABORATORIO DE IA",t:"Descubre lo que puede hacer la IA",d:"Entra a cuatro demostraciones grandes y claras de imágenes, voz, traducción y planificación.",c:"Abrir Laboratorio de IA",u:"lab.html"}},
     consultation:{mark:"◌",en:{k:"CONSULTATION",t:"Talk through your goal",d:"Plan a workshop, workforce program, community session or customized training engagement.",c:"Request a consultation",u:"consultation.html"},es:{k:"CONSULTA",t:"Conversemos sobre tu meta",d:"Planifica un taller, programa laboral, sesión comunitaria o capacitación personalizada.",c:"Solicitar consulta",u:"consultation.html"}}
   };
 
@@ -47,7 +47,7 @@
     kicker.textContent=l.k; title.textContent=l.t; text.textContent=l.d; link.textContent=l.c+" →"; link.href=l.u; mark.textContent=item.mark;
     if(open)sheet.classList.add("open");
   }
-  buttons.forEach(b=>b.addEventListener("click",()=>show(b.dataset.key,true)));
+  buttons.forEach(b=>b.addEventListener("click",()=>{if(b.dataset.key==="lab"){location.href="lab.html";return;}show(b.dataset.key,true)}));
   close.addEventListener("click",()=>sheet.classList.remove("open"));
 
   const count=matchMedia("(max-width:700px)").matches?22:44;
