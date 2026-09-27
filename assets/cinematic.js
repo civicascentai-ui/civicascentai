@@ -28,6 +28,8 @@
   const launchStarted=performance.now();
   let logoSequenceStarted=false;
   let logoSequenceFinished=false;
+  let introSequenceStarted=false;
+  let introSequenceFinished=false;
 
   const goalCopy={
     everyday:{en:"Plan, compare options, organize information, draft messages and turn a confusing task into clear steps.",es:"Planifica, compara opciones, organiza información, redacta mensajes y convierte una tarea confusa en pasos claros."},
@@ -170,16 +172,19 @@
 
     // Two-stage flight: first zoom gently into the starfield, then accelerate.
     const elapsed=Math.max(0,time-launchStarted);
-    const approach=smoothstep(250,3000,elapsed);
-    const launch=smoothstep(2700,7200,elapsed);
+    const approach=smoothstep(250,2600,elapsed);
+    const launch=smoothstep(2200,5600,elapsed);
+    const settle=smoothstep(6900,9200,elapsed);
     const heroPresence=clamp(1-scrollProgress*4.8,0,1);
 
-    // Establish the starfield slowly, then accelerate into a faster tunnel.
-    const speedMult=(.42 + approach*.16 + launch*1.78) * (.78 + heroPresence*.22);
+    // Start calm, accelerate hard for the showcase moment, then settle for reading.
+    const showcaseSpeed=.42 + approach*.18 + launch*2.15;
+    const ambientSpeed=.72;
+    const speedMult=(showcaseSpeed*(1-settle)+ambientSpeed*settle) * (.78 + heroPresence*.22);
     const baseSpeed=mobile?5.8:8.0;
     const speed=staticOnly?0:baseSpeed*speedMult;
 
-    const intensity=.58 + approach*.26 + launch*1.18*heroPresence;
+    const intensity=(.58 + approach*.26 + launch*1.28*heroPresence)*(1-settle*.45);
 
     ctx.fillStyle="#02050a";
     ctx.fillRect(0,0,cw,ch);
@@ -242,7 +247,7 @@
         const dx=sx-px;
         const dy=sy-py;
         const dist=Math.hypot(dx,dy)||1;
-        const streakFactor=clamp((depth-.28)/.72,0,1)*(approach*.32+launch*.92);
+        const streakFactor=clamp((depth-.28)/.72,0,1)*(approach*.30+launch*.96)*(1-settle*.72);
         const maxTrail=mobile?28:42;
         const trail=Math.min(maxTrail,dist*(.32+launch*.82)*streakFactor);
         if(trail>.7){
@@ -260,10 +265,10 @@
     }
 
     if(!staticOnly){
-      const flareRadius=Math.min(cw,ch)*(.035 + approach*.012 + launch*.025);
+      const flareRadius=Math.min(cw,ch)*(.035 + approach*.012 + launch*.025)*(1-settle*.58);
       const flare=ctx.createRadialGradient(cx,cy,0,cx,cy,flareRadius);
-      flare.addColorStop(0,"rgba(205,226,255,"+clamp(.04+approach*.03+launch*.12,.04,.18).toFixed(3)+")");
-      flare.addColorStop(.35,"rgba(86,154,242,"+clamp(.025+launch*.06,.025,.085).toFixed(3)+")");
+      flare.addColorStop(0,"rgba(205,226,255,"+clamp((.04+approach*.03+launch*.12)*(1-settle*.55),.025,.18).toFixed(3)+")");
+      flare.addColorStop(.35,"rgba(86,154,242,"+clamp((.025+launch*.06)*(1-settle*.55),.018,.085).toFixed(3)+")");
       flare.addColorStop(1,"rgba(0,0,0,0)");
       ctx.fillStyle=flare;
       ctx.fillRect(0,0,cw,ch);
@@ -297,17 +302,43 @@
     },1500);
   }
 
+  function showHeroImmediately(){
+    if(introSequenceFinished)return;
+    introSequenceStarted=true;
+    introSequenceFinished=true;
+    body.classList.remove("intro-pending","intro-revealing","logo-pending");
+    body.classList.add("intro-live","logo-header-live");
+    if(brand)brand.style.pointerEvents="auto";
+    if(logoReveal)logoReveal.classList.remove("logo-rush","logo-exit");
+  }
+
+  function startShowcaseReveal(){
+    if(introSequenceStarted||introSequenceFinished)return;
+    introSequenceStarted=true;
+
+    revealLogo();
+
+    // After the logo rushes forward, the message appears word-by-word.
+    setTimeout(()=>{
+      body.classList.add("intro-revealing");
+    },1080);
+
+    setTimeout(()=>{
+      body.classList.remove("intro-pending","intro-revealing");
+      body.classList.add("intro-live");
+      introSequenceFinished=true;
+    },2750);
+  }
+
   function frame(time){
     updateScenes();
 
     const flightElapsed=Math.max(0,time-launchStarted);
-    if(!logoSequenceStarted){
+    if(!introSequenceStarted){
       if(scrollProgress>.055){
-        body.classList.remove("logo-pending");
-        body.classList.add("logo-header-live");
-        logoSequenceFinished=true;
-      }else if(flightElapsed>4700){
-        revealLogo();
+        showHeroImmediately();
+      }else if(flightElapsed>5050){
+        startShowcaseReveal();
       }
     }
     if(reduced){
@@ -330,7 +361,7 @@
 
   setupStars();
   updateScenes();
-  if(reduced)revealLogo();
+  if(reduced)showHeroImmediately();
   if(!reduced)raf=requestAnimationFrame(frame);
   else drawStars(0,true);
 
