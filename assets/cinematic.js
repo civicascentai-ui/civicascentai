@@ -13,6 +13,8 @@
   const canvas=document.getElementById("fx");
   const goalButtons=[...document.querySelectorAll("[data-goal]")];
   const goalOutput=document.getElementById("goalOutput");
+  const logoReveal=document.getElementById("logoReveal");
+  const brand=document.querySelector(".brand");
 
   let activeIndex=0;
   let scrollProgress=0;
@@ -24,6 +26,8 @@
   const STAR_COUNT=mobile?750:1860;
   const STAR_FPS=mobile?45:60;
   const launchStarted=performance.now();
+  let logoSequenceStarted=false;
+  let logoSequenceFinished=false;
 
   const goalCopy={
     everyday:{en:"Plan, compare options, organize information, draft messages and turn a confusing task into clear steps.",es:"Planifica, compara opciones, organiza información, redacta mensajes y convierte una tarea confusa en pasos claros."},
@@ -266,8 +270,46 @@
     }
   }
 
+  function revealLogo(){
+    if(logoSequenceStarted||logoSequenceFinished)return;
+    logoSequenceStarted=true;
+
+    if(reduced||!logoReveal){
+      body.classList.remove("logo-pending");
+      body.classList.add("logo-header-live");
+      logoSequenceFinished=true;
+      return;
+    }
+
+    logoReveal.classList.add("logo-rush");
+
+    // Let the mark rush out of the tunnel, then transfer attention to the header.
+    setTimeout(()=>{
+      logoReveal.classList.add("logo-exit");
+      body.classList.remove("logo-pending");
+      body.classList.add("logo-header-live");
+      if(brand)brand.style.pointerEvents="auto";
+    },980);
+
+    setTimeout(()=>{
+      logoReveal.classList.remove("logo-rush","logo-exit");
+      logoSequenceFinished=true;
+    },1500);
+  }
+
   function frame(time){
     updateScenes();
+
+    const flightElapsed=Math.max(0,time-launchStarted);
+    if(!logoSequenceStarted){
+      if(scrollProgress>.055){
+        body.classList.remove("logo-pending");
+        body.classList.add("logo-header-live");
+        logoSequenceFinished=true;
+      }else if(flightElapsed>4700){
+        revealLogo();
+      }
+    }
     if(reduced){
       if(!lastStarFrame)drawStars(time,true);
       lastStarFrame=time;
@@ -288,6 +330,7 @@
 
   setupStars();
   updateScenes();
+  if(reduced)revealLogo();
   if(!reduced)raf=requestAnimationFrame(frame);
   else drawStars(0,true);
 
