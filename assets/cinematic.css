@@ -964,3 +964,43 @@ html,body{background:#02050a!important}
   .gh1{left:5%;top:55%}.gh2{right:4%;top:44%}.gh3{right:5%;top:66%}.gh4{left:6%;top:72%}
 }
 @media(prefers-reduced-motion:reduce){.gateway-hotspot{animation:none}.village-gateway>img{transition:none}}
+
+
+/* 8K page 1 finish — 20260927-page1-8k-1 */
+#fx{
+  image-rendering:auto;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+}
+.fx-wash{
+  background:
+    radial-gradient(circle at 50% 48%,rgba(75,126,208,.055),transparent 20%),
+    radial-gradient(circle at 50% 50%,rgba(12,35,68,.10),transparent 46%),
+    linear-gradient(180deg,rgba(2,5,10,.02),rgba(2,5,10,.12));
+  mix-blend-mode:screen;
+  opacity:.88;
+}
+.grain{opacity:.035!important}
+.hero-orbit{
+  opacity:.82;
+  filter:drop-shadow(0 0 34px rgba(92,157,255,.13));
+}
+.hero-title{
+  text-shadow:0 4px 28px rgba(0,0,0,.34),0 0 42px rgba(80,142,235,.08);
+}
+.hero-sub{
+  text-shadow:0 3px 20px rgba(0,0,0,.38);
+}
+.logo-reveal-core img{
+  filter:drop-shadow(0 0 28px rgba(92,157,255,.20));
+}
+@media(min-width:2560px){
+  .hero-content{max-width:min(1180px,72vw)}
+  .hero-title{font-size:clamp(5.8rem,8.2vw,11.5rem)}
+  .hero-sub{max-width:48rem;font-size:clamp(1.25rem,1.25vw,1.75rem)}
+  .hero-kicker{font-size:.84rem;letter-spacing:.19em}
+}
+@media(max-width:800px){
+  .fx-wash{opacity:.72}
+  .grain{opacity:.025!important}
+}
