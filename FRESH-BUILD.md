@@ -17,6 +17,15 @@ The complete prior site state is frozen at:
 - Webflow — approved design/reference/implementation tool for interaction research, motion ideas, layout inspiration, staging, and future production experiments.
 - Framer — approved design/reference/prototyping tool for cinematic motion, transitions, immersive storytelling, advanced interactions, and rapid concept exploration.
 
+## Zero-fee add-on rule
+CivicAscent AI must use NO-FEE add-ons by default.
+1. Do not add paid plugins, paid APIs, paid templates, paid libraries, paid hosting features, or recurring-cost services without explicit user approval.
+2. Prefer open-source, free-tier, self-hosted, or already-paid-for tools.
+3. If a free option has limits, verify those limits before relying on it.
+4. If a feature would create a new charge, stop and surface the cost before implementation.
+5. Existing paid tools the user already has may be used only when they do not create additional charges beyond the existing plan.
+6. Do not use credit-consuming services when a no-fee path can meet the need.
+
 ## Webflow role
 Webflow may be used to:
 1. Study advanced interaction, motion, and scrollytelling patterns.
