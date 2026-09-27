@@ -298,11 +298,9 @@ main{position:relative;z-index:2}
 .footer a:hover{color:var(--text)}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
 .reveal.visible{opacity:1;transform:none}
-.lang-es{display:none}
+.lang-es{display:none!important}
 body.es .lang-en{display:none!important}
-body.es .lang-es{display:initial}
-body.es .lang-es.block{display:block}
-body.es .lang-es.grid{display:grid}
+body.es .lang-es{display:revert!important}
 @media(max-width:1000px){
   .desktop-nav{display:none}
   .menu-toggle{display:inline-flex;align-items:center}
