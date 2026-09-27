@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#03101d"><meta name="description" content="CivicAscent AI Living AI Lab: four beginner-friendly interactive AI demonstrations.">
+<title>Living AI Lab | CivicAscent AI</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/experience.css?v=20260927-lab-1">
+</head><body>
+<a class="skip" href="#lab">Skip to AI lab</a>
+<header class="lab-top">
+  <a class="brand" href="index.html"><img src="assets/civicascent-logo.svg" alt=""><span>CivicAscent <b>AI</b></span></a>
+  <div class="top-actions"><button class="pill" id="labLang" type="button" aria-pressed="false">ES</button><a class="pill" href="village.html" style="text-decoration:none">VILLAGE</a></div>
+</header>
+<main class="lab-shell" id="lab">
+  <section class="lab-copy">
+    <p class="kicker" data-en="LIVING AI LAB" data-es="LABORATORIO DE IA">LIVING AI LAB</p>
+    <h1 data-en="Try AI step by step." data-es="Prueba la IA paso a paso.">Try AI step by step.</h1>
+    <p data-en="Choose a capability. You will hear a short guide, then a separate interactive window opens so you can see the idea in motion." data-es="Elige una capacidad. Escucharás una guía breve y luego se abrirá una ventana interactiva para ver la idea en movimiento.">Choose a capability. You will hear a short guide, then a separate interactive window opens so you can see the idea in motion.</p>
+  </section>
+  <section class="lab-stage" aria-label="Four interactive AI capability stations">
+    <div class="orbit o1" aria-hidden="true"></div><div class="orbit o2" aria-hidden="true"></div>
+    <button class="station s1" data-key="images" data-url="images.html" type="button">
+      <span class="holo img-holo" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="station-label"><strong data-en="Create Images" data-es="Crear imágenes">Create Images</strong><span data-en="Turn an idea into visual concepts." data-es="Convierte una idea en conceptos visuales.">Turn an idea into visual concepts.</span></span>
+    </button>
+    <button class="station s2" data-key="voice" data-url="voice.html" type="button">
+      <span class="holo voice-holo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <span class="station-label"><strong data-en="Use Your Voice" data-es="Usa tu voz">Use Your Voice</strong><span data-en="Speak naturally and get guided help." data-es="Habla naturalmente y recibe ayuda guiada.">Speak naturally and get guided help.</span></span>
+    </button>
+    <button class="station s3" data-key="translate" data-url="translate.html" type="button">
+      <span class="holo translate-holo" aria-hidden="true"><b>EN</b><b>ES</b></span>
+      <span class="station-label"><strong data-en="Translate Language" data-es="Traducir idiomas">Translate Language</strong><span data-en="Move between languages and simplify meaning." data-es="Cambia de idioma y simplifica el significado.">Move between languages and simplify meaning.</span></span>
+    </button>
+    <button class="station s4" data-key="plan" data-url="plan.html" type="button">
+      <span class="holo plan-holo" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="station-label"><strong data-en="Plan & Automate" data-es="Planificar y automatizar">Plan & Automate</strong><span data-en="Turn a goal into organized next steps." data-es="Convierte una meta en próximos pasos organizados.">Turn a goal into organized next steps.</span></span>
+    </button>
+  </section>
+  <p class="lab-note" data-en="Designed for beginners: large targets, plain language, slower narration, and no coding required." data-es="Diseñado para principiantes: áreas grandes, lenguaje claro, narración más lenta y sin necesidad de programar.">Designed for beginners: large targets, plain language, slower narration, and no coding required.</p>
+</main>
+<script>
+(function(){
+ const body=document.body,lang=document.getElementById('labLang');
+ const copy={
+  images:{en:'Create Images. Describe what you want to see, and AI can help turn your idea into a picture.',es:'Crear imágenes. Describe lo que quieres ver y la IA puede ayudarte a convertir tu idea en una imagen.'},
+  voice:{en:'Use Your Voice. Ask a question out loud and AI can help you work through the next step.',es:'Usa tu voz. Haz una pregunta en voz alta y la IA puede ayudarte con el siguiente paso.'},
+  translate:{en:'Translate Language. AI can help translate or simplify words while you review important meaning.',es:'Traducir idiomas. La IA puede ayudar a traducir o simplificar palabras mientras revisas el significado importante.'},
+  plan:{en:'Plan and Automate. AI can organize a goal into clear steps and repeatable workflows.',es:'Planificar y automatizar. La IA puede organizar una meta en pasos claros y flujos repetibles.'}
+ };
+ function es(){return body.classList.contains('es')}
+ function apply(){document.documentElement.lang=es()?'es':'en';document.querySelectorAll('[data-en]').forEach(el=>el.textContent=es()?el.dataset.es:el.dataset.en);lang.textContent=es()?'EN':'ES';lang.setAttribute('aria-pressed',String(es()))}
+ function voice(langCode){const all=speechSynthesis.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith(langCode));const pref=['Google','Microsoft','Samantha','Daniel','Monica','Jorge','Paulina'];all.sort((a,b)=>{const ai=pref.findIndex(n=>a.name.includes(n)),bi=pref.findIndex(n=>b.name.includes(n));return(ai<0?99:ai)-(bi<0?99:bi)});return all[0]||speechSynthesis.getVoices()[0]}
+ function speak(key){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(copy[key][es()?'es':'en']);u.lang=es()?'es-US':'en-US';u.rate=.82;u.pitch=.78;const v=voice(es()?'es':'en');if(v)u.voice=v;speechSynthesis.speak(u)}
+ lang.addEventListener('click',()=>{body.classList.toggle('es');apply()});
+ document.querySelectorAll('.station').forEach(btn=>btn.addEventListener('click',()=>{
+   const key=btn.dataset.key; speak(key);
+   const qs='?speak=1&lang='+(es()?'es':'en');
+   const w=window.open(btn.dataset.url+qs,'_blank','noopener');
+   if(!w) location.href=btn.dataset.url+qs;
+ }));
+ apply();
+})();
+</script>
+</body></html>
