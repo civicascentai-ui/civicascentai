@@ -2,6 +2,7 @@
   const doc = document.documentElement;
   const body = document.body;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const mobileLite = matchMedia("(max-width: 800px), (pointer: coarse)").matches;
   const chapters = [...document.querySelectorAll(".chapter")];
   const railLinks = [...document.querySelectorAll(".chapter-rail a")];
   const progress = document.getElementById("progress");
@@ -135,7 +136,7 @@
       const distance = Math.abs(viewportMid-center);
       if(distance<bestDistance){ bestDistance=distance; bestIndex=index; }
 
-      if(reduced){
+      if(reduced || mobileLite){
         chapter.style.setProperty("--scene-opacity","1");
         chapter.style.setProperty("--scene-blur","0px");
         chapter.style.setProperty("--scene-y","0px");
@@ -186,7 +187,7 @@
   }
 
   function initWebGL(){
-    if(!window.THREE || reduced) return false;
+    if(!window.THREE || reduced || mobileLite) return false;
 
     try{
       renderer = new THREE.WebGLRenderer({
@@ -390,7 +391,7 @@
     animationFrame=requestAnimationFrame(frame);
   }
 
-  if(!reduced && window.Lenis){
+  if(!reduced && !mobileLite && window.Lenis){
     lenis=new Lenis({
       duration:1.18,
       smoothWheel:true,
@@ -417,11 +418,11 @@
 
   addEventListener("resize",resizeWebGL,{passive:true});
   addEventListener("scroll",()=>{
-    if(reduced) updateScenes();
+    if(reduced || mobileLite) updateScenes();
   },{passive:true});
 
   document.addEventListener("visibilitychange",()=>{
-    if(reduced) return;
+    if(reduced || mobileLite) return;
     if(document.hidden && animationFrame){
       cancelAnimationFrame(animationFrame);
       animationFrame=0;
@@ -430,7 +431,7 @@
     }
   });
 
-  if(!reduced){
+  if(!reduced && !mobileLite){
     animationFrame=requestAnimationFrame(frame);
   }
 
