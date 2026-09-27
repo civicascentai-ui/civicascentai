@@ -23,8 +23,23 @@
   let ctx=null;
   let stars=[];
   let cw=0,ch=0,dpr=1;
-  const STAR_COUNT=mobile?750:1860;
-  const STAR_FPS=mobile?45:60;
+  let starCount=mobile?900:2200;
+  let starFps=mobile?45:60;
+  const MAX_RENDER_PIXELS=7680*4320; // 8K ceiling for the backing canvas
+
+  function chooseRenderProfile(){
+    const cssPixels=Math.max(1,cw*ch);
+    const deviceDpr=Math.max(1,window.devicePixelRatio||1);
+    const dprCap=Math.sqrt(MAX_RENDER_PIXELS/cssPixels);
+    const qualityCap=mobile?1.55:2.15;
+    dpr=Math.max(1,Math.min(deviceDpr,qualityCap,dprCap));
+
+    const areaScale=Math.sqrt(cssPixels/(1920*1080));
+    starCount=Math.round((mobile?900:2200)*Math.min(1.65,Math.max(.82,areaScale)));
+
+    const physicalPixels=cssPixels*dpr*dpr;
+    starFps=physicalPixels>24000000?30:(physicalPixels>12000000?45:(mobile?45:60));
+  }
   const launchStarted=performance.now();
   let logoSequenceStarted=false;
   let logoSequenceFinished=false;
@@ -154,15 +169,17 @@
   function setupStars(){
     if(!canvas)return;
     ctx=canvas.getContext("2d",{alpha:false});
-    dpr=Math.min(window.devicePixelRatio||1,mobile?1.35:1.7);
     cw=Math.max(1,innerWidth);
     ch=Math.max(1,innerHeight);
+    chooseRenderProfile();
     canvas.width=Math.round(cw*dpr);
     canvas.height=Math.round(ch*dpr);
     canvas.style.width=cw+"px";
     canvas.style.height=ch+"px";
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    stars=Array.from({length:STAR_COUNT},()=>{const s={};resetStar(s,true);return s});
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality="high";
+    stars=Array.from({length:starCount},()=>{const s={};resetStar(s,true);return s});
     drawStars(0,true);
   }
 
@@ -349,7 +366,7 @@
       lastStarFrame=time;
       return;
     }
-    const minDelta=1000/STAR_FPS;
+    const minDelta=1000/starFps;
     if(time-lastStarFrame>=minDelta){
       drawStars(time,false);
       lastStarFrame=time;
