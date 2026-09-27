@@ -15,6 +15,7 @@ The complete prior site state is frozen at:
 - Accessibility and older-user readability — required design constraints.
 - Bilingual capability — English/Spanish remains part of the product direction.
 - Webflow — approved design/reference/implementation tool for interaction research, motion ideas, layout inspiration, staging, and future production experiments.
+- Framer — approved design/reference/prototyping tool for cinematic motion, transitions, immersive storytelling, advanced interactions, and rapid concept exploration.
 
 ## Webflow role
 Webflow may be used to:
@@ -24,15 +25,23 @@ Webflow may be used to:
 4. Stage experimental versions before production.
 5. Help translate approved design concepts into maintainable site behavior.
 
-Webflow is a reference and implementation resource, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+## Framer role
+Framer may be used to:
+1. Explore high-polish cinematic interaction patterns.
+2. Prototype motion, transitions, and responsive scene changes quickly.
+3. Study modern landing-page storytelling and immersive navigation.
+4. Test alternate visual directions before committing them to the core build.
+5. Serve as an inspiration/reference source for interaction ideas while preserving original CivicAscent AI design language.
+
+Webflow and Framer are reference and implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
 1. Observe evidence.
 2. Define bounded objectives.
 3. Build focused experiments.
-4. Review before acceptance.
-5. Preserve verified lessons for reuse.
+4. Review evidence before acceptance.
+5. Preserve reviewed lessons for reuse.
 
 The current ASTRA6 implementation remains scaffold-only until a supported remote interface is available.
 
