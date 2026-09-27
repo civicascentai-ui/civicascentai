@@ -1004,3 +1004,37 @@ html,body{background:#02050a!important}
   .fx-wash{opacity:.72}
   .grain{opacity:.025!important}
 }
+
+
+/* Latest production WebGL depth layer — 20260927-page1-8k-webgl-1 */
+#webglFx{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  pointer-events:none;
+  opacity:0;
+  background:transparent;
+  transition:opacity .9s cubic-bezier(.2,.8,.2,1);
+}
+#fx{
+  z-index:1!important;
+  transition:opacity .8s ease;
+}
+body.intro-pending #webglFx,
+body.logo-pending #webglFx{
+  opacity:0;
+}
+body:not(.intro-pending):not(.logo-pending) #webglFx{
+  opacity:1;
+}
+body:not(.intro-pending):not(.logo-pending) #fx{
+  opacity:0;
+}
+.fx-wash{z-index:2!important}
+.grain{z-index:2!important}
+@media(prefers-reduced-motion:reduce){
+  #webglFx{display:none!important}
+  #fx{opacity:1!important}
+}
