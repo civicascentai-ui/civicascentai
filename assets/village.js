@@ -50,7 +50,7 @@
   buttons.forEach(b=>b.addEventListener("click",()=>show(b.dataset.key,true)));
   close.addEventListener("click",()=>sheet.classList.remove("open"));
 
-  const count=matchMedia("(max-width:700px)").matches?38:70;
+  const count=matchMedia("(max-width:700px)").matches?22:44;
   for(let i=0;i<count;i++){
     const f=document.createElement("span"); f.className="flake";
     const size=(Math.random()*3.6+1.2); f.style.width=size+"px"; f.style.height=size+"px";
