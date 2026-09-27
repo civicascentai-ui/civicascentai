@@ -10,16 +10,22 @@
   const menuToggle = document.getElementById("menuToggle");
   const menu = document.getElementById("menu");
   const canvas = document.getElementById("fx");
-  const ctx = canvas.getContext("2d",{alpha:false});
   const goalButtons = [...document.querySelectorAll("[data-goal]")];
   const goalOutput = document.getElementById("goalOutput");
 
-  let W = innerWidth, H = innerHeight, dpr = 1;
   let globalProgress = 0;
-  let raf = 0;
-  let lenis = null;
-  let lastTime = 0;
   let activeIndex = 0;
+  let lenis = null;
+  let animationFrame = 0;
+  let renderer = null;
+  let scene = null;
+  let camera = null;
+  let world = null;
+  let rings = [];
+  let particles = null;
+  let nodes = [];
+  let webglReady = false;
+  let lastTime = 0;
 
   const goalCopy = {
     everyday:{
@@ -41,6 +47,11 @@
   };
 
   function currentLang(){ return body.classList.contains("es") ? "es" : "en"; }
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+  function smoothstep(a,b,x){
+    const t = clamp((x-a)/(b-a),0,1);
+    return t*t*(3-2*t);
+  }
 
   function updateGoal(){
     if(!goalOutput) return;
@@ -56,6 +67,21 @@
       updateGoal();
     });
   });
+
+  function chapterLabel(chapter){
+    const en = chapter.dataset.labelEn || "";
+    const es = chapter.dataset.labelEs || en;
+    return currentLang()==="es" ? es : en;
+  }
+
+  function updateHUD(index){
+    activeIndex = Math.max(0,Math.min(chapters.length-1,index));
+    const chapter = chapters[activeIndex];
+    if(chapterName){
+      chapterName.textContent = String(activeIndex).padStart(2,"0")+" · "+chapterLabel(chapter);
+    }
+    railLinks.forEach((a,i)=>a.classList.toggle("active",i===activeIndex));
+  }
 
   function setLanguage(isEs){
     const y = scrollY;
@@ -80,6 +106,7 @@
     menu.setAttribute("aria-hidden","true");
     menuToggle.setAttribute("aria-expanded","false");
   }
+
   menuToggle.addEventListener("click",()=>{
     const open = !menu.classList.contains("open");
     menu.classList.toggle("open",open);
@@ -87,28 +114,9 @@
     menu.setAttribute("aria-hidden",String(!open));
     menuToggle.setAttribute("aria-expanded",String(open));
   });
+
   menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",closeMenu));
   addEventListener("keydown",e=>{ if(e.key==="Escape") closeMenu(); });
-
-  function chapterLabel(chapter){
-    const label = chapter.dataset.labelEn || "";
-    const labelEs = chapter.dataset.labelEs || label;
-    return currentLang()==="es" ? labelEs : label;
-  }
-
-  function updateHUD(index){
-    activeIndex = Math.max(0,Math.min(chapters.length-1,index));
-    const chapter = chapters[activeIndex];
-    if(chapterName) chapterName.textContent =
-      String(activeIndex).padStart(2,"0")+" · "+chapterLabel(chapter);
-    railLinks.forEach((a,i)=>a.classList.toggle("active",i===activeIndex));
-  }
-
-  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
-  function smoothstep(a,b,x){
-    const t = clamp((x-a)/(b-a),0,1);
-    return t*t*(3-2*t);
-  }
 
   function updateScenes(){
     const max = Math.max(1,doc.scrollHeight-innerHeight);
@@ -121,11 +129,11 @@
 
     chapters.forEach((chapter,index)=>{
       const start = chapter.offsetTop;
-      const length = chapter.offsetHeight - innerHeight;
-      const local = length > 0 ? clamp((scrollY-start)/length,0,1) : 0;
+      const length = chapter.offsetHeight-innerHeight;
+      const local = length>0 ? clamp((scrollY-start)/length,0,1) : 0;
       const center = start + chapter.offsetHeight*.5;
       const distance = Math.abs(viewportMid-center);
-      if(distance < bestDistance){ bestDistance=distance; bestIndex=index; }
+      if(distance<bestDistance){ bestDistance=distance; bestIndex=index; }
 
       if(reduced){
         chapter.style.setProperty("--scene-opacity","1");
@@ -135,177 +143,296 @@
         return;
       }
 
-      const fadeIn = smoothstep(0.02,.2,local);
-      const fadeOut = 1-smoothstep(.72,.96,local);
+      const fadeIn = smoothstep(.015,.19,local);
+      const fadeOut = 1-smoothstep(.71,.955,local);
       const opacity = clamp(fadeIn*fadeOut,0,1);
-      const y = (1-fadeIn)*38 - (1-fadeOut)*34;
-      const scale = .965 + opacity*.035;
-      const blur = (1-opacity)*10;
+      const y = (1-fadeIn)*46-(1-fadeOut)*44;
+      const scale = .95 + opacity*.05;
+      const blur = (1-opacity)*12;
 
       chapter.style.setProperty("--scene-opacity",opacity.toFixed(3));
+      chapter.style.setProperty("--scene-blur",blur.toFixed(2)+"px");
       chapter.style.setProperty("--scene-y",y.toFixed(2)+"px");
       chapter.style.setProperty("--scene-scale",scale.toFixed(4));
-      chapter.style.setProperty("--scene-blur",blur.toFixed(2)+"px");
 
       const title = chapter.querySelector(".title,.hero-title:not(.ghost)");
       if(title){
-        const t = clamp(local,0,1);
-        const titleScale = 1 + (t-.5)*.055;
-        const titleY = (t-.5)*-22;
+        const titleScale = .98 + local*.08;
+        const titleY = (local-.5)*-34;
         title.style.transform = "translate3d(0,"+titleY.toFixed(1)+"px,0) scale("+titleScale.toFixed(4)+")";
       }
+
       const bodyNode = chapter.querySelector(".scene-body");
       if(bodyNode){
-        bodyNode.style.transform = "translate3d(0,"+((.5-local)*24).toFixed(1)+"px,0)";
+        bodyNode.style.transform = "translate3d(0,"+((.5-local)*34).toFixed(1)+"px,0)";
       }
     });
 
     if(bestIndex!==activeIndex) updateHUD(bestIndex);
   }
 
-  function resize(){
-    W = innerWidth; H = innerHeight;
-    dpr = Math.min(devicePixelRatio||1,1.5);
-    canvas.width = Math.round(W*dpr);
-    canvas.height = Math.round(H*dpr);
-    canvas.style.width=W+"px";canvas.style.height=H+"px";
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-  }
-
-  function rand(n){
+  function seeded(n){
     const x = Math.sin(n*12.9898+78.233)*43758.5453;
     return x-Math.floor(x);
   }
 
-  function drawBackground(time){
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.fillStyle="#050507";
-    ctx.fillRect(0,0,W,H);
+  function makeCircleGeometry(radius, segments){
+    const points = [];
+    for(let i=0;i<segments;i++){
+      const a=(i/segments)*Math.PI*2;
+      points.push(new THREE.Vector3(Math.cos(a)*radius,Math.sin(a)*radius,0));
+    }
+    return new THREE.BufferGeometry().setFromPoints(points);
+  }
 
-    const mobile=W<760;
-    const cx = mobile ? W*.54 : W*.73;
-    const cy = H*.49;
-    const drift = reduced ? 0 : Math.sin(time*.00012)*9;
-    const phase = globalProgress*Math.PI*5.5 + (reduced ? 0 : time*.00006);
+  function initWebGL(){
+    if(!window.THREE || reduced) return false;
 
-    // soft singularity halo
-    const halo=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.48);
-    halo.addColorStop(0,"rgba(214,168,75,.12)");
-    halo.addColorStop(.08,"rgba(214,168,75,.035)");
-    halo.addColorStop(.34,"rgba(45,53,70,.028)");
-    halo.addColorStop(1,"rgba(5,5,7,0)");
-    ctx.fillStyle=halo;ctx.fillRect(0,0,W,H);
-
-    // radiating circuit rays
-    ctx.lineWidth=.7;
-    for(let i=0;i<44;i++){
-      const angle=(i/44)*Math.PI*2 + phase*.07;
-      const inner=26 + (i%6)*8;
-      const outer=Math.max(W,H)*(.38 + (i%7)*.055);
-      const bend=(rand(i+3)-.5)*.28;
-      const a2=angle+bend;
-      const x1=cx+Math.cos(angle)*inner;
-      const y1=cy+Math.sin(angle)*inner;
-      const mx=cx+Math.cos(a2)*outer*.48;
-      const my=cy+Math.sin(a2)*outer*.48;
-      const x2=cx+Math.cos(a2)*outer;
-      const y2=cy+Math.sin(a2)*outer;
-      ctx.beginPath();
-      ctx.moveTo(x1,y1);
-      ctx.lineTo(mx,my);
-      if(i%3===0){
-        ctx.lineTo(mx + (i%2?22:-22), my);
+    try{
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: innerWidth>700,
+        alpha:false,
+        powerPreference:"high-performance"
+      });
+      renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+      renderer.setSize(innerWidth,innerHeight,false);
+      renderer.setClearColor(0x050507,1);
+      if("outputColorSpace" in renderer && THREE.SRGBColorSpace){
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
       }
-      ctx.lineTo(x2,y2);
-      ctx.strokeStyle="rgba(105,126,162,"+(0.025+(i%5)*.008)+")";
-      ctx.stroke();
-    }
 
-    // concentric field rings
-    for(let r=0;r<10;r++){
-      const rr=(70+r*Math.min(W,H)*.055)*(1+Math.sin(phase+r)*.007);
-      ctx.beginPath();
-      ctx.ellipse(cx+drift*.2,cy,rr,rr*.74,phase*.018,0,Math.PI*2);
-      ctx.strokeStyle="rgba(214,168,75,"+(r===0?.12:.026)+")";
-      ctx.lineWidth=r===0?1:.6;
-      ctx.stroke();
-    }
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x050507);
+      scene.fog = new THREE.FogExp2(0x050507,0.018);
 
-    // network nodes and links
-    const count=mobile?24:42;
-    const nodes=[];
-    for(let i=0;i<count;i++){
-      const a=rand(i*4+1)*Math.PI*2 + phase*.012;
-      const radius=Math.pow(rand(i*4+2),.72)*Math.max(W,H)*.46;
-      const x=cx+Math.cos(a)*radius + Math.sin(phase+i)*3;
-      const y=cy+Math.sin(a)*radius*.72 + Math.cos(phase*.8+i)*3;
-      nodes.push({x,y});
-      const alpha=.08+rand(i*4+3)*.18;
-      ctx.beginPath();ctx.arc(x,y,rand(i*4+4)*1.3+.4,0,Math.PI*2);
-      ctx.fillStyle="rgba(235,239,248,"+alpha+")";ctx.fill();
-    }
-    ctx.lineWidth=.55;
-    for(let i=0;i<nodes.length;i++){
-      for(let j=i+1;j<nodes.length;j++){
-        const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y;
-        const d=Math.hypot(dx,dy);
-        if(d<105){
-          ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);
-          ctx.strokeStyle="rgba(112,130,170,"+((1-d/105)*.07)+")";ctx.stroke();
+      camera = new THREE.PerspectiveCamera(54,innerWidth/innerHeight,.1,320);
+      camera.position.set(0,0,9);
+
+      world = new THREE.Group();
+      scene.add(world);
+
+      const gold = new THREE.Color(0xd6a84b);
+      const cool = new THREE.Color(0x768399);
+      const pale = new THREE.Color(0xe8e8e5);
+
+      // Long architectural tunnel built from real 3D rings.
+      for(let i=0;i<42;i++){
+        const radius = 3.5 + Math.sin(i*.72)*.38 + (i%5)*.04;
+        const geom = makeCircleGeometry(radius,96);
+        const material = new THREE.LineBasicMaterial({
+          color:i%5===0 ? gold : cool,
+          transparent:true,
+          opacity:i%5===0 ? .22 : .085,
+          depthWrite:false
+        });
+        const ring = new THREE.LineLoop(geom,material);
+        ring.position.z = -i*3.6;
+        ring.scale.x = 1.52 + Math.sin(i*.31)*.08;
+        ring.scale.y = .93 + Math.cos(i*.27)*.05;
+        ring.rotation.z = i*.035;
+        ring.rotation.x = Math.sin(i*.41)*.025;
+        world.add(ring);
+        rings.push(ring);
+      }
+
+      // Repeating circuit-like rails along the tunnel walls.
+      const railsMaterial = new THREE.LineBasicMaterial({
+        color:0x707f98,
+        transparent:true,
+        opacity:.075,
+        depthWrite:false
+      });
+      for(let rail=0;rail<26;rail++){
+        const side = rail%2===0 ? -1 : 1;
+        const y = (seeded(rail+10)-.5)*6.0;
+        const x = side*(4.7+seeded(rail+20)*3.8);
+        const verts = [];
+        for(let s=0;s<18;s++){
+          const z = 5-s*8.5-seeded(rail*31+s)*1.1;
+          const stepX = x + Math.sin(s*.8+rail)*.55;
+          const stepY = y + Math.cos(s*.55+rail)*.32;
+          verts.push(stepX,stepY,z);
+          if(s<17){
+            verts.push(stepX,stepY,z-5.2);
+          }
         }
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position",new THREE.Float32BufferAttribute(verts,3));
+        const line = new THREE.LineSegments(g,railsMaterial.clone());
+        world.add(line);
       }
+
+      // Sparse 3D network nodes.
+      const nodeGeometry = new THREE.SphereGeometry(.035,8,8);
+      const nodeMaterial = new THREE.MeshBasicMaterial({color:pale,transparent:true,opacity:.5});
+      for(let i=0;i<90;i++){
+        const node = new THREE.Mesh(nodeGeometry,nodeMaterial.clone());
+        const angle=seeded(i+100)*Math.PI*2;
+        const radius=4.2+seeded(i+200)*7;
+        node.position.set(
+          Math.cos(angle)*radius,
+          Math.sin(angle)*radius*.72,
+          4-seeded(i+300)*155
+        );
+        node.material.opacity=.12+seeded(i+400)*.45;
+        world.add(node);
+        nodes.push(node);
+      }
+
+      // Star/particle volume.
+      const particleCount = innerWidth<700 ? 650 : 1450;
+      const positions = new Float32Array(particleCount*3);
+      for(let i=0;i<particleCount;i++){
+        positions[i*3]=(seeded(i+501)-.5)*28;
+        positions[i*3+1]=(seeded(i+701)-.5)*18;
+        positions[i*3+2]=10-seeded(i+901)*175;
+      }
+      const pGeom = new THREE.BufferGeometry();
+      pGeom.setAttribute("position",new THREE.BufferAttribute(positions,3));
+      const pMat = new THREE.PointsMaterial({
+        color:0xe9e9e5,
+        size:innerWidth<700?.035:.045,
+        transparent:true,
+        opacity:.48,
+        depthWrite:false,
+        sizeAttenuation:true
+      });
+      particles = new THREE.Points(pGeom,pMat);
+      world.add(particles);
+
+      // Soft singularity core far ahead in the journey.
+      const coreGeom = new THREE.SphereGeometry(1.0,32,16);
+      const coreMat = new THREE.MeshBasicMaterial({
+        color:gold,
+        transparent:true,
+        opacity:.055,
+        depthWrite:false
+      });
+      const core = new THREE.Mesh(coreGeom,coreMat);
+      core.position.set(0,0,-138);
+      core.scale.set(1.5,1.0,.7);
+      world.add(core);
+
+      const haloGeom = new THREE.RingGeometry(1.5,1.56,96);
+      const haloMat = new THREE.MeshBasicMaterial({
+        color:gold,
+        side:THREE.DoubleSide,
+        transparent:true,
+        opacity:.22,
+        depthWrite:false
+      });
+      const halo = new THREE.Mesh(haloGeom,haloMat);
+      halo.position.set(0,0,-136.5);
+      world.add(halo);
+
+      webglReady=true;
+      return true;
+    }catch(err){
+      console.warn("WebGL initialization failed; content remains available.",err);
+      canvas.style.display="none";
+      webglReady=false;
+      return false;
+    }
+  }
+
+  function resizeWebGL(){
+    if(!webglReady) return;
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));
+    renderer.setSize(innerWidth,innerHeight,false);
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+  }
+
+  function renderWebGL(time){
+    if(!webglReady) return;
+
+    const p = globalProgress;
+    const travel = p*143;
+    camera.position.z = 9-travel;
+
+    // Slow camera drift creates parallax without disorienting the user.
+    camera.position.x = Math.sin(p*Math.PI*5.2)*.48 + Math.sin(time*.00019)*.08;
+    camera.position.y = Math.cos(p*Math.PI*3.7)*.26 + Math.cos(time*.00017)*.05;
+    camera.rotation.z = Math.sin(p*Math.PI*4)*.008;
+    camera.rotation.y = Math.sin(p*Math.PI*3)*.012;
+
+    const focusZ = camera.position.z-18;
+    camera.lookAt(
+      Math.sin(p*Math.PI*2.2)*.45,
+      Math.cos(p*Math.PI*1.9)*.18,
+      focusZ
+    );
+
+    world.rotation.z = Math.sin(time*.00008)*.012 + p*.04;
+
+    rings.forEach((ring,i)=>{
+      ring.rotation.z = i*.035 + time*.000018*(i%2===0?1:-1);
+      ring.material.opacity = (i%5===0?.20:.07) * (.88+.12*Math.sin(time*.0009+i));
+    });
+
+    if(particles){
+      particles.rotation.z = time*.00001;
+      particles.position.z = Math.sin(time*.00012)*.15;
     }
 
-    // tiny star field
-    for(let p=0;p<(mobile?50:95);p++){
-      const x=rand(p+200)*W;
-      const baseY=rand(p+400)*H;
-      const y=(baseY + globalProgress*H*(.18+(p%5)*.03))%H;
-      const pulse=reduced?1:(.45+.55*Math.sin(time*.0012+p));
-      ctx.fillStyle="rgba(255,255,255,"+(.03+rand(p+600)*.09*pulse)+")";
-      ctx.fillRect(x,y,1,1);
-    }
+    nodes.forEach((node,i)=>{
+      node.scale.setScalar(.8+.45*(.5+.5*Math.sin(time*.001+i)));
+    });
+
+    renderer.render(scene,camera);
   }
 
   function frame(time){
     lastTime=time;
     updateScenes();
-    drawBackground(time);
-    raf=requestAnimationFrame(frame);
+    renderWebGL(time);
+    animationFrame=requestAnimationFrame(frame);
   }
 
   if(!reduced && window.Lenis){
-    lenis = new Lenis({
-      duration:1.1,
+    lenis=new Lenis({
+      duration:1.18,
       smoothWheel:true,
-      wheelMultiplier:.92,
-      touchMultiplier:1.0
+      wheelMultiplier:.88,
+      touchMultiplier:1.02
     });
     function lenisRaf(time){
       lenis.raf(time);
       requestAnimationFrame(lenisRaf);
     }
     requestAnimationFrame(lenisRaf);
+
     railLinks.forEach((a,i)=>{
       a.addEventListener("click",e=>{
         e.preventDefault();
-        lenis.scrollTo(chapters[i],{offset:0,duration:1.15});
+        lenis.scrollTo(chapters[i],{offset:0,duration:1.25});
       });
     });
   }
 
-  addEventListener("resize",resize,{passive:true});
-  addEventListener("scroll",()=>{ if(reduced){ updateScenes();drawBackground(lastTime); } },{passive:true});
+  initWebGL();
+  updateScenes();
+  renderWebGL(0);
+
+  addEventListener("resize",resizeWebGL,{passive:true});
+  addEventListener("scroll",()=>{
+    if(reduced) updateScenes();
+  },{passive:true});
+
   document.addEventListener("visibilitychange",()=>{
     if(reduced) return;
-    if(document.hidden && raf){cancelAnimationFrame(raf);raf=0;}
-    else if(!document.hidden && !raf){raf=requestAnimationFrame(frame);}
+    if(document.hidden && animationFrame){
+      cancelAnimationFrame(animationFrame);
+      animationFrame=0;
+    }else if(!document.hidden && !animationFrame){
+      animationFrame=requestAnimationFrame(frame);
+    }
   });
 
-  resize();
-  updateScenes();
-  drawBackground(0);
-  if(!reduced) raf=requestAnimationFrame(frame);
+  if(!reduced){
+    animationFrame=requestAnimationFrame(frame);
+  }
 
   const year=document.getElementById("year");
   if(year) year.textContent=new Date().getFullYear();
