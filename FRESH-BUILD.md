@@ -16,6 +16,20 @@ The complete prior site state is frozen at:
 - Bilingual capability — English/Spanish remains part of the product direction.
 - Webflow — approved design/reference/implementation tool for interaction research, motion ideas, layout inspiration, staging, and future production experiments.
 - Framer — approved design/reference/prototyping tool for cinematic motion, transitions, immersive storytelling, advanced interactions, and rapid concept exploration.
+- UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
+
+## Core UX rule
+Every cinematic moment must still make the next action obvious to someone who is new to AI.
+1. One clear goal per scene.
+2. Keep visible choices limited and intentional.
+3. Use plain-language labels and obvious interaction cues.
+4. Maintain large, readable text and accessible controls.
+5. Keep interaction behavior consistent across the experience.
+6. Provide clear progress and next-step guidance.
+7. Design mobile-first and test mobile behavior before presentation.
+8. Visual spectacle must never come at the cost of clarity.
+9. Every hotspot must lead to a purposeful, flowing experience with pertinent information.
+10. UX review is required before any module is considered complete.
 
 ## Zero-fee add-on rule
 CivicAscent AI must use NO-FEE add-ons by default.
@@ -61,7 +75,8 @@ Nothing is presented as a preview, test build, module, or completed experience u
 3. Test primary navigation, hotspots, buttons, and routes.
 4. Check mobile behavior and readability.
 5. Confirm the visual changes requested are actually visible.
-6. Present only after those checks pass.
+6. Complete UX review for clarity, flow, accessibility, and next-step guidance.
+7. Present only after those checks pass.
 
 ## Rebuild rule
 Do not modify the archive branch. Build the new CivicAscent AI experience here, then review and test before replacing production.
