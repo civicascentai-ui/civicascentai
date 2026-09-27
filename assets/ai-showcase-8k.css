@@ -18,7 +18,7 @@ button{color:inherit}
 .scan{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.13;background:linear-gradient(180deg,transparent 0 49%,rgba(108,212,255,.12) 50%,transparent 51%);background-size:100% 6px;mix-blend-mode:screen}
 .hud{position:fixed;z-index:30;left:0;right:0;top:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;padding:max(15px,env(safe-area-inset-top)) clamp(14px,3vw,34px) 10px;background:linear-gradient(180deg,rgba(1,5,14,.62),transparent)}
 .brand{display:flex;align-items:center;gap:12px;min-width:0;text-decoration:none;font-weight:950;letter-spacing:-.035em}
-.brand img{width:clamp(44px,5.4vw,72px);height:clamp(44px,5.4vw,72px);filter:drop-shadow(0 0 22px rgba(83,202,255,.32))}
+.brand img{width:clamp(52px,5.8vw,82px);height:clamp(52px,5.8vw,82px);filter:drop-shadow(0 0 16px rgba(83,202,255,.28)) drop-shadow(0 0 2px rgba(255,255,255,.22));image-rendering:auto}
 .brand-copy{display:grid;line-height:1}
 .brand-name{font-size:clamp(19px,2.4vw,31px);white-space:nowrap}.brand-name b{color:var(--cyan)}
 .brand-tag{margin-top:7px;font-size:clamp(9px,1vw,12px);letter-spacing:.22em;color:#c7d9e9;font-weight:850;white-space:nowrap}
@@ -33,7 +33,7 @@ button{color:inherit}
 .core.show{animation:coreIn 1.25s cubic-bezier(.14,.82,.22,1) forwards}
 .core::before,.core::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(103,212,255,.34);box-shadow:0 0 65px rgba(72,173,255,.22)}
 .core::before{width:240px;height:240px;animation:ring 2.4s linear infinite}.core::after{width:330px;height:330px;animation:ring 3.1s linear infinite reverse}
-.core img{width:clamp(80px,12vw,150px);height:clamp(80px,12vw,150px);filter:drop-shadow(0 0 30px rgba(94,210,255,.5))}
+.core img{width:clamp(112px,14vw,190px);height:clamp(112px,14vw,190px);filter:drop-shadow(0 0 28px rgba(94,210,255,.48)) drop-shadow(0 0 2px rgba(255,255,255,.28));image-rendering:auto}
 @keyframes coreIn{0%{opacity:0;filter:blur(18px);transform:translate(-50%,-50%) scale(.12)}55%{opacity:1;filter:none;transform:translate(-50%,-50%) scale(1.2)}100%{opacity:1;filter:none;transform:translate(-50%,-50%) scale(1)}}
 @keyframes ring{to{transform:rotate(360deg) scale(1.035)}}
 .hero{width:min(1080px,94vw);text-align:center;opacity:0;transform:translateY(28px) scale(.985);filter:blur(10px);transition:opacity .9s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .9s ease;pointer-events:none}
@@ -62,7 +62,7 @@ body.ready .timeline{opacity:0;pointer-events:none}
 .lang-es{display:none!important}body.es .lang-en{display:none!important}body.es .lang-es{display:revert!important}
 @media(max-width:720px){
   .hud{gap:8px;padding-top:max(12px,env(safe-area-inset-top));padding-left:12px;padding-right:10px}
-  .brand{gap:8px}.brand img{width:44px;height:44px}.brand-name{font-size:18px}.brand-tag{font-size:8px;letter-spacing:.14em;margin-top:5px}
+  .brand{gap:9px}.brand img{width:50px;height:50px}.brand-name{font-size:18px}.brand-tag{font-size:8px;letter-spacing:.14em;margin-top:5px}
   .controls{gap:6px}.control{min-height:44px;padding:0 11px;font-size:14px}
   .stage{padding:92px 16px 22px;align-items:center}
   .hero{margin-top:8vh}
@@ -74,7 +74,7 @@ body.ready .timeline{opacity:0;pointer-events:none}
   .core::before{width:190px;height:190px}.core::after{width:260px;height:260px}
 }
 @media(max-width:430px){
-  .brand-tag{display:none}.brand-name{font-size:17px}.brand img{width:41px;height:41px}
+  .brand-tag{display:none}.brand-name{font-size:17px}.brand img{width:46px;height:46px}
   .control{font-size:13px;padding:0 10px}.controls{gap:5px}
   .hero h1{font-size:clamp(43px,13.4vw,58px)}.lede{font-size:16.5px}
   .capability-line span:nth-child(5){display:none}
