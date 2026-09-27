@@ -164,14 +164,19 @@
     const cx=cw*(mobile?.56:.59);
     const cy=ch*(mobile?.53:.52);
 
-    // Strong hyperspace ramp: accelerate rapidly toward the central light.
+    // Two-stage flight: first zoom gently into the starfield, then accelerate.
     const elapsed=Math.max(0,time-launchStarted);
-    const launch=smoothstep(180,2200,elapsed);
+    const approach=smoothstep(200,2600,elapsed);
+    const launch=smoothstep(2200,6200,elapsed);
     const heroPresence=clamp(1-scrollProgress*4.8,0,1);
-    const intensity=1.05 + heroPresence*1.1 + launch*2.75*heroPresence;
 
-    const baseSpeed=mobile?6.6:9.4;
-    const speed=staticOnly?0:baseSpeed*intensity;
+    // Starts at about half speed, then builds strongly after the zoom-in phase.
+    const speedMult=(.50 + approach*.18 + launch*2.15) * (.72 + heroPresence*.28);
+    const baseSpeed=mobile?6.2:8.8;
+    const speed=staticOnly?0:baseSpeed*speedMult;
+
+    // Used for brightness/size growth without creating beam-like streaks.
+    const intensity=.65 + approach*.35 + launch*1.55*heroPresence;
 
     ctx.fillStyle="#07111f";
     ctx.fillRect(0,0,cw,ch);
@@ -186,17 +191,12 @@
 
     for(const s of stars){
       const depthBefore=clamp(1-s.z/(cw*1.45),0,1);
-      const layerSpeed=s.layer===0?.85:(s.layer===1?1.35:2.15);
-      const approachBoost=.95+depthBefore*3.6;
+      const layerSpeed=s.layer===0?.72:(s.layer===1?1.08:1.62);
+      const approachBoost=.82+depthBefore*(1.55+launch*1.25);
       const step=staticOnly?0:speed*layerSpeed*approachBoost;
 
       s.pz=s.z;
       if(!staticOnly)s.z-=step;
-
-      // Pull stars toward the vanishing point as they accelerate into the light.
-      const pull=(0.0008 + depthBefore*0.0038 + intensity*0.0009) * (s.layer===2?1.3:1);
-      s.x*=1-pull;
-      s.y*=1-pull;
 
       if(s.z<2){
         resetStar(s,false);
@@ -205,13 +205,11 @@
       }
 
       const depth=clamp(1-s.z/(cw*1.45),0,1);
-      const trailBoost=2.2 + intensity*3.1 + depth*8.2 + s.layer*1.15;
-      const tailZ=s.z + Math.max(1,step)*trailBoost;
 
       const sx=cx+(s.x/s.z)*cw;
       const sy=cy+(s.y/s.z)*cw;
-      const px=cx+(s.x/tailZ)*cw;
-      const py=cy+(s.y/tailZ)*cw;
+      const px=cx+(s.x/s.pz)*cw;
+      const py=cy+(s.y/s.pz)*cw;
       if(sx<-110||sx>cw+110||sy<-110||sy>ch+110){
         resetStar(s,false);
         continue;
@@ -224,31 +222,43 @@
       else if(s.kind===1)color="rgba(76,165,255,"+alpha.toFixed(3)+")";
       else color="rgba(238,246,255,"+alpha.toFixed(3)+")";
 
-      ctx.strokeStyle=color;
-      ctx.lineCap="round";
-      ctx.lineWidth=Math.max(.5,s.size*(.46+depth*2.15)*(1+intensity*.14));
-      ctx.beginPath();
-      ctx.moveTo(px,py);
-      ctx.lineTo(sx,sy);
-      ctx.stroke();
+      // Stars stay visually star-like: round points that grow as we fly closer.
+      const starSize=Math.min(
+        s.layer===2?5.2:4.2,
+        s.size*(.42 + depth*2.15)*(1 + approach*.08 + launch*.16)
+      );
 
-      // Closest stars flare as they rush by, creating a true hyperspace pass.
-      if(depth>.55 || s.layer===2){
-        const flareSize=Math.min(6.2,s.size*(.8+depth*2.2)*(s.layer===2?1.18:1));
-        ctx.fillStyle=color;
+      ctx.fillStyle=color;
+      ctx.beginPath();
+      ctx.arc(sx,sy,Math.max(.45,starSize),0,Math.PI*2);
+      ctx.fill();
+
+      // Only at the fastest phase, add a very short motion cue — never a long beam.
+      if(launch>.58 && depth>.56){
+        const dx=sx-px;
+        const dy=sy-py;
+        const dist=Math.hypot(dx,dy)||1;
+        const maxTrail=mobile?7:10;
+        const trail=Math.min(maxTrail,dist*.34);
+        const tx=sx-(dx/dist)*trail;
+        const ty=sy-(dy/dist)*trail;
+
+        ctx.strokeStyle=color;
+        ctx.lineCap="round";
+        ctx.lineWidth=Math.max(.45,starSize*.42);
         ctx.beginPath();
-        ctx.arc(sx,sy,flareSize,0,Math.PI*2);
-        ctx.fill();
+        ctx.moveTo(tx,ty);
+        ctx.lineTo(sx,sy);
+        ctx.stroke();
       }
     }
 
     if(!staticOnly){
-      const flareRadius=Math.min(cw,ch)*(.13+intensity*.07);
+      const flareRadius=Math.min(cw,ch)*(.07 + approach*.018 + launch*.085);
       const flare=ctx.createRadialGradient(cx,cy,0,cx,cy,flareRadius);
-      flare.addColorStop(0,"rgba(255,245,215,"+clamp(.34+intensity*.16,.34,.92).toFixed(3)+")");
-      flare.addColorStop(.12,"rgba(255,223,145,"+clamp(.24+intensity*.11,.24,.62).toFixed(3)+")");
-      flare.addColorStop(.28,"rgba(240,196,95,"+clamp(.14+intensity*.08,.14,.34).toFixed(3)+")");
-      flare.addColorStop(.52,"rgba(63,151,255,"+clamp(.08+intensity*.05,.08,.24).toFixed(3)+")");
+      flare.addColorStop(0,"rgba(255,247,224,"+clamp(.16+approach*.10+launch*.48,.16,.78).toFixed(3)+")");
+      flare.addColorStop(.14,"rgba(255,222,140,"+clamp(.09+approach*.05+launch*.27,.09,.42).toFixed(3)+")");
+      flare.addColorStop(.34,"rgba(88,165,255,"+clamp(.05+launch*.12,.05,.17).toFixed(3)+")");
       flare.addColorStop(1,"rgba(0,0,0,0)");
       ctx.fillStyle=flare;
       ctx.fillRect(0,0,cw,ch);
