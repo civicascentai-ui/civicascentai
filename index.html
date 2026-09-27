@@ -2,427 +2,307 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="description" content="CivicAscent AI helps beginners, families, workers and organizations build practical AI skills in English and Spanish.">
-  <meta name="theme-color" content="#050507">
-  <meta name="civicascent-build" content="20260926-5">
-  <meta property="og:title" content="CivicAscent AI | Practical AI Skills for Real Life">
-  <meta property="og:description" content="Beginner-friendly AI learning for real life, work and stronger communities — in English and Spanish.">
+  <meta name="theme-color" content="#090B0D">
+  <meta name="color-scheme" content="dark">
+  <meta name="civicascent-build" content="20260926-cinematic-1">
+  <meta property="og:title" content="CivicAscent AI | Learn AI with confidence">
+  <meta property="og:description" content="Practical, guided AI learning for beginners, working adults, families and communities — in English and Spanish.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-5">
+  <meta property="og:url" content="https://civicascentai.com/">
+  <meta property="og:image" content="https://civicascentai.com/assets/civicascent-campus.webp?v=20260926-cinematic-1">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="alternate" hreflang="es" href="https://civicascentai.com/es.html">
   <link rel="canonical" href="https://civicascentai.com/">
-  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-5" type="image/svg+xml">
-  <title>CivicAscent AI | Practical AI Skills for Real Life</title>
-  <style>
-    :root{
-      --bg:#050507;
-      --bg2:#0a0a0d;
-      --panel:#101015;
-      --text:#f1f1ee;
-      --muted:#a7a7a1;
-      --line:rgba(255,255,255,.12);
-      --orange:#ff6a00;
-      --amber:#fecb8b;
-      --blue:#5da8ff;
-      --green:#8fe388;
-      --max:1180px;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth;background:var(--bg)}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
-    a{color:inherit}
-    button{font:inherit}
-    .skip{position:fixed;left:-9999px;top:12px;z-index:200;background:#fff;color:#000;padding:10px 14px;border-radius:10px}
-    .skip:focus{left:12px}
-    .progress{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--orange),var(--amber));z-index:180}
-    .hud{position:fixed;inset:0 0 auto 0;z-index:120;pointer-events:none}
-    .hud-inner{max-width:var(--max);margin:auto;padding:18px 24px;display:flex;align-items:center;gap:16px}
-    .brand{pointer-events:auto;display:flex;align-items:center;gap:10px;text-decoration:none}
-    .brand img{width:38px;height:38px}
-    .brand b{font-size:1rem;letter-spacing:-.02em}
-    .brand small{display:block;color:var(--muted);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase}
-    .hud-tools{margin-left:auto;display:flex;gap:8px;pointer-events:auto}
-    .hud-btn{border:1px solid var(--line);background:rgba(5,5,7,.72);backdrop-filter:blur(14px);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;font-weight:800;font-size:.76rem;letter-spacing:.04em}
-    .hud-btn:hover,.hud-btn:focus-visible{border-color:var(--orange);outline:none}
-    .chapter-nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:110;display:flex;flex-direction:column;gap:9px}
-    .chapter-nav a{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;text-decoration:none;color:#8f8f8b;background:rgba(5,5,7,.62);backdrop-filter:blur(10px);font-size:.68rem;font-weight:800;transition:.2s}
-    .chapter-nav a.active,.chapter-nav a:hover{border-color:var(--orange);color:#fff;background:rgba(255,106,0,.12)}
-    main{position:relative}
-    .chapter{min-height:100svh;display:flex;align-items:center;position:relative;padding:120px 7vw 90px;border-bottom:1px solid rgba(255,255,255,.05)}
-    .chapter-inner{width:min(100%,var(--max));margin:auto}
-    .eyebrow{margin:0 0 22px;color:var(--amber);font-size:.74rem;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
-    .chapter-number{position:absolute;left:7vw;bottom:34px;font-size:clamp(5rem,16vw,13rem);line-height:.78;font-weight:900;color:rgba(255,255,255,.035);letter-spacing:-.08em;user-select:none}
-    .hero{overflow:hidden;background:
-      radial-gradient(circle at 72% 28%,rgba(255,106,0,.16),transparent 28%),
-      radial-gradient(circle at 25% 70%,rgba(93,168,255,.08),transparent 25%),
-      linear-gradient(180deg,#050507 0%,#09090c 100%)}
-    .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:8vw;align-items:end}
-    .hero h1{font-size:clamp(4.5rem,11vw,10.6rem);line-height:.78;letter-spacing:-.075em;margin:0;max-width:900px}
-    .hero h1 span{display:block;color:var(--orange)}
-    .hero-copy{padding-bottom:10px}
-    .hero-copy p{font-size:clamp(1rem,1.8vw,1.35rem);line-height:1.65;color:#c9c9c3;max-width:520px;margin:0 0 28px}
-    .hero-stat{font-size:clamp(4.8rem,11vw,9rem);font-weight:900;letter-spacing:-.07em;line-height:.8;color:var(--amber);margin-top:54px}
-    .hero-stat small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:18px}
-    .actions{display:flex;gap:12px;flex-wrap:wrap}
-    .primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 18px;border-radius:999px;text-decoration:none;font-weight:900}
-    .primary{background:var(--orange);color:#080808}
-    .primary:hover{background:#ff7e22}
-    .secondary{border:1px solid var(--line);background:rgba(255,255,255,.02)}
-    .secondary:hover{border-color:var(--amber)}
-    .scroll-cue{position:absolute;left:7vw;bottom:32px;color:var(--muted);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase}
-    .scroll-cue:after{content:"";display:inline-block;width:46px;height:1px;background:var(--orange);vertical-align:middle;margin-left:14px}
-    .essay-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:9vw;align-items:start}
-    .essay-grid h2{font-size:clamp(3.2rem,7.5vw,7.4rem);line-height:.9;letter-spacing:-.06em;margin:0}
-    .copy{max-width:720px}
-    .copy p{font-size:clamp(1.15rem,2.1vw,1.62rem);line-height:1.62;color:#c4c4bf;margin:0 0 24px}
-    .copy strong{color:#fff}
-    .pull{margin:48px 0 0;padding-left:20px;border-left:2px solid var(--orange);font-size:clamp(1.4rem,2.7vw,2.3rem);line-height:1.35;color:#fff}
-    .metric{font-size:clamp(5rem,14vw,12rem);font-weight:950;letter-spacing:-.08em;line-height:.85;color:var(--orange)}
-    .metric-label{max-width:420px;color:var(--muted);font-size:.95rem;line-height:1.5;margin-top:20px}
-    .steps{display:grid;gap:16px;margin-top:42px}
-    .step{display:grid;grid-template-columns:70px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line)}
-    .step:last-child{border-bottom:1px solid var(--line)}
-    .step-num{font-weight:900;color:var(--orange);font-size:.88rem}
-    .step h3{margin:0 0 6px;font-size:1.2rem}
-    .step p{margin:0;color:var(--muted);line-height:1.55}
-    .paths{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
-    .path{background:var(--bg);padding:30px;min-height:280px;display:flex;flex-direction:column;text-decoration:none}
-    .path:hover{background:#0c0c10}
-    .path .n{color:var(--orange);font-size:.75rem;font-weight:900;letter-spacing:.1em}
-    .path h3{font-size:1.7rem;letter-spacing:-.035em;margin:52px 0 12px}
-    .path p{color:var(--muted);line-height:1.55;margin:0 0 20px}
-    .path span:last-child{margin-top:auto;color:var(--amber);font-weight:900}
-    .org-list{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:44px}
-    .org-list div{background:var(--bg);padding:24px;font-weight:800;color:#d9d9d3}
-    .chapter.dark2{background:linear-gradient(180deg,#08080b,#050507)}
-    .chapter.orange-wash{background:
-      radial-gradient(circle at 80% 20%,rgba(255,106,0,.12),transparent 30%),
-      #050507}
-    .final{background:linear-gradient(180deg,#050507 0%,#0b0b0f 60%,#120905 100%)}
-    .final h2{font-size:clamp(4rem,10vw,9rem);line-height:.84;letter-spacing:-.07em;max-width:1000px;margin:0 0 32px}
-    .final h2 span{color:var(--orange)}
-    .footer{padding:34px 7vw 50px;background:#050507;color:var(--muted);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);font-size:.8rem}
-    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-    .reveal.visible{opacity:1;transform:none}
-    .lang-es{display:none}
-    body.es .lang-en{display:none}
-    body.es .lang-es{display:initial}
-    body.es .lang-es.block{display:block}
-    .mobile-chapter{display:none}
-    @media(max-width:900px){
-      .chapter{padding:110px 22px 80px}
-      .hero-grid,.essay-grid{grid-template-columns:1fr;gap:44px}
-      .hero h1{font-size:clamp(4.4rem,17vw,7rem)}
-      .hero-copy{max-width:680px}
-      .chapter-nav{display:none}
-      .mobile-chapter{display:block;color:var(--orange);font-size:.76rem;font-weight:900;margin-bottom:18px;letter-spacing:.12em}
-      .chapter-number{left:22px;bottom:28px}
-      .scroll-cue{left:22px}
-      .paths{grid-template-columns:1fr}
-      .org-list{grid-template-columns:1fr}
-      .hud-inner{padding:14px 18px}
-      .brand small{display:none}
-    }
-    @media(max-width:560px){
-      .brand b{font-size:.9rem}
-      .brand img{width:34px;height:34px}
-      .hud-btn{padding:8px 10px;font-size:.68rem}
-      .hero h1{font-size:4.15rem}
-      .hero-stat{font-size:5rem}
-      .copy p{font-size:1.13rem}
-      .step{grid-template-columns:46px 1fr;gap:14px}
-    }
-    @media(prefers-reduced-motion:reduce){
-      html{scroll-behavior:auto}
-      .reveal{opacity:1;transform:none;transition:none}
-    }
-  </style>
+  <link rel="icon" href="assets/civicascent-logo.svg?v=20260926-cinematic-1" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/cinematic.css?v=20260926-cinematic-1">
+  <title>CivicAscent AI | Learn AI with confidence</title>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
+  <canvas class="ambient" id="ambientCanvas" aria-hidden="true"></canvas>
+  <div class="ambient-vignette" aria-hidden="true"></div>
   <div class="progress" id="progress" aria-hidden="true"></div>
 
-  <header class="hud" aria-label="Site controls">
-    <div class="hud-inner">
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
       <a class="brand" href="index.html" aria-label="CivicAscent AI home">
-        <img src="assets/civicascent-logo.svg?v=20260926-5" alt="">
-        <span>
-          <b>CivicAscent AI</b>
-          <small>People · Skills · Opportunity</small>
+        <img src="assets/civicascent-logo.svg?v=20260926-cinematic-1" alt="">
+        <span class="brand-copy">
+          <span class="brand-name">CivicAscent AI</span>
+          <span class="brand-tag">People · Skills · Opportunity</span>
         </span>
       </a>
-      <div class="hud-tools">
-        <button class="hud-btn" id="langToggle" type="button" aria-pressed="false">ES</button>
-        <a class="hud-btn" href="register.html">Free Workshop</a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#c2"><span class="lang-en">Learn</span><span class="lang-es">Aprende</span></a>
+        <a href="#c9"><span class="lang-en">Programs</span><span class="lang-es">Programas</span></a>
+        <a href="capabilities.html"><span class="lang-en">About</span><span class="lang-es">Acerca de</span></a>
+        <a href="consultation.html"><span class="lang-en">Contact</span><span class="lang-es">Contacto</span></a>
+      </nav>
+      <div class="top-actions">
+        <button class="control" id="langToggle" type="button" aria-pressed="false" aria-label="Cambiar a español">ES</button>
+        <button class="control menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
       </div>
     </div>
   </header>
 
-  <nav class="chapter-nav" aria-label="Chapter navigation">
-    <a href="#c0" data-section="c0">00</a>
-    <a href="#c1" data-section="c1">01</a>
-    <a href="#c2" data-section="c2">02</a>
-    <a href="#c3" data-section="c3">03</a>
-    <a href="#c4" data-section="c4">04</a>
-    <a href="#c5" data-section="c5">05</a>
-    <a href="#c6" data-section="c6">06</a>
-    <a href="#c7" data-section="c7">07</a>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <nav aria-label="Mobile navigation">
+      <a href="#c2"><span class="lang-en">Learn</span><span class="lang-es">Aprende</span></a>
+      <a href="#c9"><span class="lang-en">Programs</span><span class="lang-es">Programas</span></a>
+      <a href="capabilities.html"><span class="lang-en">About</span><span class="lang-es">Acerca de</span></a>
+      <a href="consultation.html"><span class="lang-en">Contact</span><span class="lang-es">Contacto</span></a>
+    </nav>
+  </div>
+
+  <nav class="chapter-rail" aria-label="Chapter navigation">
+    <a href="#c0" data-section="c0">00</a><a href="#c1" data-section="c1">01</a>
+    <a href="#c2" data-section="c2">02</a><a href="#c3" data-section="c3">03</a>
+    <a href="#c4" data-section="c4">04</a><a href="#c5" data-section="c5">05</a>
+    <a href="#c6" data-section="c6">06</a><a href="#c7" data-section="c7">07</a>
+    <a href="#c8" data-section="c8">08</a><a href="#c9" data-section="c9">09</a>
+    <a href="#c10" data-section="c10">10</a><a href="#c11" data-section="c11">11</a>
   </nav>
 
   <main id="main">
-    <section class="chapter hero" id="c0">
-      <div class="chapter-inner hero-grid reveal">
-        <div>
-          <p class="mobile-chapter">00 · CivicAscent AI</p>
-          <p class="eyebrow lang-en">Practical AI learning</p>
-          <p class="eyebrow lang-es block">Aprendizaje práctico de IA</p>
-          <h1>
-            <span class="lang-en">Learn AI.<br><span>Use it.</span></span>
-            <span class="lang-es">Aprende IA.<br><span>Úsala.</span></span>
-          </h1>
-        </div>
-        <div class="hero-copy">
-          <p class="lang-en">AI is changing everyday life and work. CivicAscent AI turns that change into practical, guided skills for beginners, families, workers and organizations.</p>
-          <p class="lang-es block">La IA está cambiando la vida diaria y el trabajo. CivicAscent AI convierte ese cambio en habilidades prácticas y guiadas para principiantes, familias, trabajadores y organizaciones.</p>
-          <div class="actions">
-            <a class="primary lang-en" href="register.html">Start free</a>
-            <a class="primary lang-es" href="registro.html">Comienza gratis</a>
-            <a class="secondary lang-en" href="course.html">Explore courses</a>
-            <a class="secondary lang-es" href="curso-es.html">Explorar cursos</a>
+    <section class="chapter hero" id="c0" data-chapter="00">
+      <div class="chapter-inner">
+        <div class="hero-layout">
+          <div class="reveal">
+            <p class="kicker lang-en">CivicAscent AI · Learn AI with confidence</p>
+            <p class="kicker lang-es">CivicAscent AI · Aprende IA con confianza</p>
+            <h1 class="hero-title lang-en">AI is changing fast. <span class="accent">You can learn it.</span></h1>
+            <h1 class="hero-title lang-es">La IA cambia rápido. <span class="accent">Puedes aprenderla.</span></h1>
           </div>
-          <div class="hero-stat">01<small class="lang-en">Useful skill is enough to begin</small><small class="lang-es">Una habilidad útil es suficiente para comenzar</small></div>
-        </div>
-      </div>
-      <div class="scroll-cue lang-en">Scroll to explore</div>
-      <div class="scroll-cue lang-es">Desplázate para explorar</div>
-      <div class="chapter-number">00</div>
-    </section>
-
-    <section class="chapter dark2" id="c1">
-      <div class="chapter-inner essay-grid reveal">
-        <div>
-          <p class="mobile-chapter">01 · Why now</p>
-          <p class="eyebrow lang-en">01 · Why now</p>
-          <p class="eyebrow lang-es block">01 · Por qué ahora</p>
-          <h2 class="lang-en">AI is already here.</h2>
-          <h2 class="lang-es">La IA ya está aquí.</h2>
-        </div>
-        <div class="copy">
-          <p class="lang-en">The useful question is no longer whether AI will matter. It already affects writing, research, planning, customer service, education and work.</p>
-          <p class="lang-es block">La pregunta útil ya no es si la IA importará. Ya afecta la escritura, la investigación, la planificación, el servicio al cliente, la educación y el trabajo.</p>
-          <p class="lang-en"><strong>You do not need to become a programmer.</strong> You need a reliable way to ask, evaluate, verify and apply.</p>
-          <p class="lang-es block"><strong>No necesitas convertirte en programador.</strong> Necesitas una forma confiable de preguntar, evaluar, verificar y aplicar.</p>
-          <div class="pull lang-en">Confidence comes from practice, not jargon.</div>
-          <div class="pull lang-es">La confianza viene de la práctica, no de la jerga.</div>
-        </div>
-      </div>
-      <div class="chapter-number">01</div>
-    </section>
-
-    <section class="chapter orange-wash" id="c2">
-      <div class="chapter-inner essay-grid reveal">
-        <div>
-          <p class="mobile-chapter">02 · Learn</p>
-          <p class="eyebrow lang-en">02 · Learn</p>
-          <p class="eyebrow lang-es block">02 · Aprende</p>
-          <div class="metric">LEARN</div>
-          <div class="metric-label lang-en">Start with the task in front of you, not every feature AI can offer.</div>
-          <div class="metric-label lang-es">Comienza con la tarea que tienes delante, no con todas las funciones que ofrece la IA.</div>
-        </div>
-        <div class="copy">
-          <p class="lang-en">CivicAscent begins with clear language and one practical outcome. We explain what the tool can do, what it cannot do, and where human judgment still matters.</p>
-          <p class="lang-es block">CivicAscent comienza con lenguaje claro y un resultado práctico. Explicamos lo que la herramienta puede hacer, lo que no puede hacer y dónde sigue importando el criterio humano.</p>
-          <div class="steps">
-            <div class="step"><div class="step-num">01</div><div><h3>Understand</h3><p>Know the goal, the limits and the risk.</p></div></div>
-            <div class="step"><div class="step-num">02</div><div><h3>Prompt</h3><p>Give context, constraints and the output you actually need.</p></div></div>
-            <div class="step"><div class="step-num">03</div><div><h3>Verify</h3><p>Check important claims before relying on them.</p></div></div>
+          <div class="hero-copy reveal">
+            <p class="lede lang-en">Practical, guided AI learning for beginners, working adults, families and communities.</p>
+            <p class="lede lang-es">Aprendizaje práctico y guiado de IA para principiantes, adultos que trabajan, familias y comunidades.</p>
+            <a class="cta lang-en" href="#c1">Start the Journey</a>
+            <a class="cta lang-es" href="#c1">Comienza el recorrido</a>
+            <div class="hero-markers" aria-label="Journey preview">
+              <div class="hero-marker"><span class="n">01</span><span class="lang-en">Understand what AI can actually do</span><span class="lang-es">Entiende lo que la IA realmente puede hacer</span></div>
+              <div class="hero-marker"><span class="n">05</span><span class="lang-en">Build a strong foundation</span><span class="lang-es">Construye una base sólida</span></div>
+              <div class="hero-marker"><span class="n">10</span><span class="lang-en">Turn learning into something useful</span><span class="lang-es">Convierte el aprendizaje en algo útil</span></div>
+            </div>
           </div>
         </div>
+        <div class="chapter-watermark">00</div>
       </div>
-      <div class="chapter-number">02</div>
     </section>
 
-    <section class="chapter" id="c3">
-      <div class="chapter-inner essay-grid reveal">
-        <div>
-          <p class="mobile-chapter">03 · Practice</p>
-          <p class="eyebrow lang-en">03 · Practice</p>
-          <p class="eyebrow lang-es block">03 · Practica</p>
-          <h2 class="lang-en">Turn knowledge into repetition.</h2>
-          <h2 class="lang-es">Convierte el conocimiento en repetición.</h2>
+    <section class="chapter" id="c1" data-chapter="01">
+      <div class="chapter-inner chapter-grid">
+        <div class="chapter-heading reveal">
+          <p class="kicker lang-en">01 · Start here</p><p class="kicker lang-es">01 · Empieza aquí</p>
+          <h2 class="display lang-en">You do not need to be a tech expert.</h2>
+          <h2 class="display lang-es">No necesitas ser experto en tecnología.</h2>
         </div>
-        <div class="copy">
-          <p class="lang-en">One demonstration is not a skill. A skill is something you can repeat, explain and adapt to a new situation.</p>
-          <p class="lang-es block">Una demostración no es una habilidad. Una habilidad es algo que puedes repetir, explicar y adaptar a una situación nueva.</p>
-          <p class="lang-en">Our learning paths use guided practice, real tasks, feedback and checkpoints so progress is visible.</p>
-          <p class="lang-es block">Nuestras rutas de aprendizaje usan práctica guiada, tareas reales, retroalimentación y puntos de control para que el progreso sea visible.</p>
-          <div class="actions">
-            <a class="primary" href="mentor.html"><span class="lang-en">Try the Guided Planner</span><span class="lang-es">Prueba el Planificador</span></a>
-            <a class="secondary" href="level2.html"><span class="lang-en">See Level 2</span><span class="lang-es">Ver Nivel 2</span></a>
+        <div class="chapter-body reveal">
+          <div class="body-copy">
+            <p class="lang-en">Start with a real task. CivicAscent AI explains the tool in plain language, shows you where it helps, and keeps human judgment in the loop.</p>
+            <p class="lang-es">Empieza con una tarea real. CivicAscent AI explica la herramienta con lenguaje claro, muestra dónde ayuda y mantiene el criterio humano en el proceso.</p>
+          </div>
+          <div class="selector" aria-label="AI goal selector">
+            <div class="selector-buttons">
+              <button type="button" data-goal="everyday" aria-pressed="true"><span class="lang-en">Everyday life</span><span class="lang-es">Vida diaria</span></button>
+              <button type="button" data-goal="work" aria-pressed="false"><span class="lang-en">Work</span><span class="lang-es">Trabajo</span></button>
+              <button type="button" data-goal="learning" aria-pressed="false"><span class="lang-en">Learning</span><span class="lang-es">Aprendizaje</span></button>
+              <button type="button" data-goal="business" aria-pressed="false"><span class="lang-en">Business</span><span class="lang-es">Negocio</span></button>
+            </div>
+            <div class="selector-output" id="goalOutput" aria-live="polite"></div>
           </div>
         </div>
+        <div class="chapter-watermark">01</div>
       </div>
-      <div class="chapter-number">03</div>
     </section>
 
-    <section class="chapter dark2" id="c4">
+    <section class="chapter" id="c2" data-chapter="02">
+      <div class="chapter-inner chapter-grid reverse">
+        <div class="chapter-heading reveal">
+          <p class="kicker lang-en">02 · Understand</p><p class="kicker lang-es">02 · Entiende</p>
+          <h2 class="display lang-en">Learn what AI can — and cannot — do.</h2>
+          <h2 class="display lang-es">Aprende lo que la IA puede — y no puede — hacer.</h2>
+        </div>
+        <div class="chapter-body reveal">
+          <p class="lede lang-en">AI can help create, summarize, organize, explain and automate. It can also be wrong, incomplete or overconfident.</p>
+          <p class="lede lang-es">La IA puede ayudar a crear, resumir, organizar, explicar y automatizar. También puede equivocarse, quedar incompleta o sonar demasiado segura.</p>
+          <div class="line-list">
+            <div class="line-item"><span class="n">A</span><h3>Generative AI</h3><p class="lang-en">Creates text, images, ideas and drafts from instructions.</p><p class="lang-es">Crea texto, imágenes, ideas y borradores a partir de instrucciones.</p></div>
+            <div class="line-item"><span class="n">B</span><h3>Assistants</h3><p class="lang-en">Help reason through tasks, files, questions and plans.</p><p class="lang-es">Ayudan a razonar sobre tareas, archivos, preguntas y planes.</p></div>
+            <div class="line-item"><span class="n">C</span><h3>Automation</h3><p class="lang-en">Connects repeatable steps while people keep oversight.</p><p class="lang-es">Conecta pasos repetibles mientras las personas mantienen la supervisión.</p></div>
+          </div>
+        </div>
+        <div class="chapter-watermark">02</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c3" data-chapter="03">
+      <div class="chapter-inner chapter-grid">
+        <div class="chapter-heading reveal">
+          <p class="kicker lang-en">03 · Practice</p><p class="kicker lang-es">03 · Practica</p>
+          <h2 class="display lang-en">Use AI on real tasks.</h2><h2 class="display lang-es">Usa IA en tareas reales.</h2>
+        </div>
+        <div class="chapter-body reveal">
+          <p class="lede lang-en">Useful skills come from repetition. Practice with the kind of work you already recognize.</p>
+          <p class="lede lang-es">Las habilidades útiles nacen de la repetición. Practica con el tipo de trabajo que ya conoces.</p>
+          <div class="line-list">
+            <div class="line-item"><span class="n">01</span><h3 class="lang-en">Write and edit</h3><h3 class="lang-es">Escribe y edita</h3><p class="lang-en">Draft, revise and adapt messages for real audiences.</p><p class="lang-es">Redacta, revisa y adapta mensajes para audiencias reales.</p></div>
+            <div class="line-item"><span class="n">02</span><h3 class="lang-en">Plan and organize</h3><h3 class="lang-es">Planifica y organiza</h3><p class="lang-en">Turn scattered ideas into steps, timelines and checklists.</p><p class="lang-es">Convierte ideas dispersas en pasos, cronogramas y listas.</p></div>
+            <div class="line-item"><span class="n">03</span><h3 class="lang-en">Research carefully</h3><h3 class="lang-es">Investiga con cuidado</h3><p class="lang-en">Ask better questions, compare information and verify what matters.</p><p class="lang-es">Haz mejores preguntas, compara información y verifica lo importante.</p></div>
+            <div class="line-item"><span class="n">04</span><h3 class="lang-en">Learn faster</h3><h3 class="lang-es">Aprende más rápido</h3><p class="lang-en">Get explanations, practice questions and guided feedback.</p><p class="lang-es">Obtén explicaciones, preguntas de práctica y retroalimentación guiada.</p></div>
+          </div>
+        </div>
+        <div class="chapter-watermark">03</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c4" data-chapter="04">
+      <div class="chapter-inner chapter-grid reverse">
+        <div class="chapter-heading reveal">
+          <p class="kicker lang-en">04 · Build confidence</p><p class="kicker lang-es">04 · Gana confianza</p>
+          <h2 class="display lang-en">Practice first. Then build.</h2><h2 class="display lang-es">Primero practica. Luego construye.</h2>
+        </div>
+        <div class="chapter-body reveal">
+          <div class="progress-track">
+            <div class="milestone"><span class="dot">01</span><div><h3 class="lang-en">Understand the task</h3><h3 class="lang-es">Entiende la tarea</h3><p class="lang-en">Define what a useful result looks like.</p><p class="lang-es">Define cómo se ve un resultado útil.</p></div></div>
+            <div class="milestone"><span class="dot">02</span><div><h3 class="lang-en">Give better context</h3><h3 class="lang-es">Da mejor contexto</h3><p class="lang-en">Tell the AI what it needs to know, not everything you know.</p><p class="lang-es">Dile a la IA lo que necesita saber, no todo lo que tú sabes.</p></div></div>
+            <div class="milestone"><span class="dot">03</span><div><h3 class="lang-en">Review the output</h3><h3 class="lang-es">Revisa el resultado</h3><p class="lang-en">Check accuracy, tone, usefulness and risk.</p><p class="lang-es">Comprueba precisión, tono, utilidad y riesgo.</p></div></div>
+            <div class="milestone"><span class="dot">04</span><div><h3 class="lang-en">Repeat without help</h3><h3 class="lang-es">Repite sin ayuda</h3><p class="lang-en">The skill is yours when you can use it again in a new situation.</p><p class="lang-es">La habilidad es tuya cuando puedes usarla de nuevo en otra situación.</p></div></div>
+          </div>
+        </div>
+        <div class="chapter-watermark">04</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c5" data-chapter="05">
       <div class="chapter-inner reveal">
-        <p class="mobile-chapter">04 · Choose your path</p>
-        <p class="eyebrow lang-en">04 · Choose your path</p>
-        <p class="eyebrow lang-es block">04 · Elige tu camino</p>
-        <h2 style="font-size:clamp(3.2rem,7vw,7rem);line-height:.9;letter-spacing:-.06em;margin:0;max-width:900px" class="lang-en">Start where you are.</h2>
-        <h2 style="font-size:clamp(3.2rem,7vw,7rem);line-height:.9;letter-spacing:-.06em;margin:0;max-width:900px" class="lang-es">Empieza donde estás.</h2>
-        <div class="paths">
-          <a class="path" href="register.html">
-            <span class="n">01</span>
-            <h3 class="lang-en">Start Free</h3><h3 class="lang-es">Comienza Gratis</h3>
-            <p class="lang-en">A beginner workshop for your first practical AI skills.</p>
-            <p class="lang-es">Un taller para principiantes con tus primeras habilidades prácticas de IA.</p>
-            <span>→</span>
-          </a>
-          <a class="path" href="course.html">
-            <span class="n">02</span>
-            <h3 class="lang-en">Build Skills</h3><h3 class="lang-es">Desarrolla Habilidades</h3>
-            <p class="lang-en">Guided courses, practice and real-world applications.</p>
-            <p class="lang-es">Cursos guiados, práctica y aplicaciones del mundo real.</p>
-            <span>→</span>
-          </a>
-          <a class="path" href="es.html">
-            <span class="n">03</span>
-            <h3>Español</h3>
-            <p class="lang-en">A bilingual path built into CivicAscent from the start.</p>
-            <p class="lang-es">Una ruta bilingüe integrada en CivicAscent desde el principio.</p>
-            <span>→</span>
-          </a>
-        </div>
-      </div>
-      <div class="chapter-number">04</div>
-    </section>
-
-    <section class="chapter" id="c5">
-      <div class="chapter-inner essay-grid reveal">
-        <div>
-          <p class="mobile-chapter">05 · Organizations</p>
-          <p class="eyebrow lang-en">05 · Organizations</p>
-          <p class="eyebrow lang-es block">05 · Organizaciones</p>
-          <h2 class="lang-en">Train people, not just systems.</h2>
-          <h2 class="lang-es">Capacita personas, no solo sistemas.</h2>
-        </div>
-        <div class="copy">
-          <p class="lang-en">CivicAscent AI supports workforce teams, nonprofits, libraries, churches, agencies and community groups with beginner-friendly instruction and responsible-use practices.</p>
-          <p class="lang-es block">CivicAscent AI apoya a equipos laborales, organizaciones sin fines de lucro, bibliotecas, iglesias, agencias y grupos comunitarios con capacitación accesible y prácticas de uso responsable.</p>
-          <div class="org-list">
-            <div>Live workshops</div>
-            <div>Workforce training</div>
-            <div>Bilingual delivery</div>
-            <div>Responsible AI</div>
-            <div>Custom learning paths</div>
-            <div>Community programs</div>
+        <p class="kicker lang-en">05 · Level 1</p><p class="kicker lang-es">05 · Nivel 1</p>
+        <h2 class="display wide lang-en">AI Foundations</h2><h2 class="display wide lang-es">Fundamentos de IA</h2>
+        <div class="level">
+          <div>
+            <span class="level-badge lang-en">For first-time learners</span><span class="level-badge lang-es">Para quienes empiezan</span>
+            <h3 class="lang-en">Build the foundation before chasing features.</h3><h3 class="lang-es">Construye la base antes de perseguir funciones.</h3>
           </div>
-          <div class="actions" style="margin-top:28px">
-            <a class="primary" href="consultation.html"><span class="lang-en">Request a consultation</span><span class="lang-es">Solicitar consulta</span></a>
-            <a class="secondary" href="capabilities.html"><span class="lang-en">View capabilities</span><span class="lang-es">Ver capacidades</span></a>
-          </div>
+          <ul>
+            <li class="lang-en">Plain-language AI basics</li><li class="lang-es">Conceptos básicos de IA en lenguaje claro</li>
+            <li class="lang-en">Prompt fundamentals</li><li class="lang-es">Fundamentos de prompts</li>
+            <li class="lang-en">Privacy and safety</li><li class="lang-es">Privacidad y seguridad</li>
+            <li class="lang-en">Practical everyday workflows</li><li class="lang-es">Flujos prácticos para la vida diaria</li>
+            <li class="lang-en">Verification and human judgment</li><li class="lang-es">Verificación y criterio humano</li>
+          </ul>
         </div>
+        <div class="chapter-watermark">05</div>
       </div>
-      <div class="chapter-number">05</div>
     </section>
 
-    <section class="chapter orange-wash" id="c6">
-      <div class="chapter-inner essay-grid reveal">
-        <div>
-          <p class="mobile-chapter">06 · Responsible use</p>
-          <p class="eyebrow lang-en">06 · Responsible use</p>
-          <p class="eyebrow lang-es block">06 · Uso responsable</p>
-          <h2 class="lang-en">Useful does not mean unquestioned.</h2>
-          <h2 class="lang-es">Útil no significa incuestionable.</h2>
-        </div>
-        <div class="copy">
-          <p class="lang-en">AI can produce confident answers that are incomplete, biased or wrong. CivicAscent treats verification, privacy and human judgment as core skills—not optional extras.</p>
-          <p class="lang-es block">La IA puede producir respuestas seguras de sí mismas que sean incompletas, sesgadas o incorrectas. CivicAscent trata la verificación, la privacidad y el criterio humano como habilidades centrales.</p>
-          <div class="pull lang-en">Use AI to strengthen judgment, not replace it.</div>
-          <div class="pull lang-es">Usa la IA para fortalecer el criterio, no para reemplazarlo.</div>
-        </div>
-      </div>
-      <div class="chapter-number">06</div>
-    </section>
-
-    <section class="chapter final" id="c7">
+    <section class="chapter" id="c6" data-chapter="06">
       <div class="chapter-inner reveal">
-        <p class="mobile-chapter">07 · Begin</p>
-        <p class="eyebrow lang-en">07 · Begin</p>
-        <p class="eyebrow lang-es block">07 · Comienza</p>
-        <h2 class="lang-en">One skill.<br><span>Then another.</span></h2>
-        <h2 class="lang-es">Una habilidad.<br><span>Luego otra.</span></h2>
-        <p class="lang-en" style="max-width:680px;color:#c4c4bf;font-size:1.2rem;line-height:1.65">You do not need to master AI all at once. Start with one real task, practice it until it becomes repeatable, and build from there.</p>
-        <p class="lang-es block" style="max-width:680px;color:#c4c4bf;font-size:1.2rem;line-height:1.65">No necesitas dominar la IA de una vez. Comienza con una tarea real, practícala hasta que sea repetible y construye desde ahí.</p>
-        <div class="actions" style="margin-top:30px">
-          <a class="primary lang-en" href="register.html">Join the free workshop</a>
-          <a class="primary lang-es" href="registro.html">Únete al taller gratis</a>
-          <a class="secondary" href="mailto:info@civicascentai.com?subject=CivicAscent%20AI%20Inquiry"><span class="lang-en">Contact CivicAscent AI</span><span class="lang-es">Contactar CivicAscent AI</span></a>
+        <p class="kicker lang-en">06 · Level 2</p><p class="kicker lang-es">06 · Nivel 2</p>
+        <h2 class="display wide lang-en">Create with AI</h2><h2 class="display wide lang-es">Crea con IA</h2>
+        <div class="level">
+          <div>
+            <span class="level-badge lang-en">For learners ready to build</span><span class="level-badge lang-es">Para quienes están listos para crear</span>
+            <h3 class="lang-en">Move from one prompt to a repeatable workflow.</h3><h3 class="lang-es">Pasa de un prompt a un flujo de trabajo repetible.</h3>
+          </div>
+          <ul>
+            <li class="lang-en">Structured prompting</li><li class="lang-es">Prompts estructurados</li>
+            <li class="lang-en">Content creation</li><li class="lang-es">Creación de contenido</li>
+            <li class="lang-en">Synthetic media literacy</li><li class="lang-es">Alfabetización en medios sintéticos</li>
+            <li class="lang-en">Multi-step AI tasks</li><li class="lang-es">Tareas de IA de varios pasos</li>
+            <li class="lang-en">Simple agents and automation concepts</li><li class="lang-es">Conceptos simples de agentes y automatización</li>
+          </ul>
         </div>
+        <div class="chapter-watermark">06</div>
       </div>
-      <div class="chapter-number">07</div>
+    </section>
+
+    <section class="chapter" id="c7" data-chapter="07">
+      <div class="chapter-inner reveal">
+        <p class="kicker">07 · Bilingual learning</p>
+        <h2 class="display wide">Learn at your pace.<br>Aprende a tu ritmo.</h2>
+        <div class="bilingual-stage">
+          <div class="language-panel"><span>EN</span><h3>Clear English</h3><p>Plain explanations, practical examples and guided practice that respects the learner’s pace.</p></div>
+          <div class="language-panel"><span>ES</span><h3>Español claro</h3><p>Explicaciones sencillas, ejemplos prácticos y práctica guiada que respeta el ritmo de cada persona.</p></div>
+        </div>
+        <div class="chapter-watermark">07</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c8" data-chapter="08">
+      <div class="chapter-inner reveal">
+        <p class="kicker lang-en">08 · Human support</p><p class="kicker lang-es">08 · Apoyo humano</p>
+        <h2 class="display wide lang-en">Technology is easier with guidance.</h2><h2 class="display wide lang-es">La tecnología es más fácil con orientación.</h2>
+        <div class="human-frame">
+          <div class="human-image"><img src="assets/civicascent-campus.webp?v=20260926-cinematic-1" alt="CivicAscent AI learning environment" loading="lazy"></div>
+          <div class="human-note">
+            <p class="lang-en">Use the Guided Planner when you want a structured next step, or request a consultation for workforce, nonprofit and community learning.</p>
+            <p class="lang-es">Usa el Planificador Guiado cuando quieras un siguiente paso estructurado, o solicita una consulta para aprendizaje laboral, comunitario o sin fines de lucro.</p>
+            <a href="mentor.html"><span class="lang-en">Open the Guided Planner</span><span class="lang-es">Abrir el Planificador Guiado</span></a>
+          </div>
+        </div>
+        <div class="chapter-watermark">08</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c9" data-chapter="09">
+      <div class="chapter-inner reveal">
+        <p class="kicker lang-en">09 · Programs</p><p class="kicker lang-es">09 · Programas</p>
+        <h2 class="display wide lang-en">Choose the path that fits you.</h2><h2 class="display wide lang-es">Elige el camino que te conviene.</h2>
+        <div class="path-list">
+          <a class="path-row" href="register.html"><span class="n">01</span><span><h3 class="lang-en">Beginner AI</h3><h3 class="lang-es">IA para principiantes</h3><p class="lang-en">Start with a guided workshop and practical basics.</p><p class="lang-es">Empieza con un taller guiado y conceptos prácticos.</p></span><span class="go" aria-hidden="true">→</span></a>
+          <a class="path-row" href="course.html"><span class="n">02</span><span><h3 class="lang-en">AI for everyday life and work</h3><h3 class="lang-es">IA para la vida diaria y el trabajo</h3><p class="lang-en">Build repeatable skills around real tasks.</p><p class="lang-es">Desarrolla habilidades repetibles con tareas reales.</p></span><span class="go" aria-hidden="true">→</span></a>
+          <a class="path-row" href="level2.html"><span class="n">03</span><span><h3 class="lang-en">Level 2 · Create with AI</h3><h3 class="lang-es">Nivel 2 · Crea con IA</h3><p class="lang-en">Move into structured workflows and multi-step creation.</p><p class="lang-es">Avanza hacia flujos estructurados y creación de varios pasos.</p></span><span class="go" aria-hidden="true">→</span></a>
+          <a class="path-row" href="consultation.html"><span class="n">04</span><span><h3 class="lang-en">Community and workforce programs</h3><h3 class="lang-es">Programas comunitarios y laborales</h3><p class="lang-en">Plan instruction for teams, nonprofits, agencies and community groups.</p><p class="lang-es">Planifica capacitación para equipos, organizaciones, agencias y grupos comunitarios.</p></span><span class="go" aria-hidden="true">→</span></a>
+        </div>
+        <div class="chapter-watermark">09</div>
+      </div>
+    </section>
+
+    <section class="chapter" id="c10" data-chapter="10">
+      <div class="chapter-inner chapter-grid">
+        <div class="chapter-heading reveal">
+          <p class="kicker lang-en">10 · Build something</p><p class="kicker lang-es">10 · Construye algo</p>
+          <h2 class="display lang-en">Turn learning into action.</h2><h2 class="display lang-es">Convierte el aprendizaje en acción.</h2>
+        </div>
+        <div class="chapter-body reveal">
+          <p class="lede lang-en">The goal is not to collect AI facts. The goal is to make something useful, then understand how you made it.</p>
+          <p class="lede lang-es">La meta no es coleccionar datos sobre IA. La meta es crear algo útil y entender cómo lo hiciste.</p>
+          <div class="build-outcomes">
+            <div class="outcome"><span>01</span><h3 class="lang-en">A plan</h3><h3 class="lang-es">Un plan</h3></div>
+            <div class="outcome"><span>02</span><h3 class="lang-en">A presentation</h3><h3 class="lang-es">Una presentación</h3></div>
+            <div class="outcome"><span>03</span><h3 class="lang-en">A workflow</h3><h3 class="lang-es">Un flujo de trabajo</h3></div>
+            <div class="outcome"><span>04</span><h3 class="lang-en">A business or project idea</h3><h3 class="lang-es">Una idea de negocio o proyecto</h3></div>
+          </div>
+        </div>
+        <div class="chapter-watermark">10</div>
+      </div>
+    </section>
+
+    <section class="chapter final" id="c11" data-chapter="11">
+      <div class="chapter-inner reveal">
+        <p class="kicker lang-en">11 · Continue</p><p class="kicker lang-es">11 · Continúa</p>
+        <h2 class="display lang-en">Your next step <span class="accent">starts here.</span></h2>
+        <h2 class="display lang-es">Tu siguiente paso <span class="accent">empieza aquí.</span></h2>
+        <p class="lede lang-en">Begin with practical skills you can use today, then keep building at your pace.</p>
+        <p class="lede lang-es">Empieza con habilidades prácticas que puedes usar hoy y sigue avanzando a tu ritmo.</p>
+        <a class="cta lang-en" href="register.html">Begin with CivicAscent AI</a>
+        <a class="cta lang-es" href="registro.html">Comienza con CivicAscent AI</a>
+        <div class="chapter-watermark">11</div>
+      </div>
     </section>
   </main>
 
   <footer class="footer">
-    <span><strong style="color:#fff">CivicAscent AI</strong> · Fort Worth, Texas</span>
-    <span>info@civicascentai.com · 817-983-9404</span>
-    <span>© <span id="year"></span> CivicAscent AI · James K. Peters</span>
+    <div class="footer-inner">
+      <div><strong>CivicAscent AI</strong><br>Fort Worth, Texas · info@civicascentai.com · 817-983-9404<br>© <span id="year"></span> CivicAscent AI · James K. Peters</div>
+      <div class="footer-links">
+        <a href="programs.html">Programs</a><a href="capabilities.html">Capabilities</a>
+        <a href="consultation.html">Contact</a><a href="es.html">Español</a>
+      </div>
+    </div>
   </footer>
 
-  <script>
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const progress = document.getElementById('progress');
-    const navLinks = [...document.querySelectorAll('.chapter-nav a')];
-    const sections = [...document.querySelectorAll('.chapter')];
-    const reveals = [...document.querySelectorAll('.reveal')];
-
-    function updateProgress(){
-      const max = document.documentElement.scrollHeight - innerHeight;
-      const pct = max > 0 ? (scrollY / max) * 100 : 0;
-      progress.style.width = pct + '%';
-    }
-
-    const sectionObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if(!entry.isIntersecting) return;
-        navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === entry.target.id));
-      });
-    }, {threshold:.55});
-
-    sections.forEach(s => sectionObserver.observe(s));
-
-    if(reduced){
-      reveals.forEach(el => el.classList.add('visible'));
-    }else{
-      const revealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if(entry.isIntersecting){
-            entry.target.classList.add('visible');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, {threshold:.16});
-      reveals.forEach(el => revealObserver.observe(el));
-    }
-
-    addEventListener('scroll', updateProgress, {passive:true});
-    updateProgress();
-
-    const langToggle = document.getElementById('langToggle');
-    langToggle.addEventListener('click', () => {
-      const isEs = document.body.classList.toggle('es');
-      document.documentElement.lang = isEs ? 'es' : 'en';
-      langToggle.textContent = isEs ? 'EN' : 'ES';
-      langToggle.setAttribute('aria-pressed', String(isEs));
-    });
-
-    const year = document.getElementById('year');
-    if(year) year.textContent = new Date().getFullYear();
-  </script>
+  <script src="assets/cinematic.js?v=20260926-cinematic-1"></script>
 </body>
 </html>
