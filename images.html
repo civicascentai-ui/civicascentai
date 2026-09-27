@@ -1,35 +1,73 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#03101d"><meta name="description" content="Create Images demonstration from CivicAscent AI.">
-<title>Create Images | CivicAscent AI</title>
-<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/experience.css?v=20260927-lab-1">
-</head><body data-scene="images">
-<a class="skip" href="#main">Skip to demonstration</a>
-<header class="experience-top">
- <a class="brand" href="index.html"><img src="assets/civicascent-logo.svg" alt=""><span>CivicAscent <b>AI</b></span></a>
- <div class="top-actions"><button class="pill" id="langToggle" type="button" aria-pressed="false">ES</button><a class="pill" href="lab.html" style="text-decoration:none">LAB</a></div>
-</header>
-<main class="experience" id="main">
- <section class="exp-shell">
-  <div class="exp-copy">
-   <p class="eyebrow" data-en="AI CAPABILITY 01" data-es="CAPACIDAD DE IA 01">AI CAPABILITY 01</p>
-   <h1 data-en="Turn words into visual ideas." data-es="Convierte palabras en ideas visuales.">Turn words into visual ideas.</h1>
-   <p class="lead" data-en="A useful image workflow starts with a clear description, then improves through small changes." data-es="Un flujo útil de imágenes comienza con una descripción clara y mejora con pequeños cambios.">A useful image workflow starts with a clear description, then improves through small changes.</p>
-   <div class="guide"><h2 id="guideTitle">Create Images</h2><p id="guideCopy">Describe an idea in ordinary language. AI can turn that description into visual concepts you can refine step by step.</p></div>
-   <div class="exp-actions">
-    <button class="primary" id="playGuide" type="button" data-en="▶ Play voice guide" data-es="▶ Reproducir guía">▶ Play voice guide</button>
-    <button id="stopGuide" type="button" data-en="■ Stop" data-es="■ Detener">■ Stop</button>
-    <a href="lab.html" data-en="← Back to Living AI Lab" data-es="← Volver al Laboratorio">← Back to Living AI Lab</a>
-   </div>
-  </div>
-  <section class="demo" aria-label="Animated image-generation demonstration">
-   <div class="demo-title">LIVE DEMO · PROMPT → VISUAL OPTIONS</div>
-   <div class="prompt-line"><span id="promptText">A welcoming AI learning center at sunrise</span><span class="cursor"></span></div>
-   <div class="gallery" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
-  </section>
- </section>
-</main>
-<script src="assets/experience.js?v=20260927-lab-1" defer></script>
-</body></html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CivicAscent AI — Create Images</title><style>
+:root{
+ --bg:#06111f;--panel:rgba(8,25,44,.92);--line:rgba(255,255,255,.18);
+ --text:#f8fbff;--muted:#d2e0ed;--blue:#4fc3ff;--gold:#f5cf68;--green:#59d6a1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#06111f;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden}
+.shell{min-height:100vh;background:
+ radial-gradient(circle at 75% 12%,rgba(61,138,237,.19),transparent 28%),
+ linear-gradient(150deg,#06111f,#0b2038 54%,#06111f)}
+.top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,48px);border-bottom:1px solid var(--line);background:rgba(3,10,18,.75);backdrop-filter:blur(14px)}
+.brand{font-weight:900;font-size:clamp(18px,2.5vw,26px);letter-spacing:-.02em}
+.actions{display:flex;gap:9px}
+button,.back{font:inherit;color:white;font-weight:850;border:1px solid rgba(255,255,255,.26);border-radius:999px;padding:11px 15px;background:#102843;text-decoration:none;cursor:pointer}
+button.primary{background:#0a82d6}
+button:focus-visible,.back:focus-visible{outline:4px solid rgba(79,195,255,.38);outline-offset:3px}
+.layout{width:min(1320px,calc(100% - 28px));margin:auto;display:grid;grid-template-columns:minmax(290px,.82fr) minmax(360px,1.18fr);gap:clamp(22px,4vw,54px);align-items:center;padding:clamp(30px,6vw,72px) 0}
+.kicker{font-size:16px;font-weight:900;letter-spacing:.14em;color:#9edcff;text-transform:uppercase;margin-bottom:14px}
+h1{font-size:clamp(44px,7vw,86px);line-height:.95;letter-spacing:-.05em;margin:0 0 14px}
+.sub{font-size:clamp(23px,3vw,34px);font-weight:850;color:var(--gold);margin-bottom:20px}
+.copy{font-size:clamp(20px,2.1vw,28px);line-height:1.48;color:#f5f8fb;max-width:29ch;margin:0 0 24px}
+.controlrow{display:flex;flex-wrap:wrap;gap:10px}
+.status{margin-top:14px;font-size:16px;font-weight:750;color:#c8d9e8;min-height:22px}
+.scene{position:relative;min-height:520px;border:1px solid var(--line);border-radius:30px;overflow:hidden;background:linear-gradient(155deg,rgba(13,37,63,.94),rgba(3,13,25,.98));box-shadow:0 28px 90px rgba(0,0,0,.38)}
+.scene::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(46,149,255,.14),transparent 42%);pointer-events:none}
+.scene-label{position:absolute;top:22px;left:24px;z-index:5;font-size:15px;font-weight:900;color:#a9dfff;letter-spacing:.12em;text-transform:uppercase}
+.help{width:min(1320px,calc(100% - 28px));margin:-28px auto 0;padding-bottom:44px;color:#b9cde0;font-size:16px;line-height:1.5}
+@media(max-width:850px){
+ .top{height:64px}.layout{grid-template-columns:1fr;padding-top:28px}.scene{min-height:430px}
+ h1{font-size:clamp(42px,12vw,68px)}.copy{max-width:none}.help{margin:0 auto}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.image-scene{position:absolute;inset:70px 24px 24px;display:grid;grid-template-columns:.78fr 1.22fr;gap:18px;align-items:center}
+.promptbox{background:#061727;border:1px solid #ffffff26;border-radius:22px;padding:22px;box-shadow:0 18px 48px #0005}
+.prompttitle{font-weight:900;font-size:18px;color:#9edcff;margin-bottom:13px}
+.typed{font-size:clamp(20px,2.3vw,29px);line-height:1.42;min-height:118px}
+.cursor{display:inline-block;width:3px;height:1em;background:#62c9ff;vertical-align:-.13em;animation:blink 1s step-end infinite}
+.art{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;border:1px solid #ffffff35;background:linear-gradient(#183f6a 0 43%,#f2a951 44% 49%,#163c55 50% 61%,#081d32 62%)}
+.art::before{content:"";position:absolute;left:8%;right:8%;bottom:28%;height:38%;background:
+ linear-gradient(135deg,transparent 48%,#adc6d9 49% 53%,#284b68 54%) left/48% 100% no-repeat,
+ linear-gradient(225deg,transparent 48%,#d6e5ee 49% 53%,#365a75 54%) right/48% 100% no-repeat;filter:drop-shadow(0 8px 10px #0006)}
+.art::after{content:"AI image forming…";position:absolute;left:50%;bottom:14px;transform:translateX(-50%);padding:8px 12px;border-radius:999px;background:#061525cc;font-size:14px;font-weight:850;white-space:nowrap}
+.reveal{position:absolute;inset:0;background:#0b1c30;animation:reveal 6s ease-in-out infinite}
+.spark{position:absolute;width:9px;height:9px;border-radius:50%;background:#fff7c5;box-shadow:0 0 20px #ffd96a;animation:float 3s ease-in-out infinite}
+.s1{left:22%;top:25%}.s2{left:74%;top:36%;animation-delay:-1s}.s3{left:55%;top:17%;animation-delay:-1.8s}
+@keyframes reveal{0%,18%{clip-path:inset(0 0 0 0)}48%,82%{clip-path:inset(0 0 0 100%)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes blink{50%{opacity:0}}@keyframes float{50%{transform:translateY(-12px) scale(1.4)}}
+</style><meta name="civicascent-build" content="20260927-images-natural-voice-recovery-1"></head>
+<body><div class="shell">
+<header class="top"><div class="brand">CivicAscent AI</div><div class="actions"><button id="lang">ES</button><a class="back" href="lab.html">← AI Lab</a></div></header>
+<main class="layout">
+<section class="copybox"><div class="kicker" id="kicker">AI CAPABILITY · BEGINNER GUIDE</div><h1 id="title">Create Images</h1><div class="sub" id="sub">Turn ideas into pictures.</div><p class="copy" id="copy">AI can turn a simple idea into a picture. Describe what you want to see, and AI helps create it. You can ask for changes until the image feels right.</p>
+<div class="controlrow"><button class="primary" id="play">🔊 Replay Voice</button><button id="stop">■ Stop</button></div><div class="status" id="status">Voice guide ready</div></section>
+<section class="scene"><div class="scene-label">LIVE AI EXAMPLE</div><div class="image-scene"><div class="promptbox"><div class="prompttitle">YOUR IDEA</div><div class="typed">Create a peaceful mountain lake at sunrise.<span class="cursor"></span></div></div><div class="art"><div class="reveal"></div><i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i></div></div></section>
+</main><div class="help">Short demonstration only. The animation is designed to show the idea without overwhelming a first-time learner.</div>
+<audio id="audioEn" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/ff8392f5-e4f4-4a87-a47c-42dbb0b367ad/CivicAscent_Create_Images_EN.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmUwZDUyZGMyZmY1MjBkOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDU4OTkxNn0.q7UUJWqbXNQptmkdmZJbex3WDgtbsuqlCiukHCLHdFo"></audio><audio id="audioEs" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/e95616df-e01e-4233-a5b0-3d120cf70caa/CivicAscent_Create_Images_ES.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2QzNjU0MGEwODhkMzkyNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDYyMjg1OH0.inobqVlerF1A8zacJje6HDGg3tMbn51OH8x4dgVguNg"></audio>
+<script>
+const content={en:{title:'Create Images',sub:'Turn ideas into pictures.',copy:'AI can turn a simple idea into a picture. Describe what you want to see, and AI helps create it. You can ask for changes until the image feels right.',kicker:"AI CAPABILITY · BEGINNER GUIDE"},
+es:{title:'Crear imágenes',sub:'Convierte ideas en imágenes.',copy:'La inteligencia artificial puede convertir una idea sencilla en una imagen. Describe lo que quieres ver y la inteligencia artificial te ayuda a crearlo. Puedes pedir cambios hasta que la imagen se vea como deseas.',kicker:"CAPACIDAD DE IA · GUÍA PARA PRINCIPIANTES"}};
+let lang="en"; const E=id=>document.getElementById(id); const en=E("audioEn"), es=E("audioEs");
+function current(){return lang==="en"?en:es}
+function stop(){en.pause();es.pause();en.currentTime=0;es.currentTime=0}
+function play(){stop(); const a=current(); a.play().then(()=>E("status").textContent=lang==="en"?"Playing natural voice…":"Reproduciendo voz natural…").catch(()=>E("status").textContent=lang==="en"?"Tap Replay Voice to hear the guide.":"Toca Reproducir voz para escuchar la guía.");}
+function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";}
+E("play").onclick=play; E("stop").onclick=()=>{stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
+E("lang").onclick=()=>{stop();lang=lang==="en"?"es":"en";render();setTimeout(play,120)};
+[en,es].forEach(a=>a.addEventListener("ended",()=>E("status").textContent=lang==="en"?"Voice complete":"Voz terminada"));
+window.addEventListener("load",()=>setTimeout(play,300));
+</script></div></body></html>
