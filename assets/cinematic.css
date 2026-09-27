@@ -681,3 +681,21 @@ body{
 @media(prefers-reduced-motion:reduce){
   #fx{opacity:.55}
 }
+
+
+/* Deep star tunnel refinement — 20260927-deepstar-5 */
+html,body{background:#02050a!important}
+#fx{background:#02050a!important}
+.fx-wash{
+  background:
+    radial-gradient(circle at 50% 49%,rgba(0,0,0,.10) 0%,rgba(3,9,18,.06) 20%,rgba(3,10,22,.10) 44%,rgba(0,0,0,.28) 100%)!important
+}
+.chapter.hero{background:transparent!important}
+.hero-orbit{opacity:.18!important}
+@media(max-width:800px){
+  html,body{background:#02050a!important}
+  .fx-wash{
+    background:
+      radial-gradient(circle at 50% 47%,rgba(0,0,0,.10) 0%,rgba(4,14,28,.05) 30%,rgba(0,0,0,.23) 100%)!important
+  }
+}
