@@ -91,3 +91,44 @@ ChatGPT — QC / Governance Overseer
 
 Workflow:
 Discover → Create → Critique → Revise → Build → Independent QA → QC Oversight → Production
+
+
+## Probability / Confidence Score
+For every serious concept, Agent 4 must provide a **0–100% probability estimate** representing the likelihood that the concept can become a successful CivicAscent AI living canvas under the current mission and constraints.
+
+This percentage is a structured expert estimate, not a scientific probability. It must be derived from the evaluation criteria below and must never be inflated simply because a concept is visually attractive.
+
+### Weighted Factors
+- Masterpiece visual potential — 25%
+- Senior/beginner simplicity — 20%
+- Living-canvas potential — 20%
+- Mission fit / learning-path potential — 15%
+- Accessibility / restraint — 10%
+- Technical feasibility / performance — 10%
+
+### Interpretation
+- 90–100% — exceptional candidate; deserves immediate refinement
+- 80–89% — very strong candidate; refine with targeted fixes
+- 70–79% — promising but significant weaknesses remain
+- 60–69% — interesting concept, not yet strong enough
+- Below 60% — reject or radically rethink
+
+### Comparison Rule
+When reviewing multiple concepts, Agent 4 must:
+1. Score every concept independently.
+2. Identify the **highest-percentage concept**.
+3. Explain why it leads.
+4. Identify what would increase the next-best concept's score.
+5. Avoid false precision; if two concepts are effectively tied, say so rather than inventing a meaningless gap.
+
+### Required Review Format — Updated
+For every serious candidate, Agent 4 reports:
+- Verdict
+- Probability / confidence percentage
+- Strongest quality
+- Biggest weakness
+- Senior/beginner risk
+- Living-canvas risk
+- What to remove
+- What to improve
+- Whether the concept deserves another iteration
