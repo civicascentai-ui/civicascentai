@@ -1,0 +1,5 @@
+(()=>{const toggle=document.getElementById('langToggle');const status=document.getElementById('systemStatus');let spanish=false;
+function setLang(){document.querySelectorAll('.en').forEach(el=>el.hidden=spanish);document.querySelectorAll('.es').forEach(el=>el.hidden=!spanish);document.documentElement.lang=spanish?'es':'en';toggle.textContent=spanish?'EN':'ES';toggle.setAttribute('aria-pressed',String(spanish));toggle.setAttribute('aria-label',spanish?'Switch language to English':'Switch language to Spanish');status.textContent=spanish?'ESTACIÓN EN LÍNEA':'STATION ONLINE'}
+toggle?.addEventListener('click',()=>{spanish=!spanish;setLang()});
+document.querySelectorAll('.route').forEach(route=>route.addEventListener('click',()=>{status.textContent=spanish?'ABRIENDO DESTINO…':'OPENING DESTINATION…'}));
+})();
