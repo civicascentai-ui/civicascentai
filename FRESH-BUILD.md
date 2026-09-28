@@ -20,6 +20,7 @@ The complete prior site state is frozen at:
 - GSAP — approved motion/animation toolkit for scroll-driven transitions, camera-like sequencing, morphing, timeline control, and cinematic choreography.
 - Three.js — approved real-time 3D/WebGL toolkit for interactive environments, depth, particles, spatial scenes, and visual AI demonstrations.
 - Perplexity — approved research/reference tool for free web research and citation cross-checking only; do not use paid API access under the zero-fee rule.
+- MotionSites Academy — approved reference source for scroll-scrubbed cinematic techniques, pinned 3D scenes, responsive motion patterns, and performance lessons; paid templates/services are not approved under the zero-fee rule.
 - UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
 
 ## Core UX rule
@@ -47,6 +48,19 @@ The CivicAscent AI experience must be designed as one continuous cinematic journ
 8. Generated visual assets may support the experience, but the final world and interaction design must remain original to CivicAscent AI.
 9. The cinematic journey must remain usable on mobile and include reduced-motion fallbacks.
 10. Performance is part of UX: visual ambition must be balanced against load time, frame rate, and responsiveness.
+
+## Living world rule
+The CivicAscent AI site must behave like a living cinematic environment rather than a designed webpage with animated decorations.
+1. The full viewport is the world; avoid hero blocks, cards, boxed demo panels, and stacked-section composition as the primary experience.
+2. Continuous ambient motion must exist even before interaction: camera drift, light movement, particles, weather, reflections, environmental activity, or spatial motion.
+3. Scroll should primarily move the camera or advance a cinematic timeline, not simply move page sections vertically.
+4. Users should travel through, around, or into environmental objects to move between experiences.
+5. Text should appear briefly and contextually inside the world, then dissolve or recede so the environment remains dominant.
+6. Navigation should emerge from visible world elements such as light, architecture, terrain, characters, objects, portals, or transformations.
+7. Major transitions should feel like film edits, camera moves, reveals, fly-throughs, or world transformations.
+8. Avoid static compositions that only animate on hover; the experience must feel alive at rest.
+9. Mobile must preserve the same living-world concept with simplified geometry/effects when needed for performance.
+10. A build that visually reads as a static card, hero section, or conventional landing page fails this rule even if individual elements animate.
 
 ## Visual interaction rule
 Primary interactions must feel like part of the cinematic world, not like ordinary website buttons or pill-shaped hotspot labels.
@@ -108,6 +122,14 @@ Google Stitch may be used to:
 4. Support rapid experimentation when it stays within a no-fee path.
 5. Serve as a reference source only; any final CivicAscent AI implementation must remain original and pass the project UX/testing rules.
 
+## MotionSites Academy role
+MotionSites Academy may be used to:
+1. Study scroll-scrubbed 3D storytelling and pinned cinematic scene techniques.
+2. Learn responsive animation and performance strategies for motion-heavy experiences.
+3. Compare implementation patterns for Three.js, scroll-controlled sequences, and immersive transitions.
+4. Use only free educational/reference material unless explicit approval is given for a paid service.
+5. Recreate techniques in original CivicAscent AI code and visuals rather than copying protected designs or paid templates.
+
 ## Perplexity role
 Perplexity may be used to:
 1. Research current public information and gather cited sources.
@@ -116,7 +138,7 @@ Perplexity may be used to:
 4. Use only its free web/app path unless explicit approval is given for a paid service.
 5. Never make Perplexity API access a required CivicAscent AI dependency under the zero-fee rule.
 
-Webflow, Framer, Google Stitch, GSAP, Three.js, and Perplexity are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+Webflow, Framer, Google Stitch, GSAP, Three.js, Perplexity, and MotionSites Academy are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
