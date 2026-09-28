@@ -79,7 +79,12 @@ jobs:
                   path = unquote(parsed.path)
                   if not path:
                       continue
-                  target = (html.parent / path).resolve()
+                  if path.startswith('/'):
+                      base = root / 'prototype-react' if 'prototype-react' in html.parts else root
+                      clean = path.lstrip('/')
+                      target = (base / clean).resolve()
+                  else:
+                      target = (html.parent / path).resolve()
                   try:
                       target.relative_to(root)
                   except ValueError:
