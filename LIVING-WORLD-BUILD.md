@@ -116,3 +116,25 @@ A concrete Model 05 dependency fault was found during diagnosis:
 ### Current closure state
 NOT YET CLOSED.
 The code/dependency defect is fixed, but the stop-the-line remains active until the live browser diagnostic reports all checks PASS on an actual browser. ChatGPT's external web-fetch environment still cannot reach the custom domain, so it cannot independently close the live-site verification step.
+
+
+### Browser verification closure
+Status: CLOSED
+Verified in the user's live mobile browser on September 27, 2026.
+
+The published diagnostic reported PASS for:
+- Three.js
+- GSAP
+- WebGL
+- Model 05 CSS
+- Model 05 JavaScript
+- PC preview HTML
+- Mobile preview HTML
+- Doorway preview HTML
+
+Conclusion:
+- The broken Three.js dependency was the confirmed Model 05 browser defect.
+- Local vendor copies of Three.js and GSAP resolved the dependency-loading issue.
+- The same-origin preview asset path is now verified in a real browser.
+- Stop-the-line pause is lifted for this blocker.
+- Forward development may resume from the repaired Model 05 baseline, while preserving all checkpoints and continuing the stop-the-line rule for any future defect.
