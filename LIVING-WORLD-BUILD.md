@@ -76,3 +76,30 @@ Model 04 should prove only the core experience:
 8. Saved beta checkpoint before presentation
 
 No production replacement until the model passes visual, interaction, mobile, UX, and performance review.
+
+
+## STOP-THE-LINE STATUS — browser/preview verification
+Status: PAUSED
+Date: September 27, 2026
+
+Forward design and feature work is paused until preview verification is reliable.
+
+### Verified facts
+- Model 05 source and preview files exist on the GitHub main branch.
+- The custom-domain CNAME in the repository is civicascentai.com.
+- The user has successfully opened prior civicascentai.com preview URLs on a real mobile browser.
+- ChatGPT's current web-fetch/browser environment cannot access civicascentai.com or the GitHub Pages hostname, and the container environment cannot resolve the domain. This prevents independent live-browser verification from this environment.
+
+### Engineering interpretation
+The current blocker is the verification path, not yet proven to be a production-site outage. Do not alter DNS, hosting, or production merely to compensate for a restricted verification environment without evidence that the live site itself is broken.
+
+### Required closure criteria
+Do not resume Model 05+ development until a reliable verification path is established that can:
+1. Load the exact published preview.
+2. Render the real HTML/CSS/JS assets.
+3. Test desktop and mobile viewport behavior.
+4. Exercise primary interactions and doorway routes.
+5. Capture page-screen evidence.
+6. Distinguish site/deployment failures from verification-tool network restrictions.
+
+Until these criteria pass, keep the current beta and all recovery points intact.
