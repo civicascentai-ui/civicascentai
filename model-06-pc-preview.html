@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020409">
+<title>CivicAscent AI — Model 06 Living Directive</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/model-06-preview.css?v=1">
+</head>
+<body class="model06 home" data-preview="pc">
+<a class="skip" href="#world">Skip intro</a>
+<header class="brandbar">
+  <a class="brand" href="/"><img src="assets/civicascent-logo.svg" alt=""><span>CivicAscent <b>AI</b></span></a>
+  <span class="beta">MODEL 06 · LIVING DIRECTIVE BETA</span>
+</header>
+
+<main id="world">
+  <canvas id="livingWorld" aria-hidden="true"></canvas>
+  <div class="cinema-vignette" aria-hidden="true"></div>
+
+  <section class="intro-copy" id="introCopy">
+    <p class="eyebrow">CIVICASCENT AI</p>
+    <h1>Follow the light.</h1>
+    <p class="lead">This world is already moving. Scroll or swipe to travel.</p>
+  </section>
+
+  <div class="arrival-copy" id="arrivalCopy" aria-live="polite">
+    <p class="eyebrow" id="arrivalEyebrow">DESTINATION</p>
+    <h2 id="arrivalTitle">Learn with AI.</h2>
+    <p id="arrivalLead">Ask naturally. Watch the answer become visible.</p>
+  </div>
+
+  <div class="transit-hint" id="transitHint">MOVE FORWARD</div>
+  <div class="journey-meter" aria-hidden="true"><span id="journeyMeter"></span></div>
+  <div class="scroll-space" aria-hidden="true"></div>
+</main>
+
+<script src="assets/vendor/three-r159.min.js"></script>
+<script src="assets/vendor/gsap-3.13.0.min.js"></script>
+<script src="assets/model-06-preview.js?v=1" defer></script>
+</body>
+</html>
