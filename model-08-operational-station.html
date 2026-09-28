@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071018">
+<meta name="description" content="CivicAscent AI operational station — choose a clear destination and experience practical AI.">
+<title>CivicAscent AI — Operational Station</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/model-08-operational.css?v=1">
+</head>
+<body>
+<a class="skip" href="#destinations">Skip animation and choose a destination</a>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="CivicAscent AI home">
+    <img src="assets/civicascent-logo.svg" alt="">
+    <span>CivicAscent <b>AI</b></span>
+  </a>
+  <div class="top-actions">
+    <span class="status" id="systemStatus" role="status" aria-live="polite">STATION ONLINE</span>
+    <button id="langToggle" class="control" type="button" aria-pressed="false" aria-label="Switch language to Spanish">ES</button>
+  </div>
+</header>
+
+<main>
+<section class="station" aria-labelledby="heroTitle">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="arrival-glow" aria-hidden="true"></div>
+
+  <div class="hero">
+    <p class="eyebrow en">CIVICASCENT CENTRAL · LIVE EXPERIENCE</p>
+    <p class="eyebrow es" hidden>CIVICASCENT CENTRAL · EXPERIENCIA EN VIVO</p>
+    <h1 id="heroTitle" class="en">Your next idea<br><span>leaves from here.</span></h1>
+    <h1 class="es" hidden>Tu próxima idea<br><span>sale desde aquí.</span></h1>
+    <p class="lead en">Choose one destination. Every route leads to a working AI experience.</p>
+    <p class="lead es" hidden>Elige un destino. Cada ruta lleva a una experiencia de IA funcional.</p>
+  </div>
+
+  <nav class="board" id="destinations" aria-label="AI experience destinations">
+    <div class="board-head">
+      <span class="en">NEXT DEPARTURES</span><span class="es" hidden>PRÓXIMAS SALIDAS</span>
+      <span class="live-dot">LIVE</span>
+    </div>
+
+    <a class="route" href="living-ai-lab.html">
+      <span class="route-no">01</span>
+      <span class="route-copy">
+        <strong class="en">Experience AI Live</strong><strong class="es" hidden>Experimenta IA en Vivo</strong>
+        <small class="en">Create · Voice · Translate · Plan</small><small class="es" hidden>Crear · Voz · Traducir · Planear</small>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+
+    <a class="route" href="ai-lab.html">
+      <span class="route-no">02</span>
+      <span class="route-copy">
+        <strong class="en">Build Something</strong><strong class="es" hidden>Construye Algo</strong>
+        <small class="en">Turn an idea into a practical AI result</small><small class="es" hidden>Convierte una idea en un resultado práctico</small>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+
+    <a class="route" href="plan.html">
+      <span class="route-no">03</span>
+      <span class="route-copy">
+        <strong class="en">Turn a Goal into a Plan</strong><strong class="es" hidden>Convierte una Meta en un Plan</strong>
+        <small class="en">Use AI to organize clear next steps</small><small class="es" hidden>Usa IA para organizar próximos pasos</small>
+      </span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </nav>
+
+  <div class="platform" aria-hidden="true">
+    <div class="rail rail-one"></div><div class="rail rail-two"></div>
+  </div>
+  <div class="train" id="train" aria-hidden="true">
+    <div class="engine"><i></i></div>
+    <div class="car"><i></i></div><div class="car"><i></i></div><div class="car"><i></i></div>
+  </div>
+
+  <div class="station-label en" aria-hidden="true">CIVICASCENT CENTRAL</div>
+  <div class="station-label es" hidden aria-hidden="true">CENTRAL CIVICASCENT</div>
+</section>
+</main>
+
+<footer class="access-note">
+  <span class="en">Keyboard ready · Reduced-motion aware · Mobile ready</span>
+  <span class="es" hidden>Compatible con teclado · Movimiento reducido · Móvil</span>
+</footer>
+<script src="assets/model-08-operational.js?v=1" defer></script>
+</body>
+</html>
