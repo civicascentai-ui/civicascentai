@@ -19,6 +19,7 @@ The complete prior site state is frozen at:
 - Google Stitch — approved suggested design/UX ideation and prototyping reference, subject to the zero-fee rule.
 - GSAP — approved motion/animation toolkit for scroll-driven transitions, camera-like sequencing, morphing, timeline control, and cinematic choreography.
 - Three.js — approved real-time 3D/WebGL toolkit for interactive environments, depth, particles, spatial scenes, and visual AI demonstrations.
+- Perplexity — approved research/reference tool for free web research and citation cross-checking only; do not use paid API access under the zero-fee rule.
 - UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
 
 ## Core UX rule
@@ -107,7 +108,15 @@ Google Stitch may be used to:
 4. Support rapid experimentation when it stays within a no-fee path.
 5. Serve as a reference source only; any final CivicAscent AI implementation must remain original and pass the project UX/testing rules.
 
-Webflow, Framer, Google Stitch, GSAP, and Three.js are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+## Perplexity role
+Perplexity may be used to:
+1. Research current public information and gather cited sources.
+2. Cross-check design, technology, accessibility, SEO, and market claims.
+3. Compare implementation approaches before committing them to the build.
+4. Use only its free web/app path unless explicit approval is given for a paid service.
+5. Never make Perplexity API access a required CivicAscent AI dependency under the zero-fee rule.
+
+Webflow, Framer, Google Stitch, GSAP, Three.js, and Perplexity are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
