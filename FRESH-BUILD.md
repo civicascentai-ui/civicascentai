@@ -46,6 +46,17 @@ Every cinematic moment must still make the next action obvious to someone who is
 9. Every interaction must lead to a purposeful, flowing experience with pertinent information.
 10. UX review is required before any module is considered complete.
 
+## Active art-direction rule
+The resent visual reference set is the current CivicAscent AI art-direction pack and should guide Model 05 and later builds until explicitly replaced.
+1. Movement, light, and depth lead the experience; text supports; conventional UI stays secondary.
+2. Favor cinematic scrollytelling, glow-driven navigation, premium sci-fi framing, spatial depth, environmental motion, and strong focal lighting.
+3. Use flash-era nostalgia and sci-fi gaming language as accents only; avoid cluttered dashboard aesthetics.
+4. The experience should feel like travel through one connected CivicAscent universe, not a stack of styled sections.
+5. Glowing destinations, portals, stations, architecture, terrain, characters, or moving environmental objects should act as navigation.
+6. Every linked doorway must preserve the same cinematic baseline while allowing a distinct subject, mood, and AI capability.
+7. Static hero blocks, feature cards, pill-hotspots, oversized CTA panels, brochure layouts, and text-heavy compositions fail this direction when used as the primary experience.
+8. Reference sites and screenshots are inspiration for motion language, composition, pacing, and technique only; final CivicAscent visuals and code must remain original.
+
 ## Cinematic scroll-first rule
 The CivicAscent AI experience must be designed as one continuous cinematic journey first, with page structure and interface layered into that journey afterward.
 1. Build the visual world before building the interface.
