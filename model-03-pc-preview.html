@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#02040a">
+<title>CivicAscent AI — Model 03 Cinematic World</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/model-03-preview.css?v=1">
+</head>
+<body data-preview="desktop">
+<a class="skip" href="#scene">Skip cinematic intro</a>
+<canvas id="cosmos" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="/"><img src="assets/civicascent-logo.svg" alt=""><span>CivicAscent <b>AI</b></span></a>
+  <span class="build">MODEL 03 · CINEMATIC BETA</span>
+</header>
+
+<main id="scene">
+  <section class="cinema" aria-label="Cinematic AI experience">
+    <div class="copy">
+      <p class="eyebrow">A brighter tomorrow with AI</p>
+      <h1>Step into<br><span>what AI can become.</span></h1>
+      <p class="lead">Move through the light. The world responds before the words do.</p>
+    </div>
+
+    <button class="eye" id="eye" aria-label="Enter the AI experience">
+      <span class="eye-shell"></span>
+      <span class="iris"></span>
+      <span class="pupil"></span>
+      <span class="flare"></span>
+    </button>
+
+    <div class="path path-a" aria-hidden="true"></div>
+    <div class="path path-b" aria-hidden="true"></div>
+    <div class="path path-c" aria-hidden="true"></div>
+
+    <div class="hint" id="hint">Tap the eye. Follow the light.</div>
+  </section>
+
+  <section class="experience" id="experience" aria-live="polite">
+    <div class="stage stage-learning active" data-stage="0">
+      <div class="figure"></div>
+      <div class="voice-rings"></div>
+      <div class="stage-copy"><small>AI FOR LEARNING</small><strong>Ask. Hear. Understand.</strong></div>
+    </div>
+
+    <div class="stage stage-create" data-stage="1">
+      <div class="spark"></div>
+      <div class="shape s1"></div><div class="shape s2"></div><div class="shape s3"></div>
+      <div class="stage-copy"><small>AI FOR CREATING</small><strong>An idea becomes visible.</strong></div>
+    </div>
+
+    <div class="stage stage-opportunity" data-stage="2">
+      <div class="grid"></div>
+      <div class="route"></div>
+      <div class="stage-copy"><small>AI FOR OPPORTUNITY</small><strong>A question becomes a path.</strong></div>
+    </div>
+
+    <button class="world-tap" id="worldTap" aria-label="Advance to the next AI experience"></button>
+    <div class="progress" aria-hidden="true"><i class="active"></i><i></i><i></i></div>
+    <div class="next-hint">Tap anywhere in the scene to continue</div>
+  </section>
+
+  <section class="portal-scene" id="portalScene">
+    <button class="portal" id="portal" aria-label="Enter the Living AI Lab">
+      <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span><span class="core"></span>
+    </button>
+    <div class="portal-copy">
+      <p class="eyebrow">The next world is waiting</p>
+      <h2>Enter the<br><span>Living AI Lab.</span></h2>
+      <p>Tap the light. The transition becomes the navigation.</p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/model-03-preview.js?v=1" defer></script>
+</body>
+</html>
