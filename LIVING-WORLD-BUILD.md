@@ -227,3 +227,21 @@ Conclusion:
 - Model 07 is verified as a valid working preview baseline.
 - Stop-the-line gate for Model 07 is closed.
 - Forward visual review may proceed from this exact accessible train-station build while preserving the beta and checkpoints.
+
+
+### Model 07 rejection
+Status: REJECTED / STOP-THE-LINE ACTIVE
+Date: September 27, 2026
+
+Reason:
+- Model 07 visually reads as a CSS/web mockup of a station rather than a convincing living cinematic train-station experience.
+- The departures board behaves like a large card, which violates the established no-card/living-world direction.
+- The train is illustrative rather than realistic enough to carry the intended cinematic experience.
+- The scene does not create a strong sense of presence, travel, atmosphere, or premium AI capability.
+- The result does not meet the project's visual-quality mission even though accessibility intentions were improved.
+
+Directive:
+- Do not polish or extend Model 07.
+- Preserve it only as a rejected reference.
+- Stop forward coding until the next train-station direction is established visually first.
+- The next attempt must begin from visual concept approval/storyboard frames before implementation.
