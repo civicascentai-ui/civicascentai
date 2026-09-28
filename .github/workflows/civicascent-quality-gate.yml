@@ -1,0 +1,122 @@
+name: CivicAscent Quality Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    name: Integrity and Link Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify critical project files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f index.html
+          test -d assets
+          test -d checkpoints
+          test -f AGENT_04_CRITICAL_EVALUATION_DIRECTOR.md
+          test -f HARNESS_OPUS_OPERATING_RULE.md
+
+      - name: Reject obvious merge conflict markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)'             --exclude-dir=.git             --exclude='*.md'             .; then
+            echo "Merge conflict markers found."
+            exit 1
+          fi
+
+      - name: Check internal HTML links
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse, unquote
+
+          root = Path('.').resolve()
+          errors = []
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  for key in ("href", "src"):
+                      if key in attrs:
+                          self.links.append(attrs[key])
+
+          for html in Path('.').rglob('*.html'):
+              if '.git' in html.parts:
+                  continue
+              parser = Parser()
+              try:
+                  parser.feed(html.read_text(encoding='utf-8', errors='ignore'))
+              except Exception as e:
+                  errors.append(f"{html}: could not parse ({e})")
+                  continue
+
+              for raw in parser.links:
+                  if not raw or raw.startswith(('#','mailto:','tel:','javascript:','data:')):
+                      continue
+                  parsed = urlparse(raw)
+                  if parsed.scheme or parsed.netloc:
+                      continue
+                  path = unquote(parsed.path)
+                  if not path:
+                      continue
+                  target = (html.parent / path).resolve()
+                  try:
+                      target.relative_to(root)
+                  except ValueError:
+                      errors.append(f"{html}: link escapes repo: {raw}")
+                      continue
+                  if path.endswith('/'):
+                      target = target / 'index.html'
+                  if not target.exists():
+                      errors.append(f"{html}: missing target: {raw}")
+
+          if errors:
+              print("\n".join(errors))
+              raise SystemExit(1)
+          print("Internal link check passed.")
+          PY
+
+      - name: Check HTML files are non-empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -name '*.html' -not -path './.git/*' -print0 | while IFS= read -r -d '' f; do
+            test -s "$f" || { echo "Empty HTML file: $f"; exit 1; }
+          done
+
+  governance:
+    name: Governance Guardrails
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify active Safari governance files
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -qi "Safari" checkpoints/SAVEPOINT-HARNESS-OPUS-APPROVED.md
+          grep -qi "constant evaluation loop" AGENT_04_CRITICAL_EVALUATION_DIRECTOR.md
+          grep -qi "specialist engineering capability" HARNESS_OPUS_OPERATING_RULE.md
