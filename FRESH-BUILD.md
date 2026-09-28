@@ -129,7 +129,7 @@ ASTRA6 is included in the fresh rebuild as a structured experimentation and revi
 The current ASTRA6 implementation remains scaffold-only until a supported remote interface is available.
 
 ## Core presentation/testing rule
-Nothing is presented as a preview, test build, module, or completed experience until the exact rendered version has been verified. Before presentation:
+Nothing is presented as a preview, test build, module, or completed experience until the exact rendered version has been verified. Every true build must also be preserved as a test/beta recovery point before it moves forward. Before presentation:
 1. Confirm the intended build/branch is actually being served.
 2. Inspect the rendered page visually.
 3. Test primary navigation, interactions, buttons, and routes.
@@ -137,7 +137,17 @@ Nothing is presented as a preview, test build, module, or completed experience u
 5. Confirm the visual changes requested are actually visible.
 6. Complete UX review for clarity, flow, accessibility, and next-step guidance.
 7. Run a page-screen test after each true build and use it as the visual reference for review.
-8. Present only after those checks pass.
+8. Always provide both a mobile preview link and a desktop/PC preview link for every true build.
+9. Save every true build as a protected test or beta recovery point before further edits, so the last working state can be restored after data loss, corruption, or a bad change.
+10. Never overwrite the only working copy of a build; preserve a recoverable checkpoint first.
+11. Present only after those checks pass.
+
+## Build protection rule
+1. Every true build gets its own test/beta recovery point.
+2. The saved point must reference the exact verified commit used for preview.
+3. Mobile and desktop/PC preview links are mandatory deliverables for review.
+4. A newer build must never destroy the last verified working build.
+5. Recovery branches/checkpoints remain untouched until a newer verified build supersedes them.
 
 ## Rebuild rule
 Do not modify the archive branch. Build the new CivicAscent AI experience here, then review and test before replacing production.
