@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CivicAscent AI — Model 07 Diagnostic</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0a0f14;color:#eef7ff;font:17px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;padding:30px}
+main{max-width:820px;margin:auto}h1{font-size:clamp(2rem,6vw,4rem);margin:.1em 0}.sub{color:#b7c4ce;margin-bottom:26px}.row{display:grid;grid-template-columns:1fr auto;gap:18px;padding:16px 0;border-bottom:1px solid #ffffff18}.status{font-weight:900}.pass{color:#79ffc0}.fail{color:#ff8080}.wait{color:#ffd47a}#summary{margin-top:28px;padding:18px;border:1px solid #ffffff20;border-radius:14px}.small{font-size:.9rem;color:#9fb1c3;word-break:break-word}
+</style>
+</head>
+<body>
+<main>
+<p class="sub">MODEL 07 · STOP-THE-LINE VERIFICATION</p>
+<h1>Accessible Station diagnostic</h1>
+<p class="sub">Checks the exact live files required by the moving train-station preview.</p>
+<div id="checks"></div>
+<div id="summary"><strong>Running checks…</strong></div>
+<p class="small" id="details"></p>
+</main>
+<script>
+(async()=>{
+ const checks=[
+  ['Model 07 CSS',()=>fetch('assets/model-07-preview.css',{cache:'no-store'}).then(r=>r.ok)],
+  ['Model 07 JS',()=>fetch('assets/model-07-preview.js',{cache:'no-store'}).then(r=>r.ok)],
+  ['PC preview HTML',()=>fetch('model-07-pc-preview.html',{cache:'no-store'}).then(r=>r.ok)],
+  ['Mobile preview HTML',()=>fetch('model-07-mobile-preview.html',{cache:'no-store'}).then(r=>r.ok)],
+  ['Doorway preview HTML',()=>fetch('model-07-doorway-preview.html',{cache:'no-store'}).then(r=>r.ok)],
+  ['Reduced motion supported',()=>matchMedia('(prefers-reduced-motion: reduce)').media.includes('prefers-reduced-motion')],
+  ['Viewport API available',()=>!!window.innerWidth && !!window.innerHeight]
+ ];
+ const box=document.getElementById('checks'),results=[];
+ for(const [name,fn] of checks){
+   const row=document.createElement('div');row.className='row';row.innerHTML='<span>'+name+'</span><span class="status wait">CHECKING</span>';box.appendChild(row);
+   let ok=false;try{ok=await fn()}catch(e){ok=false}
+   row.lastChild.textContent=ok?'PASS':'FAIL';row.lastChild.className='status '+(ok?'pass':'fail');results.push(ok);
+ }
+ const ok=results.every(Boolean),summary=document.getElementById('summary');
+ summary.innerHTML=ok?'<strong class="pass">ALL CHECKS PASS</strong><div>Model 07 live preview files are available.</div>':'<strong class="fail">CHECK FAILED</strong><div>STOP. Repair the failed item before accepting this preview.</div>';
+ document.getElementById('details').textContent='UA: '+navigator.userAgent+' | Viewport: '+innerWidth+'×'+innerHeight+' | URL: '+location.href;
+})();
+</script>
+</body>
+</html>
