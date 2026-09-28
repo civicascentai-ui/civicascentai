@@ -183,3 +183,28 @@ Conclusion:
 - Model 06 is verified as a valid working preview baseline.
 - Stop-the-line gate for Model 06 is closed.
 - Forward review and iteration may resume from this exact build while preserving the beta and checkpoints.
+
+
+## Model 07 — Accessible Moving Station
+Status: BUILT / PUBLISHED / PENDING LIVE BROWSER VERIFICATION
+
+Purpose:
+- Replace abstract living-world navigation with a clearer moving train/station theme.
+- Prioritize older users and visitors with possible sight or mobility challenges.
+- Use large readable text, strong contrast, large tap targets, obvious destination labels, and reduced visual noise.
+- Keep train/station motion cinematic but understandable.
+- Preserve the same station baseline in every linked doorway.
+
+Protected beta:
+- Branch: beta/model-07-accessible-station
+- Build commit: b35ac37174c518fc8f264f575b4ed045c35af7fe
+
+Published files:
+- PC preview HTML
+- Mobile preview HTML
+- Shared doorway preview HTML
+- Model 07 CSS and JavaScript
+- Model 07 browser diagnostic
+
+Stop-the-line gate:
+Do not mark Model 07 accepted or continue forward development until the Model 07 live browser diagnostic reports ALL CHECKS PASS in the actual review browser.
