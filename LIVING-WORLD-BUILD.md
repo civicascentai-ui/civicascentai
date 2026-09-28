@@ -138,3 +138,28 @@ Conclusion:
 - The same-origin preview asset path is now verified in a real browser.
 - Stop-the-line pause is lifted for this blocker.
 - Forward development may resume from the repaired Model 05 baseline, while preserving all checkpoints and continuing the stop-the-line rule for any future defect.
+
+
+## Model 06 — Living Directive
+Status: BUILT / PUBLISHED / PENDING LIVE BROWSER VERIFICATION
+
+Purpose:
+- Establish a stronger living starting point from the verified Model 05 baseline.
+- Keep the world moving before user input.
+- Make scroll/swipe feel like travel through a connected environment.
+- Use environmental glowing gates instead of cards or pill hotspots.
+- Preserve the same living-world baseline inside every linked doorway.
+
+Protected beta:
+- Branch: beta/model-06-living-directive
+- Build commit: b17e21fd0f3c70794363941691c65d07dec7a7db
+
+Published integrity checks completed:
+- PC preview HTML exists and references local Three.js plus Model 06 preview assets.
+- Mobile preview HTML exists and references local Three.js plus Model 06 preview assets.
+- Doorway preview HTML exists and references local Three.js plus Model 06 preview assets.
+- Preview CSS and JavaScript exist on main.
+- Model 06 browser diagnostic exists on main.
+
+Stop-the-line gate:
+Do not mark Model 06 preview accepted or continue forward development until the Model 06 live browser diagnostic reports ALL CHECKS PASS in the actual review browser.
