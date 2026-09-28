@@ -4,28 +4,39 @@
 Build a visually exceptional, immersive, accessible AI experience that demonstrates practical AI power and supports a sustainable business.
 
 ## Active concept
-Safari Learning World — fluid living canvas.
+Prototype 09 — Safari Learning World.
+
+## Governance state
+Agents 1–4 are currently FROZEN following the 2026-09-28 agent-failure incident.
+No agent may create, approve, revise, publish, or advance a CivicAscent build until explicitly requalified or replaced under a stricter approval system.
 
 ## Agent 1 — Experience Director
-Owns experience architecture, cinematic direction, interaction clarity, storytelling, motion, accessibility intent, and the Osmo-level interaction benchmark.
-Current assignment: protect the continuous Safari living-canvas direction, one dominant environmental idea, no card grid, no brochure treatment, and obvious next actions for seniors and first-time AI users.
+State: FROZEN / FAILED PENDING REQUALIFICATION.
+Mandate if reactivated: preserve Prototype 09 exactly as the active visual direction, including cinematic golden-hour savanna, elevated lodge/terrace viewpoint, elephants at the watering hole as the dominant living event, layered depth, warm premium light, and environmental interface without cards or brochure treatment.
 
 ## Agent 2 — Lead Production Engineer
-Owns implementation, architecture, browser/mobile behavior, performance, integrations, version control, deployment, and stability.
-Current assignment: restore and validate the Safari React Prototype A motion language from checkpoint 7e0d5654ad6854b6dbd48249bb5ca7a5c0ec843b without introducing the rejected six-path/cardboard prototype.
+State: FROZEN / FAILED PENDING REQUALIFICATION.
+Mandate if reactivated: implement Prototype 09 without degrading realism, accessibility, performance, or mobile usability. The rejected Safari React Prototype A is historical engineering reference only and must not be restored as the active candidate.
 
 ## Agent 3 — Quality & Accessibility Director
-Owns independent release review, accessibility validation, navigation integrity, device/browser checks, performance acceptance, and first-time-user clarity.
-Current assignment: independently verify the recovered Safari build on mobile and desktop, reduced-motion behavior, readability, interaction clarity, and the no-known-defect rule before any promotion.
+State: FROZEN / FAILED PENDING REQUALIFICATION.
+Mandate if reactivated: independently validate mobile and desktop behavior, accessibility, readability, navigation, reduced-motion behavior, performance, links, and first-time-user clarity before any promotion.
 
 ## Agent 4 — Critical Evaluation Director
-Runs an independent critique loop. Agent 4 may PASS, REVISE, REJECT, or HOLD candidates but cannot promote them.
-Current assignment: judge the recovered Safari build against the living-canvas standard and explicitly reject static/cardboard, clipart, brochure, game-like, or superficial-animation drift.
+State: FROZEN / FAILED PENDING REQUALIFICATION.
+Mandate if reactivated: independently challenge visual quality, business effectiveness, accessibility, and living-canvas integrity. Reject static, cardboard, clipart, brochure, game-like, or superficial-animation drift.
 
 ## QC governance
-No known defect may be carried forward. No agent self-approves final release. Changes flow through Experience → Engineering → QA → Agent 4 critique → QC oversight → Production.
+ChatGPT remains QC / Governance Overseer.
+No known defect may be carried forward.
+No agent may self-approve final release.
+Visual proof against the locked Prototype 09 reference is required before engineering or QA can mark a candidate valid.
 
 ## Current candidate
-prototype-react / Safari React Prototype A on recovery branch `recovery-fluid-safari-2026-09-28`.
+There is currently NO verified working Prototype 09 implementation candidate.
+The active recovery target is the locked Prototype 09 / Safari Learning World reference.
 
-Production main remains untouched until this recovery candidate is visually verified.
+## Protection
+Replit remains locked.
+Production main remains untouched.
+GitHub recovery branch remains the source of truth until a Prototype 09 candidate passes visual and technical verification.
