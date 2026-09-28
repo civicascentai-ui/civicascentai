@@ -21,6 +21,10 @@ The complete prior site state is frozen at:
 - Three.js — approved real-time 3D/WebGL toolkit for interactive environments, depth, particles, spatial scenes, and visual AI demonstrations.
 - Perplexity — approved research/reference tool for free web research and citation cross-checking only; do not use paid API access under the zero-fee rule.
 - MotionSites Academy — approved reference source for scroll-scrubbed cinematic techniques, pinned 3D scenes, responsive motion patterns, and performance lessons; paid templates/services are not approved under the zero-fee rule.
+- Theatre.js — approved active motion-authoring layer for Three.js camera, lights, materials, and cinematic sequences; use Studio during development and ship exported animation state without Studio in production.
+- Spline Free — approved 3D prototyping and asset-reference tool; free web exports may include Spline branding/watermark, while the free 3D Library is approved for commercial-use assets subject to current terms.
+- Threlte — approved conditional framework for a future Svelte-based 3D build; it is MIT-licensed and combines Three.js with integrations such as Theatre.js, but should not be introduced unless the build intentionally adopts Svelte.
+- PeachWeb — approved reference/prototyping benchmark for no-code/low-code WebGL, keyframe animation, responsive scroll effects, and performance ideas; do not make it a production dependency under the zero-fee/custom-domain rule.
 - ChatGPT image generation/editing — primary in-chat visual ideation and targeted editing tool; preferred when it can meet the need without adding a new paid dependency.
 - Adobe Firefly Free — approved optional visual-generation/reference tool while staying within its free allowance; do not create a paid dependency without approval.
 - Canva Free — approved optional design/composition tool for mockups, social assets, and layout experiments within its free allowance; paid AI/top-up features require approval.
@@ -147,6 +151,33 @@ Google Stitch may be used to:
 6. Before any external AI-generated asset becomes a production asset, confirm the current licensing/commercial-use terms for the plan actually used.
 7. The visual toolkit supports the Living World; it must not pull the design back toward static poster/card compositions.
 
+## Theatre.js role
+Theatre.js is an approved active tool for the Living World build:
+1. Use it to author and fine-tune cinematic camera movement, lighting, material values, and synchronized Three.js sequences.
+2. Keep Theatre Studio development-only; production should load exported animation state without the authoring UI.
+3. Use Theatre.js where timeline precision improves the cinematic experience; GSAP remains valid for scroll control, DOM choreography, and transitions.
+4. Avoid duplicate animation systems controlling the same property at the same time.
+
+## Spline role
+Spline Free may be used to:
+1. Prototype interactive 3D scenes and object ideas quickly.
+2. Study states, events, actions, physics, particles, lighting, and camera behavior before rebuilding approved ideas in CivicAscent code.
+3. Use Spline's free 3D Library assets where appropriate; current Spline documentation states library models are free for commercial use.
+4. Treat free web exports as prototypes because the free plan includes Spline branding/watermarks.
+5. Do not use paid AI generation, paid export features, or paid subscriptions without explicit approval.
+
+## Threlte role
+Threlte may be used only if CivicAscent intentionally moves to a Svelte-based 3D architecture:
+1. It is a Three.js framework for Svelte and is MIT-licensed.
+2. Its Theatre.js integration is particularly relevant to the Living World direction.
+3. Do not add Svelte/Threlte merely for novelty; the migration must reduce complexity or materially improve maintainability/performance.
+
+## PeachWeb role
+PeachWeb may be used as a reference/prototyping benchmark:
+1. Study no-code/low-code Three.js workflows, keyframe animation, responsive UI, scroll effects, shader/effect concepts, and performance patterns.
+2. The free plan is suitable for personal experiments, but custom-domain/custom-code production capabilities require paid plans.
+3. Under the zero-fee rule, recreate useful techniques in our own Three.js/Theatre.js/GSAP stack instead of depending on PeachWeb hosting.
+
 ## MotionSites Academy role
 MotionSites Academy may be used to:
 1. Study scroll-scrubbed 3D storytelling and pinned cinematic scene techniques.
@@ -163,7 +194,7 @@ Perplexity may be used to:
 4. Use only its free web/app path unless explicit approval is given for a paid service.
 5. Never make Perplexity API access a required CivicAscent AI dependency under the zero-fee rule.
 
-Webflow, Framer, Google Stitch, GSAP, Three.js, Perplexity, and MotionSites Academy are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
+Webflow, Framer, Google Stitch, GSAP, Three.js, Theatre.js, Spline, Threlte, PeachWeb, Perplexity, and MotionSites Academy are reference or implementation resources, not permission to copy another creator's site. CivicAscent AI should borrow techniques and principles while keeping the final design original.
 
 ## ASTRA6 role
 ASTRA6 is included in the fresh rebuild as a structured experimentation and review layer:
