@@ -68,6 +68,16 @@ The CivicAscent AI site must behave like a living cinematic environment rather t
 9. Mobile must preserve the same living-world concept with simplified geometry/effects when needed for performance.
 10. A build that visually reads as a static card, hero section, or conventional landing page fails this rule even if individual elements animate.
 
+## Linked doorway baseline rule
+Every linked doorway or child experience must inherit the same Living World baseline as the entry experience.
+1. A doorway may change subject, environment, color mood, or AI capability, but it may not fall back to a conventional static page, card layout, or brochure structure.
+2. Every doorway must preserve continuous ambient motion, cinematic depth, environmental navigation, mobile behavior, accessibility, and clear next-step guidance.
+3. Shared interaction grammar is mandatory: light, camera movement, spatial objects, portals, terrain, architecture, characters, or other environmental cues should behave consistently across worlds.
+4. Each child experience must feel like another location in the same CivicAscent universe rather than a separate website.
+5. Doorway transitions should visually carry the visitor from one world to the next rather than abruptly replacing the experience.
+6. The same performance, reduced-motion, no-fee, preview/testing, and beta-protection standards apply to every linked doorway.
+7. A linked page that breaks the Living World baseline fails review even if the parent experience passes.
+
 ## Visual interaction rule
 Primary interactions must feel like part of the cinematic world, not like ordinary website buttons or pill-shaped hotspot labels.
 1. Prefer environmental interaction: glowing objects, moving light, animated surfaces, portals, doors, screens, pathways, characters, spatial cues, and camera travel.
