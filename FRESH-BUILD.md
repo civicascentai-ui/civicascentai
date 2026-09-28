@@ -34,6 +34,19 @@ Every cinematic moment must still make the next action obvious to someone who is
 9. Every interaction must lead to a purposeful, flowing experience with pertinent information.
 10. UX review is required before any module is considered complete.
 
+## Cinematic scroll-first rule
+The CivicAscent AI experience must be designed as one continuous cinematic journey first, with page structure and interface layered into that journey afterward.
+1. Build the visual world before building the interface.
+2. Camera movement, depth, lighting, atmosphere, and environmental motion should carry the story.
+3. Scroll or deliberate user movement may control camera progress, reveal scenes, and advance the narrative.
+4. The visitor should feel they are moving through a world, not scrolling between stacked website sections.
+5. Each major scene must visually demonstrate an AI capability before explanatory copy appears.
+6. Use Three.js/WebGL for spatial depth and interactive environments when it materially improves the experience.
+7. Use GSAP or equivalent no-fee animation techniques to choreograph camera travel, reveals, zooms, fades, and synchronized transitions.
+8. Generated visual assets may support the experience, but the final world and interaction design must remain original to CivicAscent AI.
+9. The cinematic journey must remain usable on mobile and include reduced-motion fallbacks.
+10. Performance is part of UX: visual ambition must be balanced against load time, frame rate, and responsiveness.
+
 ## Visual interaction rule
 Primary interactions must feel like part of the cinematic world, not like ordinary website buttons or pill-shaped hotspot labels.
 1. Prefer environmental interaction: glowing objects, moving light, animated surfaces, portals, doors, screens, pathways, characters, spatial cues, and camera travel.
