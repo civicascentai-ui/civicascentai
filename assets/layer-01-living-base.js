@@ -1,0 +1,7 @@
+(()=>{const root=document.documentElement;const canvas=document.getElementById('atmosphere');const ctx=canvas.getContext('2d',{alpha:true});let w=0,h=0,dpr=1,particles=[],raf=0,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);const count=Math.max(28,Math.min(90,Math.round(w/18)));particles=Array.from({length:count},()=>({x:Math.random()*w,y:Math.random()*h,s:.3+Math.random()*1.3,v:.08+Math.random()*.24,a:.08+Math.random()*.28,drift:(Math.random()-.5)*.08}))}
+function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='#d9f7ff';for(const p of particles){ctx.globalAlpha=p.a;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fill();if(!reduced){p.y-=p.v;p.x+=p.drift;if(p.y<-3){p.y=h+3;p.x=Math.random()*w}if(p.x<-3)p.x=w+3;if(p.x>w+3)p.x=-3}}ctx.globalAlpha=1;raf=requestAnimationFrame(draw)}
+function pointer(e){if(reduced)return;const x=(e.clientX/w-.5)*2;const y=(e.clientY/h-.5)*2;root.style.setProperty('--x',x.toFixed(3));root.style.setProperty('--y',y.toFixed(3))}
+addEventListener('resize',resize,{passive:true});addEventListener('pointermove',pointer,{passive:true});addEventListener('pointerleave',()=>{root.style.setProperty('--x',0);root.style.setProperty('--y',0)},{passive:true});resize();draw();
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf)}else{draw()}});
+})();
