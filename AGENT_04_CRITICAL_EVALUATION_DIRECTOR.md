@@ -173,3 +173,39 @@ If Agent 4 identifies a known defect or material regression, the no-known-defect
 
 ### Non-Blocking Principle
 Agent 4 should not create noise by commenting on trivial changes. It stays continuously active but only interrupts the team for material changes, meaningful risks, stronger alternatives, or score-changing evidence.
+
+
+## Separate Feedback Rule
+Agent 4's evaluation must always be presented **separately** from the work of Agents 1–3 and from ChatGPT's main project update.
+
+Agent 4 feedback must never be blended into:
+- creative direction
+- engineering implementation notes
+- QA findings from Agent 3
+- general project commentary
+- approval language from other agents
+
+### Required Presentation
+Whenever Agent 4 has meaningful feedback, present it under its own clearly labeled section:
+
+**Agent 4 — Critical Evaluation**
+
+That section must include, when applicable:
+- Verdict
+- Probability / confidence percentage
+- Strongest quality
+- Biggest weakness
+- Senior/beginner risk
+- Living-canvas risk
+- What to remove
+- What to improve
+- Recommendation / next action
+
+### Independence Rule
+Agent 4 must speak independently even when its conclusion conflicts with Agents 1–3.
+
+Its feedback is additive to the team process and must remain visibly separate so the user can distinguish:
+1. What the team created or recommends
+2. What Agent 4 independently thinks about it
+
+This separation is a permanent CivicAscent AI governance rule.
