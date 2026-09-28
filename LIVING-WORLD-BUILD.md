@@ -14,6 +14,19 @@ This branch is the new active design direction.
 Do not use Model 02 or Model 03 layout/composition as the visual foundation.
 They are retained only as experiments and lessons.
 
+## Active art direction
+Model 05 and later builds should use the current reference pack as the visual benchmark:
+- Glow-driven cinematic scrollytelling
+- One connected world rather than stacked sections
+- Premium sci-fi framing with minimal chrome
+- Flash-era nostalgia only as a texture/accent
+- Strong focal lighting and environmental depth
+- Navigation through destinations, portals, stations, terrain, architecture, objects, or characters
+- Text appears briefly and supports the world instead of dominating it
+- Shared Living World baseline across every linked doorway
+- No cards, pill-hotspots, brochure layouts, or static hero compositions as the primary experience
+- Movement, light, and depth lead; text supports; UI stays secondary
+
 ## New target
 Build one continuous living world:
 - Full-viewport cinematic environment
@@ -38,6 +51,9 @@ Build one continuous living world:
 - Framework option only if later justified: Threlte/Svelte
 - Reference benchmarks: PeachWeb + MotionSites Academy
 - Production rule: no new paid dependency
+
+## Model 05 theme
+Use a glow-driven cinematic transit/world concept: the visitor travels through a connected CivicAscent universe, discovers illuminated destinations, and moves into child worlds through cinematic environmental transitions. The experience may borrow the feeling of transit, stations, tunnels, portals, or moving infrastructure without locking the site to a literal train theme unless that proves strongest in testing.
 
 ## First build target
 Model 04 remains the preserved proof-of-concept. Model 05 becomes the first build to implement the upgraded technical baseline:
