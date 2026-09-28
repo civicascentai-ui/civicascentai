@@ -103,3 +103,16 @@ Do not resume Model 05+ development until a reliable verification path is establ
 6. Distinguish site/deployment failures from verification-tool network restrictions.
 
 Until these criteria pass, keep the current beta and all recovery points intact.
+
+
+### Browser repair finding
+A concrete Model 05 dependency fault was found during diagnosis:
+- Model 05 referenced Three.js r180 using the removed legacy path build/three.min.js.
+- Three.js removed the legacy three.js/three.min.js build beginning after r160; r180 requires the module build or another supported loading strategy.
+- Model 05 is now repaired to use repository-local vendor assets for Three.js r159 and GSAP 3.13.0, eliminating the broken Three.js r180 legacy URL and reducing external CDN risk.
+- The published PC, mobile, and doorway preview pages were also updated to use the local vendor assets.
+- A same-origin browser diagnostic page was published to test Three.js, GSAP, WebGL, Model 05 CSS/JS, and all preview HTML files directly in the user's browser.
+
+### Current closure state
+NOT YET CLOSED.
+The code/dependency defect is fixed, but the stop-the-line remains active until the live browser diagnostic reports all checks PASS on an actual browser. ChatGPT's external web-fetch environment still cannot reach the custom domain, so it cannot independently close the live-site verification step.
