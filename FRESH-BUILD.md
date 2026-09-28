@@ -21,6 +21,12 @@ The complete prior site state is frozen at:
 - Three.js — approved real-time 3D/WebGL toolkit for interactive environments, depth, particles, spatial scenes, and visual AI demonstrations.
 - Perplexity — approved research/reference tool for free web research and citation cross-checking only; do not use paid API access under the zero-fee rule.
 - MotionSites Academy — approved reference source for scroll-scrubbed cinematic techniques, pinned 3D scenes, responsive motion patterns, and performance lessons; paid templates/services are not approved under the zero-fee rule.
+- ChatGPT image generation/editing — primary in-chat visual ideation and targeted editing tool; preferred when it can meet the need without adding a new paid dependency.
+- Adobe Firefly Free — approved optional visual-generation/reference tool while staying within its free allowance; do not create a paid dependency without approval.
+- Canva Free — approved optional design/composition tool for mockups, social assets, and layout experiments within its free allowance; paid AI/top-up features require approval.
+- Adobe Express — approved optional free design tool for rapid visual compositions and asset edits; connection is optional.
+- Recraft Free — reference/prototyping only for CivicAscent AI; free-tier generated assets are not approved for commercial production use because Recraft retains ownership and restricts commercial use.
+- Midjourney — reference-only unless the user explicitly approves a paid subscription; no free production dependency is allowed.
 - UX — a mandatory design and validation layer for every page, hotspot, scene, flow, and module.
 
 ## Core UX rule
@@ -121,6 +127,15 @@ Google Stitch may be used to:
 3. Translate prompts or screenshots into design concepts for discussion.
 4. Support rapid experimentation when it stays within a no-fee path.
 5. Serve as a reference source only; any final CivicAscent AI implementation must remain original and pass the project UX/testing rules.
+
+## Visual generation toolkit rule
+1. Prefer ChatGPT image generation/editing first when it can create or revise the needed visual without an additional paid dependency.
+2. Adobe Firefly Free and Canva Free may be used for experiments and supporting assets within their current free allowances.
+3. Adobe Express may be used as an optional free design/composition path.
+4. Recraft Free may be used only for ideation/prototyping; do not ship its free-tier generated assets commercially because free-tier assets are not owned by the user and are not licensed for commercial use.
+5. Midjourney is reference-only under the zero-fee rule because access requires a subscription.
+6. Before any external AI-generated asset becomes a production asset, confirm the current licensing/commercial-use terms for the plan actually used.
+7. The visual toolkit supports the Living World; it must not pull the design back toward static poster/card compositions.
 
 ## MotionSites Academy role
 MotionSites Academy may be used to:
