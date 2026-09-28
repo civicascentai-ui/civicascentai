@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2b1a0d">
+<meta name="description" content="CivicAscent AI Safari Learning World prototype for beginners exploring practical AI.">
+<title>CivicAscent AI — Safari Learning World Prototype 09</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#start">Skip to main experience</a>
+<main id="start" class="world" aria-label="CivicAscent AI Safari Learning World">
+  <div class="scene" aria-hidden="true"></div>
+  <div class="light-bloom" aria-hidden="true"></div>
+  <div class="haze" aria-hidden="true"></div>
+  <div class="water-shimmer" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <header class="brandbar">
+    <div class="brand">CivicAscent <strong>AI</strong></div>
+    <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Reduce motion</button>
+  </header>
+  <section class="intro" aria-labelledby="hero-title">
+    <p class="eyebrow">SAFARI LEARNING WORLD</p>
+    <h1 id="hero-title">Explore how AI can help you.</h1>
+    <p class="lead">Start with one simple experience. See it work, try it, then learn how to use it yourself.</p>
+    <button class="primary-path" type="button" data-destination="learn">Start here <span aria-hidden="true">→</span></button>
+  </section>
+  <nav class="destinations" aria-label="Learning destinations">
+    <button class="destination destination-learn" type="button" data-destination="learn"><span class="marker"></span><span><strong>Learn with AI</strong><small>Ask a question and see a useful answer</small></span></button>
+    <button class="destination destination-create" type="button" data-destination="create"><span class="marker"></span><span><strong>Create with AI</strong><small>Turn an idea into something visible</small></span></button>
+    <button class="destination destination-business" type="button" data-destination="business"><span class="marker"></span><span><strong>Business & Opportunity</strong><small>Turn a goal into practical next steps</small></span></button>
+  </nav>
+  <section id="context" class="context" aria-live="polite" aria-atomic="true" hidden>
+    <button class="context-close" type="button" aria-label="Close information">×</button>
+    <p class="context-eyebrow"></p>
+    <h2></h2>
+    <p class="context-copy"></p>
+    <a class="context-action" href="#">Continue</a>
+  </section>
+  <p class="orientation">Tap a glowing destination or choose Start here.</p>
+</main>
+<script src="app.js" defer></script>
+</body>
+</html>
