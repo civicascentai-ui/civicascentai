@@ -1,0 +1,88 @@
+:root{
+  --bg:#0a0f14;--panel:#111820;--panel2:#17222c;--ink:#f7fbff;--muted:#c0ccd6;
+  --cyan:#4de6ff;--orange:#ff9d4d;--line:#ffffff22;--focus:#fff27a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:inherit;text-decoration:none}
+.skip{position:fixed;left:-9999px;top:12px;z-index:100}
+.skip:focus{left:12px;background:#fff;color:#000;padding:12px 16px;border-radius:8px}
+.topbar{position:fixed;z-index:50;left:0;right:0;top:0;height:74px;padding:0 5vw;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(#091016f0,#09101600);backdrop-filter:blur(8px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:850;font-size:1.05rem}
+.brand img{width:44px;height:44px}.brand b{color:var(--orange)}
+.beta{font-size:.72rem;letter-spacing:.14em;color:#a8b7c4}
+.station-scene,.stop-scene{position:relative;min-height:100svh;overflow:hidden;background:linear-gradient(180deg,#101a24 0 34%,#18252f 34% 48%,#10171d 48% 100%)}
+.sky{position:absolute;inset:0 0 auto 0;height:34%;background:
+ radial-gradient(circle at 72% 30%,rgba(77,230,255,.16),transparent 26%),
+ linear-gradient(#0c131b,#14212c)}
+.platform-lights{position:absolute;left:0;right:0;top:34%;height:4px;background:linear-gradient(90deg,transparent,#d9fbff 12%,transparent 18%,#ffd4a9 30%,transparent 38%,#d9fbff 52%,transparent 61%,#ffd4a9 74%,transparent 82%,#d9fbff 94%,transparent);box-shadow:0 0 18px rgba(255,255,255,.35)}
+.welcome{position:relative;z-index:12;padding:118px 6vw 0;max-width:850px}
+.eyebrow{margin:0 0 14px;color:var(--orange);font-weight:900;letter-spacing:.18em;font-size:.82rem}
+h1{font:600 clamp(3.2rem,7vw,6.8rem)/.95 Georgia,'Times New Roman',serif;letter-spacing:-.04em;margin:0}
+h1 span{color:var(--cyan)}
+.lead{font-size:clamp(1.15rem,1.7vw,1.4rem);line-height:1.6;color:var(--muted);max-width:720px}
+.station-board{position:absolute;z-index:20;right:5vw;top:118px;width:min(40vw,560px);background:#0c1117ee;border:2px solid #d8edf7;border-radius:14px;box-shadow:0 18px 60px #0008}
+.board-title{padding:16px 18px;border-bottom:1px solid #ffffff26;font-weight:900;letter-spacing:.14em;color:#dffaff}
+.destination{display:grid;grid-template-columns:58px 1fr 34px;gap:14px;align-items:center;padding:20px 18px;border-bottom:1px solid #ffffff1c;min-height:88px}
+.destination:last-child{border-bottom:0}
+.destination:hover,.destination:focus-visible{background:#172531;outline:3px solid var(--focus);outline-offset:-3px}
+.number{font-size:1.35rem;font-weight:900;color:var(--cyan)}
+.destination-copy{display:grid;gap:4px}
+.destination-copy strong{font-size:1.3rem}
+.destination-copy small{font-size:1rem;line-height:1.35;color:#c7d1db}
+.arrow{font-size:1.7rem;color:var(--orange);font-weight:900}
+.tracks{position:absolute;left:0;right:0;bottom:14%;height:30%;background:linear-gradient(#1b2228,#0b0f12)}
+.tracks::before{content:"";position:absolute;left:0;right:0;top:20%;height:6px;background:#46525a;box-shadow:0 80px 0 #46525a}
+.tracks span{position:absolute;left:0;right:0;height:3px;background:repeating-linear-gradient(90deg,#919ca4 0 34px,transparent 34px 64px)}
+.tracks span:first-child{top:42%}.tracks span:last-child{top:72%}
+.train{position:absolute;z-index:10;left:-92%;bottom:17%;display:flex;align-items:end;height:200px;filter:drop-shadow(0 24px 30px #000a)}
+.engine,.car{height:150px;background:linear-gradient(#e7eef3,#bdcad3 55%,#6d7d87 56% 100%);border:3px solid #2b3740}
+.engine{width:240px;border-radius:90px 22px 16px 16px;position:relative}
+.car{width:255px;margin-left:8px;border-radius:14px}
+.windshield{position:absolute;left:34px;top:28px;width:110px;height:54px;border-radius:32px 12px 12px 12px;background:linear-gradient(150deg,#75cfe5,#18333f);border:4px solid #26323b}
+.headlight{position:absolute;right:22px;bottom:34px;width:24px;height:24px;border-radius:50%;background:#fff9d6;box-shadow:0 0 28px #fff3b0}
+.windows{margin:27px 22px;height:58px;background:repeating-linear-gradient(90deg,#1b3b48 0 48px,#d5f3fb 48px 52px,#1b3b48 52px 100px);border:4px solid #2d3941;border-radius:8px}
+.station-name{position:absolute;z-index:15;left:6vw;bottom:7.5%;padding:12px 18px;background:#10202a;border:2px solid #d8edf7;border-radius:10px;font-weight:900;letter-spacing:.12em;font-size:1.05rem}
+.motion-note{position:absolute;z-index:15;right:6vw;bottom:7.5%;padding:10px 14px;background:#091016dd;border-radius:9px;color:#d3dde5;font-size:.95rem}
+.stop-content{position:relative;z-index:15;padding:130px 7vw 0;max-width:760px}
+.stop-action{margin-top:28px;padding:20px 22px;max-width:650px;background:#0d151cdd;border-left:6px solid var(--cyan);border-radius:10px}
+.action-label{font-size:.78rem;font-weight:900;letter-spacing:.16em;color:var(--orange)}
+.stop-action p{font-size:1.15rem;line-height:1.55;color:#e6edf2}
+.return-link{display:inline-block;margin-top:28px;padding:14px 18px;border:2px solid #d7edf6;border-radius:10px;font-weight:800}
+.return-link:hover,.return-link:focus-visible{background:#182731;outline:3px solid var(--focus);outline-offset:3px}
+.train-stop{left:auto;right:-10%;bottom:18%;opacity:.96}
+@keyframes arrive{
+  0%{transform:translateX(0)}
+  55%{transform:translateX(145vw)}
+  72%{transform:translateX(145vw)}
+  100%{transform:translateX(260vw)}
+}
+.station-home .train{animation:arrive 16s cubic-bezier(.18,.65,.25,1) infinite}
+@media(max-width:980px){
+  .beta{display:none}
+  .station-scene,.stop-scene{min-height:100svh}
+  .welcome{padding:104px 6vw 0;max-width:none}
+  h1{font-size:clamp(3rem,14vw,5rem)}
+  .lead{font-size:1.12rem;max-width:92%}
+  .station-board{position:absolute;left:6vw;right:6vw;top:43vh;width:auto;max-height:42vh;overflow:auto}
+  .board-title{font-size:.88rem}
+  .destination{grid-template-columns:46px 1fr 28px;padding:15px 14px;min-height:76px}
+  .destination-copy strong{font-size:1.15rem}.destination-copy small{font-size:.95rem}
+  .train{height:145px;bottom:10%;transform:scale(.78);transform-origin:left bottom}
+  .station-home .train{animation-duration:18s}
+  .tracks{bottom:7%;height:24%}
+  .station-name{left:6vw;bottom:2.5%;font-size:.9rem}
+  .motion-note{display:none}
+  .stop-content{padding:112px 7vw 0;max-width:92%}
+  .train-stop{right:-42%;bottom:10%;transform:scale(.78);transform-origin:right bottom}
+}
+@media(max-width:620px){
+  .brand{font-size:.98rem}.brand img{width:40px;height:40px}
+  .welcome{padding-top:98px}
+  .station-board{top:44vh}
+  .destination-copy small{font-size:.9rem}
+  .station-name{max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+@media(prefers-reduced-motion:reduce){
+  .station-home .train{animation:none;left:8vw}
+}
