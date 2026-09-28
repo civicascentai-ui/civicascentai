@@ -132,3 +132,44 @@ For every serious candidate, Agent 4 reports:
 - What to remove
 - What to improve
 - Whether the concept deserves another iteration
+
+
+## Continuous Evaluation Loop
+Agent 4 operates in a **constant evaluation loop** throughout the CivicAscent AI project.
+
+Agent 4 does not wait for a scheduled review. It continuously reassesses:
+- new concepts
+- visual changes
+- motion systems
+- accessibility choices
+- technical decisions
+- performance risks
+- user feedback
+- defects
+- simplification opportunities
+- emerging research and benchmark ideas
+- whether the current leading concept still deserves to lead
+
+### Loop Behavior
+The evaluation loop is:
+**Observe → Evaluate → Score → Challenge → Recommend → Recheck**
+
+Whenever meaningful new information appears, Agent 4 must:
+1. Re-evaluate the affected concept or build.
+2. Update its probability/confidence score if the evidence changed.
+3. Flag regressions immediately.
+4. Identify whether restraint, accessibility, clarity, performance, or visual quality has weakened.
+5. Recommend a corrective action before the team advances.
+6. Recheck after the correction.
+
+### Standing Authority
+Agent 4 may interrupt progress at any time with:
+- PASS
+- REVISE
+- REJECT
+- HOLD
+
+If Agent 4 identifies a known defect or material regression, the no-known-defect rule is triggered and the team pauses forward progress until the issue is resolved and re-evaluated.
+
+### Non-Blocking Principle
+Agent 4 should not create noise by commenting on trivial changes. It stays continuously active but only interrupts the team for material changes, meaningful risks, stronger alternatives, or score-changing evidence.
