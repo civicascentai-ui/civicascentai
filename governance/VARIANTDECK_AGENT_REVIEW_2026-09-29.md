@@ -1,6 +1,6 @@
 # CivicAscent AI — Agent Review: VariantDeck
 Date: 2026-09-29
-Status: APPROVED WITH RESTRICTIONS
+Status: REJECTED BY OWNER
 Resource: VariantDeck
 Role: Development-only UI comparison layer for React
 
@@ -55,3 +55,8 @@ Compare no more than three treatments of the **Start Here** interaction inside t
 - subtle scene-integrated hotspot.
 
 The scene, media, content, and underlying behavior stay constant. Only presentation changes.
+
+
+## Owner decision
+REJECTED on 2026-09-29.
+This review is retained for historical/audit purposes only. VariantDeck is not approved for active use and has been removed from the master tool library.
