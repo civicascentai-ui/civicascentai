@@ -26,6 +26,30 @@ The latest owner-approved Safari living-scene direction from the 2026-09-29 work
 
 No earlier implementation may override that owner-approved visual direction.
 
+## Supreme Pre-Change Governance Law
+
+Controlling law: governance/PRE_CHANGE_REVIEW_LAW.md
+
+This law sits above all agents, agent charters, design authorities, implementation plans, plugins, automation, tools, and future resources.
+
+Before ANY change is made, the proposing party must complete the mandatory question-and-answer review covering:
+- first principles;
+- blind spots;
+- leverage;
+- anti-advice;
+- signal only;
+- cost/dependencies;
+- save-point protection;
+- test plan;
+- independent agent challenge;
+- governance decision.
+
+No completed review = no change.
+
+Passing the review authorizes only an isolated test, not production.
+
+Only the project owner may explicitly override this permanent law.
+
 ## Governance
 - ChatGPT: Governance/QC Overseer.
 - Agent 1: Experience Director.
@@ -38,6 +62,7 @@ No earlier implementation may override that owner-approved visual direction.
 - Production remains protected from unverified changes.
 - No paid purchase, subscription, upgrade, top-up, or paid add-on without explicit owner approval.
 - No known defect may be carried forward.
+- No agent or tool may make a change before the Permanent Pre-Change Review Law is completed and approved for isolated testing.
 
 ## Shared tool library
 Connected/approved resources are treated as one coordinated library:
