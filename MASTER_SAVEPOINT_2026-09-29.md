@@ -41,7 +41,7 @@ No earlier implementation may override that owner-approved visual direction.
 
 ## Shared tool library
 Connected/approved resources are treated as one coordinated library:
-Figma, Osmo interaction resources, Watermelon UI, VariantDeck (development/review only), Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
+Figma, Osmo interaction resources, Watermelon UI, Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
 
 Agent 5 independently audits tool availability, plans/credits, cost, duplication, security/licensing concerns, fallbacks, and source-of-truth integrity.
 
@@ -100,3 +100,30 @@ It is not approved as a production runtime dependency at this stage. Current pub
 
 Agent review:
 governance/VARIANTDECK_AGENT_REVIEW_2026-09-29.md
+
+
+## VariantDeck status update
+REJECTED BY OWNER on 2026-09-29.
+VariantDeck is not part of the active CivicAscent tool library and must not be used in the active Safari Vertical Slice. The prior agent review remains historical audit evidence only.
+
+## React Spring resource status
+React Spring is APPROVED WITH CONTROLS as an external React animation library for the CivicAscent engineering toolkit.
+
+Approved uses:
+- subtle UI transitions and scene-integrated interface motion;
+- physically natural spring-based interaction feedback;
+- animated HTML/SVG values;
+- React/Three.js-adjacent interface motion where appropriate;
+- motion that responds to user interaction without unnecessary React re-renders.
+
+Required controls:
+- Agent 1 must approve interaction/motion intent before implementation.
+- Agent 2 owns implementation, dependency size, performance, and version compatibility.
+- Agent 3 must verify reduced-motion behavior, keyboard/touch behavior, readability, and accessibility.
+- Agent 5 tracks package version, license/provenance, dependency risk, and overlap with GSAP/Osmo/native CSS.
+- Agent 6 must confirm each use improves clarity or experience rather than adding decoration.
+- React Spring must not replace cinematic media engines, Figma visual truth, Osmo benchmarking, or Webflow delivery.
+- Use only where spring physics materially improve the interaction; prefer simpler CSS/native motion when sufficient.
+- No animation may obscure the primary next action or violate the no-known-defect rule.
+
+Current evidence: official React Spring documentation supports React 19, web/Three.js targets, SSR, imperative animation APIs, and a useReducedMotion utility. No direct ChatGPT plugin was found; treat it as APPROVED / EXTERNAL ENGINEERING LIBRARY.
