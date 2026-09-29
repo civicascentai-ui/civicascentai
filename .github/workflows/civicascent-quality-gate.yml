@@ -2,7 +2,9 @@ name: CivicAscent Quality Gate
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - repair/prototype09-gated-2026-09-29
   pull_request:
     branches: [main]
   workflow_dispatch:
