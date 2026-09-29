@@ -1,0 +1,66 @@
+name: Prototype 09 Hotspot Door Gate
+
+on:
+  push:
+    branches:
+      - build/prototype09-hotspot-door-2026-09-29
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hotspot-door:
+    name: Hotspot Door Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install
+        working-directory: prototype-react
+        run: npm install --no-audit --no-fund
+      - name: Build
+        working-directory: prototype-react
+        run: npm run build
+      - name: Verify door contract
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          app = Path("prototype-react/src/App.jsx").read_text()
+          css = Path("prototype-react/src/styles.css").read_text()
+          required = [
+            "environment-door",
+            "door-frame",
+            "door-transition",
+            "Living AI Lab",
+            "aria-label=\"Enter the Living AI Lab\"",
+            "prefers-reduced-motion"
+          ]
+          forbidden = [
+            "path-card",
+            "path-rail",
+            "card-grid",
+            "world-hotspot",
+            "hotspot-label",
+            "dashboard",
+            "brochure"
+          ]
+          missing = [x for x in required if x not in app and x not in css]
+          bad = [x for x in forbidden if x in app or x in css]
+          if missing:
+            print("Missing:", missing)
+            raise SystemExit(1)
+          if bad:
+            print("Forbidden:", bad)
+            raise SystemExit(1)
+          print("Hotspot door contract passed.")
+          PY
+      - name: Reject retired-theme drift
+        run: |
+          if grep -RIniE 'train|subway|roblox' prototype-react/src; then
+            exit 1
+          fi
