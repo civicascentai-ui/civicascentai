@@ -74,3 +74,11 @@ Charter: MENTOR.md
 Agent 6 independently challenges assumptions, connects technical and creative decisions to business outcomes, mentors the team across AI product strategy, UX, accessibility, engineering tradeoffs, cinematic interaction, SEO/growth, conversion, operations, cost control, launch planning, and measurable impact.
 
 Agent 6 may request evidence from Agents 1–5, recommend sequencing or strategy changes, and recommend STOP-WORK to the Governance/QC Overseer when continued work would create material avoidable waste or risk. It is advisory, not a production-release authority.
+
+
+## Binding Agent Operating Laws — 2026-09-29
+The following file is binding project law and applies to all CivicAscent AI agents, tools, handoffs, builds, QA cycles, security reviews, think-tank escalations, restarts, and production decisions:
+
+`governance/CIVICASCENT_AGENT_OPERATING_LAWS.md`
+
+If any legacy guidance conflicts with this law file, the stricter non-conflicting control governs until the owner or Agent 5 formally reconciles the documents without weakening required safety, security, accessibility, cost, continuity, QA, or production protections.
