@@ -39,7 +39,7 @@ button { font: inherit; }
   object-fit: cover;
   object-position: center;
   transform: scale(1.025);
-  animation: camera-push 18s ease-in-out infinite alternate;
+  animation: camera-push 20s ease-in-out infinite alternate;
 }
 
 .scene-shade {
@@ -52,15 +52,83 @@ button { font: inherit; }
   pointer-events: none;
 }
 
-.scene-light {
+.scene-light,
+.scene-dusk {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: radial-gradient(circle at 79% 23%, rgba(255, 206, 127, .12), transparent 30%);
-  mix-blend-mode: screen;
-  animation: light-breathe 9s ease-in-out infinite alternate;
 }
+
+.scene-light {
+  background: radial-gradient(circle at 79% 23%, rgba(255, 206, 127, .15), transparent 31%);
+  mix-blend-mode: screen;
+  animation: light-breathe 10s ease-in-out infinite alternate;
+}
+
+.scene-dusk {
+  background: linear-gradient(180deg, rgba(33, 42, 67, 0), rgba(25, 31, 55, .14));
+  mix-blend-mode: multiply;
+  opacity: .18;
+  animation: dusk-shift 30s ease-in-out infinite alternate;
+}
+
+.ambient-birds {
+  position: absolute;
+  z-index: 3;
+  top: 18%;
+  left: 52%;
+  width: 30%;
+  height: 12%;
+  pointer-events: none;
+}
+
+.ambient-birds span {
+  position: absolute;
+  width: 18px;
+  height: 8px;
+  border-top: 2px solid rgba(33, 24, 17, .7);
+  border-radius: 50%;
+  transform: rotate(10deg);
+  animation: bird-drift 24s linear infinite;
+}
+
+.ambient-birds span:nth-child(2) {
+  top: 24px;
+  left: 38px;
+  transform: scale(.78) rotate(-5deg);
+  animation-delay: -8s;
+}
+
+.ambient-birds span:nth-child(3) {
+  top: 8px;
+  left: 84px;
+  transform: scale(.6) rotate(8deg);
+  animation-delay: -14s;
+}
+
+.water-glimmer {
+  position: absolute;
+  z-index: 3;
+  right: 18%;
+  bottom: 26%;
+  width: 30%;
+  height: 11%;
+  pointer-events: none;
+  opacity: .58;
+}
+
+.water-glimmer span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 224, 168, .78), transparent);
+  animation: water-glimmer 5s ease-in-out infinite alternate;
+}
+
+.water-glimmer span:nth-child(2) { top: 18px; animation-delay: -1.7s; }
+.water-glimmer span:nth-child(3) { top: 34px; animation-delay: -3.1s; }
 
 .scene-copy {
   position: absolute;
@@ -124,7 +192,8 @@ button { font: inherit; }
 .destination:hover,
 .destination:focus-visible,
 .return-button:focus-visible,
-.continue-button:focus-visible {
+.continue-button:focus-visible,
+.path-choice:focus-visible {
   outline: 3px solid #ffe1aa;
   outline-offset: 4px;
 }
@@ -134,9 +203,7 @@ button { font: inherit; }
   display: block;
 }
 
-.destination strong {
-  font-size: 16px;
-}
+.destination strong { font-size: 16px; }
 
 .destination small {
   margin-top: 2px;
@@ -163,13 +230,9 @@ button { font: inherit; }
   border-color: rgba(255, 221, 161, .82);
 }
 
-.destination-primary strong {
-  font-size: 18px;
-}
+.destination-primary strong { font-size: 18px; }
 
-.destination-secondary {
-  opacity: .88;
-}
+.destination-secondary { opacity: .84; }
 
 .destination-lab {
   right: 18%;
@@ -197,9 +260,7 @@ button { font: inherit; }
   letter-spacing: .18em;
 }
 
-.scene-status strong {
-  font-size: 14px;
-}
+.scene-status strong { font-size: 14px; }
 
 .guided-moment {
   position: fixed;
@@ -229,9 +290,7 @@ button { font: inherit; }
   cursor: pointer;
 }
 
-.guide-copy {
-  max-width: 700px;
-}
+.guide-copy { max-width: 700px; }
 
 .guide-eyebrow {
   margin: 0 0 16px;
@@ -243,19 +302,43 @@ button { font: inherit; }
 
 .guide-copy h2 {
   margin: 0;
-  max-width: 11ch;
+  max-width: 12ch;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(48px, 6vw, 88px);
+  font-size: clamp(46px, 5.5vw, 82px);
   font-weight: 500;
   line-height: .96;
 }
 
 .guide-copy > p:not(.guide-eyebrow) {
   max-width: 48ch;
-  margin: 28px 0 0;
-  font-size: clamp(19px, 1.55vw, 24px);
+  margin: 24px 0 0;
+  font-size: clamp(18px, 1.45vw, 23px);
   line-height: 1.55;
   color: rgba(255,247,233,.9);
+}
+
+.path-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.path-choice {
+  min-height: 48px;
+  padding: 10px 17px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 225, 173, .4);
+  background: rgba(255, 255, 255, .04);
+  color: #fff7e9;
+  cursor: pointer;
+}
+
+.path-choice.is-selected {
+  background: #efc27f;
+  border-color: #efc27f;
+  color: #25180d;
+  font-weight: 800;
 }
 
 .example-line {
@@ -331,12 +414,28 @@ button { font: inherit; }
 
 @keyframes camera-push {
   from { transform: scale(1.025) translate3d(0,0,0); }
-  to { transform: scale(1.07) translate3d(-.7%, -.35%, 0); }
+  to { transform: scale(1.065) translate3d(-.55%, -.3%, 0); }
 }
 
 @keyframes light-breathe {
-  from { opacity: .65; }
+  from { opacity: .62; }
   to { opacity: 1; }
+}
+
+@keyframes dusk-shift {
+  from { opacity: .08; }
+  to { opacity: .28; }
+}
+
+@keyframes bird-drift {
+  from { transform: translateX(0) scale(.85) rotate(8deg); opacity: .22; }
+  20% { opacity: .7; }
+  to { transform: translateX(230px) translateY(-24px) scale(.7) rotate(-6deg); opacity: 0; }
+}
+
+@keyframes water-glimmer {
+  from { transform: translateX(-8%) scaleX(.85); opacity: .2; }
+  to { transform: translateX(8%) scaleX(1.04); opacity: .78; }
 }
 
 @keyframes pulse {
@@ -354,14 +453,17 @@ button { font: inherit; }
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
+
+  .ambient-birds,
+  .water-glimmer {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
   body { overflow: auto; }
 
-  .scene {
-    min-height: 100svh;
-  }
+  .scene { min-height: 100svh; }
 
   .scene-image {
     inset: 0;
@@ -420,8 +522,17 @@ button { font: inherit; }
     bottom: 7%;
   }
 
-  .scene-status {
-    display: none;
+  .scene-status { display: none; }
+
+  .ambient-birds {
+    top: 25%;
+    left: 48%;
+  }
+
+  .water-glimmer {
+    right: 6%;
+    bottom: 28%;
+    width: 44%;
   }
 
   .guided-moment {
@@ -435,41 +546,39 @@ button { font: inherit; }
   }
 
   .guide-copy h2 {
-    font-size: clamp(44px, 13vw, 64px);
+    font-size: clamp(42px, 12vw, 60px);
   }
 
   .guide-copy > p:not(.guide-eyebrow) {
     font-size: 18px;
   }
 
+  .path-choices {
+    gap: 8px;
+  }
+
+  .path-choice {
+    min-height: 48px;
+    padding: 10px 15px;
+  }
+
   .guide-visual {
-    width: min(68vw, 300px);
+    width: min(64vw, 280px);
     order: -1;
   }
 }
 
 @media (max-width: 430px) {
-  .scene-copy h1 {
-    font-size: 50px;
-  }
+  .scene-copy h1 { font-size: 50px; }
 
-  .destination strong {
-    font-size: 14px;
-  }
+  .destination strong { font-size: 14px; }
+  .destination small { font-size: 12px; }
 
-  .destination small {
-    font-size: 12px;
-  }
+  .destination-primary { bottom: 30%; }
+  .destination-lab { bottom: 17%; }
+  .destination-paths { bottom: 6%; }
 
-  .destination-primary {
-    bottom: 30%;
-  }
-
-  .destination-lab {
-    bottom: 17%;
-  }
-
-  .destination-paths {
-    bottom: 6%;
+  .path-choice {
+    flex: 1 1 calc(50% - 8px);
   }
 }
