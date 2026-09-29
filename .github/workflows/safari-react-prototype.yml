@@ -8,6 +8,12 @@ on:
     paths:
       - "prototype-react/**"
       - ".github/workflows/safari-react-prototype.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "prototype-react/**"
+      - ".github/workflows/safari-react-prototype.yml"
   workflow_dispatch:
 
 permissions:
