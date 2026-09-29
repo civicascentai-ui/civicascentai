@@ -1,0 +1,100 @@
+name: Prototype 09 Scene 01 Enhanced Gate
+
+on:
+  push:
+    branches:
+      - build/prototype09-scene01-cinematic-enhanced-2026-09-29
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scene01:
+    name: Scene 01 Enhanced Build and Accessibility Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        working-directory: prototype-react
+        run: npm install --no-audit --no-fund
+
+      - name: Build
+        working-directory: prototype-react
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -s prototype-react/dist/index.html
+          test -d prototype-react/dist/assets
+
+      - name: Verify Scene 01 enhanced interaction markers
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          app = Path("prototype-react/src/App.jsx").read_text()
+          css = Path("prototype-react/src/styles.css").read_text()
+
+          required_app = [
+              'aria-labelledby="scene-title"',
+              'aria-label="Safari learning destinations"',
+              'aria-haspopup="dialog"',
+              'role="dialog"',
+              'aria-modal="true"',
+              'aria-pressed=',
+              'Choose an AI learning path',
+              'Return to Safari',
+              'Start Here',
+              'Living AI Lab',
+              'Learning Paths',
+              'Learn',
+              'Create',
+              'Work',
+              'Explore',
+              'prefers-reduced-motion'
+          ]
+
+          required_css = [
+              'min-height: 56px',
+              'focus-visible',
+              '@media (prefers-reduced-motion: reduce)',
+              '@media (max-width: 760px)',
+              '@media (max-width: 430px)',
+              '.path-choice',
+              '.path-choice.is-selected',
+              '.ambient-birds',
+              '.water-glimmer'
+          ]
+
+          missing = [x for x in required_app if x not in app]
+          missing += [x for x in required_css if x not in css]
+
+          if missing:
+              print("Missing required markers:")
+              for item in missing:
+                  print("-", item)
+              raise SystemExit(1)
+
+          print("Scene 01 enhanced markers passed.")
+          PY
+
+      - name: Reject retired-theme drift
+        run: |
+          if grep -RIniE 'train|subway|roblox|card grid|brochure' prototype-react/src; then
+            echo "Retired-theme drift detected."
+            exit 1
+          fi
+
+      - name: Confirm approved scene asset remains explicit
+        run: |
+          grep -q 'SCENE_IMAGE' prototype-react/src/App.jsx
+          grep -q 'cdn.openart.ai' prototype-react/src/App.jsx
