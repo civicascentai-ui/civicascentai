@@ -40,3 +40,12 @@ The active recovery target is the locked Prototype 09 / Safari Learning World re
 Replit remains locked.
 Production main remains untouched.
 GitHub recovery branch remains the source of truth until a Prototype 09 candidate passes visual and technical verification.
+
+
+## Agent 5 — Software Librarian, Steward & Independent Control Auditor
+State: ACTIVE / STANDING CONTROL FUNCTION.
+Charter: governance/AGENT-5-SOFTWARE-LIBRARIAN-STEWARD-AUDITOR.md
+
+Agent 5 independently stewards the shared software/resource library, researches official documentation and the public web, audits connected tools and production workflows, tracks cost/credits/limitations/fallbacks, identifies duplication and source-of-truth conflicts, and may issue STOP-WORK findings against Agents 1–4 or any workflow when a known defect, unapproved cost, security/licensing concern, missing backup, broken integration, accessibility regression, or governance violation is found.
+
+Agent 5 reports directly to the ChatGPT Governance/QC Overseer and project owner. It may stop work and require remediation, but it may not independently authorize spending, publish production, unlock Replit, alter credentials/billing/legal attestations, or waive core governance rules.
