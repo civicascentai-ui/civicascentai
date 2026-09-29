@@ -33,6 +33,7 @@ No earlier implementation may override that owner-approved visual direction.
 - Agent 3: Quality & Accessibility Director.
 - Agent 4: Critical Evaluation / Creative Media Director.
 - Agent 5: Software Librarian, Steward & Independent Control Auditor.
+- Agent 6: Expert Mentor & Senior Strategic Advisor.
 - Replit remains locked unless explicitly unlocked by the owner.
 - Production remains protected from unverified changes.
 - No paid purchase, subscription, upgrade, top-up, or paid add-on without explicit owner approval.
