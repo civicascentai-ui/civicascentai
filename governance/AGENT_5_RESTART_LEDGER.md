@@ -189,3 +189,33 @@ Production remains protected.
 **Next permitted task:** Agent 3 visual regression QA only.
 
 **Production:** unchanged.
+
+
+---
+
+## Page 2 Visual Quality Repair — 2026-09-29
+
+### Defects found
+1. The replacement Safari asset was only 480x270, which was below the quality target for a cinematic full-screen scene.
+2. Legacy synthetic lodge framing and heavy dark overlays were still active even though the replacement image already contains a real lodge frame, causing visual conflict and unnecessary darkening.
+
+### Repairs
+- Upgraded the Safari background asset to 1280x720.
+- Removed the synthetic lodge-frame overlay from rendering.
+- Reduced vignette darkness and atmospheric overlay intensity.
+- Rebalanced the light bloom and water shimmer.
+- Reduced camera drift amplitude and slowed motion.
+- Brightened and slightly increased saturation of the Safari scene.
+- Recentered mobile background positioning for better subject retention.
+
+### Commits
+- Visual-overlay repair: `610b8b20088db930320c712f64dcd1be31cd98d0`
+- 1280x720 Safari asset upgrade: `897a1c7d57106670a8c32be3a4577376d3d0c8af`
+
+### Current disposition
+SAVED / HOLD FOR VISUAL REGRESSION QA.
+
+Production remains unchanged.
+
+### Next permitted task
+Agent 3 performs rendered desktop/mobile visual regression QA on the exact build above. If PASS, return to Agent 5 for release-gate disposition.
