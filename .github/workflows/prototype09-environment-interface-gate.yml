@@ -1,0 +1,111 @@
+name: Prototype 09 Environment Interface Gate
+
+on:
+  push:
+    branches:
+      - build/prototype09-environment-interface-2026-09-29
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment:
+    name: Environment Interface Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        working-directory: prototype-react
+        run: npm install --no-audit --no-fund
+
+      - name: Build
+        working-directory: prototype-react
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -s prototype-react/dist/index.html
+          test -d prototype-react/dist/assets
+
+      - name: Verify environment-as-interface requirements
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          app = Path("prototype-react/src/App.jsx").read_text()
+          css = Path("prototype-react/src/styles.css").read_text()
+
+          required_app = [
+              'Start Here',
+              'Learn AI',
+              'Create',
+              'Work',
+              'Explore',
+              'world-hotspots',
+              'aria-label="Explore the CivicAscent AI safari"',
+              'role="dialog"',
+              'aria-modal="true"',
+              'Return to Safari',
+              'prefers-reduced-motion'
+          ]
+
+          required_css = [
+              '.world-hotspot',
+              '.locator',
+              '.hotspot-label',
+              '.start-here',
+              '.scene-transition',
+              'focus-visible',
+              '@media (prefers-reduced-motion: reduce)',
+              '@media (max-width: 760px)',
+              '@media (max-width: 430px)'
+          ]
+
+          forbidden = [
+              'path-card',
+              'path-rail',
+              'path-thumb',
+              'path-arrow',
+              'card grid',
+              'brochure'
+          ]
+
+          missing = [x for x in required_app if x not in app]
+          missing += [x for x in required_css if x not in css]
+          present_forbidden = [x for x in forbidden if x in app or x in css]
+
+          if missing:
+              print("Missing environment-interface markers:")
+              for item in missing:
+                  print("-", item)
+              raise SystemExit(1)
+
+          if present_forbidden:
+              print("Forbidden card/brochure structures detected:")
+              for item in present_forbidden:
+                  print("-", item)
+              raise SystemExit(1)
+
+          print("Environment-as-interface requirements passed.")
+          PY
+
+      - name: Reject retired-theme drift
+        run: |
+          if grep -RIniE 'train|subway|roblox' prototype-react/src; then
+            echo "Retired-theme drift detected."
+            exit 1
+          fi
+
+      - name: Confirm Safari scene source
+        run: |
+          grep -q 'SCENE_IMAGE' prototype-react/src/App.jsx
+          grep -q 'cdn.openart.ai' prototype-react/src/App.jsx
