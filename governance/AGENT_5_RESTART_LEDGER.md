@@ -63,3 +63,26 @@ For every future entry record:
 - supporting QA/security evidence.
 
 Agent 5 must update this ledger whenever the controlling state changes.
+
+
+---
+
+## Page 2 Repair Update — 2026-09-29
+
+**Branch:** `repair/prototype09-routing-mobile-2026-09-29`
+
+### Repairs completed
+- CSS separator/parser defect repaired.
+- Learn with AI Continue route now points to `../living-ai-lab.html`.
+- Create with AI Continue route now points to `../ai-lab.html`.
+- Business & Opportunity Continue route now points to `../plan.html`.
+
+### Commits
+- CSS repair: `941ea2fd757464396111b118733f527f78335bc7`
+- Destination repair: `4007dd8a173d3352dfbb44229facd77ec2640c7d`
+
+### Current disposition
+HOLD FOR RENDERED MOBILE QA.
+
+### Next permitted task
+Agent 3 must validate Page 2 at the target mobile viewport and re-check the repaired guided-experience links. Production remains protected.
