@@ -69,3 +69,10 @@ Controlling think tank document:
 governance/THINK_TANK_DIRECTION_2026-09-29.md
 
 Current recommendation: Safari Vertical Slice 1.0. Build one complete cinematic, accessible, measurable beginner journey before expanding site breadth.
+
+
+## Production Objective
+The current production objective is:
+production/SAFARI_VERTICAL_SLICE_1.0_OBJECTIVE.md
+
+This document defines the user outcome, opening scene, primary interaction, first guided AI experience, accessibility/mobile/performance requirements, analytics, agent gates, definition of done, and explicit owner production-authorization requirement.
