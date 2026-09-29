@@ -61,3 +61,11 @@ The next active build must begin from this master save point and the current own
 Google Gemini is approved as part of the unified CivicAscent AI tool/research library for multimodel comparison, research, ideation, and cross-checking when available. Agent 5 must track its connection status, plan/cost, capabilities, limitations, and appropriate fallback use.
 
 Current connector status: no direct Gemini plugin was found in the available ChatGPT plugin directory at the time of this update. Treat Gemini as APPROVED / PENDING DIRECT CONNECTOR rather than as an active connected tool. Do not claim direct Gemini access until Agent 5 verifies a working connector or supported integration.
+
+
+## Think Tank Direction — 2026-09-29
+All six agents completed independent role-based assessments before synthesis.
+Controlling think tank document:
+governance/THINK_TANK_DIRECTION_2026-09-29.md
+
+Current recommendation: Safari Vertical Slice 1.0. Build one complete cinematic, accessible, measurable beginner journey before expanding site breadth.
