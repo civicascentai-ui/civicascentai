@@ -41,7 +41,7 @@ No earlier implementation may override that owner-approved visual direction.
 
 ## Shared tool library
 Connected/approved resources are treated as one coordinated library:
-Figma, Osmo interaction resources, Watermelon UI, Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
+Figma, Osmo interaction resources, Watermelon UI, VariantDeck (development/review only), Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
 
 Agent 5 independently audits tool availability, plans/credits, cost, duplication, security/licensing concerns, fallbacks, and source-of-truth integrity.
 
@@ -91,3 +91,12 @@ Usage rules:
 - Agent 6 checks whether any use improves user/business outcomes rather than merely adding interface complexity.
 
 Current connector status: no direct Watermelon UI plugin was found in the ChatGPT plugin directory at the time of this update. The public project exposes developer resources and MCP documentation, so treat it as APPROVED / EXTERNAL RESOURCE pending direct connector support.
+
+
+## VariantDeck resource status
+VariantDeck is APPROVED WITH RESTRICTIONS as an external development/review resource for bounded comparison of UI presentations inside the active Safari Vertical Slice.
+
+It is not approved as a production runtime dependency at this stage. Current public status is alpha / development-only. Figma remains visual source of truth. Agent 5 tracks version, provenance, dependency impact, and production exclusion. Agent 2 must verify final production builds do not unintentionally depend on it.
+
+Agent review:
+governance/VARIANTDECK_AGENT_REVIEW_2026-09-29.md
