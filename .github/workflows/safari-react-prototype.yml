@@ -2,7 +2,9 @@ name: Safari React Prototype
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - repair/prototype09-gated-2026-09-29
     paths:
       - "prototype-react/**"
       - ".github/workflows/safari-react-prototype.yml"
@@ -27,8 +29,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
-          cache-dependency-path: prototype-react/package-lock.json
 
       - name: Install
         run: npm install --no-audit --no-fund
