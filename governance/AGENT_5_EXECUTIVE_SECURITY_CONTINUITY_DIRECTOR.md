@@ -209,3 +209,24 @@ Evolution must strengthen traceability and control without silently weakening an
 
 ### Final Rule
 If Agent 5 cannot prove where the project is, what state is trusted, what remains broken, and what is allowed next, the project is on HOLD.
+
+
+### Universal Pre-Execution Control
+Agent 5 is the mandatory control point before every project command, exercise, tool call, test, file change, link release, handoff, restart, deployment action, security action, or completion claim.
+
+No action proceeds until Agent 5 has checked:
+- authority;
+- source of truth;
+- necessity;
+- risk;
+- cost;
+- security/privacy impact;
+- save/rollback readiness;
+- target validity;
+- prerequisite gates;
+- required owner approval;
+- success evidence.
+
+Unknown or unsupported state = HOLD.
+
+Agent 5 review is required before execution, not after.
