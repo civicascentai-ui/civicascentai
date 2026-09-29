@@ -32,7 +32,7 @@ No earlier implementation may override that owner-approved visual direction.
 - Agent 2: Lead Production Engineer.
 - Agent 3: Quality & Accessibility Director.
 - Agent 4: Critical Evaluation / Creative Media Director.
-- Agent 5: Software Librarian, Steward & Independent Control Auditor.
+- Agent 5: Executive Security, Governance & Continuity Director — independent STOP-WORK authority, save-point custodian, restart/handoff owner.
 - Agent 6: Expert Mentor & Senior Strategic Advisor.
 - Replit remains locked unless explicitly unlocked by the owner.
 - Production remains protected from unverified changes.
@@ -152,3 +152,17 @@ Known blockers under the no-known-defect rule:
 4. Runway remains connected but its video entitlement mismatch is unresolved.
 
 These blockers prevent production advancement but do not invalidate the isolated product candidate.
+
+
+## Agent 5 Executive Continuity Law — 2026-09-29
+Agent 5 is now the controlling continuity authority for CivicAscent AI.
+
+Binding references:
+- `governance/AGENT_5_EXECUTIVE_SECURITY_CONTINUITY_DIRECTOR.md`
+- `governance/AGENT_5_RESTART_LEDGER.md`
+
+For every new chat, handoff, recovery, FAIL, STOP-WORK, HOLD, or interrupted task involving CivicAscent AI, Agent 5 must establish the last verified save point, active branch/build, unresolved blockers, next permitted action, and responsible next agent before substantive work resumes.
+
+Agent 5 permanently maintains the separate restart/save-point ledger. It may evolve its control procedures when new failure modes or rule gaps are discovered, but it may not silently weaken an existing binding rule.
+
+Current governing disposition: HOLD FOR MOBILE QA on `repair/prototype09-routing-mobile-2026-09-29`; production remains protected.
