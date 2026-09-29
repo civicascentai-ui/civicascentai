@@ -3,19 +3,42 @@ import React, { useEffect, useRef, useState } from "react";
 const SCENE_IMAGE =
   "https://cdn.openart.ai/watermarked_images/YmxMJck2wpCt5p7NmfTC/thumbnail_4bf403d3_1790668655776.webp";
 
-const paths = [
-  { id: "learn", label: "Learn", title: "Build AI skills step by step", prompt: "Explain AI to me like I’m brand new to it." },
-  { id: "create", label: "Create", title: "Turn ideas into reality", prompt: "Help me turn this rough idea into something useful." },
-  { id: "work", label: "Work", title: "Explore real opportunities", prompt: "Show me practical ways AI could help with everyday work." },
-  { id: "explore", label: "Explore", title: "See what’s possible", prompt: "Give me three simple AI examples I can try today." }
-];
-
-const navItems = ["Home", "Explore", "Learn AI", "Programs", "Community", "Support"];
+const moments = {
+  start: {
+    label: "Start Here",
+    title: "Begin with one simple question",
+    body: "Tell CivicAscent what you want to understand, create, organize, or improve. No technical language required.",
+    prompt: "Explain AI to me like I’m brand new to it."
+  },
+  learn: {
+    label: "Learn AI",
+    title: "Follow the learning trail",
+    body: "Move through practical beginner lessons one step at a time, with plain-language guidance and visible examples.",
+    prompt: "Show me one useful AI skill I can learn in five minutes."
+  },
+  create: {
+    label: "Create",
+    title: "Turn an idea into something useful",
+    body: "Start with a rough thought and watch it become a clearer plan, visual, lesson, or document.",
+    prompt: "Help me turn this rough idea into a simple plan."
+  },
+  work: {
+    label: "Work",
+    title: "Use AI for everyday work",
+    body: "Explore practical ways AI can help organize tasks, compare options, prepare information, and save time.",
+    prompt: "Show me three simple ways AI could help with everyday work."
+  },
+  explore: {
+    label: "Explore",
+    title: "See what AI can do",
+    body: "Use the watering hole overlook as your discovery point for real-world AI examples.",
+    prompt: "Give me three useful things AI can do for a beginner today."
+  }
+};
 
 export default function App() {
-  const [activePath, setActivePath] = useState(paths[0]);
-  const [panelOpen, setPanelOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [activeMoment, setActiveMoment] = useState(null);
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -27,136 +50,131 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!panelOpen) return;
+    if (!activeMoment) return;
     const onKey = (event) => {
-      if (event.key === "Escape") setPanelOpen(false);
+      if (event.key === "Escape") setActiveMoment(null);
     };
     window.addEventListener("keydown", onKey);
     dialogRef.current?.focus();
     return () => window.removeEventListener("keydown", onKey);
-  }, [panelOpen]);
+  }, [activeMoment]);
 
-  const openPath = (id) => {
-    const path = paths.find((item) => item.id === id) || paths[0];
-    setActivePath(path);
-    setPanelOpen(true);
-  };
+  const selected = activeMoment ? moments[activeMoment] : null;
 
   return (
-    <main className={`prototype-shell ${reducedMotion ? "reduced-motion" : ""}`}>
-      <section className="hero-scene" aria-labelledby="hero-title">
-        <img className="hero-image" src={SCENE_IMAGE} alt="" aria-hidden="true" />
-        <div className="hero-shade" aria-hidden="true" />
-        <div className="hero-light" aria-hidden="true" />
+    <main className={`world-shell ${reducedMotion ? "reduced-motion" : ""}`}>
+      <section className="safari-world" aria-labelledby="world-title">
+        <img className="world-image" src={SCENE_IMAGE} alt="" aria-hidden="true" />
+        <div className="world-shade" aria-hidden="true" />
+        <div className="world-light" aria-hidden="true" />
         <div className="ambient-birds" aria-hidden="true"><span/><span/><span/></div>
         <div className="water-glimmer" aria-hidden="true"><span/><span/><span/></div>
 
-        <header className="topbar">
-          <a className="brand-lockup" href="#home" aria-label="CivicAscent AI home">
-            <span className="brand-mark" aria-hidden="true">CA</span>
-            <span className="brand-copy">
-              <strong>CivicAscent AI</strong>
-              <small>People · Learning · Opportunity</small>
-            </span>
-          </a>
-
-          <nav className="topnav" aria-label="Primary navigation">
-            {navItems.map((item) => (
-              <a key={item} href={item === "Home" ? "#home" : "#paths"}>{item}</a>
-            ))}
-          </nav>
-
-          <button className="language-button" aria-label="Language: English">English</button>
+        <header className="world-brand">
+          <div className="brand-mark" aria-hidden="true">CA</div>
+          <div>
+            <p>CIVICASCENT AI</p>
+            <span>People · Learning · Opportunity</span>
+          </div>
         </header>
 
-        <div className="hero-copy" id="home">
-          <h1 id="hero-title">A New World<br/>of Opportunity<br/><span>with AI</span></h1>
-          <p>Explore. Learn. Create. Grow.<br/>Built for People. Powered by Possibility.</p>
-
-          <button className="start-button" onClick={() => openPath("learn")} aria-haspopup="dialog">
-            <span className="play-icon" aria-hidden="true">▶</span>
-            <span><strong>Start Here</strong><small>Your AI Journey</small></span>
-            <span className="arrow" aria-hidden="true">→</span>
-          </button>
+        <div className="world-copy">
+          <h1 id="world-title">A New World<br/>of Opportunity<br/><em>with AI</em></h1>
+          <p>Explore. Learn. Create. Grow.<br/>Built for people new to AI.</p>
         </div>
 
-        <nav className="hotspot-layer" aria-label="Interactive scene hotspots">
-          <button className="hotspot hotspot-explore" onClick={() => openPath("explore")} aria-haspopup="dialog">
-            <span className="hotspot-pulse" aria-hidden="true"/>
-            <span><strong>Explore</strong><small>Discover the world</small></span>
+        <button
+          className="start-here"
+          onClick={() => setActiveMoment("start")}
+          aria-haspopup="dialog"
+        >
+          <span className="start-orb" aria-hidden="true">▶</span>
+          <span className="start-copy">
+            <strong>Start Here</strong>
+            <small>Your first AI step</small>
+          </span>
+          <span className="start-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <nav className="world-hotspots" aria-label="Explore the CivicAscent AI safari">
+          <button
+            className="world-hotspot hotspot-learn"
+            onClick={() => setActiveMoment("learn")}
+            aria-haspopup="dialog"
+          >
+            <span className="locator" aria-hidden="true" />
+            <span className="hotspot-label"><strong>Learn AI</strong><small>Lodge study</small></span>
           </button>
-          <button className="hotspot hotspot-learn" onClick={() => openPath("learn")} aria-haspopup="dialog">
-            <span className="hotspot-pulse" aria-hidden="true"/>
-            <span><strong>Learn AI</strong><small>Build new skills</small></span>
+
+          <button
+            className="world-hotspot hotspot-create"
+            onClick={() => setActiveMoment("create")}
+            aria-haspopup="dialog"
+          >
+            <span className="locator" aria-hidden="true" />
+            <span className="hotspot-label"><strong>Create</strong><small>Lookout studio</small></span>
           </button>
-          <button className="hotspot hotspot-create" onClick={() => openPath("create")} aria-haspopup="dialog">
-            <span className="hotspot-pulse" aria-hidden="true"/>
-            <span><strong>Create</strong><small>Turn ideas into reality</small></span>
+
+          <button
+            className="world-hotspot hotspot-work"
+            onClick={() => setActiveMoment("work")}
+            aria-haspopup="dialog"
+          >
+            <span className="locator" aria-hidden="true" />
+            <span className="hotspot-label"><strong>Work</strong><small>Trail marker</small></span>
           </button>
-          <button className="hotspot hotspot-community" onClick={() => openPath("work")} aria-haspopup="dialog">
-            <span className="hotspot-pulse" aria-hidden="true"/>
-            <span><strong>Community</strong><small>Connect and grow</small></span>
+
+          <button
+            className="world-hotspot hotspot-explore"
+            onClick={() => setActiveMoment("explore")}
+            aria-haspopup="dialog"
+          >
+            <span className="locator" aria-hidden="true" />
+            <span className="hotspot-label"><strong>Explore</strong><small>Watering hole</small></span>
           </button>
         </nav>
 
-        <section className="path-rail" id="paths" aria-label="Choose your AI path">
-          {paths.map((path) => (
-            <button key={path.id} className="path-card" onClick={() => openPath(path.id)} aria-haspopup="dialog">
-              <span className="path-thumb" aria-hidden="true"/>
-              <span className="path-text">
-                <strong>{path.label}</strong>
-                <small>{path.title}</small>
-              </span>
-              <span className="path-arrow" aria-hidden="true">→</span>
-            </button>
-          ))}
-        </section>
+        <div className="quiet-controls">
+          <button type="button" aria-label="Language: English">English</button>
+          <span aria-hidden="true">•</span>
+          <span>{reducedMotion ? "Reduced motion" : "Cinematic motion"}</span>
+        </div>
 
-        {panelOpen && (
+        {selected && (
           <section
-            className="experience-panel"
+            className="scene-transition"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="panel-title"
+            aria-labelledby="moment-title"
             tabIndex={-1}
             ref={dialogRef}
           >
-            <button className="panel-close" onClick={() => setPanelOpen(false)} aria-label="Return to safari scene">
-              Return to Safari
+            <div className="transition-background" aria-hidden="true" />
+            <button
+              className="return-world"
+              onClick={() => setActiveMoment(null)}
+              aria-label="Return to safari world"
+            >
+              ← Return to Safari
             </button>
 
-            <div className="panel-copy">
-              <p className="eyebrow">YOUR AI PATH</p>
-              <h2 id="panel-title">{activePath.label}</h2>
-              <p>{activePath.title}. Start with one simple request, then build from there.</p>
-
-              <div className="path-tabs" role="group" aria-label="Choose an AI path">
-                {paths.map((path) => (
-                  <button
-                    key={path.id}
-                    className={`path-tab ${activePath.id === path.id ? "selected" : ""}`}
-                    onClick={() => setActivePath(path)}
-                    aria-pressed={activePath.id === path.id}
-                  >
-                    {path.label}
-                  </button>
-                ))}
+            <div className="transition-copy">
+              <p className="transition-eyebrow">{selected.label}</p>
+              <h2 id="moment-title">{selected.title}</h2>
+              <p>{selected.body}</p>
+              <div className="prompt-line" aria-label="Example AI prompt">
+                <span>Try:</span>
+                <strong>“{selected.prompt}”</strong>
               </div>
-
-              <div className="prompt-example">
-                <span>Try this:</span>
-                <strong>“{activePath.prompt}”</strong>
-              </div>
-
-              <button className="continue-button" onClick={() => setPanelOpen(false)}>
+              <button className="continue-world" onClick={() => setActiveMoment(null)}>
                 Continue exploring
               </button>
             </div>
 
-            <div className="panel-visual" aria-hidden="true">
-              <span className="ring ring-one"/>
-              <span className="ring ring-two"/>
-              <span className="ring ring-three"/>
+            <div className="transition-visual" aria-hidden="true">
+              <span className="ring ring-one" />
+              <span className="ring ring-two" />
+              <span className="ring ring-three" />
               <div className="ai-core">AI</div>
             </div>
           </section>
