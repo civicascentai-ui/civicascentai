@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a1a12">
+<meta name="description" content="CivicAscent AI Safari — a guided beginner experience that shows what AI can do through one clear action at a time.">
+<meta name="civicascent-build" content="20260929-page2-safari-prototype-1">
+<title>Start Here | CivicAscent AI Safari</title>
+<link rel="stylesheet" href="assets/page2-safari.css?v=20260929-1">
+</head>
+<body>
+<a class="skip" href="#startHere">Skip to the first action</a>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="CivicAscent AI home">
+    <img src="assets/civicascent-logo.svg" alt="">
+    <span>CivicAscent <b>AI</b></span>
+  </a>
+  <div class="top-actions">
+    <button id="langBtn" class="pill" type="button" aria-pressed="false">ES</button>
+    <a class="pill home-link" href="index.html">Home</a>
+  </div>
+</header>
+
+<main class="scene" id="scene">
+  <div class="sky" aria-hidden="true"></div>
+  <div class="ridge ridge-far" aria-hidden="true"></div>
+  <div class="ridge ridge-mid" aria-hidden="true"></div>
+  <div class="trees trees-left" aria-hidden="true"></div>
+  <div class="trees trees-right" aria-hidden="true"></div>
+  <div class="river" aria-hidden="true"></div>
+  <div class="mist" aria-hidden="true"></div>
+  <div class="sunwash" aria-hidden="true"></div>
+
+  <section class="intro" aria-labelledby="pageTitle">
+    <p class="eyebrow" data-en="START HERE" data-es="EMPIEZA AQUÍ">START HERE</p>
+    <h1 id="pageTitle" data-en="See AI do something useful." data-es="Mira a la IA hacer algo útil.">See AI do something useful.</h1>
+    <p class="lede" data-en="One clear example. No jargon. You choose the goal, then watch AI turn it into a useful first result." data-es="Un ejemplo claro. Sin jerga. Tú eliges la meta y ves cómo la IA la convierte en un primer resultado útil.">One clear example. No jargon. You choose the goal, then watch AI turn it into a useful first result.</p>
+  </section>
+
+  <section class="trail" aria-label="Guided AI demonstration">
+    <button class="trail-stop active" id="startHere" data-step="1" type="button">
+      <span class="dot" aria-hidden="true"></span>
+      <span>
+        <strong data-en="Show me what AI does" data-es="Muéstrame lo que hace la IA">Show me what AI does</strong>
+        <small data-en="Start with a real-life example" data-es="Empieza con un ejemplo de la vida real">Start with a real-life example</small>
+      </span>
+    </button>
+
+    <button class="trail-stop" data-step="2" type="button">
+      <span class="dot" aria-hidden="true"></span>
+      <span>
+        <strong data-en="Try it yourself" data-es="Pruébalo tú mismo">Try it yourself</strong>
+        <small data-en="Choose a simple goal" data-es="Elige una meta sencilla">Choose a simple goal</small>
+      </span>
+    </button>
+
+    <a class="trail-stop" href="living-ai-lab.html">
+      <span class="dot" aria-hidden="true"></span>
+      <span>
+        <strong data-en="Explore more" data-es="Explora más">Explore more</strong>
+        <small data-en="Enter the Living AI Lab" data-es="Entra al Laboratorio de IA">Enter the Living AI Lab</small>
+      </span>
+    </a>
+  </section>
+
+  <aside class="demo-panel" id="demoPanel" aria-live="polite">
+    <button class="close-panel" id="closePanel" type="button" aria-label="Close example">×</button>
+    <p class="demo-kicker" id="demoKicker">REAL-LIFE EXAMPLE</p>
+    <h2 id="demoTitle">Plan a family dinner in seconds</h2>
+    <p id="demoText">Tell AI who is coming, what food you have, and your budget. It can turn that into a simple menu, shopping list, and step-by-step plan.</p>
+    <div class="example">
+      <span data-en="You ask:" data-es="Tú preguntas:">You ask:</span>
+      <q id="demoPrompt">I have chicken, rice, and $20. Help me plan dinner for four.</q>
+    </div>
+    <button class="primary" id="nextExample" type="button" data-en="Show another example" data-es="Mostrar otro ejemplo">Show another example</button>
+  </aside>
+
+  <p class="return-note"><a href="index.html" data-en="← Return to the lodge" data-es="← Volver al refugio">← Return to the lodge</a></p>
+</main>
+
+<script src="assets/page2-safari.js?v=20260929-1" defer></script>
+</body>
+</html>
