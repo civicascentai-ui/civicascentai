@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - repair/prototype09-gated-2026-09-29
+      - repair/prototype09-routing-mobile-2026-09-29
   pull_request:
     branches: [main]
   workflow_dispatch:
