@@ -166,3 +166,11 @@ For every new chat, handoff, recovery, FAIL, STOP-WORK, HOLD, or interrupted tas
 Agent 5 permanently maintains the separate restart/save-point ledger. It may evolve its control procedures when new failure modes or rule gaps are discovered, but it may not silently weaken an existing binding rule.
 
 Current governing disposition: HOLD FOR MOBILE QA on `repair/prototype09-routing-mobile-2026-09-29`; production remains protected.
+
+
+## Binding Agent Operating Laws — 2026-09-29
+The following file is binding project law and applies to all CivicAscent AI agents, tools, handoffs, builds, QA cycles, security reviews, think-tank escalations, restarts, and production decisions:
+
+`governance/CIVICASCENT_AGENT_OPERATING_LAWS.md`
+
+If any legacy guidance conflicts with this law file, the stricter non-conflicting control governs until the owner or Agent 5 formally reconciles the documents without weakening required safety, security, accessibility, cost, continuity, QA, or production protections.
