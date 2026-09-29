@@ -297,3 +297,65 @@ A failed or ambiguous TinyFish run may not be repeated until the cause of the pr
 Before any metered browser QA, Agent 5 must verify the preview endpoint is not an interstitial, stale cache, redirect wrapper, or transformed document and that it serves the exact intended commit and assets.
 
 If more than one metered browser run is expected for the same defect, Agent 5 must STOP and reassess non-metered alternatives first.
+
+
+## Law 24 — Agent 5 Universal Pre-Execution Review
+Effective immediately, Agent 5 must review EVERY command and exercise before execution.
+
+This includes, without limitation:
+- every tool call;
+- every code or file modification;
+- every branch or commit operation;
+- every test and QA action;
+- every deployment or production action;
+- every preview link or external URL supplied to the owner;
+- every plugin/connector invocation;
+- every metered or paid resource call;
+- every agent handoff;
+- every restart;
+- every security operation;
+- every automation;
+- every research escalation;
+- every save-point change;
+- every rollback;
+- every production promotion;
+- every user-facing claim of PASS, completion, fix, deployment, or readiness.
+
+### Mandatory pre-execution questions
+Before execution Agent 5 must determine:
+1. Is this action permitted by current project law?
+2. Is the source/build/branch correct?
+3. Is the action necessary?
+4. Is there a safer or no-cost alternative?
+5. Could the action alter production, cost money, expose data, weaken security, or create state confusion?
+6. Does a save point or rollback point need to exist first?
+7. Is the target URL/file/tool actually the intended one?
+8. Are all prerequisites and prior gates satisfied?
+9. Is owner authorization required?
+10. What evidence will prove the action succeeded?
+
+### Execution rule
+If any required answer is unknown, contradictory, or unsupported, status is HOLD and the action is BLOCKED until resolved.
+
+### No retroactive compliance
+Agent 5 review must occur BEFORE execution. Reviewing an action after it has already happened does not satisfy this law.
+
+### No routine-task exemption
+There is no exemption for actions described as small, obvious, routine, harmless, previously used, or already tested.
+
+### Preview/link validation rule
+Before giving the owner any preview, test, production, or review link, Agent 5 must verify:
+- the link resolves;
+- it serves the intended page rather than source text, an interstitial, stale content, or a redirect wrapper;
+- it corresponds to the exact intended build/commit/environment;
+- the owner can actually use it for the stated purpose.
+
+An unverified link may not be presented as a valid preview.
+
+### Claim-verification rule
+Before any statement such as PASS, FIXED, SAVED, DEPLOYED, PRODUCTION READY, or COMPLETE, Agent 5 must verify the evidence supporting that claim and record the relevant source/commit/test where applicable.
+
+### Accountability
+If an action bypasses Agent 5 review, that bypass is itself a governance failure and must be recorded in the rule-violation register.
+
+No excuse, urgency, convenience, previous practice, agent confidence, or tooling limitation waives this law.
