@@ -41,7 +41,7 @@ No earlier implementation may override that owner-approved visual direction.
 
 ## Shared tool library
 Connected/approved resources are treated as one coordinated library:
-Figma, Osmo interaction resources, Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
+Figma, Osmo interaction resources, Watermelon UI, Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
 
 Agent 5 independently audits tool availability, plans/credits, cost, duplication, security/licensing concerns, fallbacks, and source-of-truth integrity.
 
@@ -76,3 +76,18 @@ The current production objective is:
 production/SAFARI_VERTICAL_SLICE_1.0_OBJECTIVE.md
 
 This document defines the user outcome, opening scene, primary interaction, first guided AI experience, accessibility/mobile/performance requirements, analytics, agent gates, definition of done, and explicit owner production-authorization requirement.
+
+
+## Watermelon UI resource status
+Watermelon UI is approved as a no-fee/open-source UI reference and implementation resource for CivicAscent AI. It may be used for React components, animated UI patterns, reusable blocks, dashboards, templates, and implementation references when those patterns support the approved Safari experience.
+
+Usage rules:
+- Treat Watermelon UI as a component/pattern library, not as a visual direction.
+- Do not import card-heavy or dashboard-style patterns into the Safari opening experience when they conflict with the environmental-interface rule.
+- Agent 1 evaluates visual/interaction fit before use.
+- Agent 2 validates implementation, performance, and dependency impact.
+- Agent 3 validates accessibility and mobile behavior.
+- Agent 5 tracks provenance, licensing, updates, and whether a direct MCP/connector becomes available.
+- Agent 6 checks whether any use improves user/business outcomes rather than merely adding interface complexity.
+
+Current connector status: no direct Watermelon UI plugin was found in the ChatGPT plugin directory at the time of this update. The public project exposes developer resources and MCP documentation, so treat it as APPROVED / EXTERNAL RESOURCE pending direct connector support.
