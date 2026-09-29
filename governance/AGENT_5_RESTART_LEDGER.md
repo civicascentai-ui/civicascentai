@@ -266,3 +266,21 @@ New binding control:
 - More than one expected metered run on the same defect triggers STOP and reassessment.
 
 This control applies to all future chats, handoffs, restarts, and agents.
+
+
+---
+
+## Governance Upgrade — Universal Agent 5 Review
+**Date:** 2026-09-29
+**Status:** ACTIVE / BINDING
+
+Agent 5 now reviews every command and exercise before execution.
+
+No routine-task exemption exists.
+No retroactive review satisfies the requirement.
+Unverified preview links are blocked.
+Unsupported PASS/FIXED/COMPLETE claims are blocked.
+Any bypass is a governance violation and must be logged.
+
+Binding law:
+`governance/CIVICASCENT_AGENT_OPERATING_LAWS.md` — Law 24.
