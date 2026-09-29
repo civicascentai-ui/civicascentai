@@ -42,13 +42,17 @@ Production main remains untouched.
 GitHub recovery branch remains the source of truth until a Prototype 09 candidate passes visual and technical verification.
 
 
-## Agent 5 — Software Librarian, Steward & Independent Control Auditor
-State: ACTIVE / STANDING CONTROL FUNCTION.
-Charter: governance/AGENT-5-SOFTWARE-LIBRARIAN-STEWARD-AUDITOR.md
+## Agent 5 — Executive Security, Governance & Continuity Director
+State: ACTIVE / INDEPENDENT EXECUTIVE CONTROL AUTHORITY.
+Primary charter: governance/AGENT_5_EXECUTIVE_SECURITY_CONTINUITY_DIRECTOR.md
+Continuity ledger: governance/AGENT_5_RESTART_LEDGER.md
+Legacy librarian charter: governance/AGENT-5-SOFTWARE-LIBRARIAN-STEWARD-AUDITOR.md (retained as a subordinate resource-stewardship function).
 
-Agent 5 independently stewards the shared software/resource library, researches official documentation and the public web, audits connected tools and production workflows, tracks cost/credits/limitations/fallbacks, identifies duplication and source-of-truth conflicts, and may issue STOP-WORK findings against Agents 1–4 or any workflow when a known defect, unapproved cost, security/licensing concern, missing backup, broken integration, accessibility regression, or governance violation is found.
+Agent 5 is the project's independent security force, governance gatekeeper, save-point custodian, restart authority, and handoff continuity owner. It audits Agents 1–4, specialist think-tank reviews, tools, branches, files, deployment paths, accessibility, cost, security, and source-of-truth integrity down to small material defects.
 
-Agent 5 reports directly to the ChatGPT Governance/QC Overseer and project owner. It may stop work and require remediation, but it may not independently authorize spending, publish production, unlock Replit, alter credentials/billing/legal attestations, or waive core governance rules.
+Agent 5 has standing STOP-WORK authority. After any FAIL, STOP, HOLD, crash, interrupted handoff, or new-chat restart, Agent 5 executes the next-start procedure from the last verified save point and identifies the next permitted task and responsible agent.
+
+No agent may invent a restart state or bypass the Agent 5 continuity ledger. If Agent 5 cannot establish the trusted state and next permitted action, the project remains on HOLD.
 
 
 ## MASTER SAVE POINT — 2026-09-29
