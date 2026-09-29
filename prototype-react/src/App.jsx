@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const SAFARI_VIDEO =
   "https://d8j0ntlcm91z4.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/hf_20260929_095835_92833d99-5bd0-4982-82cb-2ded0ae10408.mp4";
@@ -8,17 +8,30 @@ const SAFARI_POSTER =
 
 export default function App() {
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [landed, setLanded] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(mq.matches);
+    const sync = () => {
+      setReducedMotion(mq.matches);
+      if (mq.matches) setLanded(true);
+    };
     sync();
     mq.addEventListener?.("change", sync);
     return () => mq.removeEventListener?.("change", sync);
   }, []);
 
+  const enterSafari = () => {
+    setLanded(false);
+    const video = videoRef.current;
+    if (!video || reducedMotion) return;
+    video.currentTime = 0;
+    video.play().catch(() => {});
+  };
+
   return (
-    <main className="movie-shell" aria-label="CivicAscent AI cinematic Safari introduction">
+    <main className={`movie-shell ${landed ? "is-landed" : ""}`} aria-label="CivicAscent AI cinematic Safari introduction">
       {reducedMotion ? (
         <img
           className="movie-media"
@@ -27,20 +40,32 @@ export default function App() {
         />
       ) : (
         <video
+          ref={videoRef}
           className="movie-media"
           src={SAFARI_VIDEO}
           poster={SAFARI_POSTER}
           autoPlay
           muted
           playsInline
-          loop
-          preload="metadata"
+          preload="auto"
+          onEnded={() => setLanded(true)}
           aria-label="CivicAscent AI cinematic Safari introduction"
         />
       )}
 
+      <div className="cinematic-vignette" aria-hidden="true" />
+
+      <section className="landing-moment" aria-live="polite">
+        <p className="landing-kicker">CIVICASCENT AI</p>
+        <h1>Welcome to a new world of opportunity with AI.</h1>
+        <button className="start-cue" type="button" onClick={enterSafari}>
+          <span>Start Here</span>
+          <span className="start-line" aria-hidden="true" />
+        </button>
+      </section>
+
       <div className="sr-only">
-        CivicAscent AI opens with a continuous cinematic camera move into a Safari learning world.
+        The cinematic camera arrives in the CivicAscent AI Safari learning world. Start Here is the next action.
       </div>
     </main>
   );
