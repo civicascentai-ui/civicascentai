@@ -60,6 +60,17 @@ jobs:
                       if key in attrs:
                           self.links.append(attrs[key])
 
+          def app_root_for(html: Path) -> Path:
+              current = html.parent.resolve()
+              while True:
+                  if (current / "package.json").exists():
+                      return current
+                  if current == root:
+                      return root
+                  if root not in current.parents and current != root:
+                      return root
+                  current = current.parent
+
           for html in Path('.').rglob('*.html'):
               if '.git' in html.parts:
                   continue
@@ -79,7 +90,12 @@ jobs:
                   path = unquote(parsed.path)
                   if not path:
                       continue
-                  target = (html.parent / path).resolve()
+
+                  if path.startswith('/'):
+                      target = (app_root_for(html) / path.lstrip('/')).resolve()
+                  else:
+                      target = (html.parent / path).resolve()
+
                   try:
                       target.relative_to(root)
                   except ValueError:
