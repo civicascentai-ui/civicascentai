@@ -49,3 +49,15 @@ Charter: governance/AGENT-5-SOFTWARE-LIBRARIAN-STEWARD-AUDITOR.md
 Agent 5 independently stewards the shared software/resource library, researches official documentation and the public web, audits connected tools and production workflows, tracks cost/credits/limitations/fallbacks, identifies duplication and source-of-truth conflicts, and may issue STOP-WORK findings against Agents 1–4 or any workflow when a known defect, unapproved cost, security/licensing concern, missing backup, broken integration, accessibility regression, or governance violation is found.
 
 Agent 5 reports directly to the ChatGPT Governance/QC Overseer and project owner. It may stop work and require remediation, but it may not independently authorize spending, publish production, unlock Replit, alter credentials/billing/legal attestations, or waive core governance rules.
+
+
+## MASTER SAVE POINT — 2026-09-29
+Controlling branch: master-savepoint-safari-2026-09-29
+Controlling file: MASTER_SAVEPOINT_2026-09-29.md
+
+All agents must treat this save point as the active CivicAscent source of truth.
+
+All earlier builds, prototypes, models, previews, and rejected concept implementations are quarantined for history/recovery only on:
+quarantine-legacy-builds-2026-09-29
+
+No quarantined material may be reused, merged, restored, or treated as a visual/engineering source without explicit owner approval. Agent 5 has standing authority to issue STOP-WORK for violations.
