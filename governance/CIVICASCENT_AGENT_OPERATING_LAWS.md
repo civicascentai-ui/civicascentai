@@ -277,3 +277,23 @@ If Agent 5 cannot prove:
 - what is allowed next;
 the project is HOLD.
 
+
+
+## Law 23 — TinyFish Pre-Use Hard Gate
+TinyFish is a metered fallback and may not be invoked until Agent 5 creates a pre-use necessity record containing:
+- the exact task;
+- higher-priority resources attempted;
+- why those resources are insufficient;
+- confirmation that the target preview/source is the exact intended build;
+- confirmation static/source inspection cannot satisfy the task;
+- expected TinyFish call count;
+- metering/cost status;
+- required owner authorization status.
+
+Missing evidence means BLOCKED.
+
+A failed or ambiguous TinyFish run may not be repeated until the cause of the prior failure is identified and documented.
+
+Before any metered browser QA, Agent 5 must verify the preview endpoint is not an interstitial, stale cache, redirect wrapper, or transformed document and that it serves the exact intended commit and assets.
+
+If more than one metered browser run is expected for the same defect, Agent 5 must STOP and reassess non-metered alternatives first.
