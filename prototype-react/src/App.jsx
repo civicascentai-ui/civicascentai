@@ -23,11 +23,7 @@ export default function App() {
   }, []);
 
   const enterSafari = () => {
-    setLanded(false);
-    const video = videoRef.current;
-    if (!video || reducedMotion) return;
-    video.currentTime = 0;
-    video.play().catch(() => {});
+    window.location.assign("../prototype09-agent2/index.html");
   };
 
   return (
