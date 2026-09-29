@@ -248,3 +248,21 @@ GitHub Actions run: `36643432218`
 PASS FOR PAGE 2 AUDIT/STRESS SCOPE.
 
 Production remains unchanged until the normal production promotion gate is executed with owner authorization.
+
+
+---
+
+## Agent 5 Governance Incident — TinyFish Resource Control
+**Date:** 2026-09-29
+**Status:** RESOLVED WITH HARD GATE
+**Incident record:** `checkpoints/AGENT5_RESOURCE_CONTROL_INCIDENT_2026-09-29.md`
+
+Agent 5 failed to require a pre-use necessity record and preview-source validation before repeated TinyFish use during Page 2 QA.
+
+New binding control:
+- TinyFish requires a documented pre-use hard gate.
+- No repeat after ambiguous/failing run without root-cause review.
+- Preview endpoint must be validated before metered browser QA.
+- More than one expected metered run on the same defect triggers STOP and reassessment.
+
+This control applies to all future chats, handoffs, restarts, and agents.
