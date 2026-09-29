@@ -147,3 +147,29 @@ The prior HOLD FOR MOBILE QA is cleared for Page 2.
 
 ### Next permitted task
 Continue Page 2 refinement under the normal governed workflow. Production remains protected until all remaining applicable production gates and owner authorization pass.
+
+
+---
+
+## Page 2 Safari Asset Repair — 2026-09-29
+
+### Root cause
+The Page 2 file `prototype09-agent2/safari-learning-world.webp` was a corrupt/invalid WebP asset. Browser fallback behavior caused the Safari environment to appear as a dark/brown scene despite layout tests passing.
+
+### Repair
+The corrupt WebP was replaced with a valid cinematic Safari lodge/watering-hole image asset.
+
+### Commit
+`d41115f2f876a57b0ef4d454b4415eb511da0977`
+
+### Verification completed
+- Replacement WebP decodes successfully.
+- Replacement contains the required Safari/lodge/wildlife/waterhole visual direction.
+- CSS continues to reference the same governed asset path, so no route or markup change was introduced.
+
+### Current disposition
+HOLD FOR VISUAL REGRESSION QA ONLY.
+
+Reason: a production-facing visual asset changed after the prior mobile QA PASS. Agent 3 must rerender Page 2 at desktop and required mobile sizes and confirm readability, cropping, scene visibility, contrast, and controls before the visual HOLD can be cleared.
+
+Production remains protected.
