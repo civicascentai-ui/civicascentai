@@ -40,7 +40,7 @@ No earlier implementation may override that owner-approved visual direction.
 
 ## Shared tool library
 Connected/approved resources are treated as one coordinated library:
-Figma, Osmo interaction resources, Higgsfield, Runway, Webflow, GitHub, Semrush, and other approved tools.
+Figma, Osmo interaction resources, Higgsfield, Runway, Webflow, GitHub, Semrush, Google Gemini, and other approved tools.
 
 Agent 5 independently audits tool availability, plans/credits, cost, duplication, security/licensing concerns, fallbacks, and source-of-truth integrity.
 
@@ -54,3 +54,9 @@ quarantine-legacy-builds-2026-09-29
 
 ## Advancement rule
 The next active build must begin from this master save point and the current owner-approved Safari visual direction. Any agent attempting to revive quarantined work must be stopped by Agent 5 and the Governance/QC Overseer.
+
+
+## Gemini resource status
+Google Gemini is approved as part of the unified CivicAscent AI tool/research library for multimodel comparison, research, ideation, and cross-checking when available. Agent 5 must track its connection status, plan/cost, capabilities, limitations, and appropriate fallback use.
+
+Current connector status: no direct Gemini plugin was found in the available ChatGPT plugin directory at the time of this update. Treat Gemini as APPROVED / PENDING DIRECT CONNECTOR rather than as an active connected tool. Do not claim direct Gemini access until Agent 5 verifies a working connector or supported integration.
