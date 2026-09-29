@@ -173,3 +173,19 @@ HOLD FOR VISUAL REGRESSION QA ONLY.
 Reason: a production-facing visual asset changed after the prior mobile QA PASS. Agent 3 must rerender Page 2 at desktop and required mobile sizes and confirm readability, cropping, scene visibility, contrast, and controls before the visual HOLD can be cleared.
 
 Production remains protected.
+
+
+---
+
+## Save Point Registered — 2026-09-29
+
+**Save point:** `checkpoints/PAGE2_SAFARI_ASSET_REPAIR_SAVEPOINT_2026-09-29.md`
+
+**Status:** SAVED / HOLD FOR VISUAL REGRESSION QA
+
+**Current trusted Page 2 state includes Safari asset replacement commit:**
+`d41115f2f876a57b0ef4d454b4415eb511da0977`
+
+**Next permitted task:** Agent 3 visual regression QA only.
+
+**Production:** unchanged.
