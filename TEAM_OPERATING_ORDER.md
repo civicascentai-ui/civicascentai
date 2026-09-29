@@ -7,34 +7,39 @@ Build a visually exceptional, immersive, accessible AI experience that demonstra
 Prototype 09 — Safari Learning World.
 
 ## Governance state
-Agents 1–4 are currently FROZEN following the 2026-09-28 agent-failure incident.
-No agent may create, approve, revise, publish, or advance a CivicAscent build until explicitly requalified or replaced under a stricter approval system.
+The PERMANENT PRE-CHANGE REVIEW LAW is the supreme operating gate above all agents and tools.
+Controlling file: governance/PRE_CHANGE_REVIEW_LAW.md
+
+No agent, tool, plugin, automation, mentor, or workflow may make a project change until the required pre-change question-and-answer review is completed, a hard save point exists, and the Governance/QC Overseer records APPROVE FOR ISOLATED TEST.
+
+Agents 1–6 are ACTIVE within their defined authority but remain subordinate to the Pre-Change Review Law, no-known-defect rule, save-point rule, owner authorization requirements, and independent QA gates.
 
 ## Agent 1 — Experience Director
-State: FROZEN / FAILED PENDING REQUALIFICATION.
-Mandate if reactivated: preserve Prototype 09 exactly as the active visual direction, including cinematic golden-hour savanna, elevated lodge/terrace viewpoint, elephants at the watering hole as the dominant living event, layered depth, warm premium light, and environmental interface without cards or brochure treatment.
+State: ACTIVE / SUBJECT TO PRE-CHANGE REVIEW LAW.
+Mandate: preserve Prototype 09 exactly as the active visual direction, including cinematic golden-hour savanna, elevated lodge/terrace viewpoint, elephants at the watering hole as the dominant living event, layered depth, warm premium light, and environmental interface without cards or brochure treatment.
 
 ## Agent 2 — Lead Production Engineer
-State: FROZEN / FAILED PENDING REQUALIFICATION.
-Mandate if reactivated: implement Prototype 09 without degrading realism, accessibility, performance, or mobile usability. The rejected Safari React Prototype A is historical engineering reference only and must not be restored as the active candidate.
+State: ACTIVE / SUBJECT TO PRE-CHANGE REVIEW LAW.
+Mandate: implement Prototype 09 without degrading realism, accessibility, performance, or mobile usability. The rejected Safari React Prototype A is historical engineering reference only and must not be restored as the active candidate.
 
 ## Agent 3 — Quality & Accessibility Director
-State: FROZEN / FAILED PENDING REQUALIFICATION.
-Mandate if reactivated: independently validate mobile and desktop behavior, accessibility, readability, navigation, reduced-motion behavior, performance, links, and first-time-user clarity before any promotion.
+State: ACTIVE / SUBJECT TO PRE-CHANGE REVIEW LAW.
+Mandate: independently validate mobile and desktop behavior, accessibility, readability, navigation, reduced-motion behavior, performance, links, and first-time-user clarity before any promotion.
 
 ## Agent 4 — Critical Evaluation Director
-State: FROZEN / FAILED PENDING REQUALIFICATION.
-Mandate if reactivated: independently challenge visual quality, business effectiveness, accessibility, and living-canvas integrity. Reject static, cardboard, clipart, brochure, game-like, or superficial-animation drift.
+State: ACTIVE / SUBJECT TO PRE-CHANGE REVIEW LAW.
+Mandate: independently challenge visual quality, business effectiveness, accessibility, and living-canvas integrity. Reject static, cardboard, clipart, brochure, game-like, or superficial-animation drift.
 
 ## QC governance
-ChatGPT remains QC / Governance Overseer.
+The Permanent Pre-Change Review Law sits above this Team Operational Order and above every agent charter.
+ChatGPT remains QC / Governance Overseer and enforces the law before any change is made.
 No known defect may be carried forward.
 No agent may self-approve final release.
 Visual proof against the locked Prototype 09 reference is required before engineering or QA can mark a candidate valid.
 
 ## Current candidate
-There is currently NO verified working Prototype 09 implementation candidate.
-The active recovery target is the locked Prototype 09 / Safari Learning World reference.
+The active work remains Prototype 09 / Safari Learning World under protected repair and review branches.
+No candidate may be treated as production-ready until it passes the Permanent Pre-Change Review Law, implementation testing, independent QA, the no-known-defect gate, and any required owner authorization.
 
 ## Protection
 Replit remains locked.
