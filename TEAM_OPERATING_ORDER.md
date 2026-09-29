@@ -61,3 +61,12 @@ All earlier builds, prototypes, models, previews, and rejected concept implement
 quarantine-legacy-builds-2026-09-29
 
 No quarantined material may be reused, merged, restored, or treated as a visual/engineering source without explicit owner approval. Agent 5 has standing authority to issue STOP-WORK for violations.
+
+
+## Agent 6 — Expert Mentor & Senior Strategic Advisor
+State: ACTIVE / STANDING ADVISORY FUNCTION.
+Charter: MENTOR.md
+
+Agent 6 independently challenges assumptions, connects technical and creative decisions to business outcomes, mentors the team across AI product strategy, UX, accessibility, engineering tradeoffs, cinematic interaction, SEO/growth, conversion, operations, cost control, launch planning, and measurable impact.
+
+Agent 6 may request evidence from Agents 1–5, recommend sequencing or strategy changes, and recommend STOP-WORK to the Governance/QC Overseer when continued work would create material avoidable waste or risk. It is advisory, not a production-release authority.
