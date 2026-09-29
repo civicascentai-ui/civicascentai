@@ -4,186 +4,160 @@ const SCENE_IMAGE =
   "https://cdn.openart.ai/watermarked_images/YmxMJck2wpCt5p7NmfTC/thumbnail_4bf403d3_1790668655776.webp";
 
 const paths = [
-  {
-    id: "learn",
-    label: "Learn",
-    title: "Understand AI",
-    prompt: "Explain AI to me like I’m brand new to it."
-  },
-  {
-    id: "create",
-    label: "Create",
-    title: "Make something useful",
-    prompt: "Help me turn a rough idea into a clear plan."
-  },
-  {
-    id: "work",
-    label: "Work",
-    title: "Use AI for everyday tasks",
-    prompt: "Show me how AI can help organize something I need to do."
-  },
-  {
-    id: "understand",
-    label: "Explore",
-    title: "See what AI can do",
-    prompt: "Give me three simple examples of useful AI in daily life."
-  }
+  { id: "learn", label: "Learn", title: "Build AI skills step by step", prompt: "Explain AI to me like I’m brand new to it." },
+  { id: "create", label: "Create", title: "Turn ideas into reality", prompt: "Help me turn this rough idea into something useful." },
+  { id: "work", label: "Work", title: "Explore real opportunities", prompt: "Show me practical ways AI could help with everyday work." },
+  { id: "explore", label: "Explore", title: "See what’s possible", prompt: "Give me three simple AI examples I can try today." }
 ];
 
+const navItems = ["Home", "Explore", "Learn AI", "Programs", "Community", "Support"];
+
 export default function App() {
+  const [activePath, setActivePath] = useState(paths[0]);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [guideOpen, setGuideOpen] = useState(false);
-  const [selectedPath, setSelectedPath] = useState(paths[0]);
   const dialogRef = useRef(null);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(media.matches);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(mq.matches);
     sync();
-    media.addEventListener?.("change", sync);
-    return () => media.removeEventListener?.("change", sync);
+    mq.addEventListener?.("change", sync);
+    return () => mq.removeEventListener?.("change", sync);
   }, []);
 
   useEffect(() => {
-    if (!guideOpen) return;
-    const close = (event) => {
-      if (event.key === "Escape") setGuideOpen(false);
+    if (!panelOpen) return;
+    const onKey = (event) => {
+      if (event.key === "Escape") setPanelOpen(false);
     };
-    window.addEventListener("keydown", close);
+    window.addEventListener("keydown", onKey);
     dialogRef.current?.focus();
-    return () => window.removeEventListener("keydown", close);
-  }, [guideOpen]);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [panelOpen]);
+
+  const openPath = (id) => {
+    const path = paths.find((item) => item.id === id) || paths[0];
+    setActivePath(path);
+    setPanelOpen(true);
+  };
 
   return (
-    <main className={`scene-shell ${reducedMotion ? "reduced-motion" : ""}`}>
-      <section className="scene" aria-labelledby="scene-title">
-        <img className="scene-image" src={SCENE_IMAGE} alt="" aria-hidden="true" />
-        <div className="scene-shade" aria-hidden="true" />
-        <div className="scene-light" aria-hidden="true" />
-        <div className="scene-dusk" aria-hidden="true" />
+    <main className={`prototype-shell ${reducedMotion ? "reduced-motion" : ""}`}>
+      <section className="hero-scene" aria-labelledby="hero-title">
+        <img className="hero-image" src={SCENE_IMAGE} alt="" aria-hidden="true" />
+        <div className="hero-shade" aria-hidden="true" />
+        <div className="hero-light" aria-hidden="true" />
+        <div className="ambient-birds" aria-hidden="true"><span/><span/><span/></div>
+        <div className="water-glimmer" aria-hidden="true"><span/><span/><span/></div>
 
-        <div className="ambient-birds" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
+        <header className="topbar">
+          <a className="brand-lockup" href="#home" aria-label="CivicAscent AI home">
+            <span className="brand-mark" aria-hidden="true">CA</span>
+            <span className="brand-copy">
+              <strong>CivicAscent AI</strong>
+              <small>People · Learning · Opportunity</small>
+            </span>
+          </a>
 
-        <div className="water-glimmer" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
+          <nav className="topnav" aria-label="Primary navigation">
+            {navItems.map((item) => (
+              <a key={item} href={item === "Home" ? "#home" : "#paths"}>{item}</a>
+            ))}
+          </nav>
 
-        <header className="scene-copy">
-          <p className="brand">CIVICASCENT AI</p>
-          <h1 id="scene-title">Start here.</h1>
-          <p className="scene-intro">
-            Explore AI from the safari lodge. One clear step at a time.
-          </p>
+          <button className="language-button" aria-label="Language: English">English</button>
         </header>
 
-        <nav className="scene-actions" aria-label="Safari learning destinations">
-          <button
-            className="destination destination-primary"
-            onClick={() => setGuideOpen(true)}
-            aria-haspopup="dialog"
-          >
-            <span className="destination-dot" aria-hidden="true" />
-            <span>
-              <strong>Start Here</strong>
-              <small>Your AI journey</small>
-            </span>
-          </button>
+        <div className="hero-copy" id="home">
+          <h1 id="hero-title">A New World<br/>of Opportunity<br/><span>with AI</span></h1>
+          <p>Explore. Learn. Create. Grow.<br/>Built for People. Powered by Possibility.</p>
 
-          <button
-            className="destination destination-secondary destination-lab"
-            onClick={() => {
-              setSelectedPath(paths[1]);
-              setGuideOpen(true);
-            }}
-            aria-haspopup="dialog"
-          >
-            <span className="destination-dot" aria-hidden="true" />
-            <span>
-              <strong>Living AI Lab</strong>
-              <small>See AI in action</small>
-            </span>
+          <button className="start-button" onClick={() => openPath("learn")} aria-haspopup="dialog">
+            <span className="play-icon" aria-hidden="true">▶</span>
+            <span><strong>Start Here</strong><small>Your AI Journey</small></span>
+            <span className="arrow" aria-hidden="true">→</span>
           </button>
+        </div>
 
-          <button
-            className="destination destination-secondary destination-paths"
-            onClick={() => {
-              setSelectedPath(paths[0]);
-              setGuideOpen(true);
-            }}
-            aria-haspopup="dialog"
-          >
-            <span className="destination-dot" aria-hidden="true" />
-            <span>
-              <strong>Learning Paths</strong>
-              <small>Build your skills</small>
-            </span>
+        <nav className="hotspot-layer" aria-label="Interactive scene hotspots">
+          <button className="hotspot hotspot-explore" onClick={() => openPath("explore")} aria-haspopup="dialog">
+            <span className="hotspot-pulse" aria-hidden="true"/>
+            <span><strong>Explore</strong><small>Discover the world</small></span>
+          </button>
+          <button className="hotspot hotspot-learn" onClick={() => openPath("learn")} aria-haspopup="dialog">
+            <span className="hotspot-pulse" aria-hidden="true"/>
+            <span><strong>Learn AI</strong><small>Build new skills</small></span>
+          </button>
+          <button className="hotspot hotspot-create" onClick={() => openPath("create")} aria-haspopup="dialog">
+            <span className="hotspot-pulse" aria-hidden="true"/>
+            <span><strong>Create</strong><small>Turn ideas into reality</small></span>
+          </button>
+          <button className="hotspot hotspot-community" onClick={() => openPath("work")} aria-haspopup="dialog">
+            <span className="hotspot-pulse" aria-hidden="true"/>
+            <span><strong>Community</strong><small>Connect and grow</small></span>
           </button>
         </nav>
 
-        <div className="scene-status" aria-live="polite">
-          <span>PROTOTYPE 09 · SCENE 01</span>
-          <strong>{reducedMotion ? "Reduced motion" : "Living cinematic scene"}</strong>
-        </div>
+        <section className="path-rail" id="paths" aria-label="Choose your AI path">
+          {paths.map((path) => (
+            <button key={path.id} className="path-card" onClick={() => openPath(path.id)} aria-haspopup="dialog">
+              <span className="path-thumb" aria-hidden="true"/>
+              <span className="path-text">
+                <strong>{path.label}</strong>
+                <small>{path.title}</small>
+              </span>
+              <span className="path-arrow" aria-hidden="true">→</span>
+            </button>
+          ))}
+        </section>
 
-        {guideOpen && (
+        {panelOpen && (
           <section
-            className="guided-moment"
+            className="experience-panel"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="guide-title"
+            aria-labelledby="panel-title"
             tabIndex={-1}
             ref={dialogRef}
           >
-            <button
-              className="return-button"
-              onClick={() => setGuideOpen(false)}
-              aria-label="Return to the safari lodge"
-            >
+            <button className="panel-close" onClick={() => setPanelOpen(false)} aria-label="Return to safari scene">
               Return to Safari
             </button>
 
-            <div className="guide-copy">
-              <p className="guide-eyebrow">CHOOSE YOUR FIRST PATH</p>
-              <h2 id="guide-title">{selectedPath.title}</h2>
-              <p>
-                Pick the kind of help you want. CivicAscent keeps the first step simple,
-                then builds from there.
-              </p>
+            <div className="panel-copy">
+              <p className="eyebrow">YOUR AI PATH</p>
+              <h2 id="panel-title">{activePath.label}</h2>
+              <p>{activePath.title}. Start with one simple request, then build from there.</p>
 
-              <div className="path-choices" role="group" aria-label="Choose an AI learning path">
+              <div className="path-tabs" role="group" aria-label="Choose an AI path">
                 {paths.map((path) => (
                   <button
                     key={path.id}
-                    className={`path-choice ${selectedPath.id === path.id ? "is-selected" : ""}`}
-                    onClick={() => setSelectedPath(path)}
-                    aria-pressed={selectedPath.id === path.id}
+                    className={`path-tab ${activePath.id === path.id ? "selected" : ""}`}
+                    onClick={() => setActivePath(path)}
+                    aria-pressed={activePath.id === path.id}
                   >
                     {path.label}
                   </button>
                 ))}
               </div>
 
-              <div className="example-line" aria-label="Example prompt">
-                <span>Try:</span>
-                <strong>“{selectedPath.prompt}”</strong>
+              <div className="prompt-example">
+                <span>Try this:</span>
+                <strong>“{activePath.prompt}”</strong>
               </div>
 
-              <button className="continue-button" onClick={() => setGuideOpen(false)}>
+              <button className="continue-button" onClick={() => setPanelOpen(false)}>
                 Continue exploring
               </button>
             </div>
 
-            <div className="guide-visual" aria-hidden="true">
-              <span className="orb orb-one" />
-              <span className="orb orb-two" />
-              <span className="orb orb-three" />
-              <div className="guide-core">AI</div>
+            <div className="panel-visual" aria-hidden="true">
+              <span className="ring ring-one"/>
+              <span className="ring ring-two"/>
+              <span className="ring ring-three"/>
+              <div className="ai-core">AI</div>
             </div>
           </section>
         )}
