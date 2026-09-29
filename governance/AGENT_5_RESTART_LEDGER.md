@@ -86,3 +86,35 @@ HOLD FOR RENDERED MOBILE QA.
 
 ### Next permitted task
 Agent 3 must validate Page 2 at the target mobile viewport and re-check the repaired guided-experience links. Production remains protected.
+
+
+---
+
+## Page 2 Short-Viewport Repair — 2026-09-29
+
+**Branch:** `repair/prototype09-routing-mobile-2026-09-29`
+
+### Defect found
+Short mobile viewports could allow the Page 2 intro block and lower destination controls to crowd or overlap even though the 390x844 target layout had adequate spacing by code inspection.
+
+### Repair
+Added a dedicated `max-height:720px` mobile layout guard that:
+- compresses the intro hierarchy without removing the primary action;
+- preserves readable text and 44–52px minimum interaction heights;
+- repositions all three destination controls with explicit vertical separation;
+- adjusts the context panel for short-screen safe areas.
+
+### Commit
+`a8b07d2c1a014bb1e5c0cb9f231883cef17f9aab`
+
+### Route verification
+Confirmed the three repaired destination files exist and include viewport metadata:
+- `living-ai-lab.html`
+- `ai-lab.html`
+- `plan.html`
+
+### Current disposition
+HOLD FOR FINAL RENDERED MOBILE QA.
+
+### Next responsible agent
+Agent 3 — rendered mobile verification, then return to Agent 5 for gate disposition.
