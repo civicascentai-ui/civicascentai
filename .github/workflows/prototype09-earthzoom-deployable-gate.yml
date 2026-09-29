@@ -51,7 +51,8 @@ jobs:
               "playsInline",
               "preload=\"metadata\"",
               "prefers-reduced-motion",
-              "viral_hub_video",
+              "d8j0ntlcm91z4.cloudfront.net",
+              "92833d99-5bd0-4982-82cb-2ded0ae10408.mp4",
               "movie-shell",
               "movie-media"
           ]
