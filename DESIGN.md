@@ -4,6 +4,8 @@ Status: HARD GATE
 Scope: CivicAscent AI Safari experience and all child experiences
 Authority: overrides generic frontend conventions when they conflict with the approved CivicAscent experience.
 
+Governance hierarchy: this DESIGN AUTHORITY is subordinate to governance/PRE_CHANGE_REVIEW_LAW.md. No design change may begin until that permanent pre-change Q&A gate is completed and approved for isolated testing.
+
 ## 1. Core experience
 
 CivicAscent must feel like one continuous cinematic place, not a website laid over photographs.
