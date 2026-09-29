@@ -127,3 +127,28 @@ Required controls:
 - No animation may obscure the primary next action or violate the no-known-defect rule.
 
 Current evidence: official React Spring documentation supports React 19, web/Three.js targets, SSR, imperative animation APIs, and a useReducedMotion utility. No direct ChatGPT plugin was found; treat it as APPROVED / EXTERNAL ENGINEERING LIBRARY.
+
+
+## Active Product Candidate — Safari Vertical Slice 1.0 Beta
+Source: product/safari-v1/
+Figma visual file: https://www.figma.com/design/FTxmdiGRUZYiAJiMvVKc7K
+Status: BETA / ISOLATED / NOT PRODUCTION
+
+Implemented:
+- React 19 + React Spring interaction shell.
+- One clear Start Here action.
+- Two-step beginner AI demonstration.
+- Learn / Try / Get Help / Continue next-action structure.
+- Keyboard/touch interaction.
+- reduced-motion behavior.
+- analytics event hooks.
+- responsive mobile/desktop styles.
+- Figma desktop/mobile visual scaffold.
+
+Known blockers under the no-known-defect rule:
+1. The current owner-approved Safari media is not yet inserted into the Figma/product candidate. The product references public/assets/safari-approved.jpg and uses a fallback scene until that asset is materialized.
+2. The connected Webflow account currently exposes no accessible sites, so Webflow implementation/deployment cannot yet be performed.
+3. Semrush reports insufficient API units for keyword research in this session.
+4. Runway remains connected but its video entitlement mismatch is unresolved.
+
+These blockers prevent production advancement but do not invalidate the isolated product candidate.
