@@ -9,7 +9,6 @@ const SAFARI_POSTER =
 export default function App() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [landed, setLanded] = useState(false);
-  const [doorOpen, setDoorOpen] = useState(false);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -23,8 +22,7 @@ export default function App() {
     return () => mq.removeEventListener?.("change", sync);
   }, []);
 
-  const replayArrival = () => {
-    setDoorOpen(false);
+  const enterSafari = () => {
     setLanded(false);
     const video = videoRef.current;
     if (!video || reducedMotion) return;
@@ -33,10 +31,7 @@ export default function App() {
   };
 
   return (
-    <main
-      className={`movie-shell ${landed ? "is-landed" : ""} ${doorOpen ? "door-is-open" : ""}`}
-      aria-label="CivicAscent AI cinematic Safari introduction"
-    >
+    <main className={`movie-shell ${landed ? "is-landed" : ""}`} aria-label="CivicAscent AI cinematic Safari introduction">
       {reducedMotion ? (
         <img
           className="movie-media"
@@ -63,38 +58,14 @@ export default function App() {
       <section className="landing-moment" aria-live="polite">
         <p className="landing-kicker">CIVICASCENT AI</p>
         <h1>Welcome to a new world of opportunity with AI.</h1>
-        <button className="start-cue" type="button" onClick={replayArrival}>
+        <button className="start-cue" type="button" onClick={enterSafari}>
           <span>Start Here</span>
           <span className="start-line" aria-hidden="true" />
         </button>
       </section>
 
-      <button
-        className="environment-door"
-        type="button"
-        onClick={() => setDoorOpen(true)}
-        aria-label="Enter the Living AI Lab"
-      >
-        <span className="door-frame" aria-hidden="true">
-          <span className="door-light" />
-          <span className="door-threshold" />
-        </span>
-        <span className="door-name">Living AI Lab</span>
-      </button>
-
-      <section className="door-transition" aria-live="polite">
-        <div className="door-transition-copy">
-          <p>ENTERING</p>
-          <h2>Living AI Lab</h2>
-          <button type="button" onClick={() => setDoorOpen(false)}>
-            Return to Safari
-          </button>
-        </div>
-      </section>
-
       <div className="sr-only">
-        The cinematic camera arrives in the CivicAscent AI Safari learning world.
-        A doorway in the environment leads to the Living AI Lab.
+        The cinematic camera arrives in the CivicAscent AI Safari learning world. Start Here is the next action.
       </div>
     </main>
   );
