@@ -1,0 +1,73 @@
+name: Page 2 Exact Mobile Render
+
+on:
+  push:
+    branches:
+      - repair/prototype09-routing-mobile-2026-09-29
+    paths:
+      - "prototype09-agent2/**"
+      - ".github/workflows/page2-exact-mobile-render.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+
+      - name: Validate Page 2 asset
+        run: |
+          test -s prototype09-agent2/index.html
+          test -s prototype09-agent2/styles.css
+          test -s prototype09-agent2/app.js
+          test -s prototype09-agent2/safari-learning-world.webp
+          file prototype09-agent2/safari-learning-world.webp
+
+      - name: Start static server
+        run: |
+          python3 -m http.server 4173 --directory . > /tmp/page2-server.log 2>&1 &
+          echo $! > /tmp/page2-server.pid
+          sleep 2
+          curl -f http://127.0.0.1:4173/prototype09-agent2/index.html >/dev/null
+
+      - name: Find Chrome
+        id: chrome
+        shell: bash
+        run: |
+          CHROME=""
+          for C in google-chrome-stable google-chrome chromium chromium-browser; do
+            if command -v "$C" >/dev/null 2>&1; then
+              CHROME="$(command -v "$C")"
+              break
+            fi
+          done
+          if [ -z "$CHROME" ]; then
+            echo "No Chrome/Chromium available"
+            exit 1
+          fi
+          echo "path=$CHROME" >> "$GITHUB_OUTPUT"
+
+      - name: Render exact mobile Page 2
+        run: |
+          "${{ steps.chrome.outputs.path }}" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --window-size=393,852 \
+            --screenshot=page2-mobile-exact.png \
+            http://127.0.0.1:4173/prototype09-agent2/index.html
+          test -s page2-mobile-exact.png
+
+      - name: Upload exact render
+        uses: actions/upload-artifact@v4
+        with:
+          name: page2-mobile-exact-render
+          path: page2-mobile-exact.png
+          if-no-files-found: error
+          retention-days: 7
