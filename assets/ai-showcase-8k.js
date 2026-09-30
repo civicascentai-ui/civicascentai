@@ -177,10 +177,20 @@
   let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
   setLang(saved==='es');
   lang.addEventListener('click',()=>setLang(!document.body.classList.contains('es')));
-  replay.addEventListener('click',run);
+  replay.addEventListener('click',()=>{ if(reduced) finish(); else run(); });
   addEventListener('pointermove',e=>{pointerX=(e.clientX/W-.5);pointerY=(e.clientY/H-.5)},{passive:true});
   addEventListener('resize',resize,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
+
+  const privacyNotice=document.getElementById('privacyNotice');
+  const privacyOk=document.getElementById('privacyOk');
+  try{
+    if(privacyNotice && localStorage.getItem('civicascent-privacy-notice')!=='ack') privacyNotice.hidden=false;
+  }catch(e){ if(privacyNotice) privacyNotice.hidden=false; }
+  if(privacyOk) privacyOk.addEventListener('click',()=>{
+    if(privacyNotice) privacyNotice.hidden=true;
+    try{localStorage.setItem('civicascent-privacy-notice','ack')}catch(e){}
+  });
 
   resize();
   if(reduced)finish();else run();
