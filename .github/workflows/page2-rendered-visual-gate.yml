@@ -57,7 +57,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p visual-proof
-          cat > /tmp/render-gate.mjs <<'JS'
+          cat > render-gate.mjs <<'JS'
           import { webkit, chromium, devices } from '@playwright/test';
 
           const target = 'http://127.0.0.1:4173/page2-safari.html';
@@ -170,7 +170,7 @@ jobs:
           console.log('Rendered visual gate passed for WebKit desktop/mobile and Chromium mobile.');
           JS
 
-          node /tmp/render-gate.mjs
+          node render-gate.mjs
 
       - name: Upload visual proof
         if: always()
