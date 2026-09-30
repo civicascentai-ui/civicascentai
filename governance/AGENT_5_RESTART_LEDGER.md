@@ -301,3 +301,22 @@ Agent 5 decision:
 - Exact repository-asset rendered visual certification: HOLD because the binary could not be materialized through the available retrieval path.
 - Production remains unchanged.
 - Next allowed action: obtain a verified render of the exact saved build, then Agent 3/4 visual review. No promotion before that.
+
+
+---
+
+## Page 2 Exact Safari Asset Repair — PASS — 2026-09-29
+**Repair commit:** `c83076dea4dd0db5597e877c3ae33f65cb8c064a`
+**Replacement blob:** `9f9a7b3e92d603fda7126386c94eca923a8bda20`
+
+Evidence:
+- CivicAscent Quality Gate `36655007974`: SUCCESS.
+- Exact Mobile Render `36655007978`: SUCCESS.
+- Exact artifact `11071324514` visually inspected by Agent 5.
+- Dark/brown repository Safari asset defect is resolved.
+- Owner-approved Safari environment is present and readable at 393x852.
+- Production remains unchanged.
+
+Next allowed state:
+- Preserve this repair checkpoint.
+- Any production promotion still requires the normal release gates and explicit owner authorization.
