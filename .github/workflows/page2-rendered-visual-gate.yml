@@ -1,0 +1,189 @@
+name: Page 2 Rendered Visual Gate
+
+on:
+  push:
+    branches:
+      - page2-safari-prototype-20260929
+    paths:
+      - "page2-safari.html"
+      - "assets/**"
+      - ".github/workflows/page2-rendered-visual-gate.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "page2-safari.html"
+      - "assets/**"
+      - ".github/workflows/page2-rendered-visual-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rendered-visual:
+    name: WebKit + Mobile Render Proof
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install --no-audit --no-fund @playwright/test
+          npx playwright install --with-deps webkit chromium
+
+      - name: Start local site
+        run: |
+          python3 -m http.server 4173 > /tmp/civicascent-http.log 2>&1 &
+          echo $! > /tmp/civicascent-http.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/page2-safari.html >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/civicascent-http.log
+          exit 1
+
+      - name: Run rendered regression checks
+        shell: bash
+        run: |
+          mkdir -p visual-proof
+          cat > /tmp/render-gate.mjs <<'JS'
+          import { webkit, chromium, devices } from '@playwright/test';
+
+          const target = 'http://127.0.0.1:4173/page2-safari.html';
+          const cases = [
+            {
+              name: 'webkit-iphone-15',
+              launcher: webkit,
+              context: { ...devices['iPhone 15'] }
+            },
+            {
+              name: 'webkit-ipad-mini',
+              launcher: webkit,
+              context: { ...devices['iPad Mini'] }
+            },
+            {
+              name: 'webkit-desktop',
+              launcher: webkit,
+              context: { viewport: { width: 1440, height: 900 } }
+            },
+            {
+              name: 'chromium-android',
+              launcher: chromium,
+              context: {
+                viewport: { width: 412, height: 915 },
+                deviceScaleFactor: 2,
+                isMobile: true,
+                hasTouch: true
+              }
+            }
+          ];
+
+          const failures = [];
+
+          for (const c of cases) {
+            const browser = await c.launcher.launch();
+            const context = await browser.newContext(c.context);
+            const page = await context.newPage();
+
+            page.on('pageerror', err => failures.push(`${c.name}: pageerror: ${err.message}`));
+            page.on('console', msg => {
+              if (msg.type() === 'error') failures.push(`${c.name}: console error: ${msg.text()}`);
+            });
+
+            const response = await page.goto(target, { waitUntil: 'networkidle' });
+            if (!response || !response.ok()) {
+              failures.push(`${c.name}: page did not load successfully`);
+            }
+
+            await page.screenshot({
+              path: `visual-proof/${c.name}.png`,
+              fullPage: true
+            });
+
+            const metrics = await page.evaluate(() => {
+              const d = document.documentElement;
+              const body = document.body;
+              const all = [...document.querySelectorAll('a,button,[role="button"],input,select,textarea')];
+              const visibleInteractive = all.filter(el => {
+                const r = el.getBoundingClientRect();
+                const s = getComputedStyle(el);
+                return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none';
+              });
+              const undersized = visibleInteractive
+                .map(el => {
+                  const r = el.getBoundingClientRect();
+                  return {
+                    tag: el.tagName,
+                    text: (el.innerText || el.getAttribute('aria-label') || '').trim().slice(0,80),
+                    width: Math.round(r.width),
+                    height: Math.round(r.height)
+                  };
+                })
+                .filter(x => x.width < 40 || x.height < 40);
+
+              return {
+                viewportWidth: innerWidth,
+                viewportHeight: innerHeight,
+                scrollWidth: Math.max(d.scrollWidth, body?.scrollWidth || 0),
+                scrollHeight: Math.max(d.scrollHeight, body?.scrollHeight || 0),
+                bodyText: (body?.innerText || '').trim().length,
+                undersized
+              };
+            });
+
+            if (metrics.bodyText < 20) {
+              failures.push(`${c.name}: page rendered essentially blank`);
+            }
+
+            if (metrics.scrollWidth > metrics.viewportWidth + 2) {
+              failures.push(
+                `${c.name}: horizontal overflow ${metrics.scrollWidth}px > viewport ${metrics.viewportWidth}px`
+              );
+            }
+
+            if (metrics.undersized.length) {
+              failures.push(
+                `${c.name}: interactive targets below 40px: ${JSON.stringify(metrics.undersized.slice(0,10))}`
+              );
+            }
+
+            await browser.close();
+          }
+
+          if (failures.length) {
+            console.error('\nRENDERED VISUAL GATE FAILED\n');
+            for (const failure of failures) console.error('- ' + failure);
+            process.exit(1);
+          }
+
+          console.log('Rendered visual gate passed for WebKit desktop/mobile and Chromium mobile.');
+          JS
+
+          node /tmp/render-gate.mjs
+
+      - name: Upload visual proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: page2-rendered-visual-proof
+          path: visual-proof/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Enforce proof existence
+        run: |
+          test -s visual-proof/webkit-iphone-15.png
+          test -s visual-proof/webkit-ipad-mini.png
+          test -s visual-proof/webkit-desktop.png
+          test -s visual-proof/chromium-android.png
