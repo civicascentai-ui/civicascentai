@@ -88,3 +88,75 @@ Agent 5 may stop work.
 Discover → Experience Spec → Build → Independent QA → Security/Governance → QC review → owner approval → production.
 
 No-known-defect rule applies. Production promotion is prohibited until all gates pass.
+
+
+## Senior Engineering Sequence — Adopted from Team Prompt Set
+
+The project also uses a sequential senior-engineering pass. These are disciplines applied through the existing CivicAscent agents, not replacement agents.
+
+### Pass A — Architecture
+Owner: Agent 2, with Agent 1 input and Agent 5 constraints.
+
+Produce:
+- scalable system architecture
+- component structure
+- data flow
+- API design
+- database schema when applicable
+- caching strategy when applicable
+- minimal implementation that can realistically scale
+- explicit assumptions, bottlenecks, and failure modes
+
+### Pass B — Implementation
+Owner: Agent 2.
+
+Build the smallest production-capable implementation that preserves CivicAscent behavior and remains modular, testable, maintainable, and reversible.
+
+### Pass C — Review
+Owner: Agent 3, independently.
+
+Review:
+- separation of concerns
+- modularity
+- coupling
+- maintainability
+- accessibility
+- rendering behavior
+- browser/device compatibility
+- regression risk
+- weak or ambiguous interactions
+- unnecessary complexity
+
+Agent 3 must return concrete findings and required corrections. No self-approval by Agent 2.
+
+### Pass D — Optimization
+Owner: Agent 2, then revalidated by Agent 3 and Agent 5.
+
+Inspect:
+- bottlenecks
+- inefficient logic
+- unnecessary rendering
+- expensive operations
+- memory leaks
+- bundle size
+- media loading
+- caching opportunities
+- network round trips
+- scalability limits
+
+Optimize speed, memory efficiency, rendering performance, and scalability without changing required functionality or accessibility.
+
+### Refactor Rule
+Refactoring must preserve existing intended behavior unless a behavior change has been explicitly approved.
+
+Required refactor deliverables:
+- proposed folder/module structure
+- architecture breakdown
+- refactored implementation
+- key improvements
+- regression test evidence
+
+### Completion Rule
+"Production-ready" is not a claim Agent 2 may make alone. It is a gated state reached only after:
+Architecture → Implementation → Review → Correction → Optimization → Accessibility/QA recheck → Security/Governance recheck → no-known-defect confirmation → owner approval.
+
