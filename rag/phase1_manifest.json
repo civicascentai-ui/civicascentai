@@ -15,7 +15,8 @@
       "document_type": "sop",
       "agent_owner": "Maya Brooks",
       "approved_for_public_use": false,
-      "approved_for_agent_action": true
+      "approved_for_agent_action": true,
+      "retrieval_aliases": []
     },
     {
       "source_path": "AUTOMATION_ENHANCEMENT_BLUEPRINT.md",
@@ -23,7 +24,8 @@
       "document_type": "governance",
       "agent_owner": "Adrian Wells",
       "approved_for_public_use": false,
-      "approved_for_agent_action": true
+      "approved_for_agent_action": true,
+      "retrieval_aliases": []
     },
     {
       "source_path": "TEAM_OPERATING_ORDER.md",
@@ -31,7 +33,14 @@
       "document_type": "governance",
       "agent_owner": "Adrian Wells",
       "approved_for_public_use": false,
-      "approved_for_agent_action": true
+      "approved_for_agent_action": true,
+      "retrieval_aliases": [
+        "agent responsibilities",
+        "accessibility testing",
+        "quality accessibility",
+        "release review",
+        "known defect rule"
+      ]
     },
     {
       "source_path": "team.html",
@@ -40,7 +49,16 @@
       "agent_owner": "Adrian Wells",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/team.html"
+      "canonical_url": "https://civicascentai.com/team.html",
+      "retrieval_aliases": [
+        "agent roles",
+        "who handles what",
+        "accessibility testing",
+        "quality accessibility director",
+        "security risk director",
+        "partnerships agent",
+        "executive coordinator"
+      ]
     },
     {
       "source_path": "capabilities.html",
@@ -49,7 +67,8 @@
       "agent_owner": "Jordan Miles",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/capabilities.html"
+      "canonical_url": "https://civicascentai.com/capabilities.html",
+      "retrieval_aliases": []
     },
     {
       "source_path": "programs.html",
@@ -58,7 +77,8 @@
       "agent_owner": "Simone Carter",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/programs.html"
+      "canonical_url": "https://civicascentai.com/programs.html",
+      "retrieval_aliases": []
     },
     {
       "source_path": "course.html",
@@ -67,7 +87,8 @@
       "agent_owner": "Simone Carter",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/course.html"
+      "canonical_url": "https://civicascentai.com/course.html",
+      "retrieval_aliases": []
     },
     {
       "source_path": "consultation.html",
@@ -76,7 +97,8 @@
       "agent_owner": "Jordan Miles",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/consultation.html"
+      "canonical_url": "https://civicascentai.com/consultation.html",
+      "retrieval_aliases": []
     },
     {
       "source_path": "ai-lab.html",
@@ -85,7 +107,14 @@
       "agent_owner": "Simone Carter",
       "approved_for_public_use": true,
       "approved_for_agent_action": false,
-      "canonical_url": "https://civicascentai.com/ai-lab.html"
+      "canonical_url": "https://civicascentai.com/ai-lab.html",
+      "retrieval_aliases": [
+        "translation examples",
+        "translate language",
+        "English Spanish example",
+        "voice example",
+        "AI Lab capabilities"
+      ]
     }
   ]
 }
