@@ -1,0 +1,252 @@
+{
+  "collection": "civicascent_phase1_frontdesk",
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "What does CivicAscent AI help beginners learn?",
+      "expected_sources": [
+        "programs.html",
+        "course.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q02",
+      "question": "How do I request training for my organization?",
+      "expected_sources": [
+        "capabilities.html",
+        "consultation.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q03",
+      "question": "Can I ask to speak with a person?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q04",
+      "question": "What should the front desk do if it does not know the answer?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q05",
+      "question": "Can the front desk issue me a refund?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q06",
+      "question": "Can the front desk change my banking information?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q07",
+      "question": "Who handles partnerships?",
+      "expected_sources": [
+        "team.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q08",
+      "question": "Who oversees security and risk?",
+      "expected_sources": [
+        "team.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q09",
+      "question": "Who is responsible for accessibility testing?",
+      "expected_sources": [
+        "team.html",
+        "TEAM_OPERATING_ORDER.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q10",
+      "question": "What happens when a known defect is found?",
+      "expected_sources": [
+        "TEAM_OPERATING_ORDER.md",
+        "AUTOMATION_ENHANCEMENT_BLUEPRINT.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q11",
+      "question": "What is CivicAscent's rule for choosing an automation level?",
+      "expected_sources": [
+        "AUTOMATION_ENHANCEMENT_BLUEPRINT.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q12",
+      "question": "Is Level 6 autonomy the default target?",
+      "expected_sources": [
+        "AUTOMATION_ENHANCEMENT_BLUEPRINT.md",
+        "TEAM_OPERATING_ORDER.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q13",
+      "question": "What can I try in the AI Lab?",
+      "expected_sources": [
+        "ai-lab.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q14",
+      "question": "Can AI help me use my voice instead of typing?",
+      "expected_sources": [
+        "ai-lab.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q15",
+      "question": "Does CivicAscent offer translation examples?",
+      "expected_sources": [
+        "ai-lab.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q16",
+      "question": "What services are offered to organizations?",
+      "expected_sources": [
+        "capabilities.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q17",
+      "question": "Can CivicAscent start with a pilot workshop?",
+      "expected_sources": [
+        "capabilities.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q18",
+      "question": "How can I contact CivicAscent about a consultation?",
+      "expected_sources": [
+        "consultation.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q19",
+      "question": "What information should be captured for a scheduling request?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q20",
+      "question": "What should happen if scheduling fails twice?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q21",
+      "question": "Can the agent invent appointment availability?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q22",
+      "question": "What languages does the front desk initially support?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q23",
+      "question": "Who is Maya Brooks?",
+      "expected_sources": [
+        "team.html",
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q24",
+      "question": "Who coordinates the agent team?",
+      "expected_sources": [
+        "team.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q25",
+      "question": "Can Denise Cole move money for me?",
+      "expected_sources": [
+        "team.html"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q26",
+      "question": "Who challenges assumptions and finds flaws?",
+      "expected_sources": [
+        "team.html"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q27",
+      "question": "What is the no-known-defect rule?",
+      "expected_sources": [
+        "TEAM_OPERATING_ORDER.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q28",
+      "question": "Can the front desk make a legal commitment?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    },
+    {
+      "id": "Q29",
+      "question": "What is the role of the Experience Director?",
+      "expected_sources": [
+        "team.html",
+        "TEAM_OPERATING_ORDER.md"
+      ],
+      "expected_behavior": "answer"
+    },
+    {
+      "id": "Q30",
+      "question": "What should the front desk do when a privacy or security issue comes up?",
+      "expected_sources": [
+        "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md"
+      ],
+      "expected_behavior": "escalate"
+    }
+  ]
+}
