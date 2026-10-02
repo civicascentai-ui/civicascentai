@@ -69,3 +69,57 @@ Public-facing automation should feel simple. Complex workflow diagrams belong in
 4. Topic research / content ideation
 5. Avatar-based training support
 6. Lead-generation automation only after core operations are stable
+
+
+## CivicAscent Automation Ladder
+Use the **lowest automation level that fully solves the problem**. More autonomy is not automatically better.
+
+### L1 — Assist
+One tool performs one repetitive task.
+- Best for: reminders, file naming, simple confirmations, routine checklists.
+- QA: standard functional check.
+
+### L2 — Connect
+Two or more approved systems exchange information after a trigger.
+- Best for: form submission → confirmation, inquiry → calendar path, approved file handoffs.
+- QA: integration and failure-path check.
+
+### L3 — Orchestrate
+A multi-step workflow uses conditions, routing, or filters.
+- Best for: classify inquiries, route visitors, choose follow-up paths, organize content pipelines.
+- QA: test every branch and fallback.
+
+### L4 — Reason
+AI interprets, summarizes, drafts, translates, or generates inside the workflow.
+- Best for: FAQ assistance, content drafting, lesson support, voice responses, translation.
+- QA: accuracy, hallucination, accessibility, and escalation testing.
+
+### L5 — Governed Agent
+AI may take bounded actions inside explicit rules, with hard stops and human escalation.
+- Best for: advanced internal operations, monitored research, controlled scheduling/follow-up preparation, QA triage.
+- Required controls: action limits, audit trail, stop conditions, human override, security/privacy review.
+
+### L6 — Autonomous Optimization
+AI continuously adjusts or optimizes with little or no human input.
+- Default status: **restricted exception**.
+- Allowed only for low-risk, reversible, observable tasks after explicit approval.
+- Not allowed by default for money, publishing, deletion, credentials, security settings, legal/compliance actions, customer commitments, or sensitive data.
+
+## Automation selection rule
+For each new automation:
+1. Define the business outcome.
+2. Select the lowest level that achieves it.
+3. Add only the controls required by that level.
+4. Define a fallback and human escalation path where failure matters.
+5. Test normal, edge, and failure cases.
+6. Record the level in the workflow documentation before production approval.
+
+## QA escalation by level
+- L1–L2: standard functional QA.
+- L3: branch and conditional-path testing.
+- L4: AI-output, hallucination, accessibility, and fallback testing.
+- L5: all L4 checks plus action-boundary, stop-rule, audit-log, privacy, and human-override validation.
+- L6: exceptional approval only; must prove reversibility, observability, low risk, and a manual shutdown path.
+
+## Maturity principle
+Automation maturity is measured by **usefulness + reliability + accessibility + safety**, not by maximum autonomy.
