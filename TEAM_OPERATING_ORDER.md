@@ -29,3 +29,7 @@ Automation ideas are adopted only when they improve clarity, usefulness, accessi
 
 ## Automation maturity rule
 CivicAscent uses the Automation Ladder defined in `AUTOMATION_ENHANCEMENT_BLUEPRINT.md`. Teams must use the lowest level that fully solves the problem. L5 requires governed-agent controls and explicit stop rules. L6 is a restricted exception for low-risk, reversible, observable tasks only and is not the default operating target.
+
+
+## Marketing governance rule
+CivicAscent marketing follows the controlled workflow defined in `MARKETING_OPERATING_MODEL.md`: Idea → AI Draft → Brand Review → Accessibility Review → Claims/Compliance Review → Preview → Human Approval → Publish → Analytics → Improve. AI-generated people/content must be labeled when required, fabricated testimonials and unsupported claims are prohibited, and no content may auto-publish without the required approval gate. Additional paid tools or APIs require separate approval.
