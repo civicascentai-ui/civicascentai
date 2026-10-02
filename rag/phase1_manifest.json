@@ -1,0 +1,120 @@
+{
+  "collection": "civicascent_phase1_frontdesk",
+  "phase": "1",
+  "status": "test-only",
+  "default_metadata": {
+    "version": "2026-10-01",
+    "language": "en",
+    "status": "approved-test-source",
+    "security_classification": "public-or-approved-internal"
+  },
+  "sources": [
+    {
+      "source_path": "FRONT_DESK_AGENT_OPERATING_PROCEDURE.md",
+      "document_name": "Front Desk Agent Operating Procedure",
+      "document_type": "sop",
+      "agent_owner": "Maya Brooks",
+      "approved_for_public_use": false,
+      "approved_for_agent_action": true,
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "AUTOMATION_ENHANCEMENT_BLUEPRINT.md",
+      "document_name": "Automation Enhancement Blueprint",
+      "document_type": "governance",
+      "agent_owner": "Adrian Wells",
+      "approved_for_public_use": false,
+      "approved_for_agent_action": true,
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "TEAM_OPERATING_ORDER.md",
+      "document_name": "Team Operating Order",
+      "document_type": "governance",
+      "agent_owner": "Adrian Wells",
+      "approved_for_public_use": false,
+      "approved_for_agent_action": true,
+      "retrieval_aliases": [
+        "agent responsibilities",
+        "accessibility testing",
+        "quality accessibility",
+        "release review",
+        "known defect rule"
+      ]
+    },
+    {
+      "source_path": "team.html",
+      "document_name": "CivicAscent AI Team",
+      "document_type": "website",
+      "agent_owner": "Adrian Wells",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/team.html",
+      "retrieval_aliases": [
+        "agent roles",
+        "who handles what",
+        "accessibility testing",
+        "quality accessibility director",
+        "security risk director",
+        "partnerships agent",
+        "executive coordinator"
+      ]
+    },
+    {
+      "source_path": "capabilities.html",
+      "document_name": "Organization Capabilities",
+      "document_type": "website",
+      "agent_owner": "Jordan Miles",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/capabilities.html",
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "programs.html",
+      "document_name": "Programs",
+      "document_type": "website",
+      "agent_owner": "Simone Carter",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/programs.html",
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "course.html",
+      "document_name": "Courses",
+      "document_type": "website",
+      "agent_owner": "Simone Carter",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/course.html",
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "consultation.html",
+      "document_name": "Consultation",
+      "document_type": "website",
+      "agent_owner": "Jordan Miles",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/consultation.html",
+      "retrieval_aliases": []
+    },
+    {
+      "source_path": "ai-lab.html",
+      "document_name": "AI Lab",
+      "document_type": "website",
+      "agent_owner": "Simone Carter",
+      "approved_for_public_use": true,
+      "approved_for_agent_action": false,
+      "canonical_url": "https://civicascentai.com/ai-lab.html",
+      "retrieval_aliases": [
+        "translation examples",
+        "translate language",
+        "English Spanish example",
+        "voice example",
+        "AI Lab capabilities"
+      ]
+    }
+  ]
+}

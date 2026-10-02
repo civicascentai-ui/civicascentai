@@ -22,3 +22,14 @@ No known defect may be carried forward. No agent self-approves final release. Re
 model-08-operational-station.html
 
 This candidate must be tested before replacing production index.html.
+
+## Automation enhancement rule
+Automation ideas are adopted only when they improve clarity, usefulness, accessibility, or operational efficiency. The approved implementation order and safeguards are defined in `AUTOMATION_ENHANCEMENT_BLUEPRINT.md`. Every automation remains subject to the existing Experience → Engineering → QA → QC → Production path, the no-known-defect rule, security/privacy review, human escalation where appropriate, and the no-unapproved-paid-add-on rule.
+
+
+## Automation maturity rule
+CivicAscent uses the Automation Ladder defined in `AUTOMATION_ENHANCEMENT_BLUEPRINT.md`. Teams must use the lowest level that fully solves the problem. L5 requires governed-agent controls and explicit stop rules. L6 is a restricted exception for low-risk, reversible, observable tasks only and is not the default operating target.
+
+
+## Marketing governance rule
+CivicAscent marketing follows the controlled workflow defined in `MARKETING_OPERATING_MODEL.md`: Idea → AI Draft → Brand Review → Accessibility Review → Claims/Compliance Review → Preview → Human Approval → Publish → Analytics → Improve. AI-generated people/content must be labeled when required, fabricated testimonials and unsupported claims are prohibited, and no content may auto-publish without the required approval gate. Additional paid tools or APIs require separate approval.
