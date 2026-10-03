@@ -24,8 +24,20 @@
   </div>
   <header class="brandbar">
     <div class="brand">CivicAscent <strong>AI</strong></div>
-    <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Reduce motion</button>
+    <div class="brand-actions">
+      <button id="motionToggle" class="motion-toggle" type="button" aria-pressed="false">Reduce motion</button>
+      <button id="siteMenuToggle" class="site-menu-toggle" type="button" aria-expanded="false" aria-controls="siteMenu">
+        <span aria-hidden="true">☰</span><span>Menu</span>
+      </button>
+    </div>
   </header>
+  <nav id="siteMenu" class="site-menu" aria-label="CivicAscent navigation" hidden>
+    <a href="../living-ai-lab.html"><strong>Living AI Lab</strong><span>Explore AI in the Safari world</span></a>
+    <a href="../ai-lab.html"><strong>Create with AI</strong><span>Turn ideas into something visible</span></a>
+    <a href="../plan.html"><strong>Business & Opportunity</strong><span>Turn a goal into practical next steps</span></a>
+    <a href="../village.html"><strong>Village</strong><span>Return to the broader CivicAscent experience</span></a>
+    <button id="siteMenuClose" type="button">Close menu</button>
+  </nav>
   <section class="intro" aria-labelledby="hero-title">
     <p class="eyebrow">SAFARI LEARNING WORLD</p>
     <h1 id="hero-title">Explore how AI can help you.</h1>
