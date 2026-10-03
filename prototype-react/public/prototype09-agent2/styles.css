@@ -103,3 +103,19 @@ button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:4px}
   .context{bottom:max(8px,env(safe-area-inset-bottom));max-height:34svh;padding:.64rem .88rem .7rem}
   .context-copy{font-size:.84rem;line-height:1.28}
 }
+
+.brand-actions{display:flex;align-items:center;gap:.7rem}
+.site-menu-toggle{border:1px solid rgba(255,255,255,.42);background:rgba(20,11,5,.34);color:var(--ink);padding:.72rem .9rem;border-radius:.4rem;backdrop-filter:blur(8px);min-height:44px;display:inline-flex;align-items:center;gap:.45rem;font-weight:800}
+.site-menu-toggle:hover,.site-menu-toggle:focus-visible{border-color:var(--gold);color:#fff}
+.site-menu{position:absolute;z-index:30;top:88px;right:5vw;width:min(360px,88vw);padding:.45rem 0;background:rgba(23,12,6,.9);backdrop-filter:blur(16px);border-left:3px solid var(--gold);box-shadow:0 20px 55px rgba(0,0,0,.36)}
+.site-menu[hidden]{display:none}
+.site-menu a,.site-menu button{display:block;width:100%;padding:.95rem 1rem;border:0;background:transparent;color:#fff;text-align:left;text-decoration:none}
+.site-menu a:hover,.site-menu a:focus-visible,.site-menu button:hover,.site-menu button:focus-visible{outline:none;background:rgba(255,197,111,.12)}
+.site-menu strong{display:block;font-size:1rem}
+.site-menu span{display:block;margin-top:.18rem;font-size:.82rem;color:#f2dfc3;line-height:1.35}
+.site-menu button{font-weight:850;color:var(--gold);min-height:44px;border-top:1px solid rgba(255,255,255,.14)}
+@media(max-width:760px){
+  .brand-actions{gap:.45rem}
+  .site-menu-toggle,.motion-toggle{font-size:.74rem;padding:.52rem .62rem;min-height:44px}
+  .site-menu{top:76px;left:12px;right:12px;width:auto}
+}
