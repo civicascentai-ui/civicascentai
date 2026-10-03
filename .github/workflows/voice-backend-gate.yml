@@ -26,6 +26,21 @@ jobs:
       - name: Validate JSON
         run: python3 -m json.tool voice-backend/dispatch-rule.staging.json >/dev/null
 
+      - name: Check website JavaScript syntax
+        run: node --check script.js
+
+      - name: Verify canonical knowledge wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'lookup_civicascent_knowledge' voice-backend/agent.py
+          grep -q 'CIVICASCENT_CANONICAL_URL' voice-backend/agent.py
+          grep -q 'CA-FALLBACK-001' voice-backend/agent.py
+          grep -q 'requires_live_verification' voice-backend/agent.py
+          grep -q 'CivicAscentCanonical' script.js
+          grep -q '0.80' script.js
+          ! grep -RInE 'SUPABASE_SERVICE_ROLE_KEY=.*[^[:space:]]' voice-backend script.js
+
       - name: Verify stable dispatch name
         shell: bash
         run: |
