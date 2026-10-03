@@ -29,7 +29,7 @@ if(year) year.textContent=new Date().getFullYear();
       body: JSON.stringify({
         question,
         match_count: options.matchCount || 3,
-        min_similarity: options.minSimilarity || 0.72
+        min_similarity: options.minSimilarity || 0.80
       })
     });
 
