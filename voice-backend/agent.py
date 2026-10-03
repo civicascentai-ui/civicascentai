@@ -4,6 +4,7 @@ from typing import Any
 
 import httpx
 from dotenv import load_dotenv
+from livekit import api, rtc
 from livekit.agents import (
     Agent,
     AgentServer,
@@ -12,6 +13,7 @@ from livekit.agents import (
     RunContext,
     cli,
     function_tool,
+    get_job_context,
     inference,
 )
 
@@ -26,6 +28,7 @@ CANONICAL_URL = os.getenv(
     "https://alsjvdqlpayuzykhhbil.supabase.co/functions/v1/canonical-query",
 )
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
+HUMAN_TRANSFER_TO = os.getenv("CIVICASCENT_HUMAN_TRANSFER_TO", "").strip()
 
 SYSTEM_INSTRUCTIONS = """
 You are the CivicAscent AI phone assistant.
@@ -126,8 +129,54 @@ class CivicAscentPhoneAgent(Agent):
             "similarity": best.get("similarity"),
         }
 
+    @function_tool()
+    async def transfer_to_human(
+        self,
+        context: RunContext,
+    ) -> str:
+        """Transfer an inbound SIP caller to the configured human destination after the caller asks for a person."""
+        if not HUMAN_TRANSFER_TO:
+            return "Human transfer is not configured in this deployment. Offer a human follow-up instead and do not claim a transfer occurred."
+
+        job_ctx = get_job_context()
+        sip_participant = next(
+            (
+                participant
+                for participant in job_ctx.room.remote_participants.values()
+                if participant.kind == rtc.ParticipantKind.PARTICIPANT_KIND_SIP
+            ),
+            None,
+        )
+        if sip_participant is None:
+            return "No active SIP caller is available to transfer. Offer a human follow-up instead."
+
+        transfer_to = HUMAN_TRANSFER_TO
+        if transfer_to.startswith("+"):
+            transfer_to = f"tel:{transfer_to}"
+        if not (transfer_to.startswith("tel:") or transfer_to.startswith("sip:")):
+            return "The configured human transfer destination is invalid. Offer a human follow-up instead."
+
+        speech = context.session.generate_reply(
+            instructions="Briefly tell the caller you are transferring them to a human now."
+        )
+        await speech
+
+        try:
+            await job_ctx.api.sip.transfer_sip_participant(
+                api.TransferSIPParticipantRequest(
+                    room_name=job_ctx.room.name,
+                    participant_identity=sip_participant.identity,
+                    transfer_to=transfer_to,
+                    play_dialtone=False,
+                )
+            )
+            return "Transfer initiated successfully."
+        except Exception as exc:
+            logger.exception("Human transfer failed")
+            return f"Human transfer failed: {type(exc).__name__}. Tell the caller the transfer did not complete and offer a human follow-up."
+
     async def on_enter(self) -> None:
-        await self.session.generate_reply(
+        self.session.generate_reply(
             instructions=(
                 "Greet the caller as the CivicAscent AI assistant. "
                 "Say you can help with programs, beginner AI training, and general questions. "
