@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020711">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="CivicAscent AI Living AI Lab — a hands-on, voice-guided demonstration of practical AI capabilities.">
+<meta name="civicascent-build" content="20260927-living-ai-lab-1">
+<title>Living AI Lab | CivicAscent AI</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#020711;--panel:rgba(5,18,34,.72);--line:rgba(132,215,255,.28);--cyan:#69d8ff;--gold:#ffd36a;--green:#7be08d;--text:#f5fbff;--muted:#bfd0df}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#020711;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
+body{min-height:100dvh;overflow-x:hidden;background:
+radial-gradient(circle at 50% 36%,rgba(31,112,182,.22),transparent 31%),
+radial-gradient(circle at 18% 78%,rgba(35,177,129,.12),transparent 26%),
+linear-gradient(180deg,#020711,#06111e 70%,#020711)}
+button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;background:#fff;color:#07101c;padding:10px 14px;border-radius:999px;font-weight:900;text-decoration:none}.skip:focus{top:12px}
+.top{position:fixed;z-index:30;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:max(12px,env(safe-area-inset-top)) clamp(12px,3vw,34px) 10px;background:linear-gradient(180deg,rgba(2,7,17,.94),rgba(2,7,17,.22),transparent);backdrop-filter:blur(10px)}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;min-width:0}.brand img{width:clamp(50px,5vw,72px);height:clamp(50px,5vw,72px);filter:drop-shadow(0 0 24px rgba(105,216,255,.34))}.brand b{display:block;font-size:clamp(18px,2.1vw,30px);letter-spacing:-.035em;white-space:nowrap}.brand small{display:block;margin-top:3px;color:#c9d9e6;font-size:clamp(9px,1vw,12px);font-weight:850;letter-spacing:.12em;white-space:nowrap}
+.actions{display:flex;gap:8px;align-items:center}.pill{min-height:46px;padding:0 14px;border-radius:999px;border:1px solid rgba(203,233,255,.28);background:rgba(6,24,44,.68);color:#fff;text-decoration:none;font-weight:900;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.pill:hover,.pill:focus-visible{border-color:var(--cyan);outline:none;box-shadow:0 0 0 4px rgba(105,216,255,.12)}
+.lab{position:relative;min-height:100dvh;padding:clamp(105px,15vh,150px) clamp(14px,3vw,42px) clamp(24px,5vh,54px);display:grid;place-items:center;overflow:hidden}
+.grid{position:absolute;inset:0;opacity:.19;background-image:linear-gradient(rgba(105,216,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(105,216,255,.09) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(transparent 4%,#000 24%,#000 85%,transparent)}
+.stars{position:absolute;inset:0;pointer-events:none}.stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5;animation:twinkle 3s ease-in-out infinite}@keyframes twinkle{50%{opacity:.13;transform:scale(.6)}}
+.shell{position:relative;width:min(1180px,96vw);min-height:min(760px,80dvh);border:1px solid rgba(144,221,255,.2);border-radius:38px;background:linear-gradient(160deg,rgba(6,22,41,.78),rgba(2,9,19,.72));box-shadow:0 35px 120px rgba(0,0,0,.5),inset 0 0 80px rgba(83,188,255,.035);overflow:hidden}
+.shell::before{content:"";position:absolute;left:50%;top:51%;width:min(62vw,610px);height:min(62vw,610px);transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(105,216,255,.16);box-shadow:0 0 90px rgba(70,185,255,.12),inset 0 0 90px rgba(70,185,255,.05)}
+.heading{position:absolute;z-index:5;left:clamp(18px,3vw,38px);top:clamp(18px,3vw,34px);max-width:660px}.eyebrow{font-size:clamp(11px,1.15vw,14px);font-weight:950;letter-spacing:.2em;color:#a8eaff}.heading h1{margin:8px 0 0;font-size:clamp(34px,5.4vw,72px);line-height:.95;letter-spacing:-.06em}.heading p{margin:12px 0 0;color:var(--muted);font-size:clamp(16px,1.8vw,22px);line-height:1.42;max-width:660px}
+.node{position:absolute;z-index:7;min-width:150px;min-height:60px;padding:9px 15px;border-radius:999px;border:1px solid rgba(174,228,255,.34);background:rgba(6,24,44,.86);color:#fff;font-weight:950;letter-spacing:.045em;cursor:pointer;box-shadow:0 12px 35px rgba(0,0,0,.34);transition:.22s transform,.22s box-shadow,.22s border-color,.22s background}.node span{display:block;font-size:11px;color:#9edcff;letter-spacing:.13em;margin-bottom:2px}.node:hover,.node:focus-visible,.node.active{transform:translateY(-2px) scale(1.02);outline:none;border-color:var(--cyan);background:rgba(10,48,79,.94);box-shadow:0 0 0 5px rgba(105,216,255,.1),0 20px 50px rgba(0,0,0,.38),0 0 38px rgba(61,181,255,.22)}
+.n1{left:6%;top:38%}.n2{right:6%;top:38%}.n3{left:7%;bottom:12%}.n4{right:7%;bottom:12%}
+.wire{position:absolute;z-index:2;height:1px;background:linear-gradient(90deg,transparent,rgba(105,216,255,.5),transparent);transform-origin:left center;opacity:.55;pointer-events:none}.w1{left:19%;top:46%;width:30%;transform:rotate(12deg)}.w2{right:19%;top:46%;width:30%;transform:rotate(-12deg)}.w3{left:20%;bottom:21%;width:29%;transform:rotate(-10deg)}.w4{right:20%;bottom:21%;width:29%;transform:rotate(10deg)}
+.stage{position:absolute;z-index:4;left:50%;top:58%;width:min(56%,620px);height:min(52%,430px);transform:translate(-50%,-50%);border-radius:34px;border:1px solid rgba(177,232,255,.23);background:linear-gradient(150deg,rgba(7,31,56,.9),rgba(3,14,27,.96));box-shadow:0 28px 70px rgba(0,0,0,.42),inset 0 0 60px rgba(53,174,255,.05);overflow:hidden}
+.scene{position:absolute;inset:0;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.scene-label{position:absolute;left:20px;top:17px;font-size:11px;font-weight:950;letter-spacing:.16em;color:#9edcff}.scene h2{margin:0;font-size:clamp(28px,4vw,50px);letter-spacing:-.045em}.scene p{margin:12px auto 0;max-width:520px;color:#d8e7f3;font-size:clamp(16px,1.7vw,20px);line-height:1.45}
+.visual{width:min(90%,500px);height:170px;margin:24px auto 0;position:relative;display:grid;place-items:center}
+.orb{width:122px;height:122px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d8f9ff 0 6%,#5ed0ff 14%,#267dd3 42%,#132749 70%,#06111f);box-shadow:0 0 0 16px rgba(105,216,255,.06),0 0 70px rgba(60,184,255,.4);animation:breathe 3s ease-in-out infinite}.orb::before,.orb::after{content:"";position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(136,224,255,.45);transform:translate(-50%,-50%);animation:spin 7s linear infinite}.orb::before{width:190px;height:78px}.orb::after{width:78px;height:190px;animation-direction:reverse}@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes breathe{50%{transform:scale(1.06);box-shadow:0 0 0 25px rgba(105,216,255,.03),0 0 92px rgba(60,184,255,.52)}}
+.image-demo{width:86%;height:150px;border-radius:22px;overflow:hidden;background:linear-gradient(165deg,#244f77 0 34%,#f5b15c 35% 43%,#1f5969 44% 62%,#081b2b 63%);position:relative}.image-demo::after{content:"AI image forming";position:absolute;left:50%;bottom:11px;transform:translateX(-50%);padding:7px 11px;border-radius:999px;background:rgba(2,12,24,.78);font-weight:850;font-size:13px}.sweep{position:absolute;inset:0;background:#071827;animation:reveal 5s ease-in-out infinite}@keyframes reveal{0%,14%{clip-path:inset(0)}48%,78%{clip-path:inset(0 0 0 100%)}100%{clip-path:inset(0)}}
+.wave{height:120px;display:flex;align-items:center;justify-content:center;gap:6px}.wave i{width:7px;border-radius:99px;background:linear-gradient(#66dcff,#7f69ef);animation:wave 1s ease-in-out infinite}.wave i:nth-child(2n){animation-delay:-.22s}.wave i:nth-child(3n){animation-delay:-.46s}@keyframes wave{50%{transform:scaleY(.42);opacity:.68}}
+.translate{display:grid;grid-template-columns:1fr 56px 1fr;gap:12px;width:96%;align-items:center}.bubble{padding:18px 14px;border-radius:18px;background:#eef8ff;color:#10263a;font-weight:900;font-size:clamp(17px,2vw,24px)}.bubble.es{background:#eafff2}.swap{font-size:30px;color:#82ddff}
+.steps{width:92%;display:grid;gap:9px}.step{display:grid;grid-template-columns:36px 1fr 26px;gap:10px;align-items:center;text-align:left;padding:11px 13px;border-radius:15px;background:#f5f9fc;color:#10243a}.step b{width:31px;height:31px;border-radius:10px;display:grid;place-items:center;background:#e2f1fa}.step strong{font-size:15px}.check{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#d9f5e6;color:#08764a;font-weight:950}
+.voicebar{position:absolute;z-index:9;left:50%;bottom:18px;transform:translateX(-50%);display:flex;gap:8px;align-items:center}.voicebar button{min-height:46px;border-radius:999px;border:1px solid rgba(203,233,255,.3);background:rgba(6,24,44,.9);color:#fff;padding:0 14px;font-weight:900;cursor:pointer}.status{font-size:12px;color:#b9d2e6;min-width:90px}
+@media(max-width:820px){
+ .top{align-items:flex-start}.brand small{display:none}.pill{min-height:42px;padding:0 11px;font-size:13px}.lab{padding-top:94px}.shell{min-height:820px;border-radius:28px}.heading{right:18px}.heading h1{font-size:clamp(34px,10vw,54px)}.heading p{font-size:16px}
+ .stage{top:55%;width:88%;height:42%;max-height:390px}.n1{left:4%;top:28%}.n2{right:4%;top:28%}.n3{left:4%;bottom:8%}.n4{right:4%;bottom:8%}.node{min-width:132px;min-height:54px;font-size:13px;padding:8px 12px}.wire{display:none}.voicebar{bottom:13%}
+}
+@media(max-width:480px){
+ .brand b{font-size:17px}.brand img{width:46px;height:46px}.actions .pill:first-child{display:none}.shell{width:100%;border-radius:0;min-height:840px}.heading{top:18px}.heading p{max-width:94%}.stage{top:55%;width:94%;height:40%;border-radius:25px}.scene{padding:22px 16px}.visual{margin-top:17px;height:140px}.n1,.n2{top:27%}.n3,.n4{bottom:7%}.node{min-width:116px;font-size:12px}.node span{font-size:9px}.voicebar{bottom:13.5%}
+}
+@media(prefers-reduced-motion:reduce){.stars i,.orb,.orb::before,.orb::after,.sweep,.wave i{animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#labTitle">Skip to lab</a>
+<header class="top">
+  <a class="brand" href="index.html" aria-label="CivicAscent AI home">
+    <img src="assets/civicascent-logo.svg" alt="">
+    <span><b>CivicAscent AI</b><small>PEOPLE · SKILLS · STRONGER COMMUNITIES</small></span>
+  </a>
+  <div class="actions">
+    <a class="pill" href="village.html">← Village</a>
+    <button class="pill" id="lang" type="button">ES</button>
+  </div>
+</header>
+<main class="lab" id="labTitle">
+  <div class="grid" aria-hidden="true"></div><div class="stars" id="stars" aria-hidden="true"></div>
+  <section class="shell" aria-label="Living AI Lab interactive demonstration">
+    <div class="heading">
+      <div class="eyebrow" id="eyebrow">LIVE · INTERACTIVE · VOICE GUIDED</div>
+      <h1 id="mainTitle">Living AI Lab</h1>
+      <p id="mainIntro">Touch a capability. The lab changes in real time and explains what AI can do in plain language.</p>
+    </div>
+    <button class="node n1 active" data-mode="create"><span>01</span><b data-en="CREATE" data-es="CREAR">CREATE</b></button>
+    <button class="node n2" data-mode="voice"><span>02</span><b data-en="VOICE" data-es="VOZ">VOICE</b></button>
+    <button class="node n3" data-mode="translate"><span>03</span><b data-en="TRANSLATE" data-es="TRADUCIR">TRANSLATE</b></button>
+    <button class="node n4" data-mode="plan"><span>04</span><b data-en="PLAN" data-es="PLANEAR">PLAN</b></button>
+    <i class="wire w1"></i><i class="wire w2"></i><i class="wire w3"></i><i class="wire w4"></i>
+    <section class="stage" aria-live="polite">
+      <div class="scene-label" id="sceneLabel">LIVE AI EXAMPLE</div>
+      <div class="scene" id="scene"></div>
+    </section>
+    <div class="voicebar"><button id="play" type="button">🔊 Replay Voice</button><button id="stop" type="button">■ Stop</button><span class="status" id="status">Ready</span></div>
+  </section>
+</main>
+<script>
+const DATA={
+create:{en:{title:"Create Images",desc:"Describe an idea in everyday words. AI can turn that description into a visual starting point.",voice:"Describe what you want to see. Artificial intelligence can turn a simple idea into an image, then help you refine it."},es:{title:"Crear imágenes",desc:"Describe una idea con palabras cotidianas. La IA puede convertirla en un punto de partida visual.",voice:"Describe lo que quieres ver. La inteligencia artificial puede convertir una idea sencilla en una imagen y ayudarte a mejorarla."}},
+voice:{en:{title:"Use Your Voice",desc:"Speak naturally instead of typing. AI can listen, organize the request, and respond in plain language.",voice:"You do not have to type everything. Speak naturally and AI can listen, explain, organize, and guide the next step."},es:{title:"Usa tu voz",desc:"Habla con naturalidad en vez de escribir. La IA puede escuchar, organizar la solicitud y responder claramente.",voice:"No tienes que escribir todo. Habla con naturalidad y la inteligencia artificial puede escuchar, explicar, organizar y guiar el siguiente paso."}},
+translate:{en:{title:"Translate Language",desc:"Move between English and Spanish while preserving the meaning and making difficult wording easier to understand.",voice:"AI can help people understand one another by translating between English and Spanish and simplifying difficult wording."},es:{title:"Traducir idiomas",desc:"Cambia entre inglés y español conservando el significado y haciendo el texto más fácil de entender.",voice:"La inteligencia artificial puede ayudar a las personas a entenderse traduciendo entre inglés y español y simplificando palabras difíciles."}},
+plan:{en:{title:"Plan & Organize",desc:"Turn one goal into clear next steps, messages, checklists, and reminders you can actually follow.",voice:"Give AI a real goal. It can organize the work into clear steps, draft the message, and build a practical checklist."},es:{title:"Planear y organizar",desc:"Convierte una meta en próximos pasos, mensajes, listas y recordatorios claros.",voice:"Dale a la inteligencia artificial una meta real. Puede organizar el trabajo en pasos claros, redactar el mensaje y crear una lista práctica."}}
+};
+let lang="en",mode="create",timer=null,userTouched=false;
+const E=id=>document.getElementById(id);
+function visual(k){
+ if(k==="create")return '<div class="visual"><div class="image-demo"><div class="sweep"></div></div></div>';
+ if(k==="voice")return '<div class="visual"><div class="wave">'+[30,58,84,42,96,64,36,78,100,54,74,40,88,61,33].map((h,i)=>'<i style="height:'+h+'%;animation-delay:-'+(i*.06)+'s"></i>').join("")+'</div></div>';
+ if(k==="translate")return '<div class="visual translate"><div class="bubble">Good morning</div><div class="swap">⇄</div><div class="bubble es">Buenos días</div></div>';
+ return '<div class="visual"><div class="steps"><div class="step"><b>1</b><strong>Define the goal</strong><span class="check">✓</span></div><div class="step"><b>2</b><strong>Build the next steps</strong><span class="check">✓</span></div><div class="step"><b>3</b><strong>Review before acting</strong><span class="check">✓</span></div></div></div>';
+}
+function render(speakNow=false){
+ document.querySelectorAll(".node").forEach(n=>n.classList.toggle("active",n.dataset.mode===mode));
+ document.querySelectorAll("[data-en]").forEach(n=>n.textContent=n.dataset[lang]);
+ const d=DATA[mode][lang];
+ E("scene").innerHTML='<h2>'+d.title+'</h2><p>'+d.desc+'</p>'+visual(mode);
+ E("sceneLabel").textContent=lang==="en"?"LIVE AI EXAMPLE":"EJEMPLO DE IA EN VIVO";
+ E("eyebrow").textContent=lang==="en"?"LIVE · INTERACTIVE · VOICE GUIDED":"EN VIVO · INTERACTIVO · GUIADO POR VOZ";
+ E("mainTitle").textContent=lang==="en"?"Living AI Lab":"Laboratorio de IA";
+ E("mainIntro").textContent=lang==="en"?"Touch a capability. The lab changes in real time and explains what AI can do in plain language.":"Toca una capacidad. El laboratorio cambia en tiempo real y explica lo que la IA puede hacer con palabras sencillas.";
+ E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";E("status").textContent=lang==="en"?"Ready":"Listo";
+ if(speakNow)speak();
+}
+function pickVoice(){
+ const vs=speechSynthesis.getVoices(),prefix=lang==="es"?"es":"en";const pool=vs.filter(v=>v.lang.toLowerCase().startsWith(prefix));return pool.find(v=>/natural|neural|premium|enhanced/i.test(v.name))||pool.find(v=>/google|samantha|microsoft|ava|aria|david|jenny|jorge|paulina/i.test(v.name))||pool[0];
+}
+function stop(){if("speechSynthesis" in window)speechSynthesis.cancel()}
+function speak(){if(!("speechSynthesis" in window)){E("status").textContent="Voice unavailable";return}stop();const u=new SpeechSynthesisUtterance(DATA[mode][lang].voice);u.lang=lang==="es"?"es-US":"en-US";u.rate=.82;u.pitch=.88;u.volume=1;const v=pickVoice();if(v)u.voice=v;u.onstart=()=>E("status").textContent=lang==="en"?"Playing…":"Reproduciendo…";u.onend=()=>E("status").textContent=lang==="en"?"Ready":"Listo";speechSynthesis.speak(u)}
+document.querySelectorAll(".node").forEach(n=>n.addEventListener("click",()=>{userTouched=true;mode=n.dataset.mode;render(true)}));
+E("lang").onclick=()=>{userTouched=true;lang=lang==="en"?"es":"en";stop();render(false)};E("play").onclick=()=>{userTouched=true;speak()};E("stop").onclick=()=>{userTouched=true;stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
+const stars=E("stars");for(let i=0;i<60;i++){const s=document.createElement("i");s.style.left=Math.random()*100+"%";s.style.top=Math.random()*100+"%";s.style.animationDelay=(-Math.random()*3)+"s";s.style.opacity=.15+Math.random()*.55;stars.appendChild(s)}
+timer=setInterval(()=>{if(userTouched)return;const order=["create","voice","translate","plan"];mode=order[(order.indexOf(mode)+1)%order.length];render(false)},8500);
+if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}render(false);
+</script>
+</body>
+</html>
