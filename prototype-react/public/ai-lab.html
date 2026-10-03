@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06111f">
+<title>CivicAscent AI — AI Lab</title>
+<style>
+:root{--bg:#06111f;--panel:#0b2037;--text:#f8fbff;--muted:#cfdeeb;--blue:#46baff;--gold:#f4cb62;--green:#57d69e;--purple:#9d7cff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#06111f;color:var(--text);font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden;background:
+radial-gradient(circle at 20% 8%,rgba(68,155,255,.16),transparent 25%),
+radial-gradient(circle at 84% 24%,rgba(119,80,255,.13),transparent 28%),
+linear-gradient(150deg,#06111f,#0b2138 55%,#06111f)}
+a{color:inherit}.top{position:sticky;top:0;z-index:50;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,4vw,48px);background:rgba(3,10,18,.8);border-bottom:1px solid #ffffff1e;backdrop-filter:blur(16px)}
+.brand{display:flex;align-items:center;gap:11px;font-size:clamp(18px,2.8vw,27px);font-weight:900}.brand img{width:34px;height:34px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.btn,.back{font:inherit;color:#fff;font-weight:850;background:#102843;border:1px solid #ffffff35;border-radius:999px;padding:11px 15px;text-decoration:none;cursor:pointer;min-height:44px}
+.btn.primary{background:#087fd1}.btn:hover,.back:hover,.btn:focus-visible,.back:focus-visible{outline:3px solid #46baff66;outline-offset:2px}
+.hero{width:min(1380px,calc(100% - 28px));margin:0 auto;padding:clamp(28px,5vw,66px) 0 20px}
+.eyebrow{font-size:14px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#9edcff;margin-bottom:12px}
+.hero h1{font-size:clamp(45px,8vw,92px);letter-spacing:-.055em;line-height:.93;margin:0 0 16px;max-width:950px}
+.hero p{font-size:clamp(20px,2.25vw,28px);line-height:1.45;color:var(--muted);max-width:790px;margin:0}
+.lab{width:min(1450px,calc(100% - 28px));margin:24px auto 54px;position:relative;min-height:650px;border:1px solid #ffffff1f;border-radius:34px;overflow:hidden;background:
+linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.01)),
+radial-gradient(circle at 50% 14%,rgba(90,177,255,.22),transparent 28%),
+linear-gradient(150deg,#0c2845,#061523 68%);box-shadow:0 34px 100px #0007}
+.lab::before{content:"";position:absolute;left:50%;top:-80px;width:420px;height:420px;transform:translateX(-50%);border:2px solid #4fc3ff33;border-radius:50%;box-shadow:0 0 80px #46baff20,inset 0 0 70px #46baff12}
+.lab-grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:clamp(120px,13vw,180px) clamp(18px,3vw,42px) 48px}
+.portal{position:relative;min-height:370px;border-radius:27px;border:1px solid #ffffff2e;text-decoration:none;overflow:hidden;padding:26px;background:linear-gradient(160deg,rgba(10,34,58,.94),rgba(4,16,30,.96));box-shadow:0 18px 48px #0004;transition:.22s transform,.22s box-shadow,.22s border-color}
+.portal:hover,.portal:focus-visible{transform:translateY(-7px);border-color:#f4cb62;box-shadow:0 28px 65px #0006,0 0 0 5px #f4cb621f;outline:none}
+.num{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font-weight:950;font-size:21px;margin-bottom:18px;background:#0c88df;box-shadow:0 0 34px #168bdd66}
+.portal:nth-child(2) .num{background:#795ce6}.portal:nth-child(3) .num{background:#19a978}.portal:nth-child(4) .num{background:#e78c16}
+.portal h2{font-size:clamp(25px,2.3vw,34px);line-height:1.02;margin:0 0 9px}.portal p{font-size:18px;line-height:1.45;color:#d7e5f1;margin:0 0 22px}
+.mini{height:155px;border-radius:20px;background:#071828;border:1px solid #ffffff1d;display:grid;place-items:center;overflow:hidden;position:relative}
+.portal:nth-child(1) .mini::before{content:"";width:85%;height:72%;border-radius:15px;background:linear-gradient(160deg,#244a74 0 40%,#f2a24f 41% 48%,#153e58 49% 64%,#071c2e 65%);box-shadow:0 0 35px #53b5ff26;animation:glow 3s ease-in-out infinite}
+.voice-mini{display:flex;gap:6px;align-items:center;height:92px}.voice-mini i{display:block;width:7px;border-radius:99px;background:linear-gradient(#62d4ff,#8067ef);animation:wave 1s ease-in-out infinite}.voice-mini i:nth-child(2n){animation-delay:-.22s}.voice-mini i:nth-child(3n){animation-delay:-.46s}
+.trans-mini{display:flex;align-items:center;gap:11px;font-weight:900;font-size:19px}.bubble{padding:11px 14px;border-radius:14px;background:#eaf6ff;color:#10253a}.bubble.es{background:#e7fff3}.swap{font-size:25px;color:#68c8ff}
+.plan-mini{width:84%;display:flex;flex-direction:column;gap:9px}.plan-mini span{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:#f6f9fb;color:#173047;font-weight:800;font-size:14px}.plan-mini b{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:#daf4e7;color:#08784b}
+@keyframes wave{0%,100%{height:24%}50%{height:92%}}@keyframes glow{50%{filter:brightness(1.22);transform:scale(1.02)}}
+.experience{display:none;width:min(1380px,calc(100% - 28px));margin:0 auto;padding:clamp(30px,6vw,74px) 0 48px;grid-template-columns:minmax(290px,.82fr) minmax(360px,1.18fr);gap:clamp(24px,4vw,56px);align-items:center}
+.copy .eyebrow{margin-bottom:14px}.copy h1{font-size:clamp(46px,8vw,88px);line-height:.94;letter-spacing:-.05em;margin:0 0 15px}.copy .sub{font-size:clamp(23px,3vw,34px);font-weight:900;color:var(--gold);margin-bottom:20px}.copy p{font-size:clamp(20px,2.1vw,28px);line-height:1.48;color:#f3f8fc;max-width:30ch;margin:0 0 24px}.controls{display:flex;flex-wrap:wrap;gap:9px}.status{margin-top:13px;color:#bed3e5;font-size:16px;font-weight:750;min-height:22px}
+.scene{position:relative;min-height:520px;border:1px solid #ffffff28;border-radius:30px;overflow:hidden;background:linear-gradient(155deg,#0e3151,#061521);box-shadow:0 28px 80px #0006}.scene-label{position:absolute;top:22px;left:24px;font-size:14px;font-weight:900;letter-spacing:.12em;color:#9edcff;z-index:4}
+.scene-images .prompt{position:absolute;left:8%;top:27%;width:38%;padding:22px;border-radius:22px;background:#061727;border:1px solid #ffffff2d;box-shadow:0 20px 45px #0005}.prompt small{font-weight:900;color:#9edcff}.prompt div{font-size:clamp(20px,2vw,28px);line-height:1.4;margin-top:11px}.generated{position:absolute;right:7%;top:18%;width:45%;height:64%;border-radius:24px;background:linear-gradient(160deg,#214f7a 0 40%,#f5ad55 41% 48%,#174157 49% 63%,#081c2c 64%);overflow:hidden;box-shadow:0 0 50px #3dafff22}.generated::after{content:"AI image forming…";position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:#061525d9;padding:9px 13px;border-radius:999px;font-weight:850;white-space:nowrap}.scan{position:absolute;inset:0;background:#071828;animation:reveal 6s ease-in-out infinite}@keyframes reveal{0%,15%{clip-path:inset(0)}48%,82%{clip-path:inset(0 0 0 100%)}100%{clip-path:inset(0)}}
+.scene-voice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:82px 24px 28px}.mic{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;font-size:50px;background:radial-gradient(circle,#4b94fa,#6848cf);box-shadow:0 0 0 18px #6a6ee51b,0 0 56px #665ff05e;animation:pulse 2s ease-in-out infinite}@keyframes pulse{50%{transform:scale(1.06);box-shadow:0 0 0 27px #6a6ee50d,0 0 76px #665ff07a}}
+.bigwave{height:90px;width:min(560px,90%);display:flex;align-items:center;justify-content:center;gap:7px}.bigwave i{width:6px;border-radius:99px;background:linear-gradient(#64d0ff,#7969ef);animation:wave 1.05s ease-in-out infinite}.bigwave i:nth-child(2n){animation-delay:-.2s}.bigwave i:nth-child(3n){animation-delay:-.48s}.speech{width:min(600px,94%);padding:16px 18px;border-radius:17px;font-size:clamp(18px,2vw,25px);line-height:1.38}.speech.q{align-self:flex-start;background:#eef7ff;color:#11283c}.speech.a{align-self:flex-end;background:#163a5c}
+.scene-translate{display:grid;grid-template-columns:1fr 80px 1fr;gap:14px;align-items:center;padding:92px 28px 28px}.lang{padding:24px;border-radius:22px;background:#f3f8fb;color:#10263b;box-shadow:0 18px 40px #0004}.lang.es{background:#eafff5}.lang small{font-weight:900;color:#4c6880}.lang strong{display:block;font-size:clamp(24px,3vw,38px);line-height:1.2;margin-top:16px}.mid-swap{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;margin:auto;background:#0e82d2;font-size:32px;animation:spin 3s ease-in-out infinite}@keyframes spin{50%{transform:rotate(180deg) scale(1.08)}}
+.scene-plan{display:flex;align-items:center;justify-content:center;padding:86px 25px 28px}.steps{width:min(650px,94%);display:flex;flex-direction:column;gap:12px}.step{display:grid;grid-template-columns:58px 1fr 34px;align-items:center;gap:14px;padding:16px 17px;border-radius:19px;background:#f6f9fb;color:#10243a;box-shadow:0 15px 36px #0003;animation:rise 5.8s ease-in-out infinite}.step:nth-child(2){animation-delay:.65s}.step:nth-child(3){animation-delay:1.3s}.stepicon{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;background:#e9f2f8;font-size:25px}.steptitle{font-size:clamp(19px,2vw,26px);font-weight:900}.stepdesc{font-size:15px;color:#557087;margin-top:3px}.check{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#d9f5e7;color:#08774a;font-weight:900}@keyframes rise{0%,7%{opacity:.1;transform:translateY(12px)}18%,82%{opacity:1;transform:none}100%{opacity:.18;transform:translateY(-5px)}}
+@media(max-width:980px){.lab-grid{grid-template-columns:repeat(2,1fr);padding-top:100px}.experience{grid-template-columns:1fr}.scene{min-height:470px}}
+@media(max-width:620px){.lab{width:100%;border-radius:0;min-height:auto}.lab-grid{grid-template-columns:1fr;padding:72px 14px 24px}.portal{min-height:310px}.top{height:62px}.brand span{display:none}.experience{width:calc(100% - 22px);padding-top:25px}.scene{min-height:430px}.scene-translate{grid-template-columns:1fr;padding-top:70px}.mid-swap{width:54px;height:54px}.copy p{max-width:none}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="top">
+<div class="brand"><img src="assets/civicascent-logo.svg" alt=""><span>CivicAscent AI</span></div>
+<div class="top-actions"><button class="btn" id="langBtn" type="button">ES</button><a class="back" id="homeBtn" href="ai-lab.html">AI Lab</a></div>
+</header>
+
+<section id="landing">
+<div class="hero">
+<div class="eyebrow">AI FOR BEGINNERS · LARGE TEXT · GUIDED VOICE</div>
+<h1>Try AI step by step.</h1>
+<p>Choose one capability. A separate window opens with a short voice explanation and a moving example of what AI can do.</p>
+</div>
+<section class="lab" aria-label="AI capability lab">
+<div class="lab-grid">
+<a class="portal" href="ai-lab.html?experience=images" target="_blank" rel="noopener"><div class="num">1</div><h2>Create Images</h2><p>Turn a simple idea into a picture.</p><div class="mini"></div></a>
+<a class="portal" href="ai-lab.html?experience=voice" target="_blank" rel="noopener"><div class="num">2</div><h2>Use Your Voice</h2><p>Ask questions out loud instead of typing.</p><div class="mini"><div class="voice-mini"><i style="height:28%"></i><i style="height:56%"></i><i style="height:84%"></i><i style="height:42%"></i><i style="height:92%"></i><i style="height:63%"></i><i style="height:35%"></i><i style="height:78%"></i><i style="height:96%"></i><i style="height:54%"></i><i style="height:72%"></i><i style="height:40%"></i><i style="height:84%"></i></div></div></a>
+<a class="portal" href="ai-lab.html?experience=translate" target="_blank" rel="noopener"><div class="num">3</div><h2>Translate Language</h2><p>See English and Spanish side by side.</p><div class="mini"><div class="trans-mini"><span class="bubble">Hello</span><span class="swap">⇄</span><span class="bubble es">Hola</span></div></div></a>
+<a class="portal" href="ai-lab.html?experience=plan" target="_blank" rel="noopener"><div class="num">4</div><h2>Plan & Automate</h2><p>Turn a task into simple, clear steps.</p><div class="mini"><div class="plan-mini"><span><b>✓</b> Plan the task</span><span><b>✓</b> Write the message</span><span><b>✓</b> Build a checklist</span></div></div></a>
+</div>
+</section>
+</section>
+
+<main id="experience" class="experience">
+<section class="copy">
+<div class="eyebrow" id="kicker">AI CAPABILITY · BEGINNER GUIDE</div>
+<h1 id="title"></h1><div class="sub" id="sub"></div><p id="message"></p>
+<div class="controls"><button class="btn primary" id="playBtn" type="button">🔊 Replay Voice</button><button class="btn" id="stopBtn" type="button">■ Stop</button></div>
+<div class="status" id="status">Voice guide ready</div>
+</section>
+<section class="scene" id="scene"><div class="scene-label">LIVE AI EXAMPLE</div><div id="sceneBody"></div></section>
+</main>
+
+<script>
+const DATA={
+images:{en:{title:"Create Images",sub:"Turn ideas into pictures.",msg:"AI can turn a simple idea into a picture. Describe what you want to see, and AI helps create it. You can ask for changes until the image feels right."},es:{title:"Crear imágenes",sub:"Convierte ideas en imágenes.",msg:"La inteligencia artificial puede convertir una idea sencilla en una imagen. Describe lo que quieres ver y puede ayudarte a crearla. Después puedes pedir cambios."}},
+voice:{en:{title:"Use Your Voice",sub:"Ask questions out loud.",msg:"You do not have to type everything. Speak your question out loud, and AI can listen, explain, organize, and guide you through the next step."},es:{title:"Usa tu voz",sub:"Haz preguntas en voz alta.",msg:"No tienes que escribir todo. Haz tu pregunta en voz alta, y la inteligencia artificial puede escuchar, explicar, organizar y guiarte."}},
+translate:{en:{title:"Translate Language",sub:"English and Spanish, side by side.",msg:"AI can help people understand one another. It can translate messages between English and Spanish and make difficult wording easier to understand."},es:{title:"Traducir idiomas",sub:"Inglés y español, lado a lado.",msg:"La inteligencia artificial puede ayudar a las personas a entenderse. Puede traducir mensajes entre inglés y español y usar palabras más sencillas."}},
+plan:{en:{title:"Plan & Automate",sub:"Turn a task into simple steps.",msg:"AI can help turn a complicated task into simple steps. It can organize a plan, help write a message, and build a clear checklist while you stay in control."},es:{title:"Planificar y automatizar",sub:"Convierte una tarea en pasos sencillos.",msg:"La inteligencia artificial puede convertir una tarea complicada en pasos sencillos. Puede organizar un plan, ayudar a escribir un mensaje y crear una lista clara."}}
+};
+let lang="en";
+const params=new URLSearchParams(location.search), key=params.get("experience");
+const landing=document.getElementById("landing"), exp=document.getElementById("experience"), E=id=>document.getElementById(id);
+
+function sceneHTML(k){
+if(k==="images")return '<div class="scene-images"><div class="prompt"><small>YOUR IDEA</small><div>Create a peaceful mountain lake at sunrise.</div></div><div class="generated"><div class="scan"></div></div></div>';
+if(k==="voice")return '<div class="scene-voice"><div class="mic">🎙</div><div class="bigwave">'+Array.from({length:15},(_,i)=>'<i style="height:'+([28,55,80,42,92,60,34,76,98,51,72,38,84,58,31][i])+'%"></i>').join('')+'</div><div class="speech q">“Help me write a simple email.”</div><div class="speech a">I can help. Tell me who the email is for and what you want to say.</div></div>';
+if(k==="translate")return '<div class="scene-translate"><div class="lang"><small>ENGLISH</small><strong>Hello, how are you today?</strong></div><div class="mid-swap">⇄</div><div class="lang es"><small>ESPAÑOL</small><strong>Hola, ¿cómo estás hoy?</strong></div></div>';
+return '<div class="scene-plan"><div class="steps"><div class="step"><div class="stepicon">📅</div><div><div class="steptitle">Plan the appointment</div><div class="stepdesc">Choose a day and list what you need.</div></div><div class="check">✓</div></div><div class="step"><div class="stepicon">✉</div><div><div class="steptitle">Write the message</div><div class="stepdesc">Create a clear note in plain language.</div></div><div class="check">✓</div></div><div class="step"><div class="stepicon">☑</div><div><div class="steptitle">Build the checklist</div><div class="stepdesc">Keep the next steps easy to follow.</div></div><div class="check">✓</div></div></div></div>';
+}
+
+function chooseVoice(l){
+const voices=speechSynthesis.getVoices();
+const prefix=l==="es"?"es":"en";
+const pool=voices.filter(v=>v.lang.toLowerCase().startsWith(prefix));
+const preferred=l==="es"?["google español","microsoft alvaro","microsoft jorge","español"]:["google us english","microsoft david","microsoft guy","samsung","english united states"];
+for(const name of preferred){const v=pool.find(x=>x.name.toLowerCase().includes(name));if(v)return v}
+return pool.find(v=>v.localService)||pool[0]||null;
+}
+function stopVoice(){if("speechSynthesis" in window)speechSynthesis.cancel()}
+function speak(){
+if(!key||!("speechSynthesis" in window)){E("status").textContent="Voice is not available on this device.";return}
+stopVoice();const d=DATA[key][lang],u=new SpeechSynthesisUtterance(d.msg);u.lang=lang==="es"?"es-US":"en-US";u.rate=.82;u.pitch=.88;u.volume=1;
+const v=chooseVoice(lang);if(v)u.voice=v;
+u.onstart=()=>E("status").textContent=lang==="es"?"Reproduciendo voz…":"Playing voice…";
+u.onend=()=>E("status").textContent=lang==="es"?"Voz terminada":"Voice complete";
+u.onerror=()=>E("status").textContent=lang==="es"?"Toca Repetir voz.":"Tap Replay Voice.";
+speechSynthesis.speak(u);
+}
+function render(){
+if(!key||!DATA[key]){landing.style.display="block";exp.style.display="none";E("homeBtn").style.display="none";return}
+landing.style.display="none";exp.style.display="grid";E("homeBtn").style.display="inline-flex";
+const d=DATA[key][lang];document.title="CivicAscent AI — "+d.title;E("title").textContent=d.title;E("sub").textContent=d.sub;E("message").textContent=d.msg;E("sceneBody").innerHTML=sceneHTML(key);
+E("langBtn").textContent=lang==="en"?"ES":"EN";E("playBtn").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stopBtn").textContent=lang==="en"?"■ Stop":"■ Detener";
+setTimeout(speak,350);
+}
+E("langBtn").onclick=()=>{lang=lang==="en"?"es":"en";stopVoice();render()};
+E("playBtn").onclick=speak;E("stopBtn").onclick=()=>{stopVoice();E("status").textContent=lang==="es"?"Detenido":"Stopped"};
+if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}
+render();
+</script>
+</body>
+</html>
