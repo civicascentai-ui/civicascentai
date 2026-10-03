@@ -77,3 +77,8 @@ Do not merge to production until:
 6. human handoff is implemented/tested,
 7. Ruth Bennett — Quality & Accessibility Director clears voice/mobile/accessibility QA,
 8. Naomi Grant — Security & Risk / Governance Director clears deployment security.
+
+
+## Vercel staging trigger
+
+Triggered after Vercel Git integration was repaired on 2026-10-03. Production remains on `main`; this branch is for preview validation only.
