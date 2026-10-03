@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+<title id="title">CivicAscent AI logo mark</title>
+<desc id="desc">A civic skyline and bridge beneath a rising arc, with three ascending figures symbolizing growth, learning and community.</desc>
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0b3f82"/>
+    <stop offset=".55" stop-color="#168de2"/>
+    <stop offset="1" stop-color="#39c6e6"/>
+  </linearGradient>
+  <linearGradient id="green" x1="0" y1="1" x2="1" y2="0">
+    <stop offset="0" stop-color="#26a5d9"/>
+    <stop offset="1" stop-color="#49a942"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#f4ad27"/>
+    <stop offset="1" stop-color="#ffd978"/>
+  </linearGradient>
+</defs>
+
+<!-- rising civic arc -->
+<path d="M15 42C24 16 49 7 72 14c8 2 15 6 20 11" fill="none" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+
+<!-- skyline -->
+<path d="M10 57h8V47h7v10h6V34h8v23h5V27h8v30h5V40h8v17h6V44h7v13h8" fill="#0b3f82"/>
+<path d="M7 58h65" stroke="#0b3f82" stroke-width="3" stroke-linecap="round"/>
+
+<!-- bridge -->
+<path d="M7 63h55M12 63c2 8 8 12 15 12s13-4 15-12M42 63c2 7 7 10 13 10 4 0 8-2 11-6" fill="none" stroke="#0b3f82" stroke-width="3" stroke-linecap="round"/>
+
+<!-- pathway -->
+<path d="M13 84c15-12 26-17 38-19 9-2 16-7 22-15" fill="none" stroke="url(#blue)" stroke-width="6" stroke-linecap="round"/>
+<path d="M18 87c16-9 30-13 42-14" fill="none" stroke="#58c8ed" stroke-width="3.5" stroke-linecap="round"/>
+
+<!-- ascending people / growth -->
+<circle cx="63" cy="55" r="3.8" fill="#63c9ed"/>
+<path d="M59 69c2-7 3-10 4-11 2 2 4 5 6 8" fill="none" stroke="#63c9ed" stroke-width="5" stroke-linecap="round"/>
+
+<circle cx="73" cy="45" r="4.1" fill="#208fd1"/>
+<path d="M68 64c2-9 3-13 5-16 2 3 4 6 6 10" fill="none" stroke="#208fd1" stroke-width="6" stroke-linecap="round"/>
+
+<circle cx="84" cy="32" r="4.4" fill="#49a942"/>
+<path d="M76 59c4-13 6-20 8-23 3 5 5 10 7 16" fill="none" stroke="url(#green)" stroke-width="7" stroke-linecap="round"/>
+
+<!-- star -->
+<path d="M88 10l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffc72c"/>
+</svg>
