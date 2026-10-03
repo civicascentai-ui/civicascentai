@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check Python syntax
-        run: python3 -m py_compile voice-backend/agent.py
+        run: python3 -m py_compile voice-backend/agent.py voice-backend/originate_test_calls.py
 
       - name: Validate JSON
         run: python3 -m json.tool voice-backend/dispatch-rule.staging.json >/dev/null
@@ -48,6 +48,8 @@ jobs:
           grep -q 'civicascent-voice' voice-backend/agent.py
           grep -q '"agentName": "civicascent-voice"' voice-backend/dispatch-rule.staging.json
           grep -q 'CIVICASCENT_AGENT_NAME=civicascent-voice' voice-backend/.env.example
+          grep -q 'LIVEKIT_SIP_OUTBOUND_TRUNK_ID=' voice-backend/.env.example
+          grep -q 'CIVICASCENT_TEST_CALL_COUNT=5' voice-backend/.env.example
 
       - name: Reject committed secrets
         shell: bash
