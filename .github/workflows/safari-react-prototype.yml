@@ -2,7 +2,9 @@ name: Safari React Prototype
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - feature/mobbin-patterns-2026-09-30
     paths:
       - "prototype-react/**"
       - ".github/workflows/safari-react-prototype.yml"
@@ -39,3 +41,10 @@ jobs:
           test -f dist/index.html
           test -d dist/assets
           test -s dist/index.html
+
+      - name: Static accessibility guardrails
+        run: |
+          grep -q 'aria-labelledby="page-title"' src/App.jsx
+          grep -q 'role="dialog"' src/App.jsx
+          grep -q 'prefers-reduced-motion: reduce' src/styles.css
+          grep -q 'Skip to learning choices' src/App.jsx
