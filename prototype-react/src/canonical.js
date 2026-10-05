@@ -4,16 +4,18 @@ const DEFAULT_ENDPOINT =
 
 const DEFAULT_MIN_SIMILARITY = 0.80;
 
-function getAnonKey() {
+function getClientKey() {
   return (
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
     import.meta.env.VITE_SUPABASE_ANON_KEY ||
+    window.CIVICASCENT_SUPABASE_PUBLISHABLE_KEY ||
     window.CIVICASCENT_SUPABASE_ANON_KEY ||
     ""
   );
 }
 
 async function ask(question, options = {}) {
-  const key = getAnonKey();
+  const key = getClientKey();
 
   if (!key) {
     return {
@@ -30,7 +32,6 @@ async function ask(question, options = {}) {
   const response = await fetch(DEFAULT_ENDPOINT, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${key}`,
       apikey: key,
       "Content-Type": "application/json",
     },
