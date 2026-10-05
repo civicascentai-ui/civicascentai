@@ -5,7 +5,7 @@ import re, sys
 
 ROOT=Path(__file__).resolve().parents[1]
 IGNORE_DIRS={'.git','backups','checkpoints','prototype-react'}
-LEGACY_PREFIXES=('model-03-','model-04-','model-05-','model-06-','model-07-')
+LEGACY_PREFIXES=('model-02-','model-03-','model-04-','model-05-','model-06-','model-07-')
 errors=[]; warnings=[]
 
 class Page(HTMLParser):
