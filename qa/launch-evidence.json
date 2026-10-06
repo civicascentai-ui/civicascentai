@@ -1,0 +1,18 @@
+{
+  "evidence_version": 1,
+  "last_updated": "2026-10-05",
+  "reviewed_by": "",
+  "real_sip_inbound_pass": false,
+  "real_sip_outbound_pass": false,
+  "human_handoff_pass": false,
+  "spanish_voice_pass": false,
+  "voice_interruption_pass": false,
+  "beginner_real_users_total": 0,
+  "beginner_min_unaided_per_core_task": 0,
+  "native_zoom_200_pass": false,
+  "preview_canonical_e2e_pass": false,
+  "automated_transactional_email_in_scope": false,
+  "resend_domain_verified_pass": false,
+  "resend_delivery_test_pass": false,
+  "notes": "Do not set any pass field true without direct evidence. Synthetic personas do not count as real-user validation. Final production smoke testing occurs after promotion and is tracked separately."
+}
