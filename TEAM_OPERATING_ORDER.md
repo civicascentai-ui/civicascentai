@@ -22,3 +22,11 @@ No known defect may be carried forward. No agent self-approves final release. Re
 model-08-operational-station.html
 
 This candidate must be tested before replacing production index.html.
+
+## Permanent shared reasoning modes
+Every current and future agent may use the centrally governed reasoning modes defined in `AI_REASONING_MODES_OPERATING_RULE.md`:
+
+- **Deep Insight Mode** for overlooked assumptions, counterevidence, uncommon but verifiable practices, and non-obvious implications.
+- **Mastery Roadmap Mode** for staged capability development, deliberate practice, milestones, feedback loops, and measurable mastery.
+
+These modes do not expand agent authority. They inherit all approval, evidence, audit, data-boundary, human-ownership, accessibility, and release-gate requirements.
