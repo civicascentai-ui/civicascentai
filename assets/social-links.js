@@ -43,13 +43,15 @@ export function getVerifiedSocialProfiles(records = SOCIAL_PROFILES) {
     .filter((item) => Boolean(item.url));
 }
 
-export function mountVerifiedSocialLinks(root = document) {
+export function mountVerifiedSocialLinks(root = (typeof document === 'undefined' ? null : document), records = SOCIAL_PROFILES) {
   if (!root || typeof root.createElement !== 'function') return 0;
-  const profiles = getVerifiedSocialProfiles();
+  const profiles = getVerifiedSocialProfiles(records);
   if (!profiles.length || root.getElementById('cai-verified-social')) return profiles.length;
   const nav = root.createElement('nav');
   nav.id = 'cai-verified-social';
   nav.setAttribute('aria-label', 'Official CivicAscent AI social profiles');
+  const isSpanish = root.documentElement?.lang?.toLowerCase().startsWith('es') === true;
+  if (isSpanish) nav.setAttribute('aria-label', 'Perfiles oficiales de CivicAscent AI en redes sociales');
   nav.style.cssText = 'display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;padding:1rem;';
   for (const record of profiles) {
     const link = root.createElement('a');
@@ -58,6 +60,7 @@ export function mountVerifiedSocialLinks(root = document) {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.setAttribute('aria-label', 'Visit CivicAscent AI on ' + LABELS[record.platform] + ' (opens in a new tab)');
+    if (isSpanish) link.setAttribute('aria-label', 'Visitar CivicAscent AI en ' + LABELS[record.platform] + ' (se abre una pestaña nueva)');
     nav.appendChild(link);
   }
   (root.querySelector('footer') || root.body)?.appendChild(nav);
