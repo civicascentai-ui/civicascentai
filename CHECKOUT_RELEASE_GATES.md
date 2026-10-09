@@ -14,3 +14,6 @@ The serverless handler is an un-deployed safety scaffold, not fulfillment.
 8. Only after approval, configure the real Stripe webhook URL and deploy a verified implementation.
 
 Status: BLOCKED. This QA branch does not authorize production deployment or live Stripe changes.
+
+## Database migration completed 2026-10-09
+Created private Stripe event and entitlement tables in Supabase project `alsjvdqlpayuzykhhbil`. Unique constraints, RLS, and restricted public access are enabled. Not yet wired to webhook or delivery. Production remains HOLD.
