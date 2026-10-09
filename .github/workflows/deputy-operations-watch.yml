@@ -1,0 +1,27 @@
+name: Deputy Operations Watch (QA)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 13 * * *'
+permissions:
+  contents: read
+  issues: read
+jobs:
+  deputy-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Junior evidence audit and Senior escalation review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+        run: python3 qa/deputy_watch.py
+      - name: Preserve review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deputy-review
+          path: deputy-review.json
+          if-no-files-found: warn
+          retention-days: 30
