@@ -94,3 +94,19 @@ GitHub Actions isolated safety suite: **42/42 passed, 0 failed, 0 skipped**. Run
 
 ### Customer-protection release gate
 Published LIVE payment links remain in the public `course.html` on the default branch while operational delivery is not established. Pausing these links requires an **explicit** separate live-account instruction. No change was made to customer-facing payment availability.
+
+## Security remediation revision (2026-10-09, 12:57 UTC)
+**Priority:** P0, QA branch only. **Production:** HOLD.
+
+An independent follow-up identified a residual access-revocation weakness in signed Storage URLs. Supabase documentation states that a signed URL remains usable until expiry regardless of Auth key changes and that CDN caches may persist after token expiry. A 30-second signed URL does not guarantee instantaneous revocation.
+
+**Corrective commits:** `cde799dc` server-authorized direct file streaming, `3d51b3fe` two-stage SQL receipt lifecycle, `d49a1a27` updated tests. These replace the proposed 30-second client-side signed-URL contract from the earlier section above. The newer streaming design is authoritative. References:
+- https://supabase.com/docs/guides/storage/serving/downloads
+- https://supabase.com/docs/guides/storage/cdn/smart-cdn
+- https://supabase.com/docs/reference/self-hosting-storage
+
+**Authorization flow:** confirmed user email -> trusted service-role SKU entitlement lookup -> private-bucket check -> server-only object GET -> lock and reserve pending download receipt while confirming entitlement active/no refunds -> server streams bytes (does not disclose Storage bearer URL) -> record successful or failed transfer. Separate client possession of already downloaded media cannot be revoked technically. Refunds block *new* requests, not historical copies. Streaming-size limit is 25 MiB; larger course kits need an independently reviewed delivery mechanism.
+
+**Verification:** GitHub isolated safety suite passed **43 tests, 0 failures, 0 skipped**, https://github.com/civicascentai-ui/civicascentai/actions/runs/37933457634 . This proves mocked interface/error behaviors only, not end-to-end Stripe purchases or real file delivery. Supabase staging migrations remain unapplied, Vercel QA branch lacks protected environment variables, Stripe sandbox webhook is not configured, and 25-purchase acceptance remains **0/25**.
+
+**Required QC before any deployment:** stage schema in isolated project; assert RLS/service-role grants; test a real private file, large-file/timeout/aborted downloads, refund-concurrency gates, CDN avoidance, and receipt reconciliation, then conduct independent manual verification. Observe resource/cost constraints; no automatic project purchases. No production rollout has been authorized.
