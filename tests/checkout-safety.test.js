@@ -44,3 +44,9 @@ test('Stripe and database outages fail closed with retryable responses', () => {
   assert.match(webhook, /Checkout ledger unavailable/);
   assert.match(webhook, /Checkout ledger write failed/);
 });
+
+test('unverified checkout does not record an entitlement', () => {
+  assert.match(webhook, /recorded:false/);
+  assert.match(webhook, /verified\.amount_total !== product\.amount/);
+  assert.match(webhook, /verified\.currency !== 'usd'/);
+});
