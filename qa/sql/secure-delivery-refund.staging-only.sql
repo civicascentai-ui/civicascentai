@@ -134,14 +134,14 @@ REVOKE ALL ON FUNCTION public.lookup_download_entitlement(text,text)
   FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.lookup_download_entitlement(text,text) TO service_role;
 
--- Generate signed URL FIRST, then atomically mark sent and log issued download.
--- Locks serialize against refund revocation updates on the same entitlement row.
+-- Authorize just-in-time direct proxy streaming. No signed bearer URL is issued.
+-- Reserve one pending attempt while locking the active entitlement row.
 CREATE OR REPLACE FUNCTION public.record_download_issued(
   p_session_id text,p_product_code text,p_verified_email text
-) RETURNS boolean
+) RETURNS bigint
 LANGUAGE plpgsql SECURITY INVOKER SET search_path=''
 AS $$
-DECLARE v_session text;
+DECLARE v_session text; v_attempt_id bigint;
 BEGIN
   SELECT e.session_id INTO v_session
   FROM checkout_private.entitlements e
@@ -150,17 +150,46 @@ BEGIN
     AND lower(trim(e.customer_email))=lower(trim(p_verified_email))
     AND e.access_state='active' AND e.refunded_cents=0
   FOR UPDATE;
-  IF NOT FOUND THEN RETURN false; END IF;
-  UPDATE checkout_private.entitlements
-    SET delivery_status='sent' WHERE session_id=v_session;
-  INSERT INTO checkout_private.delivery_attempts(
-    session_id,outcome,provider_message_id
-  ) VALUES(v_session,'sent','private-storage-signed-url-issued');
-  RETURN true;
+  IF NOT FOUND THEN RETURN NULL; END IF;
+  INSERT INTO checkout_private.delivery_attempts(session_id,outcome)
+    VALUES(v_session,'pending') RETURNING id INTO v_attempt_id;
+  RETURN v_attempt_id;
 END;
 $$;
 REVOKE ALL ON FUNCTION public.record_download_issued(text,text,text)
   FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.record_download_issued(text,text,text) TO service_role;
+
+-- Only server-side successful HTTP streaming may mark delivery sent.
+-- Failed/aborted transfers remain failed; a refund never reactivates access.
+CREATE OR REPLACE FUNCTION public.complete_course_download_attempt(
+  p_session_id text,p_attempt_id bigint,p_outcome text
+) RETURNS boolean
+LANGUAGE plpgsql SECURITY INVOKER SET search_path=''
+AS $$
+DECLARE v_attempt bigint;
+BEGIN
+  IF p_outcome NOT IN ('sent','failed') THEN RETURN false; END IF;
+  UPDATE checkout_private.delivery_attempts d
+  SET outcome=p_outcome,
+      provider_message_id=CASE WHEN p_outcome='sent'
+        THEN 'private-server-stream-finished' ELSE NULL END,
+      error_code=CASE WHEN p_outcome='failed'
+        THEN 'stream_interrupted_or_aborted' ELSE NULL END
+  WHERE d.id=p_attempt_id AND d.session_id=p_session_id AND d.outcome='pending'
+  RETURNING d.id INTO v_attempt;
+  IF NOT FOUND THEN RETURN false; END IF;
+  IF p_outcome='sent' THEN
+    UPDATE checkout_private.entitlements e
+      SET delivery_status='sent'
+    WHERE e.session_id=p_session_id AND e.access_state='active'
+      AND e.refunded_cents=0;
+  END IF;
+  RETURN true;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.complete_course_download_attempt(text,bigint,text)
+  FROM PUBLIC,anon,authenticated;
+GRANT EXECUTE ON FUNCTION public.complete_course_download_attempt(text,bigint,text) TO service_role;
 
 COMMIT;
