@@ -30,7 +30,12 @@ export default async function handler(req, res) {
       return res.status(503).json({error:'Entitlement database not configured'});
     }
     // Always retrieve the session from Stripe; event payloads are not a delivery authorization.
-    const verified = await stripe.checkout.sessions.retrieve(session.id);
+    let verified;
+    try {
+      verified = await stripe.checkout.sessions.retrieve(session.id);
+    } catch {
+      return res.status(503).json({error:'Stripe session verification unavailable'});
+    }
     // Explicit environment-specific allowlist. Sandbox links must be configured separately.
     const expectedMode = process.env.STRIPE_MODE;
     if (!['test', 'live'].includes(expectedMode)) {
@@ -46,7 +51,7 @@ export default async function handler(req, res) {
       return res.status(503).json({error:'Payment link allowlist not configured'});
     }
     const product = products[verified.payment_link];
-    if (!product || verified.payment_status !== 'paid' ||
+    if (!product || verified.status !== 'complete' || verified.payment_status !== 'paid' ||
         verified.amount_total !== product.amount || verified.currency !== 'usd' ||
         !verified.customer_details?.email || verified.livemode !== (expectedMode === 'live')) {
       return res.status(200).json({received:true,recorded:false});
@@ -56,7 +61,9 @@ export default async function handler(req, res) {
     if (process.env.CHECKOUT_RECORDING_ENABLED !== 'true') {
       return res.status(503).json({error:'Checkout recording not enabled'});
     }
-    const response = await fetch(endpoint, {
+    let response;
+    try {
+      response = await fetch(endpoint, {
       method:'POST',
       headers:{
         apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -69,7 +76,10 @@ export default async function handler(req, res) {
         p_email:verified.customer_details.email,p_product_code:product.code,
         p_amount:verified.amount_total,p_currency:verified.currency
       })
-    });
+      });
+    } catch {
+      return res.status(503).json({error:'Checkout ledger unavailable'});
+    }
     if (!response.ok) return res.status(503).json({error:'Checkout ledger write failed'});
     return res.status(200).json({received:true,recorded:true,delivery:'pending'});
   }
