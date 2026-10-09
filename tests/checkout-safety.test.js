@@ -23,3 +23,14 @@ test('webhook does not grant access or fulfill unverified payments', () => {
   assert.match(webhook, /checkout.sessions.retrieve/);
   assert.match(webhook, /CHECKOUT_RECORDING_ENABLED/);
 });
+
+test('database RPC uses restricted public wrapper rather than unexposed private schema', () => {
+  assert.match(webhook, /\/rest\/v1\/rpc\/record_verified_checkout/);
+  assert.doesNotMatch(webhook, /Content-Profile.*checkout_private/);
+});
+test('test and live Stripe payment links require explicit environment selection', () => {
+  assert.match(webhook, /STRIPE_MODE/);
+  assert.match(webhook, /STRIPE_STARTER_PAYMENT_LINK_ID/);
+  assert.match(webhook, /STRIPE_FACILITATOR_PAYMENT_LINK_ID/);
+  assert.match(webhook, /verified\.livemode !== \(expectedMode === 'live'\)/);
+});
