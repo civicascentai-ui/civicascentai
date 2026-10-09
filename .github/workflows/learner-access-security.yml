@@ -1,0 +1,28 @@
+name: Learner access security QC
+on:
+  push:
+    branches:
+      - qa/learner-access-ui-20261009
+  pull_request:
+    paths:
+      - 'api/course-*.js'
+      - 'api/learner-entitlements.js'
+      - 'test/learner-access-security.test.js'
+      - '.github/workflows/learner-access-security.yml'
+permissions:
+  contents: read
+jobs:
+  learner-access-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fail-closed learner API regression suite
+        env:
+          COURSE_ACCESS_UI_ENABLED: 'false'
+          COURSE_DOWNLOAD_ENABLED: 'false'
+          STRIPE_MODE: 'test'
+        run: node --test test/learner-access-security.test.js
