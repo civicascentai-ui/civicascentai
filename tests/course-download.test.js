@@ -1,50 +1,118 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {Readable, Writable} from 'node:stream';
 import handler from '../api/course-download.js';
 
-function response() {
- return {code:200,headers:{},body:null,setHeader(k,v){this.headers[k]=v;return this;},status(c){this.code=c;return this;},json(v){this.body=v;return this;}};
+class Response extends Writable {
+  constructor() {super();this.code=200;this.headers={};this.body=null;this.chunks=[];}
+  _write(chunk,_encoding,cb){this.chunks.push(Buffer.from(chunk));cb();}
+  setHeader(k,v){this.headers[k]=v;return this;}
+  status(code){this.code=code;return this;}
+  json(value){this.body=value;this.end();return this;}
 }
-const keys={COURSE_DOWNLOAD_ENABLED:'true',STRIPE_MODE:'test',SUPABASE_URL:'https://qa.example.invalid',
- SUPABASE_PUBLISHABLE_KEY:'qa_public',SUPABASE_SERVICE_ROLE_KEY:'qa_private',
- COURSE_PRIVATE_BUCKET:'course-kits',COURSE_STARTER_OBJECT:'starter/course.zip',COURSE_FACILITATOR_OBJECT:'facilitator/course.zip'};
-async function run({values={},returns=[]}={}) {
- const save=Object.fromEntries(Object.keys(keys).map(k=>[k,process.env[k]]));
- const original=globalThis.fetch;const calls=[];
- try {
-  for(const [k,v]of Object.entries({...keys,...values})){if(v===null)delete process.env[k];else process.env[k]=v;}
-  globalThis.fetch=async(url,opts)=>{
-   calls.push({url:String(url),opts});let out=returns[calls.length-1];
-   if(out instanceof Error) throw out;
-   return {ok:out?.ok!==false,async json(){return out?.data;}};
+const config={
+  COURSE_DOWNLOAD_ENABLED:'true',STRIPE_MODE:'test',
+  SUPABASE_URL:'https://qa.example.invalid',SUPABASE_PUBLISHABLE_KEY:'qa_public',
+  SUPABASE_SERVICE_ROLE_KEY:'qa_secret',COURSE_PRIVATE_BUCKET:'course-kits',
+  COURSE_STARTER_OBJECT:'starter/course.zip',COURSE_FACILITATOR_OBJECT:'facilitator/course.zip'
+};
+const buyer={id:'qa_user',email:'BUYER@example.org',email_confirmed_at:'2026-10-09T00:00:00Z'};
+function ok(data) {return {ok:true,async json(){return data;}};}
+function blob(bytes='course-zip') {
+  const buf=Buffer.from(bytes);
+  return {ok:true,headers:{get(n){return n==='content-length'?String(buf.length):null;}},body:Readable.toWeb(Readable.from([buf]))};
+}
+function mockNetwork(overrides={}) {
+  const calls=[];
+  const api=async (url, opts) => {
+    const path=new URL(url).pathname; calls.push({path,opts});
+    if(path==='/auth/v1/user')return ok(overrides.user??buyer);
+    if(path==='/rest/v1/rpc/lookup_download_entitlement')return ok(overrides.sessions??[{session_id:'cs_qa'}]);
+    if(path==='/storage/v1/bucket/course-kits')return ok(overrides.bucket??{public:false});
+    if(path==='/storage/v1/object/authenticated/course-kits/starter/course.zip')return overrides.file??blob();
+    if(path==='/rest/v1/rpc/record_download_issued')return ok(
+      Object.hasOwn(overrides,'attempt')?overrides.attempt:42);
+    if(path==='/rest/v1/rpc/complete_course_download_attempt')return ok(
+      Object.hasOwn(overrides,'complete')?overrides.complete:true);
+    throw Error('Unexpected endpoint '+path);
   };
-  const res=response();
-  await handler({method:'GET',query:{product:'starter'},headers:{authorization:'Bearer test-user'}},res);
-  return {res,calls};
- }finally{
-  globalThis.fetch=original;
-  for(const [k,v]of Object.entries(save)){if(v===undefined)delete process.env[k];else process.env[k]=v;}
- }
+  return {api,calls};
 }
-const identity={id:'qa-user',email:'buyer@example.org',email_confirmed_at:'2026-10-09'};
-const success=[
- {data:identity},
- {data:[{session_id:'cs_test_example'}]},
- {data:{public:false}},
- {data:{signedURL:'/object/sign/course-kits/starter/course.zip?token=qa-test-token'}},
- {data:true}
-];
-test('feature flag off refuses access',async()=>{const x=await run({values:{COURSE_DOWNLOAD_ENABLED:'false'}});assert.equal(x.res.code,503);assert.equal(x.calls.length,0);});
-test('live mode refuses access',async()=>{const x=await run({values:{STRIPE_MODE:'live'}});assert.equal(x.res.code,503);assert.equal(x.calls.length,0);});
-test('unverified learner cannot look up purchase',async()=>{const x=await run({returns:[{data:{...identity,email_confirmed_at:null}}]});assert.equal(x.res.code,403);assert.equal(x.calls.length,1);});
-test('unowned course denies download',async()=>{const x=await run({returns:[{data:identity},{data:[]}]});assert.equal(x.res.code,403);assert.equal(x.calls.length,2);});
-test('public storage bucket is never signed',async()=>{const x=await run({returns:[...success.slice(0,2),{data:{public:true}}]});assert.equal(x.res.code,503);assert.equal(x.calls.length,3);});
-test('untrusted download path fails closed',async()=>{const z=[...success];z[3]={data:{signedURL:'/object/sign/course-kits/wrong.zip?token=x'}};const x=await run({returns:z});assert.equal(x.res.code,503);});
-test('revoked access during signing denies result',async()=>{const z=[...success];z[4]={data:false};const x=await run({returns:z});assert.equal(x.res.code,403);assert.ok(!JSON.stringify(x.res.body).includes('token='));});
-test('authorized kit gives 30-second private signed URL and logs issued receipt',async()=>{const x=await run({returns:success});assert.equal(x.res.code,200);assert.equal(x.res.body.expires_in_seconds,30);assert.equal(x.calls.length,5);assert.equal(x.res.headers['Cache-Control'],'no-store');assert.match(x.res.body.download_url,/\/storage\/v1\/object\/sign\/course-kits\/starter\/course\.zip/);});
-test('migration holds purchases and disables access after reversals',()=>{
- const s=readFileSync(new URL('../qa/sql/secure-delivery-refund.staging-only.sql',import.meta.url),'utf8');
- assert.match(s,/record_verified_payment_reversal/);assert.match(s,/refund_holds/);
- assert.match(s,/SECURITY INVOKER/);assert.match(s,/FOR UPDATE/);assert.doesNotMatch(s,/SECURITY DEFINER/);
+async function execute(overrides={},configOverrides={},reqOverrides={}) {
+  const previous=Object.fromEntries(Object.keys(config).map(k=>[k,process.env[k]]));
+  const original=globalThis.fetch, net=mockNetwork(overrides);
+  try{
+    for(const [k,v] of Object.entries({...config,...configOverrides})) {
+      if(v===null)delete process.env[k];else process.env[k]=v;
+    }
+    globalThis.fetch=net.api;
+    const req={method:'GET',query:{product:'starter'},headers:{authorization:'Bearer qa_token'},...reqOverrides};
+    const res=new Response();
+    await handler(req,res);
+    return {res,calls:net.calls};
+  } finally {
+    globalThis.fetch=original;
+    for(const [k,v] of Object.entries(previous)) {
+      if(v===undefined)delete process.env[k];else process.env[k]=v;
+    }
+  }
+}
+test('disabled staging flag never touches backend',async()=>{
+ const v=await execute({}, {COURSE_DOWNLOAD_ENABLED:'false'});
+ assert.equal(v.res.code,503);assert.equal(v.calls.length,0);
+});
+test('live mode is rejected',async()=>{
+ const v=await execute({}, {STRIPE_MODE:'live'});
+ assert.equal(v.res.code,503);assert.equal(v.calls.length,0);
+});
+test('missing authenticated token is rejected',async()=>{
+ const v=await execute({}, {}, {headers:{}});
+ assert.equal(v.res.code,401);assert.equal(v.calls.length,0);
+});
+test('unconfirmed buyer cannot query private purchases',async()=>{
+ const v=await execute({user:{...buyer,email_confirmed_at:null}});
+ assert.equal(v.res.code,403);assert.equal(v.calls.length,1);
+});
+test('wrong-buyer or missing SKU denies download',async()=>{
+ const v=await execute({sessions:[]});
+ assert.equal(v.res.code,403);assert.equal(v.calls.length,2);
+});
+test('public bucket cannot serve course',async()=>{
+ const v=await execute({bucket:{public:true}});
+ assert.equal(v.res.code,503);assert.equal(v.calls.length,3);
+});
+test('file not found or missing length is rejected before authorization',async()=>{
+ const v=await execute({file:{ok:false,headers:{get(){return null;}},body:null}});
+ assert.equal(v.res.code,503);assert.equal(v.calls.length,4);
+});
+test('refund race at final receipt gate blocks all file bytes',async()=>{
+ const v=await execute({attempt:null});
+ assert.equal(v.res.code,403);assert.equal(v.res.chunks.length,0);
+ assert.equal(v.calls.length,5);
+});
+test('valid buyer streams only selected private file and logs completion',async()=>{
+ const v=await execute();
+ assert.equal(v.res.code,200);
+ assert.equal(Buffer.concat(v.res.chunks).toString(),'course-zip');
+ assert.equal(v.res.headers['Content-Type'],'application/octet-stream');
+ assert.match(v.res.headers['Content-Disposition'],/starter-kit.zip/);
+ assert.match(v.res.headers['Cache-Control'],/no-store/);
+ assert.equal(v.calls.length,6);
+ assert.deepEqual(JSON.parse(v.calls[1].opts.body),
+   {p_verified_email:'buyer@example.org',p_product_code:'starter'});
+ assert.deepEqual(JSON.parse(v.calls[5].opts.body),
+   {p_session_id:'cs_qa',p_attempt_id:42,p_outcome:'sent'});
+ assert.equal(v.calls.some(c=>c.path.includes('/object/sign/')),false);
+ assert.equal(v.res.body,null);
+});
+test('SQL tracks pending receipt and marks sent only after completion',()=>{
+ const sql=readFileSync(new URL('../qa/sql/secure-delivery-refund.staging-only.sql',import.meta.url),'utf8');
+ assert.match(sql,/record_download_issued/);
+ assert.match(sql,/complete_course_download_attempt/);
+ assert.match(sql,/FOR UPDATE/);
+ assert.match(sql,/INSERT INTO checkout_private\.delivery_attempts\(session_id,outcome\)/);
+ assert.match(sql,/VALUES\(v_session,'pending'\)/);
+ assert.match(sql,/access_state='active'/);
+ assert.doesNotMatch(sql,/SECURITY DEFINER/);
 });
