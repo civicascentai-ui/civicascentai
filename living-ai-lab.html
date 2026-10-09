@@ -118,5 +118,6 @@ const stars=E("stars");for(let i=0;i<60;i++){const s=document.createElement("i")
 timer=setInterval(()=>{if(userTouched)return;const order=["create","voice","translate","plan"];mode=order[(order.indexOf(mode)+1)%order.length];render(false)},8500);
 if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}render(false);
 </script>
+<script type="module" src="assets/social-links.js"></script>
 </body>
 </html>
