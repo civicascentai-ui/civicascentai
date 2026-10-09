@@ -1,0 +1,26 @@
+name: Checkout QA safety tests
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - qa/external-launch-acceptance-20261009
+    paths:
+      - 'api/**'
+      - 'qa/sql/**'
+      - 'tests/**'
+      - '.github/workflows/checkout-qa-tests.yml'
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies for QA
+        run: npm install --no-audit --no-fund
+      - name: Run checkout and learner-access tests
+        run: npm test

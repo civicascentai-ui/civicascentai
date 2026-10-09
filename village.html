@@ -117,7 +117,7 @@ h1{margin:0;font-size:clamp(34px,6vw,76px);line-height:.95;max-width:10ch}
   </div>
 </main>
 
-<aside class="menu" id="menuPanel" aria-hidden="true" aria-label="Site menu">
+<aside class="menu" id="menuPanel" aria-hidden="true" inert aria-label="Site menu">
   <div class="menu-head"><strong>Explore CivicAscent AI</strong><button class="close" id="closeMenu" type="button">Close</button></div>
   <nav>
     <a href="index.html">AI Showcase</a>
@@ -138,6 +138,7 @@ const closeBtn=document.getElementById('closeMenu');
 function setMenu(open){
   panel.classList.toggle('open',open);
   panel.setAttribute('aria-hidden',String(!open));
+  panel.inert=!open;
   btn.setAttribute('aria-expanded',String(open));
   if(open) closeBtn.focus(); else btn.focus();
 }
@@ -145,5 +146,6 @@ btn.addEventListener('click',()=>setMenu(true));
 closeBtn.addEventListener('click',()=>setMenu(false));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))setMenu(false)});
 </script>
+<script type="module" src="assets/social-links.js"></script>
 </body>
 </html>
