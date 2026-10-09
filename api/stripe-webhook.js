@@ -51,9 +51,8 @@ export default async function handler(req, res) {
         !verified.customer_details?.email || verified.livemode !== (expectedMode === 'live')) {
       return res.status(200).json({received:true,recorded:false});
     }
-    const endpoint = new URL('/rest/v1/rpc/record_paid_checkout', process.env.SUPABASE_URL);
-    // Private-schema RPC requires explicit PostgREST exposure and service-role grants.
-    // Fail closed until the restricted RPC route has been configured and reviewed.
+    const endpoint = new URL('/rest/v1/rpc/record_verified_checkout', process.env.SUPABASE_URL);
+    // Public-schema RPC wrapper grants execution only to the service role.
     if (process.env.CHECKOUT_RECORDING_ENABLED !== 'true') {
       return res.status(503).json({error:'Checkout recording not enabled'});
     }
@@ -62,8 +61,7 @@ export default async function handler(req, res) {
       headers:{
         apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,
         Authorization:'Bearer '+process.env.SUPABASE_SERVICE_ROLE_KEY,
-        'Content-Type':'application/json',
-        'Content-Profile':'checkout_private'
+        'Content-Type':'application/json'
       },
       body:JSON.stringify({
         p_event_id:event.id,p_session_id:verified.id,p_event_type:event.type,
