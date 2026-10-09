@@ -1,21 +1,33 @@
 import Stripe from 'stripe';
 
+// QA ONLY. No live-mode webhook processing on this branch.
 // Deploy only after configuring STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET.
 // Stripe signature verification requires the exact, unparsed request body.
 // Only verified paid sessions are recorded. Delivery is separately gated.
 export const config = { api: { bodyParser: false } };
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_missing');
-
 async function rawBody(req) {
   const chunks = [];
-  for await (const chunk of req) chunks.push(Buffer.from(chunk));
+  let bytes = 0;
+  for await (const chunk of req) {
+    const b = Buffer.from(chunk);
+    bytes += b.length;
+    if (bytes > 256 * 1024) throw new Error('Webhook body too large');
+    chunks.push(b);
+  }
   return Buffer.concat(chunks);
 }
-export default async function handler(req, res) {
+// Dependency injection is used by isolated webhook lifecycle tests only;
+// the default route always uses the real Stripe SDK and server fetch.
+export async function handleWebhook(req, res, {stripeClient, fetchImpl} = {}) {
   if (req.method !== 'POST') return res.status(405).setHeader('Allow', 'POST').end();
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
     return res.status(503).json({error:'Stripe webhook not configured'});
   }
+  if (process.env.STRIPE_MODE !== 'test') {
+    return res.status(503).json({error:'Test-mode webhook only'});
+  }
+  const stripe = stripeClient ?? new Stripe(process.env.STRIPE_SECRET_KEY);
+  const httpFetch = fetchImpl ?? fetch;
   let event;
   try {
     event = stripe.webhooks.constructEvent(await rawBody(req), req.headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET);
@@ -46,7 +58,7 @@ export default async function handler(req, res) {
     const endpoint=new URL('/rest/v1/rpc/record_verified_payment_reversal',process.env.SUPABASE_URL);
     let result;
     try{
-      result=await fetch(endpoint,{
+      result=await httpFetch(endpoint,{
         method:'POST',
         headers:{
           apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -107,7 +119,7 @@ export default async function handler(req, res) {
     }
     let response;
     try {
-      response = await fetch(endpoint, {
+      response = await httpFetch(endpoint, {
       method:'POST',
       headers:{
         apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -120,7 +132,8 @@ export default async function handler(req, res) {
         p_email:verified.customer_details.email,p_product_code:product.code,
         p_amount:verified.amount_total,p_currency:verified.currency,
         p_payment_intent_id:verified.payment_intent
-      })
+      }),
+      signal:AbortSignal.timeout(8000)
       });
     } catch {
       return res.status(503).json({error:'Checkout ledger unavailable'});
@@ -129,4 +142,8 @@ export default async function handler(req, res) {
     return res.status(200).json({received:true,recorded:true,delivery:'pending'});
   }
   return res.status(200).json({received:true});
+}
+
+export default async function handler(req, res) {
+  return handleWebhook(req, res);
 }
