@@ -70,3 +70,27 @@ Evidence per case: tester code (not public personal information), SKU, environme
 - **Latest isolated QA Actions run:** 28/28 passed, 0 failed, 0 skipped: https://github.com/civicascentai-ui/civicascentai/actions/runs/37927164343
 - An earlier CI workflow had failed at Node setup before testing because it requested npm caching without a package lock; configuration was corrected and rerun to passing. Future release hardening should commit a lockfile and pin dependencies.
 - The passing tests are automated and partially mocked. They are not payment-to-download, independent human learner acceptance, actual refund revocation, or proof of production readiness. Production HOLD remains mandatory.
+
+## CODI staging-only delivery/reversal implementation update — 2026-10-09
+**Branch:** `qa/external-launch-acceptance-20261009`. **Launch:** NO-GO / HOLD.
+**Changes were committed to QA, not applied to shared Supabase, Stripe live, or production.** Vercel creates automatic nonproduction branch previews, but secret-dependent endpoints stay disabled.
+
+### Implemented (code only)
+- `api/course-download.js`: denies by default unless `COURSE_DOWNLOAD_ENABLED=true` and `STRIPE_MODE=test`; rechecks Supabase confirmed-email identity; fetches an active matching SKU entitlement only from service-role-only SQL; checks Storage bucket is private; signs an exact allowlisted object with a 30-second expiration; calls a final transactional delivery-receipt RPC. A refund during the download authorization flow denies release of the URL.
+- `qa/sql/secure-delivery-refund.staging-only.sql`: **unapplied** database design for held/active/revoked entitlements; event-id deduplicated refund/dispute history, refund holds that can precede payment events, restricted service-role RPCs, and durable delivery-attempt receipts.
+- `api/stripe-webhook.js`: QA-only signed Stripe webhook now uses `record_verified_checkout_v2`; rejects live-mode configuration; adds Stripe API re-verification of `charge.refunded` and `charge.dispute.created` events before restricted reconciliation RPC.
+- `tests/course-download.test.js`, `tests/checkout-refund-safety.test.js`: covers access disabled, live-mode refusal, unverified buyer, wrong product, public bucket, incorrect signed object, refund at final grant and invalid/disabled refund events.
+- `qa/25_SANDBOX_COURSE_E2E_MATRIX_2026-10-09.csv`: 25 **NOT RUN** independently witnessed purchaser-access evidence slots: 5 tester slots x 5 distinct purchases (13 Starter / 12 Facilitator).
+
+### Verified automated QC
+GitHub Actions isolated safety suite: **42/42 passed, 0 failed, 0 skipped**. Run: https://github.com/civicascentai-ui/civicascentai/actions/runs/37932430190 . General and checkout quality workflows succeeded for that code revision. These are isolated tests with mocks and static checks, **not** signed webhook delivery, real Stripe purchase-to-file access, refund lifecycle, or independent human QC.
+
+### Remaining hard blockers
+1. Provision isolated $0-cost-confirmed Supabase staging project/database and private Storage kit bucket. No schema migration should be applied to the connected shared RAG database without a separate explicit review.
+2. Obtain **approved paid-kit files**, real Starter and Facilitator object mappings, and a defined license/use policy.
+3. Configure secret values only in a restricted preview environment; set up the Stripe **sandbox** webhook endpoint and a confirmed private staging URL. No production/live webhook changes.
+4. Test real signed paid sandbox sessions, event ordering, duplicate delivery, access after purchase, failed/recovered fulfillment, full and partial refund, dispute, and safe regrant. Verify the 30-second link with assistive accessibility settings.
+5. Run 25 genuine distinct purchases-to-file-open test traces and secure independent human reviewer signoffs. Do not count code tests as purchases.
+
+### Customer-protection release gate
+Published LIVE payment links remain in the public `course.html` on the default branch while operational delivery is not established. Pausing these links requires an **explicit** separate live-account instruction. No change was made to customer-facing payment availability.
