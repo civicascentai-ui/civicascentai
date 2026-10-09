@@ -57,17 +57,12 @@ h1{font-size:clamp(44px,7vw,86px);line-height:.95;letter-spacing:-.05em;margin:0
 <div class="controlrow"><button class="primary" id="play">🔊 Replay Voice</button><button id="stop">■ Stop</button></div><div class="status" id="status">Voice guide ready</div></section>
 <section class="scene"><div class="scene-label">LIVE AI EXAMPLE</div><div class="image-scene"><div class="promptbox"><div class="prompttitle">YOUR IDEA</div><div class="typed">Create a peaceful mountain lake at sunrise.<span class="cursor"></span></div></div><div class="art"><div class="reveal"></div><i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i></div></div></section>
 </main><div class="help">Short demonstration only. The animation is designed to show the idea without overwhelming a first-time learner.</div>
-<audio id="audioEn" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/ff8392f5-e4f4-4a87-a47c-42dbb0b367ad/CivicAscent_Create_Images_EN.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmUwZDUyZGMyZmY1MjBkOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDU4OTkxNn0.q7UUJWqbXNQptmkdmZJbex3WDgtbsuqlCiukHCLHdFo"></audio><audio id="audioEs" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/e95616df-e01e-4233-a5b0-3d120cf70caa/CivicAscent_Create_Images_ES.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2QzNjU0MGEwODhkMzkyNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDYyMjg1OH0.inobqVlerF1A8zacJje6HDGg3tMbn51OH8x4dgVguNg"></audio>
+
 <script>
 const content={en:{title:'Create Images',sub:'Turn ideas into pictures.',copy:'AI can turn a simple idea into a picture. Describe what you want to see, and AI helps create it. You can ask for changes until the image feels right.',kicker:"AI CAPABILITY · BEGINNER GUIDE"},
 es:{title:'Crear imágenes',sub:'Convierte ideas en imágenes.',copy:'La inteligencia artificial puede convertir una idea sencilla en una imagen. Describe lo que quieres ver y la inteligencia artificial te ayuda a crearlo. Puedes pedir cambios hasta que la imagen se vea como deseas.',kicker:"CAPACIDAD DE IA · GUÍA PARA PRINCIPIANTES"}};
-let lang="en"; const E=id=>document.getElementById(id); const en=E("audioEn"), es=E("audioEs");
-function current(){return lang==="en"?en:es}
-function stop(){en.pause();es.pause();en.currentTime=0;es.currentTime=0}
-function play(){stop(); const a=current(); a.play().then(()=>E("status").textContent=lang==="en"?"Playing natural voice…":"Reproduciendo voz natural…").catch(()=>E("status").textContent=lang==="en"?"Tap Replay Voice to hear the guide.":"Toca Reproducir voz para escuchar la guía.");}
-function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";}
-E("play").onclick=play; E("stop").onclick=()=>{stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
-E("lang").onclick=()=>{stop();lang=lang==="en"?"es":"en";render();setTimeout(play,120)};
-[en,es].forEach(a=>a.addEventListener("ended",()=>E("status").textContent=lang==="en"?"Voice complete":"Voz terminada"));
-window.addEventListener("load",()=>setTimeout(play,300));
+let lang="en"; const E=id=>document.getElementById(id);
+function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("status").textContent=lang==="en"?"Written guide available. Audio narration is temporarily unavailable.":"Guía escrita disponible. La narración de audio no está disponible temporalmente.";}
+E("lang").onclick=()=>{lang=lang==="en"?"es":"en";render()};
+E("play").remove();E("stop").remove();render();
 </script></div></body></html>
