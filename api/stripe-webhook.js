@@ -23,9 +23,6 @@ export async function handleWebhook(req, res, {stripeClient, fetchImpl} = {}) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
     return res.status(503).json({error:'Stripe webhook not configured'});
   }
-  if (process.env.STRIPE_MODE !== 'test') {
-    return res.status(503).json({error:'Test-mode webhook only'});
-  }
   const stripe = stripeClient ?? new Stripe(process.env.STRIPE_SECRET_KEY);
   const httpFetch = fetchImpl ?? fetch;
   let event;
@@ -80,6 +77,8 @@ export async function handleWebhook(req, res, {stripeClient, fetchImpl} = {}) {
     const session = event.data.object;
     // No access grants on redirects or unpaid/zero-dollar sessions.
     if (session.payment_status !== 'paid' || session.amount_total <= 0) return res.status(200).json({received:true});
+    if (process.env.STRIPE_MODE !== 'test')
+      return res.status(503).json({error:'Test-mode webhook only'});
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       return res.status(503).json({error:'Entitlement database not configured'});
     }
