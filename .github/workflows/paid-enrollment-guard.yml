@@ -1,0 +1,30 @@
+name: No Unverified Paid Enrollment
+on:
+  push:
+    branches:
+      - hotfix/pause-unverified-paid-courses-20261009
+    paths:
+      - 'course.html'
+      - 'curso-es.html'
+      - 'tests/paid-enrollment-release-hold.test.js'
+      - '.github/workflows/paid-enrollment-guard.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'course.html'
+      - 'curso-es.html'
+      - 'tests/paid-enrollment-release-hold.test.js'
+      - '.github/workflows/paid-enrollment-guard.yml'
+permissions:
+  contents: read
+jobs:
+  no-unverified-sales:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Reject paid checkout CTAs until real fulfillment passes
+        run: node --test tests/paid-enrollment-release-hold.test.js
