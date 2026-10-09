@@ -19,5 +19,7 @@ test('webhook rejects unsigned requests and missing secrets', () => {
 test('webhook does not grant access or fulfill unverified payments', () => {
   assert.match(webhook, /payment_status !== 'paid'/);
   assert.match(webhook, /amount_total <= 0/);
-  assert.match(webhook, /Entitlement processing not configured/);
+  assert.match(webhook, /Checkout recording not enabled/);
+  assert.match(webhook, /checkout.sessions.retrieve/);
+  assert.match(webhook, /CHECKOUT_RECORDING_ENABLED/);
 });
