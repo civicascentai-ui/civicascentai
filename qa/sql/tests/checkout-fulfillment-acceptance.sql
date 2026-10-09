@@ -1,6 +1,7 @@
 -- SYNTHETIC isolated CI integration tests. DO NOT APPLY TO CONNECTED SUPABASE.
 \set ON_ERROR_STOP on
 BEGIN;
+SET LOCAL ROLE service_role;
 DO $check$
 DECLARE
   result_text text;
