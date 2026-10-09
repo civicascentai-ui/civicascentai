@@ -5,7 +5,8 @@ on:
     branches:
       - qa/external-launch-acceptance-20261009
     paths:
-      - 'api/stripe-webhook.js'
+      - 'api/**'
+      - 'qa/sql/**'
       - 'tests/**'
       - '.github/workflows/checkout-qa-tests.yml'
 jobs:
@@ -19,8 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Run isolated checkout tests
-        run: node --test tests/checkout-safety.test.js tests/checkout-runtime-safety.test.js
+      - name: Install dependencies for QA
+        run: npm install --no-audit --no-fund
+      - name: Run checkout and learner-access tests
+        run: npm test
