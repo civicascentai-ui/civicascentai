@@ -34,3 +34,13 @@ test('test and live Stripe payment links require explicit environment selection'
   assert.match(webhook, /STRIPE_FACILITATOR_PAYMENT_LINK_ID/);
   assert.match(webhook, /verified\.livemode !== \(expectedMode === 'live'\)/);
 });
+
+test('paid session must be complete before recording entitlement', () => {
+  assert.match(webhook, /verified\.status !== 'complete'/);
+  assert.match(webhook, /verified\.payment_status !== 'paid'/);
+});
+test('Stripe and database outages fail closed with retryable responses', () => {
+  assert.match(webhook, /Stripe session verification unavailable/);
+  assert.match(webhook, /Checkout ledger unavailable/);
+  assert.match(webhook, /Checkout ledger write failed/);
+});
