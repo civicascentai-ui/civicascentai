@@ -1,0 +1,23 @@
+name: Checkout QA
+on:
+  push:
+    branches:
+      - qa/external-launch-acceptance-20261009
+  pull_request:
+    paths:
+      - 'api/stripe-webhook.js'
+      - 'thank-you.html'
+      - 'tests/**'
+      - 'package.json'
+jobs:
+  checkout-safety:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
