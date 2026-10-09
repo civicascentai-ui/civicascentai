@@ -1,0 +1,44 @@
+name: Checkout SQL Integration QA
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - qa/external-launch-acceptance-20261009
+    paths:
+      - 'qa/sql/**'
+      - '.github/workflows/checkout-sql-integration.yml'
+jobs:
+  sql-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: qa_container_only
+          POSTGRES_DB: qa_checkout_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d qa_checkout_only"
+          --health-interval=5s --health-timeout=3s --health-retries=10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGDATABASE: qa_checkout_only
+      PGUSER: postgres
+      PGPASSWORD: qa_container_only
+      PGSSLMODE: disable
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PostgreSQL CLI
+        run: psql --version
+      - name: Create synthetic checkout tables and service-role fixture
+        run: psql -v ON_ERROR_STOP=1 -f qa/sql/fixtures/isolated-checkout-base.sql
+      - name: Load proposed fulfillment and refund SQL in ephemeral container
+        run: psql -v ON_ERROR_STOP=1 -f qa/sql/secure-delivery-refund.staging-only.sql
+      - name: Run ownership, refund ordering, replay and grant assertions
+        run: psql -v ON_ERROR_STOP=1 -f qa/sql/tests/checkout-fulfillment-acceptance.sql
