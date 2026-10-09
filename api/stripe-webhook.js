@@ -7,7 +7,16 @@ export const config = { api: { bodyParser: false } };
 
 async function rawBody(req) {
   const chunks = [];
-  for await (const chunk of req) chunks.push(Buffer.from(chunk));
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > 256 * 1024) {
+      const error = new Error('Webhook body too large');
+      error.statusCode = 413;
+      throw error;
+    }
+    chunks.push(Buffer.from(chunk));
+  }
   return Buffer.concat(chunks);
 }
 export default async function handler(req, res) {
@@ -22,7 +31,8 @@ export default async function handler(req, res) {
   let event;
   try {
     event = stripe.webhooks.constructEvent(await rawBody(req), req.headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET);
-  } catch {
+  } catch (error) {
+    if (error.statusCode === 413) return res.status(413).json({error:'Webhook body too large'});
     return res.status(400).json({error:'Invalid Stripe webhook signature'});
   }
   // QA-only: refund/dispute records must be checked against Stripe's API,
