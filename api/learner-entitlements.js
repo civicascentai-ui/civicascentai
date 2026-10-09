@@ -71,10 +71,11 @@ export default async function handler(req, res) {
   }
 
   const entitlements = records
-    .filter(row => productCodes.has(row.product_code) && deliveryStates.has(row.delivery_status))
+    .filter(row => row && typeof row === 'object' && productCodes.has(row.product_code) && deliveryStates.has(row.delivery_status))
     .map(row => ({ product: row.product_code, delivery_status: row.delivery_status }));
 
-  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', 'no-store, private, max-age=0');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
   return res.status(200).json({
     entitlements,
     course_access_enabled: process.env.COURSE_DOWNLOAD_ENABLED === 'true' && process.env.STRIPE_MODE === 'test',
