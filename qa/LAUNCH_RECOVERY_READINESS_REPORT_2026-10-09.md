@@ -63,3 +63,10 @@ Evidence per case: tester code (not public personal information), SKU, environme
 
 ## Executive release decision
 **NO-GO.** A green automated suite is not an operational payment-to-access system. No production deployment, live payment activation, QA SQL migration application, or customer-fulfillment claim is authorized by this report.
+
+## QC addendum (2026-10-09, latest QA changes)
+- Replaced the unused example checkout creation API in `api/create-checkout-session.js` with a method-checked, **503 fail-closed** response. It no longer attempts to create Checkout Sessions with placeholder pricing/redirects. This change applies only to the QA branch; it does not turn off publicly advertised live Stripe payment links.
+- Added `tests/checkout-session-disabled.test.js` (2 tests) to prevent the placeholder checkout route from accidentally becoming active.
+- **Latest isolated QA Actions run:** 28/28 passed, 0 failed, 0 skipped: https://github.com/civicascentai-ui/civicascentai/actions/runs/37927164343
+- An earlier CI workflow had failed at Node setup before testing because it requested npm caching without a package lock; configuration was corrected and rerun to passing. Future release hardening should commit a lockfile and pin dependencies.
+- The passing tests are automated and partially mocked. They are not payment-to-download, independent human learner acceptance, actual refund revocation, or proof of production readiness. Production HOLD remains mandatory.
