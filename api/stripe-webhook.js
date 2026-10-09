@@ -31,14 +31,24 @@ export default async function handler(req, res) {
     }
     // Always retrieve the session from Stripe; event payloads are not a delivery authorization.
     const verified = await stripe.checkout.sessions.retrieve(session.id);
+    // Explicit environment-specific allowlist. Sandbox links must be configured separately.
+    const expectedMode = process.env.STRIPE_MODE;
+    if (!['test', 'live'].includes(expectedMode)) {
+      return res.status(503).json({error:'Stripe mode not configured'});
+    }
     const products = {
-      'plink_1UJGBeJ7cMj3Kc1O7n7vu36i': {code:'starter',amount:4900},
-      'plink_1UJGBjJ7cMj3Kc1OiSRxl9a3': {code:'facilitator',amount:12900}
+      [process.env.STRIPE_STARTER_PAYMENT_LINK_ID]: {code:'starter',amount:4900},
+      [process.env.STRIPE_FACILITATOR_PAYMENT_LINK_ID]: {code:'facilitator',amount:12900}
     };
+    if (!process.env.STRIPE_STARTER_PAYMENT_LINK_ID ||
+        !process.env.STRIPE_FACILITATOR_PAYMENT_LINK_ID ||
+        process.env.STRIPE_STARTER_PAYMENT_LINK_ID === process.env.STRIPE_FACILITATOR_PAYMENT_LINK_ID) {
+      return res.status(503).json({error:'Payment link allowlist not configured'});
+    }
     const product = products[verified.payment_link];
     if (!product || verified.payment_status !== 'paid' ||
         verified.amount_total !== product.amount || verified.currency !== 'usd' ||
-        !verified.customer_details?.email || !verified.livemode) {
+        !verified.customer_details?.email || verified.livemode !== (expectedMode === 'live')) {
       return res.status(200).json({received:true,recorded:false});
     }
     const endpoint = new URL('/rest/v1/rpc/record_paid_checkout', process.env.SUPABASE_URL);
