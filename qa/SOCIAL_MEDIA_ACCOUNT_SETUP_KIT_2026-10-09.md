@@ -60,12 +60,20 @@ Contact: civicascentai@gmail.com
 
 *Draft. No enrollment or funded scholarship offer is open; no government endorsement is claimed.*
 
+## October 9 platform-specific reality check | Zero-budget plan
+- **LinkedIn**: LinkedIn Pages can be created free through an eligible real person's LinkedIn account, with an organization representative's truthful authority confirmation. The **LinkedIn Android app does not support Page creation**; an authorized user should use a desktop browser or another officially supported interface. Source: https://www.linkedin.com/help/linkedin/answer/a543852/creating-a-linkedin-page . Use an organization Page, not a made-up personal profile: https://www.linkedin.com/help/linkedin/answer/a6244797 .
+- **Facebook**: create a business Page under an actual authorized individual's platform account, not a fake company individual. Official Meta Blueprint instructions: https://www.facebookblueprint.com/student/page/259567-how-to-create-a-facebook-page . Authorized admin retains control, adds approved backup, and enables appropriate security.
+- **YouTube**: create a separate organizational channel via the officially supported business/Brand Account route after checking whether one exists already, because a Brand Account can have multiple managers. Source: https://support.google.com/youtube/answer/1646861?hl=en .
+- **Metricool**: current brand `7200789` supports company Facebook Page and YouTube OAuth linking where account owner authorizes. **LinkedIn connection requires a PAID Metricool plan and is not included in the free plan**. Because CivicAscent's authorized spending is $0, do **not** upgrade. Publish to LinkedIn natively using the approved copy bank. Official source: https://help.metricool.com/how-to-connect-linkedin-to-metricool-jq80g and https://help.metricool.com/how-to-connect-social-media-and-ad-platforms-to-metricool-qrkvn .
+- **Mobile/identity eligibility**: each account is created and administered only by an authorized eligible individual through the provider's rules, age/identity conditions and security requirements. No circumvention, shared passwords, impersonated people or unverified organization ownership.
+- **Account creation and public visibility** are separate gates from publishing the first post. After a platform creates a public Page, ensure its bio is immediately truthful and launch claims are checked. Otherwise defer account creation until the approved identity/content materials are ready.
+
 ## Minimum profile ownership and connection workflow
 1. A real authorized account owner checks for an existing organization-controlled account to avoid duplicates, then signs into the official platform themselves.
 2. Confirm whether the platform will allow business-page creation under a compliant personal/account identity, respecting platform terms and age/identity verification. Do not share passwords, SMS codes, recovery keys or ID documents with an AI assistant.
 3. Create or claim the organization profile (where permitted), set business email, enable MFA, assign one executive owner and one approved backup admin. Never use a consultant's personal account as the sole owner.
 4. Capture exact canonical public profile URL; document who controls it, platform verification/ownership proof, accessible description, and public claim review. Check link in signed-out browser.
-5. Connect the resulting account inside Metricool using the platform's authorized OAuth login. Do not infer connection from an attempted click.
+5. Connect verified Facebook Page and YouTube accounts in Metricool through its authorized OAuth login. On the $0 plan, **do not attempt a paid LinkedIn integration**; publish the free organization LinkedIn Page natively. Do not infer connection from an attempted click.
 6. On QA branch, change the relevant entry in `assets/social-links.js` to the canonical HTTPS link and set `ownershipVerified: true` and `releaseApproved: true` **only with recorded evidence and explicit authorization**.
 7. Run `node --test tests/social-link-safety.test.js`, inspect mobile/desktop and keyboard/focus, verify noreferrer and accessible link text, then independent QC and executive signoff before deploying.
 8. Add Instagram/TikTok in Phase 2 only when a human can moderate and a real captioned content workflow exists.
