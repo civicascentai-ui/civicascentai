@@ -55,16 +55,28 @@ BEGIN
     p_event_id,p_session_id,p_event_type,p_customer_id,p_email,
     p_product_code,p_amount,p_currency
   );
-  IF v_result <> 'recorded' THEN RETURN v_result; END IF;
+  -- Do not depend on a magic return text from the pre-existing v1 ledger.
+  -- Confirm the authoritative purchase actually exists and belongs to THIS
+  -- Stripe event/session/SKU before granting ANY access.
+  IF NOT EXISTS (
+    SELECT 1 FROM checkout_private.entitlements e
+    WHERE e.session_id=p_session_id AND e.stripe_event_id=p_event_id
+      AND e.product_code=p_product_code AND e.amount_total=p_amount
+      AND e.currency=p_currency AND lower(trim(e.customer_email))=lower(trim(p_email))
+      AND (e.payment_intent_id IS NULL OR e.payment_intent_id=p_payment_intent_id)
+  ) THEN RETURN v_result; END IF;
   SELECT * INTO v_hold FROM checkout_private.refund_holds
-    WHERE payment_intent_id=p_payment_intent_id;
-  UPDATE checkout_private.entitlements
+    WHERE payment_intent_id=p_payment_intent_id FOR UPDATE;
+  UPDATE checkout_private.entitlements e
   SET payment_intent_id=p_payment_intent_id,
       refunded_cents=LEAST(p_amount,COALESCE(v_hold.max_refunded_cents,0)),
-      access_state=CASE WHEN v_hold.payment_intent_id IS NULL THEN 'active'
-                        WHEN v_hold.dispute_open OR v_hold.max_refunded_cents>0 THEN 'held'
-                        ELSE 'active' END
-  WHERE session_id=p_session_id;
+      access_state=CASE
+        WHEN COALESCE(v_hold.max_refunded_cents,0)>=p_amount THEN 'revoked'
+        WHEN COALESCE(v_hold.dispute_open,false) OR COALESCE(v_hold.max_refunded_cents,0)>0 THEN 'held'
+        ELSE 'active' END
+  WHERE e.session_id=p_session_id
+    AND (e.payment_intent_id IS NULL OR e.payment_intent_id=p_payment_intent_id);
+  IF NOT FOUND THEN RAISE EXCEPTION 'verified checkout binding conflict'; END IF;
   RETURN 'recorded';
 END;
 $$;
