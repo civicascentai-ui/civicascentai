@@ -110,3 +110,16 @@ An independent follow-up identified a residual access-revocation weakness in sig
 **Verification:** GitHub isolated safety suite passed **43 tests, 0 failures, 0 skipped**, https://github.com/civicascentai-ui/civicascentai/actions/runs/37933457634 . This proves mocked interface/error behaviors only, not end-to-end Stripe purchases or real file delivery. Supabase staging migrations remain unapplied, Vercel QA branch lacks protected environment variables, Stripe sandbox webhook is not configured, and 25-purchase acceptance remains **0/25**.
 
 **Required QC before any deployment:** stage schema in isolated project; assert RLS/service-role grants; test a real private file, large-file/timeout/aborted downloads, refund-concurrency gates, CDN avoidance, and receipt reconciliation, then conduct independent manual verification. Observe resource/cost constraints; no automatic project purchases. No production rollout has been authorized.
+
+## Final current checkpoint: protected streaming + materials discovery
+**Latest recorded test run:** 45/45 PASS, zero failed and zero skipped, 2026-10-09:
+https://github.com/civicascentai-ui/civicascentai/actions/runs/37933688280
+Run includes additional rejection tests for oversized files and interrupted file streams. This is still automated code-level evidence, not live payment or learner-access acceptance.
+
+**Source-material discovery:** Connected private Google Drive contains Level 1 lesson, learner worksheet, optional practice pack, an internal-only Facilitator Demonstration Kit, a user-testing pilot kit and the internal curriculum/price/delivery standard. These are **candidates, not finished approved commercial downloads**. No complete, approved $49 or $129 customer bundle has been positively identified. Private source IDs and document contents are intentionally omitted from this public GitHub report.
+
+See the sanitized asset/release inventory at `qa/COURSE_ASSET_READINESS_2026-10-09.md`.
+
+**Unchanged critical launch gates:** Isolated staging DB, preview-only secrets, private vetted customer ZIPs, signed Stripe sandbox webhook, true purchase-to-stream verification, refund/held-access race testing with real backend, 25/25 independent purchase evidence, reviewer signatures, and executive production approval. Sandbox-to-real-course E2E remains 0/25.
+
+**Executive decision:** NO-GO, production HOLD. Existing LIVE Stripe links have not been altered or disabled. Pending risk decision: pause the live sale links until paid fulfillment is operational; do not imply this happened.
