@@ -65,6 +65,9 @@ export default async function handler(req, res) {
       });
     }catch{return res.status(503).json({error:'Reversal ledger unavailable'});}
     if(!result.ok)return res.status(503).json({error:'Reversal ledger write failed'});
+    let reversalAccepted;
+    try { reversalAccepted = await result.json(); } catch { return res.status(503).json({error:'Invalid reversal ledger response'}); }
+    if (reversalAccepted !== true) return res.status(503).json({error:'Reversal ledger rejected event'});
     return res.status(200).json({received:true,recorded:true,access:'held_or_revoked'});
   }
   if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
@@ -129,6 +132,9 @@ export default async function handler(req, res) {
       return res.status(503).json({error:'Checkout ledger unavailable'});
     }
     if (!response.ok) return res.status(503).json({error:'Checkout ledger write failed'});
+    let checkoutAccepted;
+    try { checkoutAccepted = await response.json(); } catch { return res.status(503).json({error:'Invalid checkout ledger response'}); }
+    if (checkoutAccepted !== true) return res.status(503).json({error:'Checkout ledger rejected event'});
     return res.status(200).json({received:true,recorded:true,delivery:'pending'});
   }
   return res.status(200).json({received:true});
