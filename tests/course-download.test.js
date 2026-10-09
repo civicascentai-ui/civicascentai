@@ -106,6 +106,25 @@ test('valid buyer streams only selected private file and logs completion',async(
  assert.equal(v.calls.some(c=>c.path.includes('/object/sign/')),false);
  assert.equal(v.res.body,null);
 });
+test('interrupted file stream is recorded as failed, never sent',async()=>{
+ const broken=new Readable({read() {
+   this.push(Buffer.from('some'));
+   this.destroy(new Error('connection reset during file transfer'));
+ }});
+ const file={ok:true,headers:{get(n){return n==='content-length'?'10':null;}},body:Readable.toWeb(broken)};
+ const v=await execute({file});
+ assert.equal(v.calls.length,6);
+ const receipt=JSON.parse(v.calls[5].opts.body);
+ assert.equal(receipt.p_outcome,'failed');
+ assert.ok(!v.res.headers['Location']);
+});
+test('oversized archive is refused without attempt reservation',async()=>{
+ const file={ok:true,headers:{get(n){return n==='content-length'?String(30*1024*1024):null;}},
+   body:Readable.toWeb(Readable.from([Buffer.from('tiny')]))};
+ const v=await execute({file});
+ assert.equal(v.res.code,503);
+ assert.equal(v.calls.length,4);
+});
 test('SQL tracks pending receipt and marks sent only after completion',()=>{
  const sql=readFileSync(new URL('../qa/sql/secure-delivery-refund.staging-only.sql',import.meta.url),'utf8');
  assert.match(sql,/record_download_issued/);
