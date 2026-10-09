@@ -126,7 +126,8 @@ export default async function handler(req, res) {
         p_email:verified.customer_details.email,p_product_code:product.code,
         p_amount:verified.amount_total,p_currency:verified.currency,
         p_payment_intent_id:verified.payment_intent
-      })
+      }),
+      signal:AbortSignal.timeout(8000)
       });
     } catch {
       return res.status(503).json({error:'Checkout ledger unavailable'});
