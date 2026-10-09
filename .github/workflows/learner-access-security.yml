@@ -8,6 +8,9 @@ on:
       - 'api/course-*.js'
       - 'api/learner-entitlements.js'
       - 'test/learner-access-security.test.js'
+      - 'tests/paid-enrollment-release-hold.test.js'
+      - 'course.html'
+      - 'curso-es.html'
       - '.github/workflows/learner-access-security.yml'
 permissions:
   contents: read
@@ -26,3 +29,5 @@ jobs:
           COURSE_DOWNLOAD_ENABLED: 'false'
           STRIPE_MODE: 'test'
         run: node --test test/learner-access-security.test.js
+      - name: Verify no unsafe paid checkout CTA is exposed in preview
+        run: node --test tests/paid-enrollment-release-hold.test.js
