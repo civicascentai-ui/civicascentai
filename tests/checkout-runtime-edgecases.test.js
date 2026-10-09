@@ -13,10 +13,11 @@ function response() {
   };
 }
 async function withWebhookEnv(fn) {
-  const names = ['STRIPE_SECRET_KEY','STRIPE_WEBHOOK_SECRET'];
+  const names = ['STRIPE_SECRET_KEY','STRIPE_WEBHOOK_SECRET','STRIPE_MODE'];
   const old = Object.fromEntries(names.map(n => [n, process.env[n]]));
   process.env.STRIPE_SECRET_KEY = 'sk_test_qa_placeholder_no_network';
   process.env.STRIPE_WEBHOOK_SECRET = 'whsec_qa_only';
+  process.env.STRIPE_MODE = 'test';
   try { await fn(); }
   finally { for (const n of names) { if (old[n] === undefined) delete process.env[n]; else process.env[n] = old[n]; } }
 }

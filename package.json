@@ -5,6 +5,6 @@
     "test": "node --test"
   },
   "dependencies": {
-    "stripe": "^18.0.0"
+    "stripe": "22.6.0"
   }
 }
