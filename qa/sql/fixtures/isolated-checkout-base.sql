@@ -1,6 +1,6 @@
 -- CI-ONLY base schema fixture modelled on read-only October 9 Supabase schema audit.
 -- SYNTHETIC records; PostgreSQL service container only. NEVER deploy this file.
-CREATE ROLE service_role NOLOGIN;
+CREATE ROLE service_role NOLOGIN BYPASSRLS;
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
 CREATE SCHEMA checkout_private;
