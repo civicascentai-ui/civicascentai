@@ -139,3 +139,12 @@ See the sanitized asset/release inventory at `qa/COURSE_ASSET_READINESS_2026-10-
 - Latest connected SANDBOX inspection: zero webhook endpoint registrations; six sandbox payment links exist, including Starter `plink_1UOaEeJaOu2sZoZGFoC1KX2N` and Facilitator `plink_1UOaEgJaOu2sZoZGv9HYFJgh`, both active (test mode only). Checkout delivery still nonoperational.
 - Do not create a webhook pointing to an unconfigured public preview or reuse service-role keys from shared RAG Supabase. Do not create billable staging infrastructure without a separate confirmed cost and approval.
 - **Release:** HOLD. **Real paid-course purchase-to-access:** 0/25. **Live sale-pause status:** UNKNOWN, potentially active; urgent account-owner verification needed.
+
+## QA learner identity implementation checkpoint (2026-10-09)
+- Added fail-closed `api/learner-auth.js`, email OTP sign-in and confirmation (sandbox only, requires `LEARNER_AUTH_ENABLED=true`, `STRIPE_MODE=test`, public Supabase key and authorized HTTPS endpoint); cross-origin and live-mode calls rejected. No service keys exposed or buyer identity accepted based on caller-supplied email.
+- Added `learner.html` buyer verification and accessible read-only purchase-status interface. Tokens held in in-memory page state only. **There is no course download activation from this page.** OTP email delivery/UX not operationally verified.
+- Latest code safety QC: **65/65 automated tests passed**, no failures or skips. https://github.com/civicascentai-ui/civicascentai/actions/runs/37942989789 . Older SQL integration QC remains green: https://github.com/civicascentai-ui/civicascentai/actions/runs/37936943308 .
+- Connected Vercel returned **zero preview environment variables** for QA branch. Service-role DB privileges for original ledger were confirmed read-only, but **no isolated sandbox Supabase provisioning**, and no schema changes to shared RAG database were made.
+- Implementation/runbook: `qa/LEARNER_SANDBOX_IDENTITY_ACTIVATION_2026-10-09.md` lists flags, required user/OTP delivery tests, safe setup sequence, acceptance gates and commercial kit blockers.
+- Stripe live account still missing from available connected accounts; paid-link safety pause is **NOT VERIFIED**. Existing sandbox account alone is accessible. No live payments were switched on or off.
+- Real independent purchase-to-delivery tests remain **0/25**; **PRODUCTION HOLD/NO-GO** unchanged.
