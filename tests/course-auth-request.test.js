@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import handler from '../api/course-auth-request.js';
+
+const keys=['COURSE_ACCESS_UI_ENABLED','STRIPE_MODE','SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','COURSE_ACCESS_ORIGIN'];
+const ready={COURSE_ACCESS_UI_ENABLED:'true',STRIPE_MODE:'test',SUPABASE_URL:'https://qa-project.supabase.co/',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_qa',COURSE_ACCESS_ORIGIN:'https://qa.example.org/'};
+function response(){return {code:200,headers:{},body:null,status(n){this.code=n;return this;},setHeader(k,v){this.headers[k]=v;return this;},json(v){this.body=v;return this;}};}
+async function sandbox(changes,fetchMock,fn){const old=Object.fromEntries(keys.map(k=>[k,process.env[k]])),original=globalThis.fetch;try{for(const k of keys){const v=Object.hasOwn(changes,k)?changes[k]:ready[k];if(v===null)delete process.env[k];else process.env[k]=v;}globalThis.fetch=fetchMock??(()=>{throw Error('Unexpected request');});await fn();}finally{globalThis.fetch=original;for(const k of keys){if(old[k]===undefined)delete process.env[k];else process.env[k]=old[k];}}}
+
+test('auth request is POST-only and disabled by default',async()=>sandbox({COURSE_ACCESS_UI_ENABLED:null},null,async()=>{let res=response();await handler({method:'GET'},res);assert.equal(res.code,405);res=response();await handler({method:'POST',body:{email:'qa@example.org'}},res);assert.equal(res.code,503);}));
+test('auth request refuses live mode',async()=>sandbox({STRIPE_MODE:'live'},null,async()=>{const res=response();await handler({method:'POST',body:{email:'qa@example.org'}},res);assert.equal(res.code,503);}));
+test('auth request validates email before contacting provider',async()=>sandbox({},null,async()=>{const res=response();await handler({method:'POST',body:{email:'not-an-email'}},res);assert.equal(res.code,400);}));
+test('auth request does not create accounts and pins exact redirect',async()=>{let call;await sandbox({},async(url,opts)=>{call={url:String(url),opts};return {status:200};},async()=>{const res=response();await handler({method:'POST',body:{email:' Buyer@Example.org '}},res);assert.equal(res.code,202);assert.match(res.body.message,/If this email/);assert.match(call.url,/\/auth\/v1\/otp\?redirect_to=/);const endpoint=new URL(call.url);assert.equal(endpoint.searchParams.get('redirect_to'),'https://qa.example.org/learner-access.html');assert.deepEqual(JSON.parse(call.opts.body),{email:'buyer@example.org',create_user:false});assert.equal(call.opts.headers.apikey,'sb_publishable_qa');} );});
+test('known and unknown account responses are indistinguishable',async()=>{const bodies=[];for(const status of [200,400])await sandbox({},async()=>({status}),async()=>{const res=response();await handler({method:'POST',body:{email:'learner@example.org'}},res);bodies.push({code:res.code,body:res.body});});assert.deepEqual(bodies[0],bodies[1]);});
+test('provider outage fails closed',async()=>sandbox({},async()=>({status:503}),async()=>{const res=response();await handler({method:'POST',body:{email:'qa@example.org'}},res);assert.equal(res.code,503);}));

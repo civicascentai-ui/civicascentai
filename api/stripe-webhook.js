@@ -4,7 +4,6 @@ import Stripe from 'stripe';
 // Stripe signature verification requires the exact, unparsed request body.
 // Only verified paid sessions are recorded. Delivery is separately gated.
 export const config = { api: { bodyParser: false } };
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_missing');
 
 async function rawBody(req) {
   const chunks = [];
@@ -16,6 +15,10 @@ export default async function handler(req, res) {
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
     return res.status(503).json({error:'Stripe webhook not configured'});
   }
+  if (process.env.STRIPE_MODE !== 'test' || !/^(sk|rk)_test_/.test(process.env.STRIPE_SECRET_KEY)) {
+    return res.status(503).json({error:'Sandbox Stripe key required'});
+  }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {apiVersion:'2026-08-26.dahlia'});
   let event;
   try {
     event = stripe.webhooks.constructEvent(await rawBody(req), req.headers['stripe-signature'], process.env.STRIPE_WEBHOOK_SECRET);

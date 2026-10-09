@@ -77,7 +77,7 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).json({
     entitlements,
-    course_access_enabled: false,
-    message: 'Purchase status only. Materials are not enabled until delivery and refund safeguards pass.'
+    course_access_enabled: process.env.COURSE_DOWNLOAD_ENABLED === 'true' && process.env.STRIPE_MODE === 'test',
+    message: 'Access is available only for a verified active entitlement when private delivery is explicitly enabled.'
   });
 }
