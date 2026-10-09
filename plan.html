@@ -51,17 +51,12 @@ h1{font-size:clamp(44px,7vw,86px);line-height:.95;letter-spacing:-.05em;margin:0
 <div class="controlrow"><button class="primary" id="play">🔊 Replay Voice</button><button id="stop">■ Stop</button></div><div class="status" id="status">Voice guide ready</div></section>
 <section class="scene"><div class="scene-label">LIVE AI EXAMPLE</div><div class="plan-scene"><div class="flow"><div class="step"><div class="icon">📅</div><div><div class="stitle">Plan the appointment</div><div class="sdesc">Choose a day and list what you need.</div></div><div class="check">✓</div></div><div class="connector"></div><div class="step"><div class="icon">✉</div><div><div class="stitle">Write the message</div><div class="sdesc">Create a clear note in plain language.</div></div><div class="check">✓</div></div><div class="connector"></div><div class="step"><div class="icon">☑</div><div><div class="stitle">Build the checklist</div><div class="sdesc">Keep the next steps easy to follow.</div></div><div class="check">✓</div></div></div></div></section>
 </main><div class="help">Short demonstration only. The animation is designed to show the idea without overwhelming a first-time learner.</div>
-<audio id="audioEn" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/c87e118e-e98e-4dde-8f2f-50e6567fc7d8/CivicAscent_Plan_Automate_EN.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDRlM2UyNWFiOTllZWUyOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY1NDgxMH0.IwbU_oGwUohOgKXXnunL5verzbG7o77J0GMSVF4Dwfo"></audio><audio id="audioEs" preload="auto" src="https://dnznrvs05pmza.cloudfront.net/text_to_speech/d8725368-b2fe-4aa6-9e8e-d5878e092c30/CivicAscent_Plan_Automate_ES.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDFjOWE4OWM0NTA0MTYzYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDY1MjMxNn0.pWdIgOzs17eHm1D9ndypMdyHblaWTR3MVR_DvoQ67XA"></audio>
+
 <script>
 const content={en:{title:'Plan & Automate',sub:'Turn a task into simple steps.',copy:'AI can help turn a complicated task into simple steps. It can organize a plan, help write a message, and build a clear checklist while you stay in control.',kicker:"AI CAPABILITY · BEGINNER GUIDE"},
 es:{title:'Planificar y automatizar',sub:'Convierte una tarea en pasos sencillos.',copy:'La inteligencia artificial puede convertir una tarea complicada en pasos sencillos. Puede organizar un plan, ayudar a escribir un mensaje y crear una lista clara mientras tú mantienes el control.',kicker:"CAPACIDAD DE IA · GUÍA PARA PRINCIPIANTES"}};
-let lang="en"; const E=id=>document.getElementById(id); const en=E("audioEn"), es=E("audioEs");
-function current(){return lang==="en"?en:es}
-function stop(){en.pause();es.pause();en.currentTime=0;es.currentTime=0}
-function play(){stop(); const a=current(); a.play().then(()=>E("status").textContent=lang==="en"?"Playing natural voice…":"Reproduciendo voz natural…").catch(()=>E("status").textContent=lang==="en"?"Tap Replay Voice to hear the guide.":"Toca Reproducir voz para escuchar la guía.");}
-function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";}
-E("play").onclick=play; E("stop").onclick=()=>{stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
-E("lang").onclick=()=>{stop();lang=lang==="en"?"es":"en";render();setTimeout(play,120)};
-[en,es].forEach(a=>a.addEventListener("ended",()=>E("status").textContent=lang==="en"?"Voice complete":"Voz terminada"));
-window.addEventListener("load",()=>setTimeout(play,300));
+let lang="en"; const E=id=>document.getElementById(id);
+function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("status").textContent=lang==="en"?"Written guide available. Audio narration is temporarily unavailable.":"Guía escrita disponible. La narración de audio no está disponible temporalmente.";}
+E("lang").onclick=()=>{lang=lang==="en"?"es":"en";render()};
+E("play").remove();E("stop").remove();render();
 </script></div></body></html>
