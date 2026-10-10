@@ -26,6 +26,25 @@ issue becomes terminal; do not close the issue before evidence has been exported
 An active issue can be retried after a successful turn, including after restart.
 The bounded runner prevents unattended indefinite retry loops during evaluation.
 
+## Expanded assignments
+
+See ROLE.md for scope, acceptance criteria, handoffs and verification status.
+Select a role with `--role engineering`, `--role qa`, `--role reach`, or
+`--role operations`. The default remains `--role proof`. Expanded assignments
+require both `symphony-pilot` and the selected role label on their issue.
+
+```sh
+python3 ops/symphony/run_pilot.py --role qa --seconds 180
+```
+
+Run only one launcher at a time; the localhost port guard excludes concurrent
+launchers. Each invocation uses a fresh workspace root and writes its generated
+workflow and run metadata under evidence. Artifacts are exported under
+`evidence/<run>/artifacts/<issue>/`, including before terminal cleanup.
+For the verified host's capability error, add `--drop-linux-capabilities`.
+This uses the tested setpriv command without weakening sandbox or approval modes.
+Run local control checks with `python3 ops/symphony/test_roles.py`.
+
 ## Controls and limitations
 
 - Dashboard binds to `127.0.0.1:4318`; do not expose it publicly.

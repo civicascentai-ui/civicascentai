@@ -12,6 +12,8 @@ import tomllib
 import urllib.error
 import urllib.request
 from pathlib import Path
+from roles import ROLES, render_workflow
+from export_artifacts import export_workspace
 
 ROOT = Path(__file__).resolve().parent
 ACK = '--i-understand-that-this-will-be-running-without-the-usual-guardrails'
@@ -20,9 +22,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--seconds', type=int, default=180)
     parser.add_argument('--preflight-only', action='store_true')
+    parser.add_argument('--role', choices=['proof', *ROLES], default='proof')
+    parser.add_argument('--drop-linux-capabilities', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 300:
         raise SystemExit('Pilot duration must be between 1 and 300 seconds.')
+    if args.drop_linux_capabilities and not shutil.which('setpriv'):
+        raise SystemExit('BLOCKED: capability-drop mode requires util-linux setpriv on PATH.')
     runtime = ROOT / '.runtime'
     symphony = runtime / 'bin/symphony'
     codex = runtime / 'codex/node_modules/.bin/codex'
@@ -69,11 +75,20 @@ def main():
     env['SYMPHONY_GITHUB_TOKEN'] = token
     evidence = ROOT / 'evidence' / str(time.time_ns())
     evidence.mkdir(parents=True)
+    workspaces = runtime / 'runs' / evidence.name / 'workspaces'
+    workflow = evidence / 'WORKFLOW.md'
+    workflow.write_text(render_workflow((ROOT / 'WORKFLOW.md').read_text(), args.role,
+        workspaces, evidence / 'artifacts', ROOT / 'export_artifacts.py', args.drop_linux_capabilities))
+    (evidence / 'run.json').write_text(json.dumps({'role': args.role,
+        'seconds': args.seconds, 'workspace_root': str(workspaces),
+        'drop_linux_capabilities': args.drop_linux_capabilities}, indent=2))
     with (evidence / 'service.log').open('w') as log:
-        p = subprocess.Popen([str(symphony), ACK, '--logs-root', str(evidence / 'logs'), str(ROOT / 'WORKFLOW.md')], cwd=str(ROOT), env=env, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+        p = subprocess.Popen([str(symphony), ACK, '--logs-root', str(evidence / 'logs'), str(workflow)], cwd=str(ROOT), env=env, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         try:
             deadline = time.monotonic() + args.seconds
             while p.poll() is None and time.monotonic() < deadline:
+                for workspace in workspaces.glob('*'):
+                    export_workspace(workspace, evidence / 'artifacts')
                 try:
                     with urllib.request.urlopen('http://127.0.0.1:4318/api/v1/state', timeout=2) as response:
                         state = json.load(response)
@@ -102,8 +117,8 @@ def main():
                 os.killpg(p.pid, signal.SIGKILL)
             except ProcessLookupError:
                 pass
-            for proof in (runtime / 'workspaces').glob('*/.symphony-evidence/smoke-result.txt'):
-                shutil.copyfile(proof, evidence / (proof.parents[1].name + '-smoke-result.txt'))
+            for workspace in workspaces.glob('*'):
+                export_workspace(workspace, evidence / 'artifacts')
     print('Pilot stopped. Review evidence at ' + str(evidence))
     print('This command does not certify task success or continuous operation.')
 
