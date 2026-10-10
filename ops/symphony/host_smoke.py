@@ -16,6 +16,7 @@ from roles import render_workflow, ROLES
 from export_artifacts import export_workspace
 from host_check import check
 from role_fixtures import FIXTURES, validate
+from assignment_checks import validate_assignment
 
 ROOT = Path(__file__).resolve().parent
 ACK = '--i-understand-that-this-will-be-running-without-the-usual-guardrails'
@@ -32,11 +33,13 @@ def main():
         raise SystemExit('Duration must be 1..300 seconds.')
     assignment = None
     if args.assignment_file:
-        if args.role not in ['qa','reach','operations']:
-            raise SystemExit('Direct assignments currently support read-only QA, Reach and Operations; engineering requires separate patch completeness verification.')
+        if args.role not in ['qa','reach','operations','engineering']:
+            raise SystemExit('Unsupported assignment role.')
         assignment = json.loads(Path(args.assignment_file).read_text())
         if not isinstance(assignment, dict) or not all(isinstance(assignment.get(k), str) and assignment[k].strip() for k in ['title','description']):
             raise SystemExit('Assignment requires nonempty title and description.')
+        if args.role == 'engineering' and (not isinstance(assignment.get('allowed_paths'), list) or not assignment['allowed_paths'] or not all(isinstance(p, str) and p.strip() for p in assignment['allowed_paths'])):
+            raise SystemExit('Engineering requires explicit allowed_paths.')
     with socket.socket() as probe:
         probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         probe.bind(('127.0.0.1', 4318))
@@ -113,6 +116,10 @@ SymphonyElixir.CLI.main(input["args"])
                                 checks['revision_unchanged'] = result['source_sha'] == result['baseline_source_sha']
                                 status = subprocess.check_output(['git','status','--porcelain','-z','--untracked-files=all'],cwd=workspace/'HOST-1',text=True)
                                 checks['source_unchanged'] = all(x.startswith('?? .symphony-evidence/') for x in status.split('\0') if x)
+                            elif args.role == 'engineering':
+                                patch_checks = validate_assignment(workspace/'HOST-1', artifacts/'HOST-1', result['baseline_source_sha'], assignment['allowed_paths'])
+                                result['patch_validation'] = patch_checks
+                                checks['complete_authorized_patch'] = patch_checks['passed']
                         except (OSError,ValueError):
                             checks = {'structured_report':False}
                     else:

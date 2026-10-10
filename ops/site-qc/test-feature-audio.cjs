@@ -19,7 +19,7 @@ for (const page of ['voice.html', 'images.html', 'translate.html', 'plan.html'])
     return elements.get(id);
   };
   const context = {
-    document: { getElementById: getElement },
+    document: { getElementById: getElement, documentElement: {} },
     window: { addEventListener: (event, handler) => { events[event] = handler; } },
     setTimeout: handler => { timers.push(handler); },
   };

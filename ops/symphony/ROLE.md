@@ -56,6 +56,13 @@ evidence reference, blocker and CODI ownership without treating recorded claims
 as independently verified outcomes. These are fixture checks, not client acceptance.
 
 Public repository reads can use the GET-only memory bridge without a GitHub token.
+Direct engineering assignments require an explicit source-path allowlist.
+Before marking the task terminal, CODI's host validator rejects credential paths,
+staged edits, changed HEAD, deletions, symlinks and out-of-scope changes; verifies
+the exact source-only file manifest; and reconstructs the complete exported patch
+against the baseline to compare file bytes and executable modes. Failed validation
+preserves the workspace and stops the runtime. Independent QA still decides
+whether the proposed behavior satisfies the task.
 Matching live GitHub issue task dispatch and authenticated native GitHub dispatch
 remain unverified. Continuous operation remains unverified; this host is bounded
 and resumable. No existing issue has been activated by this package.
