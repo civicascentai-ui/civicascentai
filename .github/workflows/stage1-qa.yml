@@ -1,0 +1,32 @@
+name: Stage 1 QA (isolated)
+on:
+  push:
+    branches:
+      - qa/learner-access-ui-20261009
+    paths:
+      - '**/*.html'
+      - 'assets/ai-showcase-8k.js'
+      - 'tests/**'
+      - '.github/workflows/stage1-qa.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**/*.html'
+      - 'assets/ai-showcase-8k.js'
+      - 'tests/**'
+      - '.github/workflows/stage1-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release-hold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Stage 1 release checks
+        run: node --test tests/paid-enrollment-release-hold.test.js
