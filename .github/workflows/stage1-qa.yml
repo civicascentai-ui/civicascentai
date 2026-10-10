@@ -25,6 +25,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: qa/learner-access-ui-20261009
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
