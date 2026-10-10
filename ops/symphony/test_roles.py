@@ -1,9 +1,11 @@
 """Local safety/routing checks; these do not simulate completed agent work."""
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from export_artifacts import export_workspace, MAX_BYTES
 from roles import ROLES, render_workflow
+from host_check import check
 
 TEMPLATE = (Path(__file__).parent / 'WORKFLOW.md').read_text()
 
@@ -66,6 +68,28 @@ class RoleChecks(unittest.TestCase):
             (external / 'summary.md').write_text('outside')
             (workspace / '.symphony-evidence').symlink_to(external, target_is_directory=True)
             self.assertEqual(export_workspace(workspace, root / 'export'), [])
+
+class HostProfileChecks(unittest.TestCase):
+    def test_default_profile_refused_before_cli_execution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            binary = root / 'binary'
+            binary.write_bytes(b'test')
+            with patch('host_check.Path.home', return_value=root), patch('host_check.subprocess.run') as run:
+                self.assertFalse(check(root / '.codex', binary, root / 'codex')['passed'])
+                run.assert_not_called()
+
+    def test_integration_profile_refused_before_cli_execution(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            binary = root / 'binary'
+            binary.write_bytes(b'test')
+            profile = root / 'auth'
+            profile.mkdir()
+            (profile / 'config.toml').write_text('[mcp_servers.unapproved]\ncommand="example"\n')
+            with patch('host_check.subprocess.run') as run:
+                self.assertFalse(check(profile, binary, root / 'codex')['passed'])
+                run.assert_not_called()
 
 if __name__ == '__main__':
     unittest.main()

@@ -45,6 +45,28 @@ For the verified host's capability error, add `--drop-linux-capabilities`.
 This uses the tested setpriv command without weakening sandbox or approval modes.
 Run local control checks with `python3 ops/symphony/test_roles.py`.
 
+## Restore and verify the existing host
+
+The named Vercel sandbox `civicascent-customer-panel` preserves files in a snapshot
+when it stops; a resume creates a new session. It does not preserve running
+processes or provide an always-on service. Resume the named sandbox through the
+Vercel connector, then run the installed package's checks before starting work.
+The deployed package is `/vercel/civicascent-symphony/ops` and the isolated auth
+profile remains `/vercel/civicascent-symphony/auth`. Never archive that profile.
+
+```sh
+python3 /vercel/civicascent-symphony/ops/host_check.py --profile /vercel/civicascent-symphony/auth
+python3 /vercel/civicascent-symphony/ops/host_smoke.py --profile /vercel/civicascent-symphony/auth --release /vercel/.local/share/.burrito/symphony_erts-16.4_0.0.3
+```
+
+Health checks include pinned versions/checksum, isolated profile configuration,
+CLI authentication and a write-confinement probe. The fresh smoke uses the
+official extracted release with static memory fixtures; it verifies real agent
+output, excluded unlabeled work, cleanup and process-group shutdown. This does
+not substitute for authenticated native GitHub dispatch. Its per-run evidence
+is under `ops/evidence/host-smoke-<unique>/`. Launcher use still requires the
+host-side read-only GitHub token; no always-on process or new account is created.
+
 ## Controls and limitations
 
 - Dashboard binds to `127.0.0.1:4318`; do not expose it publicly.
