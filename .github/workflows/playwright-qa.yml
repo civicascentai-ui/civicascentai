@@ -6,6 +6,9 @@ on:
       - qa/external-launch-acceptance-20261009
     paths:
       - "e2e/**"
+      - ".claude/skills/**"
+      - "CLAUDE.md"
+      - "docs/qa/five-tools-evaluation.md"
       - ".github/workflows/playwright-qa.yml"
       - "index.html"
       - "village.html"
@@ -26,6 +29,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Validate five project-local Claude skills
+        run: node e2e/verify-skills.mjs
       - name: Install isolated browser QA dependencies
         working-directory: e2e
         run: npm install --ignore-scripts --no-audit --no-fund
