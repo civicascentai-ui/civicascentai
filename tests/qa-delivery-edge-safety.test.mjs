@@ -107,3 +107,18 @@ test('Stripe QA redirects use existing receipt page and a real cancel destinatio
   assert.match(receipt,/Sandbox checkout received/i);
   assert.match(course,/CivicAscent AI/);
 });
+
+test('QA checkout confirmation links to a learner-owned verification and download page',()=>{
+  const receipt=readFileSync(new URL('../checkout/success/index.html',import.meta.url),'utf8');
+  const ui=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  assert.match(receipt,/qa\/learner-access\.html/);
+  assert.match(receipt,/not proof of payment or enrollment/i);
+  assert.match(ui,/\/auth\/v1\/otp/);
+  assert.match(ui,/\/auth\/v1\/verify/);
+  assert.match(ui,/qa-verified-course-delivery-check/);
+  assert.match(ui,/placeholder-not-course/);
+  assert.match(ui,/sb_publishable_/);
+  assert.doesNotMatch(ui,/SUPABASE_SERVICE_ROLE_KEY|sk_test_|whsec_/);
+  assert.doesNotMatch(ui,/localStorage|sessionStorage/);
+  assert.doesNotMatch(ui,/session_id=\{CHECKOUT_SESSION_ID\}.*accessToken/);
+});
