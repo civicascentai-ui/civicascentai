@@ -42,6 +42,39 @@ The bounded runner prevents unattended indefinite retry loops during evaluation.
 - One-turn/concurrency limits are not total spend caps. Operator supervision and
   a dedicated persistent host are required before any continuous service.
 
+## Verified existing-host workaround — October 9, 2026
+
+A bounded real Symphony/Codex task passed on the existing Vercel sandbox using
+Symphony 0.0.3 and Codex 0.162.1. CLI login status confirmed ChatGPT authentication.
+The memory tracker selected PILOT-1 and excluded the unlabeled IGNORED-1. Exact
+proof output, completed-session logs, terminal workspace cleanup, zero queue
+counts, and stopped runtime were independently verified. Native GitHub polling
+and continuous operation remain unverified.
+
+On this host, inherited Linux capabilities caused Codex's bubblewrap helper to
+fail with `Unexpected capabilities but not setuid`. Dropping capabilities before
+starting Codex resolved the error while retaining workspace-write and on-request:
+
+```yaml
+codex:
+  command: setpriv --bounding-set=-all --inh-caps=-all --ambient-caps=-all codex app-server
+  approval_policy: on-request
+  thread_sandbox: workspace-write
+```
+
+For a host with this same failure, replace only the `codex.command` line in
+WORKFLOW.md with the line above. Ensure util-linux `setpriv` is installed and
+available on the runner PATH. The default portable workflow remains unchanged.
+A sandbox probe on the verified host wrote inside its workspace, refused a write
+outside with EROFS, and left no outside file. This verifies write confinement;
+it does not certify isolation of readable secrets or network traffic.
+
+The original test harness incorrectly reset its proof flag after terminal
+cleanup removed the workspace. Its preserved result reports false. Independent
+checks of the exported exact proof, its run timestamps, completion logs and
+cleanup all passed. Export proof before transitioning a fixture to terminal,
+and preserve a true proof result through cleanup.
+
 ## Sources
 
 - [Official Symphony release](https://github.com/openai/symphony/releases/tag/v0.0.3)
