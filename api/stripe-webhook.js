@@ -12,7 +12,8 @@ export const config={api:{bodyParser:false}};
 async function readRaw(stream){const chunks=[];let size=0;for await(const chunk of stream){size+=chunk.length;if(size>1024*1024)throw new Error('Oversized webhook');chunks.push(chunk);}return Buffer.concat(chunks);}
 export default async function handler(req,res){
   if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).end();}
-  const key=process.env.STRIPE_TEST_SECRET_KEY,secret=process.env.STRIPE_TEST_WEBHOOK_SECRET;
+  const key=process.env.STRIPE_TEST_SECRET_KEY||process.env.STRIPE_SECRET_KEY;
+  const secret=process.env.STRIPE_TEST_WEBHOOK_SECRET||process.env.STRIPE_WEBHOOK_SECRET;
   if(!key?.startsWith('sk_test_')||!secret?.startsWith('whsec_'))return res.status(503).json({error:'Sandbox not configured'});
   const stripe=new Stripe(key);
   let event;
