@@ -182,7 +182,8 @@
   }
 
   function run(){
-    cancelAnimationFrame(raf);
+    cancelAnimationFrame(raf);raf=0;
+    if(document.hidden){finish();return;}
     document.body.classList.remove('ready');core.classList.remove('show');flash.classList.remove('fire');
     cue.classList.remove('show');timeline.forEach(el=>el.classList.remove('on'));
     ready=false;phase=-1;last=0;seed();start=performance.now();
