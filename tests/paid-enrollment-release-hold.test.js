@@ -71,3 +71,9 @@ test('Spanish and English inquiry pages preserve language and keyboard navigatio
   assert.match(es,/No envíes información sensible por correo/);
   assert.match(es,/La consulta no confirma una plaza/);
 });
+
+test('completed intro removes overlays and retains accessible content',()=>{
+  const animation=readFileSync('assets/ai-showcase-8k.js','utf8');
+  assert.match(animation,/ready=true;document\.body\.classList\.add\('ready'\);\s*flash\.classList\.remove\('fire'\);core\.classList\.remove\('show'\);cue\.classList\.remove\('show'\);/);
+  assert.match(animation,/function finish\(\)\{[\s\S]*?flash\.classList\.remove\('fire'\);core\.classList\.remove\('show'\);cue\.classList\.remove\('show'\);/);
+});
