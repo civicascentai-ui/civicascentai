@@ -165,8 +165,9 @@
   }
 
   function finish(){
+    cancelAnimationFrame(raf);
     document.body.classList.add('ready');core.classList.remove('show');timeline.forEach(el=>el.classList.add('on'));
-    start=performance.now()-9000;last=0;raf=requestAnimationFrame(frame);
+    background(0,0);
   }
 
   function setLang(es){
@@ -177,10 +178,10 @@
   let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
   setLang(saved==='es');
   lang.addEventListener('click',()=>setLang(!document.body.classList.contains('es')));
-  replay.addEventListener('click',run);
+  replay.addEventListener('click',()=>{if(reduced)finish();else run()});
   addEventListener('pointermove',e=>{pointerX=(e.clientX/W-.5);pointerY=(e.clientY/H-.5)},{passive:true});
   addEventListener('resize',resize,{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
+  document.addEventListener('visibilitychange',()=>{if(reduced)return;if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
 
   resize();
   if(reduced)finish();else run();
