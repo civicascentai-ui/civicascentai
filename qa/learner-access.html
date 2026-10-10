@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CivicAscent AI | Private Sandbox Learner Verification</title>
+<style>
+:root {color-scheme:light;font-family:system-ui,Arial,sans-serif;color:#162540;background:#f1f5f9;}
+body{margin:0}.wrap{max-width:680px;margin:3rem auto;padding:1.5rem}.panel{background:#fff;padding:1.6rem 2rem;border-radius:20px;box-shadow:0 4px 28px #1232;}
+h1{line-height:1.2}label{display:block;margin:1rem 0 .4rem;font-weight:650}input,select,button{font:inherit;padding:.8rem;border:1px solid #70829b;border-radius:9px;box-sizing:border-box;width:100%}
+button{background:#154e91;color:white;border:0;cursor:pointer;margin-top:1rem;font-weight:700;min-height:44px}
+button:disabled{opacity:.6;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #0097d5;outline-offset:2px}
+.notice{padding:1rem;background:#fff0b3;border-left:5px solid #996b00}small{line-height:1.6;display:block;color:#44546d}
+#status{margin-top:1.2rem;min-height:2.3em;padding:.7rem;border-radius:7px;background:#eaf4fe}#verifySection{display:none}
+@media(max-width:700px){.wrap{margin:0;padding:1rem}.panel{padding:1.1rem}}
+</style>
+</head>
+<body><main class="wrap"><div class="panel">
+<h1>CivicAscent AI | Sandbox learner access</h1>
+<p class="notice"><strong>TEST ONLY: No paid course is being delivered.</strong> This page is for internal QA, and only approved test purchase email addresses can access QA placeholder material.</p>
+<p>A purchase confirmation does not grant access. Verify the same email used for your sandbox checkout. We check that email against a verified, active test purchase before any file is served.</p>
+<form id="otpForm">
+<label for="email">Email address used at sandbox checkout</label>
+<input id="email" name="email" type="email" required autocomplete="email" maxlength="254">
+<button id="request" type="submit">Send verification code</button>
+</form>
+<form id="verifySection">
+<label for="code">Email verification code</label>
+<input id="code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required>
+<button id="verify" type="submit">Verify email</button>
+</form>
+<div id="accessSection" hidden>
+<label for="product">QA product purchased</label>
+<select id="product"><option value="starter">Starter $49 (TEST)</option><option value="facilitator">Facilitator $129 (TEST)</option></select>
+<button id="download" type="button">Check entitlement and download QA placeholder</button>
+</div>
+<p id="status" role="status" aria-live="polite">No verification requested.</p>
+<small>Only use fictional or designated tester information. Do not share passwords, payment details, or verification codes with other people. Your access token is held in this page's memory only and disappears when the page closes. Refunds or inactive purchases must block downloads. The released files are not yet approved for sale.</small>
+<p><a href="../../course.html">Return to QA course overview</a></p>
+</div></main>
+<script>
+'use strict';
+const SERVICE='https://lpdvvgdejbsgurtqmrub.supabase.co';
+// This is a PUBLIC Supabase publishable key, not a server credential or service-role key.
+const PUBLIC_KEY="sb_publishable_cw3vZcsKJ2w5gR5m6mwDdA_j-wyy0e4";
+let accessToken=null, verifiedEmail=null;
+const $=id=>document.getElementById(id);
+const status=message=>{$('status').textContent=message;};
+async function request(endpoint,data,token=null){
+  const headers={'Content-Type':'application/json','apikey':PUBLIC_KEY};
+  if(token)headers.Authorization='Bearer '+token;
+  const response=await fetch(SERVICE+endpoint,{method:'POST',headers,body:JSON.stringify(data),cache:'no-store'});
+  return response;
+}
+$('otpForm').addEventListener('submit',async event=>{
+  event.preventDefault();accessToken=null;verifiedEmail=null;$('accessSection').hidden=true;$('verifySection').style.display='none';
+  const email=$('email').value.trim().toLowerCase();
+  if(!email || email.length>254)return status('Enter a valid email address.');
+  $('request').disabled=true;status('Requesting test sign-in code...');
+  try{
+    const response=await request('/auth/v1/otp',{email,create_user:true});
+    if(!response.ok)throw Error('Email verification could not be requested.');
+    verifiedEmail=email;
+    $('verifySection').style.display='block';
+    status('If this address can receive verification mail, check its inbox for the code.');
+  }catch{status('Sign-in request unavailable. Check sandbox email authentication configuration.');}
+  finally{$('request').disabled=false;}
+});
+$('verifySection').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const code=$('code').value.trim();
+  if(!/^[0-9]{6,8}$/.test(code)||!verifiedEmail)return status('Enter the 6–8 digit email code.');
+  $('verify').disabled=true;status('Verifying learner identity...');
+  try{
+    const response=await request('/auth/v1/verify',{email:verifiedEmail,token:code,type:'email'});
+    if(!response.ok)throw Error('Verification failed');
+    const body=await response.json();
+    if(!body?.access_token||!body?.user?.email_confirmed_at||body.user.email.toLowerCase()!==verifiedEmail)
+      throw Error('Unverified');
+    accessToken=body.access_token;
+    $('accessSection').hidden=false;
+    status('Email verified. Choose the sandbox product and check its purchase entitlement.');
+  }catch{accessToken=null;status('Code invalid or expired. Request a new code if needed.');}
+  finally{$('verify').disabled=false;}
+});
+$('download').addEventListener('click',async()=>{
+  if(!accessToken)return status('Verify your email first.');
+  $('download').disabled=true;status('Checking active purchase and private QA file...');
+  try{
+    const product=$('product').value;
+    const response=await request('/functions/v1/qa-verified-course-delivery-check',{product_code:product},accessToken);
+    if(!response.ok) {
+      status(response.status===403?'No active sandbox purchase matches this verified email and product.':'QA delivery not available. Check test purchase, staging file, and service status.');
+      return;
+    }
+    if(response.headers.get('X-CivicAscent-Artifact')!=='placeholder-not-course')throw Error('Unexpected artifact');
+    const content=await response.blob();
+    const url=URL.createObjectURL(content);
+    const link=document.createElement('a');link.href=url;link.download=product+'-QA-README.md';
+    link.style.display='none';document.body.append(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    status('QA placeholder download requested. This is NOT delivery of a paid course.');
+  }catch{status('Private QA download failed. No paid materials were released.');}
+  finally{$('download').disabled=false;}
+});
+</script>
+</body>
+</html>
