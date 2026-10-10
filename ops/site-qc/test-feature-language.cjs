@@ -11,7 +11,9 @@ for (const name of ['voice', 'images', 'translate', 'plan']) {
   }};
   const context = {document, window: {addEventListener(type, fn) {events[type]=fn;}}, setTimeout(fn) {timers.push(fn);}};
   vm.createContext(context);
-  for (const script of fs.readFileSync(path.join(__dirname, '../..', name + '.html'), 'utf8').matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
+  const html = fs.readFileSync(path.join(__dirname, '../..', name + '.html'), 'utf8');
+  for (const marker of ['<a lang="en" class="back"', '<section lang="en" class="scene">', '<div lang="en" class="help">']) assert.ok(html.includes(marker), name + ': English fragment needs language metadata');
+  for (const script of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
     if (script[1].trim()) vm.runInContext(script[1], context);
   }
   const flush = () => {while(timers.length) timers.shift()();};
