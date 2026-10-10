@@ -177,6 +177,8 @@
     if(sec>6.72&&!ready){
       ready=true;document.body.classList.add('ready');
       timeline.forEach(el=>el.classList.add('on'));
+      background(0,0);
+      return;
     }
     raf=requestAnimationFrame(frame);
   }
