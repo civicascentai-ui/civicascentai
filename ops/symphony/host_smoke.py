@@ -64,6 +64,7 @@ def main():
     description = 'Harmless restored-host proof'
     if assignment:
         description = assignment['description']
+        workflow = workflow.replace('turn_timeout_ms: 120000', 'turn_timeout_ms: ' + str(args.seconds * 1000)).replace('stall_timeout_ms: 120000', 'stall_timeout_ms: ' + str(args.seconds * 1000))
     elif args.role != 'proof':
         files, description = FIXTURES[args.role]
         encoded = base64.b64encode(json.dumps(files).encode()).decode()

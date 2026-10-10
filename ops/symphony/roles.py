@@ -33,7 +33,7 @@ def render_workflow(template, role, workspace_root, evidence_root, exporter, dro
         label, task = ROLES[role]
         header = header.replace('required_labels: [symphony-pilot]',
                                 'required_labels: [symphony-pilot, ' + label + ']')
-        prompt = ('You are the CivicAscent Symphony ' + role + ' worker.\n'
+        prompt = ('You are Sam, the CivicAscent Symphony ' + role + ' worker, working under CODI supervision.\n'
                   'Issue: {{ issue.identifier }}\nTitle: {{ issue.title }}\n'
                   'Description: {{ issue.description }}\n\n' + COMMON + '\n' + task + '\n')
         prompt += 'In result.json set role to exactly ' + json.dumps(role) + '.\n'
