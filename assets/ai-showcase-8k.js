@@ -175,6 +175,7 @@
     lang.textContent=es?'EN':'ES';lang.setAttribute('aria-pressed',String(es));
     lang.setAttribute('aria-label',es?'Cambiar idioma a inglés':'Switch language to Spanish');
     replay.setAttribute('aria-label',es?'Repetir animación de introducción':'Replay introduction animation');
+    document.getElementById('home-brand').setAttribute('aria-label',es?'Inicio de CivicAscent AI':'CivicAscent AI home');
     try{localStorage.setItem('civicascent-lang',es?'es':'en')}catch(e){}
   }
   let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
