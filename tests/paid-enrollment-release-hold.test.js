@@ -45,3 +45,14 @@ test('homepage offers keyboard access and privacy contact',()=>{
   assert.match(home,/mailto:civicascentai@gmail\.com/);
   assert.doesNotMatch(home,/https:\/\/(?:buy|book)\.stripe\.com\//);
 });
+
+
+test('homepage animation preserves accessible content across reduced-motion and tab lifecycle',()=>{
+  const animation=readFileSync('assets/ai-showcase-8k.js','utf8');
+  assert.match(animation,/function finish\(\)\{\s*cancelAnimationFrame\(raf\);raf=0;\s*ready=true;/);
+  assert.match(animation,/if\(document\.hidden\)\{finish\(\);return;\}/);
+  assert.match(animation,/if\(ready\)\{background\(0,0\);return;\}/);
+  assert.match(animation,/if\(reduced\|\|ready\)background\(0,0\)/);
+  assert.match(animation,/if\(reduced\)finish\(\);else run\(\)/);
+  assert.match(animation,/document\.documentElement\.lang=es\?'es':'en'/);
+});
