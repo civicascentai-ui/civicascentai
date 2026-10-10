@@ -57,3 +57,17 @@ test('homepage animation preserves accessible content across reduced-motion and 
   assert.match(animation,/timeline\.forEach\(el=>el\.classList\.add\('on'\)\);\s*background\(0,0\);\s*return;/);
   assert.match(animation,/document\.documentElement\.lang=es\?'es':'en'/);
 });
+
+
+test('Spanish and English inquiry pages preserve language and keyboard navigation',()=>{
+  for(const [path,lang] of [['register.html','en'],['registro.html','es'],['course.html','en'],['curso-es.html','es']]){
+    const html=readFileSync(path,'utf8');
+    assert.match(html,new RegExp('<html lang="'+lang+'"'),'language declaration on '+path);
+    assert.match(html,/class="skip-to-main" href="#main-content"/,'skip navigation on '+path);
+    assert.match(html,/id="main-content" tabindex="-1"/,'focus target on '+path);
+    assert.doesNotMatch(html,/https:\/\/(?:buy|book)\.stripe\.com\//i,'no Stripe payment or registration link on '+path);
+  }
+  const es=readFileSync('registro.html','utf8');
+  assert.match(es,/No envíes información sensible por correo/);
+  assert.match(es,/La consulta no confirma una plaza/);
+});
