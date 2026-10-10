@@ -5,11 +5,23 @@ Review date: 2026-10-10. Budget: $0 in new spending. Production: HOLD.
 
 | Track | Verified project | QA benefit | Current disposition |
 | --- | --- | --- | --- |
-| UI/UX Pro Max | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill | Design hierarchy, mobile, accessibility checklists | Registered for evaluation; NOT installed |
-| Stop Slop | https://github.com/hardikpandya/stop-slop | Clearer, factual, non-repetitive learner and partner copy | Registered for evaluation; NOT installed |
-| Superpowers | https://github.com/obra/superpowers | Test-first development, systematic debugging, evidence-based closeout | Registered for evaluation; NOT installed |
-| The Council | https://github.com/hex/claude-council (candidate, exact TikTok plugin not verified) | Independent critique on high-risk design decisions | OFF. Requires source/security review; possible paid model/API usage and data transfer |
-| Playwright | https://github.com/microsoft/playwright | Desktop, mobile, and WebKit navigation/keyboard smoke tests | QA-only test scaffold committed under `e2e/`, execution not yet verified |
+| UI/UX Pro Max | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill | Design hierarchy, mobile, accessibility checklists | Repo-local CivicAscent skill added; upstream plugin NOT installed |
+| Stop Slop | https://github.com/hardikpandya/stop-slop | Clearer, factual, non-repetitive learner and partner copy | Repo-local CivicAscent skill added; upstream plugin NOT installed |
+| Superpowers | https://github.com/obra/superpowers | Test-first development, systematic debugging, evidence-based closeout | Repo-local CivicAscent skill added; upstream plugin NOT installed |
+| The Council | https://github.com/hex/claude-council (candidate, exact TikTok plugin not verified) | Independent critique on high-risk design decisions | Local structured-review skill added; external providers OFF |
+| Playwright | https://github.com/microsoft/playwright | Desktop, mobile, and WebKit navigation/keyboard smoke tests | QA-only Playwright smoke suite 9/9 passed on 2026-10-10; project skill added |
+
+## Project-local Claude Code skills added
+
+These are **CivicAscent-written lightweight skills**, not third-party vendor code, plugins, hooks, or scripts. When a compatible Claude Code session opens the QA checkout of this repository, project skills under `.claude/skills/<name>/SKILL.md` can be discovered and invoked. Claude Code was **not connected here to verify interactive activation**.
+
+- `.claude/skills/civicascent-ui-review/SKILL.md`
+- `.claude/skills/civicascent-clear-writing/SKILL.md`
+- `.claude/skills/civicascent-engineering/SKILL.md`
+- `.claude/skills/civicascent-council-review/SKILL.md`
+- `.claude/skills/civicascent-browser-qa/SKILL.md`
+
+The offline council skill structures review perspectives only. It does not run independent agents or contact provider APIs. Five local skills are validated by `node e2e/verify-skills.mjs` in the QA workflow.
 
 ## Playwright QA smoke runner
 
@@ -43,8 +55,10 @@ The workflow `.github/workflows/playwright-qa.yml` runs when a pull request targ
 ## Verification checklist
 
 - [x] Project file `CLAUDE.md` added on a QA tooling branch.
-- [x] Playwright automated smoke scripts prepared, not executed.
-- [ ] Dependency install and browser run; record log and screenshot evidence.
+- [x] Playwright smoke run 9/9 passed: https://github.com/civicascentai-ui/civicascentai/actions/runs/38059585288
+- [x] Five project-local skills authored and CI static validation added; latest CI result pending.
+- [x] Dependency install and browser smoke run completed; no failures in initial 9/9 suite.
+- [ ] Confirm updated CI with all five local skill definitions.
 - [ ] Independent review of the three third-party skills and Council candidate.
-- [ ] Confirm appropriate Claude Code environment and install plugins only there.
+- [ ] Confirm a compatible Claude Code workspace loads these repo-local skills; consider upstream plugin installations separately if ever necessary.
 - [ ] Separate production-readiness decision after normal security and fulfillment gates.
