@@ -8,9 +8,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({error:'Method not allowed'}); }
   const {product_code: code} = req.body || {};
   if (typeof code !== 'string' || !Object.hasOwn(PRODUCTS, code)) return res.status(400).json({error:'Invalid product'});
-  const key = process.env.STRIPE_TEST_SECRET_KEY;
+  const key = process.env.STRIPE_TEST_SECRET_KEY || process.env.STRIPE_SECRET_KEY;
   const price = process.env[PRODUCTS[code].priceEnv];
-  const origin = process.env.CHECKOUT_QA_ORIGIN;
+  const configuredOrigin = process.env.CHECKOUT_QA_ORIGIN;
+  const previewHost = process.env.VERCEL_URL;
+  const origin = configuredOrigin || (process.env.VERCEL_ENV === 'preview' && previewHost?.endsWith('.vercel.app') ? `https://${previewHost}` : undefined);
   if (!key?.startsWith('sk_test_') || !price?.startsWith('price_') || !origin?.startsWith('https://')) return res.status(503).json({error:'Sandbox not configured'});
   try {
     const stripe = new Stripe(key);
