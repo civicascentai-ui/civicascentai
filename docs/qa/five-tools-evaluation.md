@@ -25,7 +25,7 @@ npm test
 Tests serve the checked-out repository locally at 127.0.0.1:4187, not Vercel production.
 Reports are local, and tests do **not** place real orders, access payment keys, or assume course entitlement.
 
-The workflow `.github/workflows/playwright-qa-manual.yml` can be dispatched manually from an appropriate QA branch after review; it is not configured to run or deploy on every commit. Browser dependencies/runner minutes remain subject to GitHub's plan.
+The workflow `.github/workflows/playwright-qa.yml` runs when a pull request targets the QA acceptance branch and changes browser-QA files. It can also be manually dispatched once available in GitHub Actions. It has read-only permissions and no deployment step. Browser dependencies/runner minutes remain subject to GitHub's plan.
 
 **Release evidence still required:** paid-to-entitlement reconciliation, webhook signature verification, refund/dispute handling, failed-session recovery, and 25 traceable sandbox purchases. Browser smoke tests cannot replace those.
 
