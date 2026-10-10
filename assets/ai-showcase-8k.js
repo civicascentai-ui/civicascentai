@@ -1,6 +1,7 @@
 (()=>{
   const canvas=document.getElementById('cosmos');
-  const ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+  let ctx=null;
+  try{ctx=canvas&&canvas.getContext('2d',{alpha:false,desynchronized:true})}catch(e){}
   if(!ctx){
     document.body.classList.add('ready');
     const lang=document.getElementById('lang');
@@ -19,8 +20,10 @@
     setFallbackLang(saved==='es');
     lang.addEventListener('click',()=>setFallbackLang(!document.body.classList.contains('es')));
     replay.disabled=true;
-    replay.setAttribute('aria-label','Animation unavailable');
-    replay.title='Animation unavailable';
+    const unavailable=()=>document.body.classList.contains('es')?'Animación no disponible':'Animation unavailable';
+    replay.setAttribute('aria-label',unavailable());
+    replay.title=unavailable();
+    lang.addEventListener('click',()=>{replay.setAttribute('aria-label',unavailable());replay.title=unavailable()});
     return;
   }
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
