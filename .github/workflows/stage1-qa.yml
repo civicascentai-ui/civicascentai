@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: qa/learner-access-ui-20261009
+          ref: e2f9daa58fd275072b791bacc01c8f4c63d9a6c7
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
