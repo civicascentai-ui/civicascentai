@@ -173,6 +173,8 @@
   function setLang(es){
     document.body.classList.toggle('es',es);document.documentElement.lang=es?'es':'en';
     lang.textContent=es?'EN':'ES';lang.setAttribute('aria-pressed',String(es));
+    lang.setAttribute('aria-label',es?'Cambiar idioma a inglés':'Switch language to Spanish');
+    replay.setAttribute('aria-label',es?'Repetir animación de introducción':'Replay introduction animation');
     try{localStorage.setItem('civicascent-lang',es?'es':'en')}catch(e){}
   }
   let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
