@@ -16,4 +16,6 @@ This repository supports beginner-friendly AI education. Work in isolated QA bra
 - **The Council:** Optional *human-approved* multi-reviewer process for difficult architecture decisions; not running by default. Upstream implementation is ambiguous; review https://github.com/hex/claude-council before considering install. No API keys, paid provider calls, confidential data sharing, or automatic remote delegation without separate approval.
 - **Playwright:** QA smoke suite in `e2e/`; no live-purchase automation. Official project: https://github.com/microsoft/playwright
 
-The listed third-party plugins are **not installed or activated** just because this file exists. See `docs/qa/five-tools-evaluation.md` for install and acceptance gates.
+**Project-local skills available on this QA branch:** `/civicascent-ui-review`, `/civicascent-clear-writing`, `/civicascent-engineering`, `/civicascent-council-review`, and `/civicascent-browser-qa`. Each is an instruction-only `.claude/skills/*/SKILL.md` authored for our project. These should be discoverable when Claude Code opens a checkout of this branch, but interactive activation has **not** been verified.
+
+The upstream third-party plugins themselves are **not installed or activated**. See `docs/qa/five-tools-evaluation.md` for installation and acceptance gates.
