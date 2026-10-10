@@ -183,7 +183,7 @@
   lang.addEventListener('click',()=>setLang(!document.body.classList.contains('es')));
   replay.addEventListener('click',()=>{if(reduced)finish();else run()});
   addEventListener('pointermove',e=>{pointerX=(e.clientX/W-.5);pointerY=(e.clientY/H-.5)},{passive:true});
-  addEventListener('resize',resize,{passive:true});
+  addEventListener('resize',()=>{resize();if(reduced)background(0,0)},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(reduced)return;if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
 
   resize();
