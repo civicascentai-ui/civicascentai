@@ -1,0 +1,27 @@
+name: Friday QA delivery security tests
+on:
+  push:
+    branches:
+      - qa/friday-secure-delivery-20261010
+    paths:
+      - "supabase/functions/qa-verified-course-delivery-check/**"
+      - "tests/qa-delivery-edge-safety.test.mjs"
+      - ".github/workflows/friday-delivery-security.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mock-delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check Edge source syntax
+        run: |
+          cp supabase/functions/qa-verified-course-delivery-check/index.ts /tmp/friday-delivery.mjs
+          node --check /tmp/friday-delivery.mjs
+      - name: Verify fail-closed QA learner delivery without external calls
+        run: node --test tests/qa-delivery-edge-safety.test.mjs
