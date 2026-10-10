@@ -57,7 +57,7 @@ The isolated branch `course.html` now uses **only the verified Stripe test-mode 
 - [PR #48](https://github.com/civicascentai-ui/civicascentai/pull/48)
 - [Expanded browser tests 27/27](https://github.com/civicascentai-ui/civicascentai/actions/runs/38060917297)
 - [Combined Node checkout safety 80/80 and browser 27/27](https://github.com/civicascentai-ui/civicascentai/actions/runs/38061056606)
-- New sandbox-link regression run to be cited separately after completion.
+- **Sandbox regression verified**: [GitHub Actions #38063013020](https://github.com/civicascentai-ui/civicascentai/actions/runs/38063013020): 83/83 Node safety tests and 27/27 browser tests PASS; 5/5 local skills validated. Separate checkout workflow [#38063013021](https://github.com/civicascentai-ui/civicascentai/actions/runs/38063013021): 83/83 PASS.
 - QA matrix remains `qa/25_SANDBOX_COURSE_E2E_MATRIX_2026-10-09.csv`, 0/25 independently verified.
 
 ### Independent QC conclusion
