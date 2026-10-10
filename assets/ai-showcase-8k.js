@@ -150,6 +150,7 @@
   }
 
   function frame(now){
+    raf=0;
     if(!last)last=now;
     const dt=Math.min(.035,(now-last)/1000);last=now;
     const sec=(now-start)/1000;
@@ -208,7 +209,7 @@
   replay.addEventListener('click',()=>{if(reduced)finish();else run()});
   addEventListener('pointermove',e=>{pointerX=(e.clientX/W-.5);pointerY=(e.clientY/H-.5)},{passive:true});
   addEventListener('resize',()=>{resize();if(reduced)background(0,0)},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(reduced)return;if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
+  document.addEventListener('visibilitychange',()=>{if(reduced)return;if(document.hidden){cancelAnimationFrame(raf);raf=0}else if(!raf){last=0;raf=requestAnimationFrame(frame)}});
 
   resize();
   if(reduced)finish();else run();
