@@ -1,0 +1,37 @@
+name: QA Playwright smoke (no production access)
+
+on:
+  pull_request:
+    branches:
+      - qa/external-launch-acceptance-20261009
+    paths:
+      - "e2e/**"
+      - ".github/workflows/playwright-qa.yml"
+      - "index.html"
+      - "village.html"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install isolated browser QA dependencies
+        working-directory: e2e
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Install Chromium and WebKit
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium webkit
+      - name: Run local-only smoke suite (no Stripe or production)
+        working-directory: e2e
+        run: npm test
