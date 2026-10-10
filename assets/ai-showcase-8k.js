@@ -1,6 +1,7 @@
 (()=>{
   const canvas=document.getElementById('cosmos');
   const ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+  if(!ctx){document.body.classList.add('ready');return;}
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cue=document.getElementById('cue');
   const core=document.getElementById('core');
