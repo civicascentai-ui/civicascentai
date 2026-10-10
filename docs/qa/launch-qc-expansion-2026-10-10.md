@@ -6,7 +6,7 @@ Scope: isolated review branch `qa/tooling-review-playwright-20261010`; no produc
 - Playwright expanded from **9 to 27 checks**, including desktop Chromium, mobile Chromium, and desktop WebKit. Run [#38060917297](https://github.com/civicascentai-ui/civicascentai/actions/runs/38060917297) reports **27 passed**.
 - New checks validate Spanish-language preference persistence, prefers-reduced-motion handling, inert/Escape menu behavior, seven learning destination links, non-navigating inspection of Stripe purchase CTAs, and horizontally bounded waypoints.
 - Five project-local Claude skills passed schema validation in GitHub Actions. This is not proof a live Claude Code session has installed or invoked the upstream third-party plugins.
-- GitHub workflow now also runs the **existing Node checkout and learner-access safety suite**. Its final combined run must be logged separately before marking the expansion fully QC-passed.
+- GitHub workflow now also runs the **existing Node checkout and learner-access safety suite**. Combined run [#38061056606](https://github.com/civicascentai-ui/civicascentai/actions/runs/38061056606) **PASSED: 80/80 Node checkout/learner safety tests and 27/27 Playwright browser tests; 5/5 local skill definitions validated.**
 - The Vercel project APIs reported SSO protection enabled for preview deployments and READY preview artifacts. `READY` does **not** prove protected runtime webhook functionality, authenticated learner delivery, or free tester access.
 
 ## Payment-to-materials findings (read-only source inspection)
@@ -28,12 +28,13 @@ Scope: isolated review branch `qa/tooling-review-playwright-20261010`; no produc
 ## Next gated execution
 - Confirm a controlled preview runtime with SSO protected; then connect a sandbox-only Stripe webhook and private Supabase staging project using secrets manager and least privilege. Never paste credentials into issues, commits, tests, or public docs.
 - Assemble approved Starter and Facilitator packages **privately**; never commit commercial lesson files or donor data to this public repository.
-- Execute and reconcile the existing `qa/25_SANDBOX_COURSE_E2E_MATRIX_2026-10-09.csv` with independent customer-facing QC.
+- Execute and reconcile the existing `qa/25_SANDBOX_COURSE_E2E_MATRIX_2026-10-09.csv` with independent customer-facing QC. The file currently records **25 NOT_RUN** cases with blank session/event/evidence fields; do not confuse 80 Node safety tests with purchases.
 - Escalate to president for an explicit **production** launch authorization after the above evidence passes. No such authorization exists in this QA work.
 
 ## Evidence index
 - GitHub PR #48: https://github.com/civicascentai-ui/civicascentai/pull/48
 - 27-check browser run: https://github.com/civicascentai-ui/civicascentai/actions/runs/38060917297
+- 80-check Node + 27-check browser combined run: https://github.com/civicascentai-ui/civicascentai/actions/runs/38061056606
 - Existing P0 issue: https://github.com/civicascentai-ui/civicascentai/issues/47
 - Existing fulfillment issue: https://github.com/civicascentai-ui/civicascentai/issues/30
 
