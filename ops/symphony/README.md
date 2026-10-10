@@ -153,3 +153,23 @@ not completion of a labeled task. No current issues have the activation labels.
 The four expanded roles separately passed real controlled-fixture tasks with
 independent checks. Live issue dispatch and 24/7 operation remain unverified.
 Run all local checks with `python3 -m unittest discover -s ops/symphony -p 'test_*.py'`.
+
+## CODI supervised assignments
+
+CODI can submit actual isolated repository work directly, without publishing a
+GitHub issue. Use an assignment JSON containing nonempty `title` and `description`:
+
+```sh
+python3 /vercel/civicascent-symphony/ops/host_smoke.py --profile /vercel/civicascent-symphony/auth --release /vercel/.local/share/.burrito/symphony_erts-16.4_0.0.3 --role qa --assignment-file /vercel/civicascent-symphony/ops/codi-launch-review.json --seconds 180
+```
+
+Assignment mode injects no synthetic fixtures. It records the source revision
+before execution, exports the agent report, and verifies unchanged HEAD and source
+for QA, Reach and Operations. Assignment text is decoded as data rather than
+interpolated into runtime code. `passed` means the bounded report-generation run
+and cleanup passed; `agent_status_claim` remains a claim requiring independent
+CODI/QC review. Partial or blocked findings never certify the underlying task.
+
+CODI prioritizes and supplies scoped inputs, Symphony executes one bounded
+assignment at a time, and independent QC checks results before any follow-on
+change or release. No background service continues after the session ends.

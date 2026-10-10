@@ -25,7 +25,18 @@ def main():
     parser.add_argument('--profile', required=True)
     parser.add_argument('--release', required=True)
     parser.add_argument('--role', choices=['proof', *ROLES], default='proof')
+    parser.add_argument('--assignment-file')
+    parser.add_argument('--seconds', type=int, default=120)
     args = parser.parse_args()
+    if not 1 <= args.seconds <= 300:
+        raise SystemExit('Duration must be 1..300 seconds.')
+    assignment = None
+    if args.assignment_file:
+        if args.role not in ['qa','reach','operations']:
+            raise SystemExit('Direct assignments currently support read-only QA, Reach and Operations; engineering requires separate patch completeness verification.')
+        assignment = json.loads(Path(args.assignment_file).read_text())
+        if not isinstance(assignment, dict) or not all(isinstance(assignment.get(k), str) and assignment[k].strip() for k in ['title','description']):
+            raise SystemExit('Assignment requires nonempty title and description.')
     with socket.socket() as probe:
         probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         probe.bind(('127.0.0.1', 4318))
@@ -51,32 +62,38 @@ def main():
     workflow = workflow.replace('active_states: [open]', 'active_states: [Todo]').replace('terminal_states: [closed]', 'terminal_states: [Done]').replace('interval_ms: 30000', 'interval_ms: 1000')
     labels = ['symphony-pilot'] + ([ROLES[args.role][0]] if args.role != 'proof' else [])
     description = 'Harmless restored-host proof'
-    if args.role != 'proof':
+    if assignment:
+        description = assignment['description']
+    elif args.role != 'proof':
         files, description = FIXTURES[args.role]
         encoded = base64.b64encode(json.dumps(files).encode()).decode()
         setup = 'import pathlib,json,base64; files=json.loads(base64.b64decode(' + repr(encoded) + ')); [pathlib.Path(n).write_text(v) for n,v in files.items()]'
         workflow = workflow.replace('    git remote remove origin', '    git remote remove origin\n    python3 -c ' + shlex.quote(setup))
+    baseline = root / 'source-baseline.txt'
+    workflow = workflow.replace('    git remote remove origin', '    git remote remove origin\n    git rev-parse HEAD > ' + shlex.quote(str(baseline)), 1)
     workflow_file = root / 'WORKFLOW.md'
     workflow_file.write_text(workflow)
     flag = root / 'closed.flag'
-    elixir = '''issue = %SymphonyElixir.Tracker.Issue{id: "host-proof", identifier: "HOST-1", title: "Symphony pilot: local proof", description: DESCRIPTION, state: "Todo", labels: LABELS, dispatchable: true}
+    input_data = base64.b64encode(json.dumps({'title':assignment['title'] if assignment else 'Symphony pilot: local proof','description':description,'labels':labels,'flag':str(flag),'args':[ACK,'--logs-root',str(root/'logs'),str(workflow_file)]}).encode()).decode()
+    elixir = '''input = Jason.decode!(Base.decode64!(__INPUT__))
+issue = %SymphonyElixir.Tracker.Issue{id: "host-proof", identifier: "HOST-1", title: input["title"], description: input["description"], state: "Todo", labels: input["labels"], dispatchable: true}
 ignored = %SymphonyElixir.Tracker.Issue{id: "host-ignored", identifier: "IGNORED-1", title: "Unlabeled fixture", state: "Todo", labels: [], dispatchable: true}
 Application.put_env(:symphony_elixir, :memory_tracker_issues, [issue, ignored])
-wait = fn loop -> if File.exists?(FLAG), do: Application.put_env(:symphony_elixir, :memory_tracker_issues, [%{issue | state: "Done"}, ignored]), else: (Process.sleep(100); loop.(loop)) end
+wait = fn loop -> if File.exists?(input["flag"]), do: Application.put_env(:symphony_elixir, :memory_tracker_issues, [%{issue | state: "Done"}, ignored]), else: (Process.sleep(100); loop.(loop)) end
 spawn(fn -> wait.(wait) end)
-SymphonyElixir.CLI.main(ARGS)
-'''.replace('DESCRIPTION', json.dumps(description)).replace('LABELS', json.dumps(labels)).replace('FLAG', json.dumps(str(flag))).replace('ARGS', json.dumps([ACK, '--logs-root', str(root / 'logs'), str(workflow_file)]))
+SymphonyElixir.CLI.main(input["args"])
+'''.replace('__INPUT__', json.dumps(input_data))
     code_file = root / 'launch.exs'
     code_file.write_text(elixir)
     evaluation = "'Elixir.Code':eval_file(<<" + json.dumps(str(code_file)) + ">>)."
     command = [str(release / 'erts-16.4/bin/erlexec'), '-noshell', '-boot_var',
                'RELEASE_LIB', str(release / 'lib'), '-config', str(release / 'releases/0.0.3/sys.config'), '-boot', str(release / 'releases/0.0.3/start_clean'), '-eval', evaluation]
     result = {'run_root': str(root), 'role': args.role, 'authenticated': True, 'artifact_verified': False,
-              'session_completed': False, 'terminal_cleanup': False}
+              'session_completed': False, 'terminal_cleanup': False, 'task_kind': 'codi-assignment' if assignment else 'controlled-fixture'}
     with (root / 'runtime.log').open('w') as log:
         p = subprocess.Popen(command, env=env, cwd=ROOT, stdout=log,
                              stderr=subprocess.STDOUT, start_new_session=True)
-        deadline = time.monotonic() + 120
+        deadline = time.monotonic() + args.seconds
         try:
             while p.poll() is None and time.monotonic() < deadline:
                 for work in workspace.glob('*'):
@@ -84,7 +101,21 @@ SymphonyElixir.CLI.main(ARGS)
                 logs = '\n'.join(x.read_text(errors='replace') for x in (root / 'logs').rglob('symphony.log*') if x.suffix not in ('.idx', '.siz'))
                 result['session_completed'] = result['session_completed'] or 'Codex session completed' in logs
                 if result['session_completed'] and not result['artifact_verified']:
-                    checks = validate(args.role, artifacts / 'HOST-1', workspace / 'HOST-1', codex, env)
+                    if assignment:
+                        result['baseline_source_sha'] = baseline.read_text().strip()
+                        result['source_sha'] = subprocess.check_output(['git','rev-parse','HEAD'],cwd=workspace/'HOST-1',text=True).strip()
+                        try:
+                            claim = json.loads((artifacts/'HOST-1/result.json').read_text())
+                            result['agent_status_claim'] = claim.get('status')
+                            checks = {'structured_report': claim.get('role') == args.role and claim.get('status') in ['complete','partial','blocked'] and all(k in claim for k in ['evidence_paths','tests','blockers','next_owner']), 'summary_present': (artifacts/'HOST-1/summary.md').is_file()}
+                            if args.role in ['qa','reach','operations']:
+                                checks['revision_unchanged'] = result['source_sha'] == result['baseline_source_sha']
+                                status = subprocess.check_output(['git','status','--porcelain','-z','--untracked-files=all'],cwd=workspace/'HOST-1',text=True)
+                                checks['source_unchanged'] = all(x.startswith('?? .symphony-evidence/') for x in status.split('\0') if x)
+                        except (OSError,ValueError):
+                            checks = {'structured_report':False}
+                    else:
+                        checks = validate(args.role, artifacts / 'HOST-1', workspace / 'HOST-1', codex, env)
                     result['artifact_checks'] = checks
                     result['artifact_verified'] = all(checks.values())
                     if not result['artifact_verified']:
