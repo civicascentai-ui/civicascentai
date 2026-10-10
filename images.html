@@ -65,7 +65,7 @@ let lang="en"; const E=id=>document.getElementById(id); const en=E("audioEn"), e
 function current(){return lang==="en"?en:es}
 function stop(){en.pause();es.pause();en.currentTime=0;es.currentTime=0}
 function play(){stop(); const a=current(); a.play().then(()=>E("status").textContent=lang==="en"?"Playing natural voice…":"Reproduciendo voz natural…").catch(()=>E("status").textContent=lang==="en"?"Tap Replay Voice to hear the guide.":"Toca Reproducir voz para escuchar la guía.");}
-function render(){const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";}
+function render(){document.documentElement.lang=lang;const c=content[lang];E("title").textContent=c.title;E("sub").textContent=c.sub;E("copy").textContent=c.copy;E("kicker").textContent=c.kicker;E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";}
 E("play").onclick=play; E("stop").onclick=()=>{stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
 E("lang").onclick=()=>{stop();lang=lang==="en"?"es":"en";render();E("status").textContent=lang==="en"?"Voice guide ready":"Guía de voz lista"};
 [en,es].forEach(a=>a.addEventListener("ended",()=>E("status").textContent=lang==="en"?"Voice complete":"Voz terminada"));
