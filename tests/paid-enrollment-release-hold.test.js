@@ -54,5 +54,6 @@ test('homepage animation preserves accessible content across reduced-motion and 
   assert.match(animation,/if\(ready\)\{background\(0,0\);return;\}/);
   assert.match(animation,/if\(reduced\|\|ready\)background\(0,0\)/);
   assert.match(animation,/if\(reduced\)finish\(\);else run\(\)/);
+  assert.match(animation,/timeline\.forEach\(el=>el\.classList\.add\('on'\)\);\s*background\(0,0\);\s*return;/);
   assert.match(animation,/document\.documentElement\.lang=es\?'es':'en'/);
 });
