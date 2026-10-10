@@ -72,10 +72,10 @@ textarea{min-height:100px}
 <section class="card">
 <h2>What do you want help with?</h2>
 <div class="choice-grid" id="choices">
-<button type="button" class="choice active" data-goal="learn"><b>Learn AI</b>Build confidence from the basics.</button>
-<button type="button" class="choice" data-goal="career"><b>Career & Work</b>Use AI to improve productivity and job readiness.</button>
-<button type="button" class="choice" data-goal="business"><b>Start or Grow a Business</b>Turn an idea into customers, systems, and revenue.</button>
-<button type="button" class="choice" data-goal="community"><b>Community & Organization</b>Plan workshops, training, and partnerships.</button>
+<button type="button" class="choice active" data-goal="learn" aria-pressed="true"><b>Learn AI</b>Build confidence from the basics.</button>
+<button type="button" class="choice" data-goal="career" aria-pressed="false"><b>Career & Work</b>Use AI to improve productivity and job readiness.</button>
+<button type="button" class="choice" data-goal="business" aria-pressed="false"><b>Start or Grow a Business</b>Turn an idea into customers, systems, and revenue.</button>
+<button type="button" class="choice" data-goal="community" aria-pressed="false"><b>Community & Organization</b>Plan workshops, training, and partnerships.</button>
 </div>
 
 <label for="stage">Where are you now?</label>
@@ -161,10 +161,16 @@ textarea{min-height:100px}
 
 <script>
 let goal='learn';
-document.querySelectorAll('.choice[data-goal]').forEach(btn=>btn.addEventListener('click',()=>{
-document.querySelectorAll('.choice[data-goal]').forEach(x=>x.classList.remove('active'));
-btn.classList.add('active'); goal=btn.dataset.goal;
-}));
+const goalButtons=[...document.querySelectorAll('.choice[data-goal]')];
+function selectGoal(selected){
+goalButtons.forEach(button=>{
+const active=button===selected;
+button.classList.toggle('active',active);
+button.setAttribute('aria-pressed',String(active));
+});
+goal=selected.dataset.goal;
+}
+goalButtons.forEach(btn=>btn.addEventListener('click',()=>selectGoal(btn)));
 const plans={
 learn:{
 starting:['Start with one useful task, not every AI feature.',['Choose one everyday task you already do.','Practice one prompt, then improve it with clearer details.','Verify the result before using or sharing it.'],'You can complete the same task with AI three times and explain what changed.'],
@@ -258,6 +264,13 @@ document.getElementById('roadmapOutput').scrollIntoView({behavior:'smooth',block
 
 document.getElementById('resetBtn').addEventListener('click',()=>{
 document.getElementById('situation').value='';
+document.getElementById('stage').value='starting';
+selectGoal(goalButtons.find(button=>button.dataset.goal==='learn'));
+document.getElementById('priority').textContent='';
+document.getElementById('focus').textContent='';
+document.getElementById('actions').innerHTML='';
+document.getElementById('checkpoint').textContent='';
+document.getElementById('emailMentor').href='mailto:info@civicascentai.com';
 document.getElementById('mentorOutput').style.display='none';
 window.scrollTo({top:0,behavior:'smooth'});
 });
