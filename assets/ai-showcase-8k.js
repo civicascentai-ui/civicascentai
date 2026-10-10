@@ -1,7 +1,28 @@
 (()=>{
   const canvas=document.getElementById('cosmos');
   const ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
-  if(!ctx){document.body.classList.add('ready');return;}
+  if(!ctx){
+    document.body.classList.add('ready');
+    const lang=document.getElementById('lang');
+    const replay=document.getElementById('replay');
+    function setFallbackLang(es){
+      document.body.classList.toggle('es',es);
+      document.documentElement.lang=es?'es':'en';
+      lang.textContent=es?'EN':'ES';
+      lang.setAttribute('aria-pressed',String(es));
+      lang.setAttribute('aria-label',es?'Cambiar idioma a inglés':'Switch language to Spanish');
+      replay.setAttribute('aria-label',es?'Repetir animación de introducción':'Replay introduction animation');
+      document.getElementById('home-brand').setAttribute('aria-label',es?'Inicio de CivicAscent AI':'CivicAscent AI home');
+      try{localStorage.setItem('civicascent-lang',es?'es':'en')}catch(e){}
+    }
+    let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
+    setFallbackLang(saved==='es');
+    lang.addEventListener('click',()=>setFallbackLang(!document.body.classList.contains('es')));
+    replay.disabled=true;
+    replay.setAttribute('aria-label','Animation unavailable');
+    replay.title='Animation unavailable';
+    return;
+  }
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cue=document.getElementById('cue');
   const core=document.getElementById('core');
