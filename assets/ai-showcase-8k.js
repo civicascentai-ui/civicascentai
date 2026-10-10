@@ -176,6 +176,7 @@
     if(sec>5.28&&!core.classList.contains('show'))core.classList.add('show');
     if(sec>6.72&&!ready){
       ready=true;document.body.classList.add('ready');
+      flash.classList.remove('fire');core.classList.remove('show');cue.classList.remove('show');
       timeline.forEach(el=>el.classList.add('on'));
       background(0,0);
       return;
@@ -195,7 +196,7 @@
   function finish(){
     cancelAnimationFrame(raf);raf=0;
     ready=true;
-    document.body.classList.add('ready');core.classList.remove('show');timeline.forEach(el=>el.classList.add('on'));
+    document.body.classList.add('ready');flash.classList.remove('fire');core.classList.remove('show');cue.classList.remove('show');timeline.forEach(el=>el.classList.add('on'));
     background(0,0);
   }
 
