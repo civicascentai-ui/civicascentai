@@ -19,8 +19,8 @@ test('paid enrollment is fail-closed before real-world verified delivery',()=>{
 test('the registration content is unchanged and no paid course price claims are repurposed',()=>{
   const en=readFileSync('register.html','utf8');
   const es=readFileSync('registro.html','utf8');
-  assert.match(en,/Register Free/);
-  assert.match(es,/Gratis/);
-  assert.doesNotMatch(en,/https:\/\/buy\.stripe\.com\//);
-  assert.doesNotMatch(es,/https:\/\/buy\.stripe\.com\//);
+  assert.match(en,/Ask About Free Registration/);
+  assert.match(es,/Consultar inscripción gratuita/);
+  assert.doesNotMatch(en,/https:\/\/(?:buy|book)\.stripe\.com\//);
+  assert.doesNotMatch(es,/https:\/\/(?:buy|book)\.stripe\.com\//);
 });
