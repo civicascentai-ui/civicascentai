@@ -95,3 +95,15 @@ test('verified paid learner receives server-streamed QA placeholder, with receip
   assert.equal(receipt?.body.p_outcome,'sent');
   assert.equal(receipt?.body.p_attempt_id,42);
 });
+
+test('Stripe QA redirects use existing receipt page and a real cancel destination',()=>{
+  const route = readFileSync(new URL('../api/create-checkout-session.js',import.meta.url),'utf8');
+  const receipt = readFileSync(new URL('../checkout/success/index.html',import.meta.url),'utf8');
+  const course = readFileSync(new URL('../course.html',import.meta.url),'utf8');
+  assert.match(route,/\/checkout\/success\/\?session_id=\{CHECKOUT_SESSION_ID\}/);
+  assert.match(route,/\/course\.html\?checkout_cancelled=1/);
+  assert.doesNotMatch(route,/\$\{origin\}\/success\?/);
+  assert.doesNotMatch(route,/\$\{origin\}\/cancel`/);
+  assert.match(receipt,/Sandbox checkout received/i);
+  assert.match(course,/CivicAscent AI/);
+});
