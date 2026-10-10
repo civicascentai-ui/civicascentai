@@ -16,11 +16,19 @@ test('paid enrollment is fail-closed before real-world verified delivery',()=>{
   assert.match(es,/precios son propuestos/);
 });
 
-test('the registration content is unchanged and no paid course price claims are repurposed',()=>{
+test('free registration uses inquiry-only links with visible privacy information',()=>{
   const en=readFileSync('register.html','utf8');
   const es=readFileSync('registro.html','utf8');
   assert.match(en,/Ask About Free Registration/);
   assert.match(es,/Consultar inscripción gratuita/);
   assert.doesNotMatch(en,/https:\/\/(?:buy|book)\.stripe\.com\//);
   assert.doesNotMatch(es,/https:\/\/(?:buy|book)\.stripe\.com\//);
+  assert.match(en,/mailto:civicascentai@gmail\.com\?subject=/);
+  assert.match(es,/mailto:civicascentai@gmail\.com\?subject=/);
+  assert.match(en,/href="privacy\.html"/);
+  assert.match(es,/href="privacy\.html"/);
+  const privacy=readFileSync('privacy.html','utf8');
+  assert.match(privacy,/Privacy and Contact/);
+  assert.match(privacy,/civicascentai@gmail\.com/);
+  assert.match(privacy,/Paid enrollment is temporarily unavailable/);
 });
