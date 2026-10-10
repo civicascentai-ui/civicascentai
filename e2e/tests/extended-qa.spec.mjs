@@ -73,7 +73,7 @@ test('course purchase CTAs remain hosted by Stripe; browser QA never purchases',
     const checkout = new URL(value);
     expect(checkout.protocol).toBe('https:');
     expect(checkout.hostname).toBe('buy.stripe.com');
-    expect(checkout.pathname).toMatch(/^\\/test_/);
+    expect(checkout.pathname.startsWith('/test_')).toBe(true);
   }
 
   await expect(page.getByRole('status', { name: 'Sandbox checkout warning' })).toContainText('INTERNAL QA PREVIEW ONLY');
