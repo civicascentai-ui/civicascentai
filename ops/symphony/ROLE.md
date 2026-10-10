@@ -43,11 +43,19 @@ against patch contents before deciding whether a patch is complete. Evidence
 over 2 MiB is skipped; such changes require a partial/blocked result and a
 separate bounded artifact plan before task cleanup.
 
-Verification boundary: the earlier real proof task passed. Expanded role routing
-and export controls have local automated checks. A real completed task for each
-expanded role, authenticated native GitHub dispatch, and always-on operation
-are still unverified. This package is configured and reviewable, not a claim of
-operational completion for those remaining checks.
+Verification boundary (October 10, 2026): all four expanded roles completed
+real authenticated Codex tasks on controlled fixtures, with independent evidence
+checks, terminal cleanup, zero queue counts and stopped process groups. Engineering
+passed two independent tests with the supplied tests unchanged. QA reported both
+markup defects without changing the fixture. Reach cited the supplied synthetic
+source and did not send outreach. Operations preserved recorded completion,
+evidence reference, blocker and CODI ownership without treating recorded claims
+as independently verified outcomes. These are fixture checks, not client acceptance.
+
+Public repository reads can use the GET-only memory bridge without a GitHub token.
+Matching live GitHub issue task dispatch and authenticated native GitHub dispatch
+remain unverified. Continuous operation remains unverified; this host is bounded
+and resumable. No existing issue has been activated by this package.
 
 Sources: [Symphony v0.0.3 specification](https://github.com/openai/symphony/blob/v0.0.3/SPEC.md)
 (required-label matching, workspace hooks and failure semantics), repository

@@ -9,10 +9,13 @@ import time
 import urllib.error
 import urllib.request
 import uuid
+import base64
+import shlex
 from pathlib import Path
-from roles import render_workflow
+from roles import render_workflow, ROLES
 from export_artifacts import export_workspace
 from host_check import check
+from role_fixtures import FIXTURES, validate
 
 ROOT = Path(__file__).resolve().parent
 ACK = '--i-understand-that-this-will-be-running-without-the-usual-guardrails'
@@ -21,8 +24,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--profile', required=True)
     parser.add_argument('--release', required=True)
+    parser.add_argument('--role', choices=['proof', *ROLES], default='proof')
     args = parser.parse_args()
     with socket.socket() as probe:
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         probe.bind(('127.0.0.1', 4318))
     release = Path(args.release).resolve()
     codex = ROOT / '.runtime/codex/node_modules/.bin/codex'
@@ -40,26 +45,33 @@ def main():
     root.mkdir(parents=True)
     workspace = root / 'workspaces'
     artifacts = root / 'artifacts'
-    workflow = render_workflow((ROOT / 'WORKFLOW.md').read_text(), 'proof', workspace,
+    workflow = render_workflow((ROOT / 'WORKFLOW.md').read_text(), args.role, workspace,
                                 artifacts, ROOT / 'export_artifacts.py', True)
     workflow = workflow.replace('kind: github\n  provider:\n    repo: civicascentai-ui/civicascentai\n    token: $SYMPHONY_GITHUB_TOKEN', 'kind: memory')
     workflow = workflow.replace('active_states: [open]', 'active_states: [Todo]').replace('terminal_states: [closed]', 'terminal_states: [Done]').replace('interval_ms: 30000', 'interval_ms: 1000')
+    labels = ['symphony-pilot'] + ([ROLES[args.role][0]] if args.role != 'proof' else [])
+    description = 'Harmless restored-host proof'
+    if args.role != 'proof':
+        files, description = FIXTURES[args.role]
+        encoded = base64.b64encode(json.dumps(files).encode()).decode()
+        setup = 'import pathlib,json,base64; files=json.loads(base64.b64decode(' + repr(encoded) + ')); [pathlib.Path(n).write_text(v) for n,v in files.items()]'
+        workflow = workflow.replace('    git remote remove origin', '    git remote remove origin\n    python3 -c ' + shlex.quote(setup))
     workflow_file = root / 'WORKFLOW.md'
     workflow_file.write_text(workflow)
     flag = root / 'closed.flag'
-    elixir = '''issue = %SymphonyElixir.Tracker.Issue{id: "host-proof", identifier: "HOST-1", title: "Symphony pilot: local proof", description: "Harmless restored-host proof", state: "Todo", labels: ["symphony-pilot"], dispatchable: true}
+    elixir = '''issue = %SymphonyElixir.Tracker.Issue{id: "host-proof", identifier: "HOST-1", title: "Symphony pilot: local proof", description: DESCRIPTION, state: "Todo", labels: LABELS, dispatchable: true}
 ignored = %SymphonyElixir.Tracker.Issue{id: "host-ignored", identifier: "IGNORED-1", title: "Unlabeled fixture", state: "Todo", labels: [], dispatchable: true}
 Application.put_env(:symphony_elixir, :memory_tracker_issues, [issue, ignored])
 wait = fn loop -> if File.exists?(FLAG), do: Application.put_env(:symphony_elixir, :memory_tracker_issues, [%{issue | state: "Done"}, ignored]), else: (Process.sleep(100); loop.(loop)) end
 spawn(fn -> wait.(wait) end)
 SymphonyElixir.CLI.main(ARGS)
-'''.replace('FLAG', json.dumps(str(flag))).replace('ARGS', json.dumps([ACK, '--logs-root', str(root / 'logs'), str(workflow_file)]))
+'''.replace('DESCRIPTION', json.dumps(description)).replace('LABELS', json.dumps(labels)).replace('FLAG', json.dumps(str(flag))).replace('ARGS', json.dumps([ACK, '--logs-root', str(root / 'logs'), str(workflow_file)]))
     code_file = root / 'launch.exs'
     code_file.write_text(elixir)
     evaluation = "'Elixir.Code':eval_file(<<" + json.dumps(str(code_file)) + ">>)."
     command = [str(release / 'erts-16.4/bin/erlexec'), '-noshell', '-boot_var',
                'RELEASE_LIB', str(release / 'lib'), '-config', str(release / 'releases/0.0.3/sys.config'), '-boot', str(release / 'releases/0.0.3/start_clean'), '-eval', evaluation]
-    result = {'run_root': str(root), 'authenticated': True, 'proof_exact': False,
+    result = {'run_root': str(root), 'role': args.role, 'authenticated': True, 'artifact_verified': False,
               'session_completed': False, 'terminal_cleanup': False}
     with (root / 'runtime.log').open('w') as log:
         p = subprocess.Popen(command, env=env, cwd=ROOT, stdout=log,
@@ -70,10 +82,14 @@ SymphonyElixir.CLI.main(ARGS)
                 for work in workspace.glob('*'):
                     export_workspace(work, artifacts)
                 logs = '\n'.join(x.read_text(errors='replace') for x in (root / 'logs').rglob('symphony.log*') if x.suffix not in ('.idx', '.siz'))
-                proof = artifacts / 'HOST-1/smoke-result.txt'
-                result['proof_exact'] = result['proof_exact'] or (proof.is_file() and proof.read_text() == 'SYMPHONY_CIVICASCENT_PASS\n')
                 result['session_completed'] = result['session_completed'] or 'Codex session completed' in logs
-                if result['proof_exact'] and result['session_completed'] and not flag.exists():
+                if result['session_completed'] and not result['artifact_verified']:
+                    checks = validate(args.role, artifacts / 'HOST-1', workspace / 'HOST-1', codex, env)
+                    result['artifact_checks'] = checks
+                    result['artifact_verified'] = all(checks.values())
+                    if not result['artifact_verified']:
+                        break
+                if result['artifact_verified'] and result['session_completed'] and not flag.exists():
                     flag.write_text('Done')
                 try:
                     with urllib.request.urlopen('http://127.0.0.1:4318/api/v1/state', timeout=2) as response:
@@ -109,7 +125,7 @@ SymphonyElixir.CLI.main(ARGS)
             break
         time.sleep(0.1)
     result['runtime_stopped'] = p.poll() is not None and stopped
-    required = ['authenticated', 'proof_exact', 'session_completed', 'terminal_cleanup', 'queue_zero', 'unlabeled_ignored', 'runtime_stopped']
+    required = ['authenticated', 'artifact_verified', 'session_completed', 'terminal_cleanup', 'queue_zero', 'unlabeled_ignored', 'runtime_stopped']
     result['passed'] = all(result.get(k) is True for k in required)
     (root / 'result.json').write_text(json.dumps(result, indent=2))
     print(json.dumps(result, indent=2))

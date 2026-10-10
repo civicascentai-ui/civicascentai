@@ -36,6 +36,7 @@ def render_workflow(template, role, workspace_root, evidence_root, exporter, dro
         prompt = ('You are the CivicAscent Symphony ' + role + ' worker.\n'
                   'Issue: {{ issue.identifier }}\nTitle: {{ issue.title }}\n'
                   'Description: {{ issue.description }}\n\n' + COMMON + '\n' + task + '\n')
+        prompt += 'In result.json set role to exactly ' + json.dumps(role) + '.\n'
     if drop_caps:
         header = header.replace('command: codex app-server',
           'command: setpriv --bounding-set=-all --inh-caps=-all --ambient-caps=-all codex app-server')

@@ -25,6 +25,8 @@ def main():
     parser.add_argument('--preflight-only', action='store_true')
     parser.add_argument('--role', choices=['proof', *ROLES], default='proof')
     parser.add_argument('--drop-linux-capabilities', action='store_true')
+    parser.add_argument('--public-tracker', action='store_true')
+    parser.add_argument('--release')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 300:
         raise SystemExit('Pilot duration must be between 1 and 300 seconds.')
@@ -43,6 +45,10 @@ def main():
         raise SystemExit('BLOCKED: use a separate auth-only Codex profile.')
     if not normalize_profile_config(profile, ROOT):
         raise SystemExit('BLOCKED: pilot profile contains unsupported integrations or configuration.')
+    if args.public_tracker:
+        from public_runner import run
+        run(args, profile)
+        return
     token = os.environ.get('SYMPHONY_GITHUB_TOKEN')
     if not token:
         raise SystemExit('BLOCKED: host-side read-only SYMPHONY_GITHUB_TOKEN is missing.')
@@ -63,6 +69,7 @@ def main():
         return
     try:
         with socket.socket() as probe:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             probe.bind(('127.0.0.1', 4318))
     except OSError:
         raise SystemExit('BLOCKED: port 4318 already in use; evidence must come from this run.')

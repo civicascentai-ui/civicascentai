@@ -64,8 +64,8 @@ CLI authentication and a write-confinement probe. The fresh smoke uses the
 official extracted release with static memory fixtures; it verifies real agent
 output, excluded unlabeled work, cleanup and process-group shutdown. This does
 not substitute for authenticated native GitHub dispatch. Its per-run evidence
-is under `ops/evidence/host-smoke-<unique>/`. Launcher use still requires the
-host-side read-only GitHub token; no always-on process or new account is created.
+is under `ops/evidence/host-smoke-<unique>/`. The native GitHub launcher requires a read-only token; the public bridge below
+uses credential-free public reads. No always-on process or new account is created.
 
 Codex can persist project trust entries during a task. Before launch, the package
 removes only trust metadata for its own disposable workspace roots and preserves
@@ -130,3 +130,26 @@ and preserve a true proof result through cleanup.
 
 The installation tests and real-agent result are recorded separately; a local
 in-memory tracker test does not establish GitHub tracker authentication.
+
+## Public repository workaround — October 10, 2026
+
+The fixed CivicAscent repository is public. On the existing host, use GET-only
+public polling and the official memory tracker boundary instead of a tracker token:
+
+```sh
+CODEX_HOME=/vercel/civicascent-symphony/auth python3 /vercel/civicascent-symphony/ops/run_pilot.py --public-tracker --role qa --seconds 75 --release /vercel/.local/share/.burrito/symphony_erts-16.4_0.0.3
+```
+
+The bridge verifies public visibility and complete all-state pagination, excludes
+PRs, validates issue identities and scope, publishes snapshots atomically, and
+retains the last good snapshot on errors. Disappeared issues cause a stop; only an
+explicit closed state supports terminal cleanup. Polling occurs every 60 seconds,
+fetches have a 40-second deadline, and snapshots expire after 125 seconds. API
+errors, low rate budget, stale snapshots, runtime crashes and operator blocks
+fail the run. It has no GitHub write tools and sends no Authorization header.
+
+A successful bounded polling result certifies API ingestion and runtime health,
+not completion of a labeled task. No current issues have the activation labels.
+The four expanded roles separately passed real controlled-fixture tasks with
+independent checks. Live issue dispatch and 24/7 operation remain unverified.
+Run all local checks with `python3 -m unittest discover -s ops/symphony -p 'test_*.py'`.
