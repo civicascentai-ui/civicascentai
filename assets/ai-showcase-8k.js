@@ -18,12 +18,11 @@
     }
     let saved='';try{saved=localStorage.getItem('civicascent-lang')||''}catch(e){}
     setFallbackLang(saved==='es');
-    lang.addEventListener('click',()=>setFallbackLang(!document.body.classList.contains('es')));
     replay.disabled=true;
     const unavailable=()=>document.body.classList.contains('es')?'Animación no disponible':'Animation unavailable';
-    replay.setAttribute('aria-label',unavailable());
-    replay.title=unavailable();
-    lang.addEventListener('click',()=>{replay.setAttribute('aria-label',unavailable());replay.title=unavailable()});
+    function updateReplay(){replay.setAttribute('aria-label',unavailable());replay.title=unavailable()}
+    updateReplay();
+    lang.addEventListener('click',()=>{setFallbackLang(!document.body.classList.contains('es'));updateReplay()});
     return;
   }
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
