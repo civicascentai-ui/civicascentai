@@ -31,6 +31,10 @@ jobs:
           python-version: "3.12"
       - name: Validate five project-local Claude skills
         run: node e2e/verify-skills.mjs
+      - name: Install checkout QA dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Run checkout and learner-access safety tests
+        run: npm test
       - name: Install isolated browser QA dependencies
         working-directory: e2e
         run: npm install --ignore-scripts --no-audit --no-fund
