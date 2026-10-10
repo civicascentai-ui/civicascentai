@@ -190,7 +190,8 @@
   }
 
   function finish(){
-    cancelAnimationFrame(raf);
+    cancelAnimationFrame(raf);raf=0;
+    ready=true;
     document.body.classList.add('ready');core.classList.remove('show');timeline.forEach(el=>el.classList.add('on'));
     background(0,0);
   }
