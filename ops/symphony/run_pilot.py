@@ -14,6 +14,7 @@ import urllib.request
 from pathlib import Path
 from roles import ROLES, render_workflow
 from export_artifacts import export_workspace
+from profile_config import normalize_profile_config
 
 ROOT = Path(__file__).resolve().parent
 ACK = '--i-understand-that-this-will-be-running-without-the-usual-guardrails'
@@ -40,11 +41,8 @@ def main():
     profile = Path(profile_name).resolve()
     if profile == (Path.home() / '.codex').resolve():
         raise SystemExit('BLOCKED: use a separate auth-only Codex profile.')
-    if (profile / 'config.toml').exists():
-        conf = tomllib.loads((profile / 'config.toml').read_text())
-        allowed_config = {'approval_policy', 'sandbox_mode', 'openai_base_url', 'chatgpt_base_url'}
-        if set(conf) - allowed_config:
-            raise SystemExit('BLOCKED: pilot profile contains unsupported integrations or configuration.')
+    if not normalize_profile_config(profile, ROOT):
+        raise SystemExit('BLOCKED: pilot profile contains unsupported integrations or configuration.')
     token = os.environ.get('SYMPHONY_GITHUB_TOKEN')
     if not token:
         raise SystemExit('BLOCKED: host-side read-only SYMPHONY_GITHUB_TOKEN is missing.')

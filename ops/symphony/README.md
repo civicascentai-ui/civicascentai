@@ -67,6 +67,11 @@ not substitute for authenticated native GitHub dispatch. Its per-run evidence
 is under `ops/evidence/host-smoke-<unique>/`. Launcher use still requires the
 host-side read-only GitHub token; no always-on process or new account is created.
 
+Codex can persist project trust entries during a task. Before launch, the package
+removes only trust metadata for its own disposable workspace roots and preserves
+allowed scalar settings. Unrelated project trust or integration settings are
+refused unchanged. Authentication credentials are neither read nor exported.
+
 ## Controls and limitations
 
 - Dashboard binds to `127.0.0.1:4318`; do not expose it publicly.

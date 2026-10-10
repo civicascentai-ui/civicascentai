@@ -9,6 +9,7 @@ import tempfile
 import tomllib
 from pathlib import Path
 from install import SYMPHONY_SHA256, CODEX_VERSION
+from profile_config import normalize_profile_config
 
 ROOT = Path(__file__).resolve().parent
 
@@ -20,9 +21,7 @@ def check(profile, binary, codex):
     result = {'isolated_profile': profile != (Path.home() / '.codex').resolve(),
               'binary_checksum': hashlib.sha256(Path(binary).read_bytes()).hexdigest() == SYMPHONY_SHA256,
               'capability_drop_available': bool(shutil.which('setpriv'))}
-    config = profile / 'config.toml'
-    conf = tomllib.loads(config.read_text()) if config.exists() else {}
-    result['profile_config_allowed'] = not (set(conf) - {'approval_policy', 'sandbox_mode', 'openai_base_url', 'chatgpt_base_url'})
+    result['profile_config_allowed'] = normalize_profile_config(profile, ROOT) if result['isolated_profile'] else False
     if not result['isolated_profile'] or not result['profile_config_allowed']:
         result['passed'] = False
         return result

@@ -6,6 +6,7 @@ from pathlib import Path
 from export_artifacts import export_workspace, MAX_BYTES
 from roles import ROLES, render_workflow
 from host_check import check
+from profile_config import normalize_profile_config
 
 TEMPLATE = (Path(__file__).parent / 'WORKFLOW.md').read_text()
 
@@ -70,6 +71,20 @@ class RoleChecks(unittest.TestCase):
             self.assertEqual(export_workspace(workspace, root / 'export'), [])
 
 class HostProfileChecks(unittest.TestCase):
+    def test_only_scoped_generated_trust_is_removed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            profile = root / 'auth'
+            profile.mkdir()
+            config = profile / 'config.toml'
+            work = root / 'ops/evidence/run-1/workspaces/HOST-1'
+            config.write_text('sandbox_mode="workspace-write"\n[projects."' + str(work) + '"]\ntrust_level="trusted"\n')
+            self.assertTrue(normalize_profile_config(profile, root / 'ops'))
+            self.assertEqual(config.read_text(), 'sandbox_mode = "workspace-write"\n')
+            original = '[projects."/production/workspaces/site"]\ntrust_level="trusted"\n'
+            config.write_text(original)
+            self.assertFalse(normalize_profile_config(profile, root / 'ops'))
+            self.assertEqual(config.read_text(), original)
     def test_default_profile_refused_before_cli_execution(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
