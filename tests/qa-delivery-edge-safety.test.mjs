@@ -189,3 +189,11 @@ test('QA learner accepts Supabase Magic Link and numeric OTP without trusting a 
   assert.doesNotMatch(page,/localStorage|sessionStorage|document\.cookie/);
   assert.doesNotMatch(page,/sk_live_|sk_test_|whsec_|SUPABASE_SERVICE_ROLE_KEY/);
 });
+
+test('Supabase email callback uses the stable protected QA branch alias',()=>{
+  const page=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  assert.match(page,/const redirectTo="https:\/\/civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai\.vercel\.app\/qa\/learner-access\.html"/);
+  assert.doesNotMatch(page,/const redirectTo=location\.origin\+location\.pathname/);
+  assert.match(page,/encodeURIComponent\(redirectTo\)/);
+  assert.match(page,/history\.replaceState\(null,''/);
+});
