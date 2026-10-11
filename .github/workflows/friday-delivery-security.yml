@@ -7,6 +7,14 @@ on:
       - "supabase/functions/qa-verified-course-delivery-check/**"
       - "tests/qa-delivery-edge-safety.test.mjs"
       - ".github/workflows/friday-delivery-security.yml"
+  pull_request:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - "supabase/functions/qa-verified-course-delivery-check/**"
+      - "tests/qa-delivery-edge-safety.test.mjs"
+      - "api/create-checkout-session.js"
+      - ".github/workflows/friday-delivery-security.yml"
   workflow_dispatch:
 permissions:
   contents: read
