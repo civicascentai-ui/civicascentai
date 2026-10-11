@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Internal QA-only Stripe test-mode functions and static learner preview",
   "scripts": {
-    "test:qa": "node --test tests/qa-api-sandbox-guards.test.mjs tests/qa-delivery-edge-safety.test.mjs"
+    "test:qa": "node --test tests/qa-api-sandbox-guards.test.mjs tests/qa-webhook-rpc-safety.test.mjs tests/qa-delivery-edge-safety.test.mjs"
   },
   "dependencies": {
     "stripe": "22.1.1"
