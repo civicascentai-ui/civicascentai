@@ -2,10 +2,24 @@
 // This does not submit a card, purchase, grant entitlement, or assert delivery.
 import assert from 'node:assert/strict';
 
-const origin = 'https://civicascentai-launch-gcw34sbrh-civicascentai.vercel.app';
+// Default to the stable QA branch alias, not an older immutable preview build.
+// An authorized runner may specify a current CivicAscent QA deployment via env.
+const stableQaOrigin = 'https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app';
+const origin = process.env.QA_PREVIEW_ORIGIN || stableQaOrigin;
 const allowed = new URL(origin);
 assert.equal(allowed.protocol, 'https:');
-assert.match(allowed.hostname, /^civicascentai-launch-[a-z0-9]+-civicascentai\.vercel\.app$/);
+assert.equal(allowed.username, '');
+assert.equal(allowed.password, '');
+assert.equal(allowed.port, '');
+assert.equal(allowed.pathname, '/');
+assert.equal(allowed.search, '');
+assert.equal(allowed.hash, '');
+assert.ok(
+  allowed.hostname === new URL(stableQaOrigin).hostname ||
+  /^civicascentai-launch-[a-z0-9]+-civicascentai\.vercel\.app$/.test(allowed.hostname),
+  'Checkout QA origin must be an approved CivicAscent Vercel QA deployment.'
+);
+console.log('CivicAscent QA preview host: ' + allowed.hostname);
 const api = new URL('/api/create-checkout-session', origin);
 
 async function check(method, body, expected) {
