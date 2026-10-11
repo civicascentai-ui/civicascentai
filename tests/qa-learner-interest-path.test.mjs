@@ -64,3 +64,16 @@ test('learner experience uses responsive layout and accessible focus states', ()
   assert.match(css,/:focus-visible/);
   assert.match(css, /prefers-reduced-motion/);
 });
+
+test('free AI starter fallback delivers readable content without seller checkout', () => {
+  const page = read('free-ai-starter.html');
+  assert.match(interest, /href="free-ai-starter\.html"/);
+  assert.match(page, /AI SKILLS START HERE/);
+  assert.match(page, /NO PAYMENT REQUIRED/);
+  assert.match(page, /Your three-minute practice/);
+  assert.match(page, /fact|verify/i);
+  assert.match(page, /@media print/);
+  assert.match(page, /window\.print\(\)/);
+  assert.doesNotMatch(page, /checkout\.stripe\.com|book\.stripe\.com|payhip\.com|<form\b/i);
+  assert.match(page, /Not an enrollment offer/i);
+});
