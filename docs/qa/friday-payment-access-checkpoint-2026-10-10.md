@@ -25,3 +25,23 @@
 **Sources for technical requirements:** https://supabase.com/docs/guides/auth/auth-email-passwordless and https://docs.stripe.com/automated-testing
 
 This document records executed read-only checks and the staging database rollback transaction; it is not a production-ready signoff.
+
+## Supabase Auth redirect root-cause evidence | 2026-10-11 UTC
+
+- Submitted exactly one QA email sign-in request to the **QA** Supabase Auth public endpoint (not production) for the authorized work inbox. GitHub Actions [run #38103121050](https://github.com/civicascentai-ui/civicascentai/actions/runs/38103121050) recorded HTTP **200**, and the work inbox received the expected Supabase confirmation message.
+- The new QA Auth user remains **unverified**. The email's link target was inspected **without exposing, opening, or recording any token**. Its `redirect_to` pointed to **`http://localhost:3000`**, not the requested protected preview. Therefore the requested QA redirect is **not currently accepted**; successful email delivery is not a working authentication return.
+- The protected QA branch already has a persistent Vercel alias: `https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app`. Verified its `/qa/learner-access.html` returns HTTP 200 with the intended QA authentication UI.
+- Updated QA `qa/learner-access.html` to use the **full stable callback URL**, rather than the changing deployment hostname; added a regression test. Future email callback targets no longer drift when Vercel publishes a new preview.
+- Retired the one-time email-preflight script/workflow after its successful test, preventing unintentional repeat emails. No tokens were committed, displayed in logs, or pasted into chat.
+
+### Precise remaining account-setting change (QA project only)
+
+In Supabase QA Staging project `lpdvvgdejbsgurtqmrub`, open **Authentication → URL Configuration**. Add the exact redirect URL:
+
+`https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app/qa/learner-access.html`
+
+Set Site URL to the same QA origin **only if** other QA authentication flows do not depend on the current setting. Do not change the production Supabase project. The native Supabase connection currently exposes no action that edits this managed Auth setting; no paid browser credits were used to attempt it.
+
+### Next independent release checks
+
+After the Auth URL change, request a **fresh** email sign-in and confirm the mailed link's redirect target is the stable QA alias (without disclosing token values). A user with access to the test inbox must then complete email verification and a standard Stripe sandbox checkout to the same address; inspect signed webhook events, entitlement, private QA placeholder, issued and sent download receipt, and refund/revocation. **0/25** verified paid-to-file tests until those steps finish. Production remains on HOLD.
