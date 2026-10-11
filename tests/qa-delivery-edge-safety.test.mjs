@@ -216,3 +216,19 @@ test('checkout live-preview probe targets current QA branch and never weakens pr
   assert.match(probe,/VERCEL_PROTECTION_BLOCKED/);
   assert.doesNotMatch(probe,/civicascentai-launch-gcw34sbrh/);
 });
+
+test('protected checkout probe uses repository-scoped short-lived OIDC without bypass secrets',()=>{
+  const probe=readFileSync(new URL('../qa/e2e/qa-checkout-session-contract.mjs',import.meta.url),'utf8');
+  const workflow=readFileSync(new URL('../.github/workflows/qa-checkout-live-preview.yml',import.meta.url),'utf8');
+  assert.match(probe,/process\.env\.QA_GITHUB_OIDC_TOKEN/);
+  assert.match(probe,/x-vercel-trusted-oidc-idp-token/);
+  assert.match(probe,/oidcToken\.length <= 8192/);
+  assert.match(probe,/VERCEL_PROTECTION_BLOCKED/);
+  assert.match(workflow,/id-token: write/);
+  assert.match(workflow,/core\.getIDToken\(\)/);
+  assert.match(workflow,/core\.setSecret\(token\)/);
+  assert.match(workflow,/github\.event_name != 'pull_request'/);
+  assert.match(workflow,/github\.ref == 'refs\/heads\/qa\/friday-secure-delivery-20261010'/);
+  assert.doesNotMatch(workflow,/VERCEL_AUTOMATION_BYPASS_SECRET|x-vercel-protection-bypass/i);
+  assert.doesNotMatch(probe,/_vercel_share|x-vercel-protection-bypass/i);
+});
