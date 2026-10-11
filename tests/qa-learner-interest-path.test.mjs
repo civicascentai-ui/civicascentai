@@ -17,7 +17,7 @@ test('both learner pages are separate, reachable and clearly labelled', () => {
   assert.match(questions,/href="learner-interest\.html"/);
   assert.match(interest,/About CivicAscent AI/);
   assert.match(questions,/Questions & answers/);
-  assert.match(interest,/No checkout\./);
+  assert.match(interest,/No payment required on this page\./);
 });
 
 test('forms collect only minimal voluntary contact details; no server-side storage is claimed', () => {
@@ -39,10 +39,14 @@ test('forms collect only minimal voluntary contact details; no server-side stora
 });
 
 test('QA email flow never invokes paid checkout or silently transmits a lead', () => {
-  for (const source of [interest, questions, js]) {
+  for (const source of [questions, js]) {
     assert.doesNotMatch(source,/(?:https?:\/\/)(?:payhip\.com|checkout\.stripe\.com|book\.stripe\.com|api\.stripe\.com)/i);
     assert.doesNotMatch(source,/\b(?:localStorage|sessionStorage|XMLHttpRequest|sendBeacon)\b/);
   }
+  assert.match(interest,/href="https:\/\/payhip\.com\/b\/MYWad"/);
+  assert.equal((interest.match(/https:\/\/payhip\.com\//g)||[]).length,1, 'Only the verified free hosted flyer URL is allowed in the QA splash');
+  assert.match(interest,/The optional free PDF download opens Payhip, which requests an email for delivery/);
+  assert.doesNotMatch(interest,/checkout\.stripe\.com|book\.stripe\.com|api\.stripe\.com/i);
   assert.doesNotMatch(js,/\bfetch\s*\(/);
   assert.match(js,/window\.location\.assign\(draft\.url\)/);
   assert.match(js,/mailto:/);
