@@ -100,11 +100,18 @@ $('otpForm').addEventListener('submit',async event=>{
     // Must be allowlisted in Supabase QA Auth URL Configuration.
     const redirectTo="https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app/qa/learner-access.html";
     const response=await request('/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{email,create_user:true});
-    if(!response.ok)throw Error('Email verification could not be requested.');
+    if(response.status===429){
+      status('Too many sign-in emails requested. Supabase is temporarily limiting email sends. Wait for the limit to reset, then request just one new email. Do not use an older link.');
+      return;
+    }
+    if(!response.ok){
+      status('The QA sign-in email was not sent. Check the Supabase authentication service or ask the QA team to inspect the error logs.');
+      return;
+    }
     verifiedEmail=email;
     $('verifySection').style.display='block';
-    status('Check your email for a secure sign-in link or a verification code. Only trusted, configured QA redirect URLs will return to this page.');
-  }catch{status('Sign-in request unavailable. Check sandbox email authentication configuration.');}
+    status('Check your email for the newest secure sign-in link or verification code. Older links may no longer work.');
+  }catch{status('Could not reach the QA authentication service. Check your connection and try again later.');}
   finally{$('request').disabled=false;}
 });
 $('verifySection').addEventListener('submit',async event=>{
