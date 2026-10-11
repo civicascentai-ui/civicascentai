@@ -1,0 +1,27 @@
+name: QA checkout live-preview contract
+on:
+  push:
+    branches:
+      - qa/friday-secure-delivery-20261010
+    paths:
+      - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - '.github/workflows/qa-checkout-live-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: qa-checkout-live-preview-single-session
+  cancel-in-progress: true
+jobs:
+  test-only-checkout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify one preview checkout session without a payment
+        run: node qa/e2e/qa-checkout-session-contract.mjs
