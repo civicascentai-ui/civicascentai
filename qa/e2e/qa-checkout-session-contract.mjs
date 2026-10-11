@@ -17,6 +17,12 @@ async function check(method, body, expected) {
     signal: AbortSignal.timeout(25000)
   });
   console.log(method + ' ' + (body?.product_code||'') + ': HTTP ' + response.status);
+  if ([301,302,303,307,308,401,403].includes(response.status)) {
+    // Do not follow the SSO redirect or relax preview protection.
+    console.error('VERCEL_PROTECTION_BLOCKED: Runner lacks authenticated preview access.');
+    console.error('Use an authorized Vercel CLI session or approved origin-scoped OIDC access.');
+    throw Error('E2E QA blocked by protected preview before the API was tested.');
+  }
   assert.equal(response.status, expected,
     'QA contract mismatch. No payment or delivery has been executed.');
   if (method !== 'POST' || expected !== 200) return;
