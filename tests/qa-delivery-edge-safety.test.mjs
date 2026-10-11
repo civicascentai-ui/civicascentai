@@ -242,3 +242,19 @@ test('QA push OIDC probe is not cancelled by pull-request source checks',()=>{
   assert.match(workflow,/if: github\.event_name != 'pull_request' && github\.ref == 'refs\/heads\/qa\/friday-secure-delivery-20261010'/);
   assert.doesNotMatch(workflow,/group: qa-checkout-live-preview-single-session/);
 });
+
+test('verified learner auto-prepares paid private QA README without a second UI step',()=>{
+  const page=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  const auto=(page.match(/void fetchQaFile\(\);/g)||[]).length;
+  assert.equal(auto,2,'Magic Link and OTP must both auto-trigger QA-only delivery after verification');
+  assert.match(page,/if\(!accessToken\)return status\('Verify your email first\.'\)/);
+  assert.match(page,/qa-verified-course-delivery-check/);
+  assert.match(page,/X-CivicAscent-Artifact/);
+  assert.match(page,/file\.size<1 \|\| file\.size>1048576/);
+  assert.match(page,/id="fileReady" hidden/);
+  assert.match(page,/id="fileLink"/);
+  assert.match(page,/link\.click\(\)/);
+  assert.match(page,/Mobile webviews may block automatic downloads/);
+  assert.match(page,/This is the secured QA README, not the free flyer or the paid course package/);
+  assert.doesNotMatch(page,/localStorage|sessionStorage|document\.cookie|sk_live_|sk_test_|SUPABASE_SERVICE_ROLE_KEY/);
+});
