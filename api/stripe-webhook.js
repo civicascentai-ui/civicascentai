@@ -7,6 +7,9 @@ async function rpc(name,args){
     method:'POST',headers:{apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify(args)
   });
   if(!r.ok)throw new Error(`Database RPC ${name} failed: HTTP ${r.status}`);
+  const accepted=await r.json();
+  if(accepted!==true)throw new Error(`Database rejected QA webhook event in ${name}`);
+  return accepted;
 }
 export const config={api:{bodyParser:false}};
 async function readRaw(stream){const chunks=[];let size=0;for await(const chunk of stream){size+=chunk.length;if(size>1024*1024)throw new Error('Oversized webhook');chunks.push(chunk);}return Buffer.concat(chunks);}
