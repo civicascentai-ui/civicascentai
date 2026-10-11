@@ -6,6 +6,12 @@ on:
     paths:
       - 'qa/e2e/qa-checkout-session-contract.mjs'
       - '.github/workflows/qa-checkout-live-preview.yml'
+  pull_request:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - '.github/workflows/qa-checkout-live-preview.yml'
   workflow_dispatch:
 permissions:
   contents: read
