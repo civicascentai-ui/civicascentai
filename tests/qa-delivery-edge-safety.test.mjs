@@ -258,3 +258,29 @@ test('verified learner auto-prepares paid private QA README without a second UI 
   assert.match(page,/This is the secured QA README, not the free flyer or the paid course package/);
   assert.doesNotMatch(page,/localStorage|sessionStorage|document\.cookie|sk_live_|sk_test_|SUPABASE_SERVICE_ROLE_KEY/);
 });
+
+test('allowed QA browser may read the private artifact marker via CORS expose headers',async()=>{
+  const allowed='https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app';
+  const {response}=await exercise({origin:allowed});
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('Access-Control-Allow-Origin'),allowed);
+  const exposed=response.headers.get('Access-Control-Expose-Headers')||'';
+  assert.match(exposed,/X-CivicAscent-Artifact/i);
+  assert.equal(response.headers.get('X-CivicAscent-Artifact'),'placeholder-not-course');
+  assert.equal(await response.text(),'QA PLACEHOLDER ONLY');
+  assert.doesNotMatch(exposed,/authorization|set-cookie|apikey|token/i);
+});
+test('QA preflight exposes artifact marker but never permits an unapproved origin',async()=>{
+  const allowed='https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app';
+  const allowedPreflight=await handler(new Request('https://qa.example.supabase.co/functions/v1/qa-verified-course-delivery-check',{
+    method:'OPTIONS',headers:{Origin:allowed,'Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'authorization,content-type,apikey'}
+  }));
+  assert.equal(allowedPreflight.status,204);
+  assert.equal(allowedPreflight.headers.get('Access-Control-Allow-Origin'),allowed);
+  assert.match(allowedPreflight.headers.get('Access-Control-Expose-Headers')||'',/X-CivicAscent-Artifact/i);
+  const badPreflight=await handler(new Request('https://qa.example.supabase.co/functions/v1/qa-verified-course-delivery-check',{
+    method:'OPTIONS',headers:{Origin:'https://random.example.invalid','Access-Control-Request-Method':'POST'}
+  }));
+  assert.equal(badPreflight.status,403);
+  assert.equal(badPreflight.headers.get('Access-Control-Allow-Origin'),null);
+});
