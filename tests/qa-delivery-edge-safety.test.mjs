@@ -135,3 +135,20 @@ test('streaming storage response exceeding 1MB fails closed and records failure'
   await assert.rejects(v.response.text());
   assert.equal(v.calls.find(c=>c.path.includes('complete_course_download_attempt'))?.body.p_outcome,'failed');
 });
+
+test('the independent QA checkout doorway creates server-side TEST Stripe sessions only',()=>{
+  const page = readFileSync(new URL('../qa/sandbox-checkout.html',import.meta.url),'utf8');
+  const learner = readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  const api = readFileSync(new URL('../api/create-checkout-session.js',import.meta.url),'utf8');
+  assert.match(page,/TEST ONLY: No real money or customer orders/i);
+  assert.match(page,/data-product="starter"/);
+  assert.match(page,/data-product="facilitator"/);
+  assert.match(page,/\/api\/create-checkout-session/);
+  assert.match(page,/target\.hostname\s*!==\s*'checkout\.stripe\.com'/);
+  assert.doesNotMatch(page,/buy\.stripe\.com\/(?!test_)/);
+  assert.doesNotMatch(page,/sk_live_|sk_test_|SUPABASE_SERVICE_ROLE_KEY/);
+  assert.match(learner,/href="sandbox-checkout\.html"/);
+  assert.match(api,/key\?\.startsWith\('sk_test_'\)/);
+  assert.match(api,/metadata:\{product_code:code\}/);
+  assert.match(api,/\/checkout\/success\/\?session_id=/);
+});
