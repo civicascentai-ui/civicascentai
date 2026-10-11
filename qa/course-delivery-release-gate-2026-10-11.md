@@ -25,3 +25,17 @@ Status: HOLD. This is an acceptance test, not proof of a completed delivery.
 - Complete course receipt: FAIL / not received as reported by recipient.
 - Independent 25-case E2E: 0/25 verified.
 - Production: HOLD.
+
+
+## Independent October 11 verification addendum (read-only)
+- **Public information course:** `https://civicascentai.com/course.html` returns HTTP 200. Paid options remain "Ask About Availability" and **paid enrollment remains paused**.
+- **Free starter + learner page previews:** QA deployment `dpl_6zcy211WWhXZaD8eTiKBCeKd2kgr` serves `free-ai-starter.html`, `learner-interest.html` and `learner-questions.html` with HTTP 200. Free Payhip link `https://payhip.com/b/MYWad` is a separate $0 sample, not full course access or purchase.
+- **Audio assets:** public `assets/audio/lesson-1.mp3` through `lesson-5.mp3` each returned HTTP 200 and audio content type. Response availability does not establish listening comprehension or purchased-kit delivery.
+- **Latest GitHub QA branch:** `bad94a1af459cdeec9786b3a26f11725b5ff3053` passed 6 triggered workflows, including learner-interest (the earlier 6/8 failure in run `38164653636` is stale for this latest branch). Independent server-side receipt remains untested.
+- **Private Storage inspected:** `course-qa-private` bucket has exactly `starter/README.md` and `facilitator/README.md`; **zero approved commercial course ZIPs**. The legacy QA Edge function v8 streams README-only placeholders and returns `X-CivicAscent-Artifact: placeholder-not-course`; it must not be counted as buyer fulfillment.
+- **Separate sandbox draft classroom exists:** Supabase Edge function `qa-level1-classroom` v3 contains four Level 1 internal-review draft sections and requires verified Supabase identity + active sandbox entitlement. These draft sections are **not the approved packaged Starter or Facilitator offering** and are distinct from private-storage course ZIP fulfillment.
+- **Source material located:** connected Drive has `CivicAscent AI Level 1 — Prompting Fundamentals` (`1ism2h4PCvf8ikhWGaaTNfykbh5s-DBSplcyO-Qdwhts`), `Student Worksheet` (`1ROwUCsZRASxk_bRvzMS01TgFFYlZWg4OMWgAlTEsxeY`), and `Facilitator Demonstration Kit v1` (`1PtIKd0w3jDjyzn5RrIh3UtY3QStc19VKt7fSLTBiK6M`). Demonstration kit is marked ready for internal use/partner demo, not approved for self-service commercial sale. Further content approval is required.
+- **Outstanding E2E:** 0/25 independently verified genuine purchase→approved-course receipt/open cases. Do not bypass Supabase email verification or entitlements. Do not spend funds, open paid enrollment, or promote QA changes until explicit release gates pass.
+- **Sam QA Runner:** located Replit `2bcb4253-4457-48b7-84ea-9e185b577ce2`; its prior local sample classroom and mock checkout checks are **synthetic**, not CivicAscent external course E2E. An isolated read-only external link/asset QA enhancement was requested; do not mark its new checks PASS before readback evidence.
+
+**Owner decision required before launch:** approve versioned Starter and Facilitator commercial course bundle(s) after QC; verified purchaser must complete authentic email sign-in and independently open exact artifact; QA must verify entitlement, refund/wrong-account behavior and 25 distinct end-to-end cases. As of this addendum, **production PAID RELEASE = HOLD**.
