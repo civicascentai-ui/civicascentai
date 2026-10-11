@@ -3,7 +3,7 @@ import shutil
 import sys
 from pathlib import Path
 
-ARTIFACTS = ('smoke-result.txt', 'summary.md', 'result.json', 'changes.patch', 'changed-files.txt')
+ARTIFACTS = ('smoke-result.txt', 'summary.md', 'result.json', 'changes.patch', 'changed-files.txt', 'checkpoint.json')
 MAX_BYTES = 2 * 1024 * 1024
 
 def export_workspace(workspace, destination):
