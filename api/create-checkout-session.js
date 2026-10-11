@@ -21,6 +21,8 @@ export default async function handler(req, res) {
     const stripe = new Stripe(key);
     const session = await stripe.checkout.sessions.create({
       mode:'payment', customer_creation:'always', line_items:[{price,quantity:1}],
+      // QA-only: prevent Stripe Link sign-in from obscuring the normal card form.
+      wallet_options: {link: {display: 'never'}},
       success_url:`${origin}/checkout/success/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:`${origin}/course.html?checkout_cancelled=1`,
       metadata:{product_code:code},
