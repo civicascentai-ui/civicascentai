@@ -1,0 +1,42 @@
+name: Learner interest and contact QA
+on:
+  push:
+    branches:
+      - qa/friday-secure-delivery-20261010
+    paths:
+      - 'learner-interest.html'
+      - 'learner-questions.html'
+      - 'index.html'
+      - 'course.html'
+      - 'assets/learner-interest.css'
+      - 'assets/learner-interest.js'
+      - 'tests/qa-learner-interest-path.test.mjs'
+      - '.github/workflows/qa-learner-interest.yml'
+  pull_request:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - 'learner-interest.html'
+      - 'learner-questions.html'
+      - 'index.html'
+      - 'course.html'
+      - 'assets/learner-interest.css'
+      - 'assets/learner-interest.js'
+      - 'tests/qa-learner-interest-path.test.mjs'
+      - '.github/workflows/qa-learner-interest.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  learner-interest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check learner interest, direct Q and A, privacy and paused checkout
+        run: node --test tests/qa-learner-interest-path.test.mjs tests/qa-plan-b-cutover-safety.test.mjs
