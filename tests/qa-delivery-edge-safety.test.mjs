@@ -232,3 +232,13 @@ test('protected checkout probe uses repository-scoped short-lived OIDC without b
   assert.doesNotMatch(workflow,/VERCEL_AUTOMATION_BYPASS_SECRET|x-vercel-protection-bypass/i);
   assert.doesNotMatch(probe,/_vercel_share|x-vercel-protection-bypass/i);
 });
+
+test('QA push OIDC probe is not cancelled by pull-request source checks',()=>{
+  const workflow=readFileSync(new URL('../.github/workflows/qa-checkout-live-preview.yml',import.meta.url),'utf8');
+  assert.ok(workflow.includes('group: qa-checkout-live-preview-${{ github.event_name }}-${{ github.ref }}'));
+  assert.match(workflow,/source-only-not-e2e:/);
+  assert.match(workflow,/Probe source checks only, NOT payment or preview E2E/);
+  assert.match(workflow,/if: github\.event_name == 'pull_request'/);
+  assert.match(workflow,/if: github\.event_name != 'pull_request' && github\.ref == 'refs\/heads\/qa\/friday-secure-delivery-20261010'/);
+  assert.doesNotMatch(workflow,/group: qa-checkout-live-preview-single-session/);
+});
