@@ -23,10 +23,11 @@ button:disabled{opacity:.6;cursor:wait}button:focus-visible,input:focus-visible,
 <form id="otpForm">
 <label for="email">Email address used at sandbox checkout</label>
 <input id="email" name="email" type="email" required autocomplete="email" maxlength="254">
-<button id="request" type="submit">Send verification code</button>
+<button id="request" type="submit">Send secure sign-in email</button>
 </form>
 <form id="verifySection">
-<label for="code">Email verification code</label>
+<p>Your email may contain a secure sign-in link instead of a code. If it contains a link, open it in this same browser. If it contains a code, enter the code below.</p>
+<label for="code">Email verification code (if provided)</label>
 <input id="code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required>
 <button id="verify" type="submit">Verify email</button>
 </form>
@@ -54,17 +55,53 @@ async function request(endpoint,data,token=null){
   const response=await fetch(SERVICE+endpoint,{method:'POST',headers,body:JSON.stringify(data),cache:'no-store'});
   return response;
 }
+// Supabase normally sends a Magic Link. Its implicit authentication callback
+// returns a short-lived bearer token in the URL fragment, not a numeric email code.
+// Scrub the fragment immediately; never put tokens into storage or analytics.
+async function acceptMagicLink() {
+  const fragment = location.hash;
+  if(!fragment || !fragment.includes('access_token='))return;
+  history.replaceState(null,'',location.pathname);
+  const params=new URLSearchParams(fragment.slice(1));
+  const token=params.get('access_token');
+  if(!token || token.length>8192 || !/^[A-Za-z0-9._-]+$/.test(token)) {
+    status('Invalid email sign-in link. Request a new one.');
+    return;
+  }
+  status('Verifying secure email sign-in...');
+  try {
+    const response=await fetch(SERVICE+'/auth/v1/user',{
+      headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+token},
+      cache:'no-store'
+    });
+    if(!response.ok)throw Error('Invalid token');
+    const learner=await response.json();
+    if(typeof learner?.id!=='string'||!learner.id||
+       typeof learner?.email!=='string'||!learner.email_confirmed_at)throw Error('Email unverified');
+    accessToken=token;
+    verifiedEmail=learner.email.trim().toLowerCase();
+    $('email').value=verifiedEmail;
+    $('verifySection').style.display='none';
+    $('accessSection').hidden=false;
+    status('Email identity verified. Select the sandbox product to check paid entitlement.');
+  } catch {
+    accessToken=null;
+    status('This sign-in link could not be verified. Request a new link.');
+  }
+}
+void acceptMagicLink();
 $('otpForm').addEventListener('submit',async event=>{
   event.preventDefault();accessToken=null;verifiedEmail=null;$('accessSection').hidden=true;$('verifySection').style.display='none';
   const email=$('email').value.trim().toLowerCase();
   if(!email || email.length>254)return status('Enter a valid email address.');
   $('request').disabled=true;status('Requesting test sign-in code...');
   try{
-    const response=await request('/auth/v1/otp',{email,create_user:true});
+    const redirectTo=location.origin+location.pathname;
+    const response=await request('/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{email,create_user:true});
     if(!response.ok)throw Error('Email verification could not be requested.');
     verifiedEmail=email;
     $('verifySection').style.display='block';
-    status('If this address can receive verification mail, check its inbox for the code.');
+    status('Check your email for a secure sign-in link or a verification code. Only trusted, configured QA redirect URLs will return to this page.');
   }catch{status('Sign-in request unavailable. Check sandbox email authentication configuration.');}
   finally{$('request').disabled=false;}
 });
