@@ -205,3 +205,14 @@ test('QA sign-in page explains Supabase 429 throttling instead of blaming redire
   assert.match(page,/request just one new email/);
   assert.doesNotMatch(page,/Sign-in request unavailable\. Check sandbox email authentication configuration/);
 });
+
+test('checkout live-preview probe targets current QA branch and never weakens protection',()=>{
+  const probe=readFileSync(new URL('../qa/e2e/qa-checkout-session-contract.mjs',import.meta.url),'utf8');
+  assert.match(probe,/const stableQaOrigin = 'https:\/\/civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai\.vercel\.app'/);
+  assert.match(probe,/process\.env\.QA_PREVIEW_ORIGIN/);
+  assert.match(probe,/assert\.equal\(allowed\.protocol, 'https:'\)/);
+  assert.match(probe,/assert\.equal\(allowed\.username, ''\)/);
+  assert.match(probe,/assert\.equal\(allowed\.pathname, '\/'\)/);
+  assert.match(probe,/VERCEL_PROTECTION_BLOCKED/);
+  assert.doesNotMatch(probe,/civicascentai-launch-gcw34sbrh/);
+});
