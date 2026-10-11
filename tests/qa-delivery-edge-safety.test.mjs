@@ -197,3 +197,11 @@ test('Supabase email callback uses the stable protected QA branch alias',()=>{
   assert.match(page,/encodeURIComponent\(redirectTo\)/);
   assert.match(page,/history\.replaceState\(null,''/);
 });
+
+test('QA sign-in page explains Supabase 429 throttling instead of blaming redirect configuration',()=>{
+  const page=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  assert.match(page,/response\.status===429/);
+  assert.match(page,/Wait for the limit to reset/);
+  assert.match(page,/request just one new email/);
+  assert.doesNotMatch(page,/Sign-in request unavailable\. Check sandbox email authentication configuration/);
+});
