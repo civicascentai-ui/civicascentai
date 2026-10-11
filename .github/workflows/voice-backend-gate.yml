@@ -1,0 +1,52 @@
+name: Voice Backend Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'voice-backend/**'
+      - '.github/workflows/voice-backend-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate isolated voice backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Python syntax
+        run: python3 -m py_compile voice-backend/agent.py
+
+      - name: Validate JSON
+        run: python3 -m json.tool voice-backend/dispatch-rule.staging.json >/dev/null
+
+      - name: Verify stable dispatch name
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'civicascent-voice' voice-backend/agent.py
+          grep -q '"agentName": "civicascent-voice"' voice-backend/dispatch-rule.staging.json
+          grep -q 'CIVICASCENT_AGENT_NAME=civicascent-voice' voice-backend/.env.example
+
+      - name: Reject committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE '(LIVEKIT_API_KEY|LIVEKIT_API_SECRET)=[^[:space:]]+' voice-backend --exclude='.env.example'; then
+            echo "Potential LiveKit credential committed."
+            exit 1
+          fi
+
+      - name: Governance assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -qi 'isolated beta' voice-backend/README.md
+          grep -qi 'do not merge' voice-backend/README.md
+          grep -qi 'human handoff' voice-backend/README.md
