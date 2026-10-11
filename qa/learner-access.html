@@ -39,6 +39,7 @@ button:disabled{opacity:.6;cursor:wait}button:focus-visible,input:focus-visible,
 <button id="download" type="button">Get private Starter or Facilitator QA file</button>
 <div id="fileReady" hidden><strong>Private test file ready.</strong><p>This is the secured QA README, not the free flyer or the paid course package.</p><a id="fileLink" download="starter-QA-README.md" href="#">Save private QA README</a></div>
 </div>
+<div id="cloudQa" hidden><button id="openCloudQa" type="button">Open Starter cloud classroom (QA)</button><div id="cloudQaText" hidden></div><button id="saveCloudQa" type="button" hidden>Save Starter QA lesson</button></div>
 <p id="status" role="status" aria-live="polite">No verification requested.</p>
 <small>Only use fictional or designated tester information. Do not share passwords, payment details, or verification codes with other people. Your access token is held in this page's memory only and disappears when the page closes. Refunds or inactive purchases must block downloads. The released files are not yet approved for sale.</small>
 <p><a href="sandbox-checkout.html">Run a new Stripe sandbox checkout test</a></p>
@@ -86,7 +87,7 @@ async function acceptMagicLink() {
     $('email').value=verifiedEmail;
     $('verifySection').style.display='none';
     $('otpForm').hidden=true;
-    $('accessSection').hidden=false;
+    $('accessSection').hidden=false;$('cloudQa').hidden=false;
     status('Identity verified. Checking the paid test purchase and preparing your private Starter QA file automatically...');
     // The real backend still checks the verified JWT, paid entitlement and private file.
     // This removes a confusing second step after opening a sign-in email.
@@ -135,7 +136,7 @@ $('verifySection').addEventListener('submit',async event=>{
     accessToken=body.access_token;
     $('otpForm').hidden=true;
     $('verifySection').style.display='none';
-    $('accessSection').hidden=false;
+    $('accessSection').hidden=false;$('cloudQa').hidden=false;
     status('Identity verified. Preparing your private Starter QA file automatically...');
     void fetchQaFile();
   }catch{accessToken=null;status('Code invalid or expired. Request a new code if needed.');}
@@ -186,6 +187,38 @@ $('product').addEventListener('change',()=>{
 });
 window.addEventListener('pagehide',()=>{
   if(qaDownloadUrl){URL.revokeObjectURL(qaDownloadUrl);qaDownloadUrl=null;}
+});
+
+$('openCloudQa').addEventListener('click',async ()=>{
+ if(!accessToken)return status('Verify your email before opening the QA classroom.');
+ $('openCloudQa').disabled=true;
+ try{
+  const r=await request('/functions/v1/qa-level1-classroom',{product_code:'starter',action:'view'},accessToken);
+  if(!r.ok){status('No verified sandbox Starter entitlement or QA classroom temporarily unavailable.');return}
+  const p=await r.json();
+  if(!p.authenticated||!p.sandbox_entitlement||p.release!=='QA ONLY, NOT APPROVED FOR COMMERCIAL SALES'||!Array.isArray(p.sections)||p.sections.length!==4)throw Error('Invalid QA response');
+  const panel=$('cloudQaText');panel.replaceChildren();
+  for(const section of p.sections){
+   const h=document.createElement('h2');h.textContent=section.title;
+   const body=document.createElement('pre');body.textContent=section.content;body.style.cssText='font:inherit;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere';
+   panel.append(h,body);
+  }
+  panel.hidden=false;$('saveCloudQa').hidden=false;
+  status('Four course draft sections unlocked after signed-in sandbox entitlement verification. Not for sale.');
+ }catch{status('The secure QA classroom could not be loaded.')}
+ finally{$('openCloudQa').disabled=false;}
+});
+$('saveCloudQa').addEventListener('click',async ()=>{
+ if(!accessToken)return;
+ $('saveCloudQa').disabled=true;
+ try{
+  const r=await request('/functions/v1/qa-level1-classroom',{product_code:'starter',action:'download'},accessToken);
+  if(!r.ok||r.headers.get('X-CivicAscent-Artifact')!=='course-qa-text-v1')throw Error('Denied');
+  const blob=await r.blob();if(blob.size<1000||blob.size>100000)throw Error('Size');
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='CivicAscent_Starter_QA_Classroom.md';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);
+  status('QA file download requested; device save still needs verification.');
+ }catch{status('QA download unavailable. Do not repeat the purchase.')}
+ finally{$('saveCloudQa').disabled=false;}
 });
 </script>
 </body>
