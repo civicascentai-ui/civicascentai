@@ -1,0 +1,26 @@
+name: Sandbox Webhook DB Safeguard
+on:
+  push:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - api/stripe-webhook.js
+      - tests/qa-webhook-rpc-safety.test.mjs
+      - .github/workflows/qa-webhook-rpc-safety.yml
+  pull_request:
+    paths:
+      - api/stripe-webhook.js
+      - tests/qa-webhook-rpc-safety.test.mjs
+      - .github/workflows/qa-webhook-rpc-safety.yml
+permissions:
+  contents: read
+jobs:
+  webhook-fail-closed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Check QA webhook regression tests without external credentials
+        run: |
+          node --version
+          node --test tests/qa-webhook-rpc-safety.test.mjs
