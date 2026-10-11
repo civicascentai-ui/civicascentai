@@ -26,7 +26,7 @@ const ok = (data)=>new Response(JSON.stringify(data),{status:200,headers:{'Conte
 const member={id:'qa_learner',email:'Tester@example.invalid',email_confirmed_at:'2026-10-10T00:00:00Z'};
 
 async function exercise({identity=member,entitlements=[{session_id:'cs_test_mock'}],bucketPublic=false,
-       failStorage=false,auth=true,origin=null}={}) {
+       failStorage=false,auth=true,origin=null,omitSizeHeader=false,oversizedFile=false}={}) {
   const calls=[];
   globalThis.fetch = async (url, options={}) => {
     const path=new URL(String(url)).pathname;
@@ -36,10 +36,10 @@ async function exercise({identity=member,entitlements=[{session_id:'cs_test_mock
     if (path==='/storage/v1/bucket/course-qa-private') return ok({public:bucketPublic});
     if (path.startsWith('/storage/v1/object/authenticated/')) {
       if(failStorage)return new Response('not found',{status:404});
-      const payload='QA PLACEHOLDER ONLY';
-      return new Response(payload,{status:200,headers:{
-        'content-type':'text/plain','content-length':String(Buffer.byteLength(payload))
-      }});
+      const payload=oversizedFile?'X'.repeat(1024*1024+1):'QA PLACEHOLDER ONLY';
+      const headers={'content-type':'text/plain'};
+      if(!omitSizeHeader&&!oversizedFile)headers['content-length']=String(Buffer.byteLength(payload));
+      return new Response(payload,{status:200,headers});
     }
     if (path==='/rest/v1/rpc/record_download_issued') return ok(42);
     if (path==='/rest/v1/rpc/complete_course_download_attempt') return ok(true);
@@ -121,4 +121,17 @@ test('QA checkout confirmation links to a learner-owned verification and downloa
   assert.doesNotMatch(ui,/SUPABASE_SERVICE_ROLE_KEY|sk_test_|whsec_/);
   assert.doesNotMatch(ui,/localStorage|sessionStorage/);
   assert.doesNotMatch(ui,/session_id=\{CHECKOUT_SESSION_ID\}.*accessToken/);
+});
+
+test('streaming storage responses without Content-Length still work',async()=>{
+  const v=await exercise({omitSizeHeader:true});
+  assert.equal(v.response.status,200);
+  assert.equal(await v.response.text(),'QA PLACEHOLDER ONLY');
+  assert.equal(v.calls.find(c=>c.path.includes('complete_course_download_attempt'))?.body.p_outcome,'sent');
+});
+test('streaming storage response exceeding 1MB fails closed and records failure',async()=>{
+  const v=await exercise({oversizedFile:true});
+  assert.equal(v.response.status,200);
+  await assert.rejects(v.response.text());
+  assert.equal(v.calls.find(c=>c.path.includes('complete_course_download_attempt'))?.body.p_outcome,'failed');
 });
