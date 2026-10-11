@@ -96,7 +96,9 @@ $('otpForm').addEventListener('submit',async event=>{
   if(!email || email.length>254)return status('Enter a valid email address.');
   $('request').disabled=true;status('Requesting test sign-in code...');
   try{
-    const redirectTo=location.origin+location.pathname;
+    // Stable Vercel QA branch alias, not a per-commit preview URL.
+    // Must be allowlisted in Supabase QA Auth URL Configuration.
+    const redirectTo="https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app/qa/learner-access.html";
     const response=await request('/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{email,create_user:true});
     if(!response.ok)throw Error('Email verification could not be requested.');
     verifiedEmail=email;
