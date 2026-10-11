@@ -5,12 +5,14 @@ on:
       - qa/friday-secure-delivery-20261010
     paths:
       - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - 'qa/e2e/qa-delivery-cors-preflight.mjs'
       - '.github/workflows/qa-checkout-live-preview.yml'
   pull_request:
     branches:
       - qa/checkout-bottleneck-repair-20261010
     paths:
       - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - 'qa/e2e/qa-delivery-cors-preflight.mjs'
       - '.github/workflows/qa-checkout-live-preview.yml'
   workflow_dispatch:
 permissions:
@@ -37,6 +39,22 @@ jobs:
         run: |
           node --check qa/e2e/qa-checkout-session-contract.mjs
           node --test tests/qa-delivery-edge-safety.test.mjs
+  delivery-cors-live-check:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010'
+    name: QA private delivery CORS preflight (no payment or credentials)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify deployed QA edge browser headers and negative origin
+        run: node qa/e2e/qa-delivery-cors-preflight.mjs
   test-only-checkout:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010'
     name: Authenticated QA preview probe (no card or delivery)
