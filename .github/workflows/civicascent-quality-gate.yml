@@ -109,6 +109,19 @@ jobs:
             test -s "$f" || { echo "Empty HTML file: $f"; exit 1; }
           done
 
+      - name: Verify canonical client ships in release artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check script.js
+          cd prototype-react
+          VITE_SUPABASE_PUBLISHABLE_KEY=qa-public-placeholder npm run build
+          test -f dist/assets/canonical-runtime.js
+          grep -q 'qa-public-placeholder' dist/assets/canonical-runtime.js
+          grep -q '/assets/canonical-runtime.js' dist/index.html
+          grep -q '/script.js' dist/index.html
+          grep -q 'CIVICASCENT_SUPABASE_PUBLISHABLE_KEY' ../script.js
+
   governance:
     name: Governance Guardrails
     runs-on: ubuntu-latest

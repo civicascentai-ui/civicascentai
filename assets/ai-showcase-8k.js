@@ -182,6 +182,17 @@
   addEventListener('resize',resize,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(raf);else{last=0;raf=requestAnimationFrame(frame)}});
 
+
+  const privacyNotice=document.getElementById('privacyNotice');
+  const privacyOk=document.getElementById('privacyOk');
+  try{
+    if(privacyNotice && localStorage.getItem('civicascent-privacy-notice')!=='ack') privacyNotice.hidden=false;
+  }catch(e){ if(privacyNotice) privacyNotice.hidden=false; }
+  if(privacyOk) privacyOk.addEventListener('click',()=>{
+    if(privacyNotice) privacyNotice.hidden=true;
+    try{localStorage.setItem('civicascent-privacy-notice','ack')}catch(e){}
+  });
+
   resize();
   if(reduced)finish();else run();
 })();

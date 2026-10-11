@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /backups/
+Disallow: /checkpoints/
+Disallow: /prototype-react/
+Sitemap: https://civicascentai.com/sitemap.xml

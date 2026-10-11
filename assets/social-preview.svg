@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="t d">
+<title id="t">CivicAscent AI</title><desc id="d">Experience AI for real people, real skills, and real life.</desc>
+<defs><radialGradient id="g" cx="70%" cy="30%"><stop offset="0" stop-color="#123f7b"/><stop offset="0.55" stop-color="#071a38"/><stop offset="1" stop-color="#02050c"/></radialGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<circle cx="965" cy="155" r="160" fill="none" stroke="#67d4ff" stroke-opacity=".35" stroke-width="3"/>
+<circle cx="965" cy="155" r="105" fill="none" stroke="#ffd166" stroke-opacity=".3" stroke-width="2"/>
+<text x="78" y="250" fill="#f7fbff" font-family="Arial,Helvetica,sans-serif" font-size="90" font-weight="800">CivicAscent <tspan fill="#67d4ff">AI</tspan></text>
+<text x="82" y="332" fill="#c7d7e7" font-family="Arial,Helvetica,sans-serif" font-size="36">AI FOR REAL PEOPLE · REAL SKILLS · REAL LIFE</text>
+<text x="82" y="430" fill="#f7fbff" font-family="Arial,Helvetica,sans-serif" font-size="46" font-weight="700">See what AI can do.</text>
+</svg>
