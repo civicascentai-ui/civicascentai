@@ -1,0 +1,41 @@
+name: QA Checkout API Verification
+on:
+  push:
+    branches:
+      - qa/friday-secure-delivery-20261010
+    paths:
+      - "api/create-checkout-session.js"
+      - "api/stripe-webhook.js"
+      - "package.json"
+      - "tests/qa-api-sandbox-guards.test.mjs"
+      - "tests/qa-delivery-edge-safety.test.mjs"
+      - ".github/workflows/qa-checkout-api.yml"
+  pull_request:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - "api/create-checkout-session.js"
+      - "api/stripe-webhook.js"
+      - "package.json"
+      - "tests/qa-api-sandbox-guards.test.mjs"
+      - ".github/workflows/qa-checkout-api.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sandbox-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned sandbox-only Stripe SDK
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Check server endpoint syntax
+        run: |
+          node --check api/create-checkout-session.js
+          node --check api/stripe-webhook.js
+      - name: Run automated security and delivery QA
+        run: npm run test:qa
