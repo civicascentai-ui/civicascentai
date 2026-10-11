@@ -26,7 +26,7 @@ const ok = (data)=>new Response(JSON.stringify(data),{status:200,headers:{'Conte
 const member={id:'qa_learner',email:'Tester@example.invalid',email_confirmed_at:'2026-10-10T00:00:00Z'};
 
 async function exercise({identity=member,entitlements=[{session_id:'cs_test_mock'}],bucketPublic=false,
-       failStorage=false,auth=true,origin=null,omitSizeHeader=false,oversizedFile=false}={}) {
+       failStorage=false,auth=true,origin=null,omitSizeHeader=false,oversizedFile=false,issuedId=42}={}) {
   const calls=[];
   globalThis.fetch = async (url, options={}) => {
     const path=new URL(String(url)).pathname;
@@ -41,7 +41,7 @@ async function exercise({identity=member,entitlements=[{session_id:'cs_test_mock
       if(!omitSizeHeader&&!oversizedFile)headers['content-length']=String(Buffer.byteLength(payload));
       return new Response(payload,{status:200,headers});
     }
-    if (path==='/rest/v1/rpc/record_download_issued') return ok(42);
+    if (path==='/rest/v1/rpc/record_download_issued') return ok(issuedId);
     if (path==='/rest/v1/rpc/complete_course_download_attempt') return ok(true);
     throw Error('Unexpected backend path '+path);
   };
@@ -94,6 +94,19 @@ test('verified paid learner receives server-streamed QA placeholder, with receip
   const receipt=v.calls.find(c=>c.path.includes('complete_course_download_attempt'));
   assert.equal(receipt?.body.p_outcome,'sent');
   assert.equal(receipt?.body.p_attempt_id,42);
+});
+
+test('revoked or refunded entitlement cannot issue or stream a QA download',async()=>{
+  const v=await exercise({entitlements:[]});
+  assert.equal(v.response.status,403);
+  assert.equal(v.calls.some(c=>c.path.includes('/object/')),false);
+  assert.equal(v.calls.some(c=>c.path.includes('record_download_issued')),false);
+});
+test('refund race after lookup refuses issuance, without recording successful delivery',async()=>{
+  const v=await exercise({issuedId:null});
+  assert.equal(v.response.status,403);
+  assert.equal(v.calls.filter(c=>c.path.includes('record_download_issued')).length,1);
+  assert.equal(v.calls.some(c=>c.path.includes('complete_course_download_attempt')),false);
 });
 
 test('Stripe QA redirects use existing receipt page and a real cancel destination',()=>{
