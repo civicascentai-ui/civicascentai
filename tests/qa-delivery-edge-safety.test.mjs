@@ -165,3 +165,11 @@ test('the independent QA checkout doorway creates server-side TEST Stripe sessio
   assert.match(api,/metadata:\{product_code:code\}/);
   assert.match(api,/\/checkout\/success\/\?session_id=/);
 });
+
+test('both Starter and Facilitator sandbox Checkout sessions suppress optional Link sign-in',()=>{
+  const checkoutSource=readFileSync(new URL('../api/create-checkout-session.js',import.meta.url),'utf8');
+  assert.match(checkoutSource,/wallet_options:\s*\{link:\s*\{display:\s*'never'\}\}/);
+  assert.match(checkoutSource,/key\?\.startsWith\('sk_test_'\)/);
+  assert.match(checkoutSource,/process\.env\.VERCEL_ENV\s*!==\s*'preview'/);
+  assert.match(checkoutSource,/product_code:code/);
+});
