@@ -21,12 +21,22 @@ assert.ok(
 );
 console.log('CivicAscent QA preview host: ' + allowed.hostname);
 const api = new URL('/api/create-checkout-session', origin);
+const oidcToken = process.env.QA_GITHUB_OIDC_TOKEN || '';
+// Vercel validates this short-lived GitHub identity only when the QA project
+// explicitly trusts this repository/branch. It is never logged or persisted.
+if (oidcToken) {
+  assert.ok(oidcToken.length <= 8192 && /^[A-Za-z0-9._-]+$/.test(oidcToken),
+    'Invalid runner identity token format.');
+}
 
 async function check(method, body, expected) {
   const response = await fetch(api, {
     method,
     redirect:'manual',
-    headers: body ? {'Content-Type':'application/json'} : undefined,
+    headers: {
+      ...(body ? {'Content-Type':'application/json'} : {}),
+      ...(oidcToken ? {'x-vercel-trusted-oidc-idp-token':oidcToken} : {})
+    },
     body: body ? JSON.stringify(body) : undefined,
     signal: AbortSignal.timeout(25000)
   });
