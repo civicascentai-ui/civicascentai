@@ -39,7 +39,13 @@ button:disabled{opacity:.6;cursor:wait}button:focus-visible,input:focus-visible,
 <button id="download" type="button">Get private Starter or Facilitator QA file</button>
 <div id="fileReady" hidden><strong>Private test file ready.</strong><p>This is the secured QA README, not the free flyer or the paid course package.</p><a id="fileLink" download="starter-QA-README.md" href="#">Save private QA README</a></div>
 </div>
-<div id="cloudQa" hidden><button id="openCloudQa" type="button">Open Starter cloud classroom (QA)</button><div id="cloudQaText" hidden></div><button id="saveCloudQa" type="button" hidden>Save Starter QA lesson</button></div>
+<div id="cloudQa" hidden>
+  <p><strong id="verifiedQaEmail" aria-live="polite"></strong></p>
+  <button id="openCloudQa" type="button">Open my Starter QA classroom</button>
+  <button id="switchQaAccount" type="button" style="background:#526375">Use a different checkout email</button>
+  <div id="cloudQaText" hidden></div>
+  <button id="saveCloudQa" type="button" hidden>Save Starter QA lesson</button>
+</div>
 <p id="status" role="status" aria-live="polite">No verification requested.</p>
 <small>Only use fictional or designated tester information. Do not share passwords, payment details, or verification codes with other people. Your access token is held in this page's memory only and disappears when the page closes. Refunds or inactive purchases must block downloads. The released files are not yet approved for sale.</small>
 <p><a href="sandbox-checkout.html">Run a new Stripe sandbox checkout test</a></p>
@@ -87,11 +93,11 @@ async function acceptMagicLink() {
     $('email').value=verifiedEmail;
     $('verifySection').style.display='none';
     $('otpForm').hidden=true;
-    $('accessSection').hidden=false;$('cloudQa').hidden=false;
+    $('accessSection').hidden=true;$('cloudQa').hidden=false;$('verifiedQaEmail').textContent='Signed in as: '+verifiedEmail;
     status('Identity verified. Checking the paid test purchase and preparing your private Starter QA file automatically...');
     // The real backend still checks the verified JWT, paid entitlement and private file.
     // This removes a confusing second step after opening a sign-in email.
-    void fetchQaFile();
+    $('openCloudQa').click();
   } catch {
     accessToken=null;
     status('This sign-in link could not be verified. Request a new link.');
@@ -136,9 +142,9 @@ $('verifySection').addEventListener('submit',async event=>{
     accessToken=body.access_token;
     $('otpForm').hidden=true;
     $('verifySection').style.display='none';
-    $('accessSection').hidden=false;$('cloudQa').hidden=false;
+    $('accessSection').hidden=true;$('cloudQa').hidden=false;$('verifiedQaEmail').textContent='Signed in as: '+verifiedEmail;
     status('Identity verified. Preparing your private Starter QA file automatically...');
-    void fetchQaFile();
+    $('openCloudQa').click();
   }catch{accessToken=null;status('Code invalid or expired. Request a new code if needed.');}
   finally{$('verify').disabled=false;}
 });
@@ -194,7 +200,11 @@ $('openCloudQa').addEventListener('click',async ()=>{
  $('openCloudQa').disabled=true;
  try{
   const r=await request('/functions/v1/qa-level1-classroom',{product_code:'starter',action:'view'},accessToken);
-  if(!r.ok){status('No verified sandbox Starter entitlement or QA classroom temporarily unavailable.');return}
+  if(!r.ok){
+     if(r.status===403){status('No active paid Starter test purchase for '+verifiedEmail+'. Use the exact checkout email, or select Use a different checkout email above. No new purchase is required.');}
+     else{status('QA classroom request returned HTTP '+r.status+'. Do not make another purchase.');}
+     return;
+   }
   const p=await r.json();
   if(!p.authenticated||!p.sandbox_entitlement||p.release!=='QA ONLY, NOT APPROVED FOR COMMERCIAL SALES'||!Array.isArray(p.sections)||p.sections.length!==4)throw Error('Invalid QA response');
   const panel=$('cloudQaText');panel.replaceChildren();
@@ -205,8 +215,20 @@ $('openCloudQa').addEventListener('click',async ()=>{
   }
   panel.hidden=false;$('saveCloudQa').hidden=false;
   status('Four course draft sections unlocked after signed-in sandbox entitlement verification. Not for sale.');
- }catch{status('The secure QA classroom could not be loaded.')}
+ }catch(err){status('QA classroom connection failed before lessons could load. Please report this message; do not pay again.')}
  finally{$('openCloudQa').disabled=false;}
+});
+$('switchQaAccount').addEventListener('click',()=>{
+  accessToken=null;verifiedEmail=null;
+  $('otpForm').hidden=false;
+  $('verifySection').style.display='none';
+  $('cloudQa').hidden=true;
+  $('cloudQaText').hidden=true;
+  $('saveCloudQa').hidden=true;
+  $('accessSection').hidden=true;
+  $('email').value='';
+  $('email').focus();
+  status('Enter the same email used at sandbox checkout and request a secure sign-in link. You do not need to purchase again.');
 });
 $('saveCloudQa').addEventListener('click',async ()=>{
  if(!accessToken)return;
