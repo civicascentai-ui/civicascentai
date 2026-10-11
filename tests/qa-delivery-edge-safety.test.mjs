@@ -243,19 +243,20 @@ test('QA push OIDC probe is not cancelled by pull-request source checks',()=>{
   assert.doesNotMatch(workflow,/group: qa-checkout-live-preview-single-session/);
 });
 
-test('verified learner auto-prepares paid private QA README without a second UI step',()=>{
+test('verified learner automatically opens secure cloud classroom and never auto-downloads the legacy QA README',()=>{
   const page=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
-  const auto=(page.match(/void fetchQaFile\(\);/g)||[]).length;
-  assert.equal(auto,2,'Magic Link and OTP must both auto-trigger QA-only delivery after verification');
-  assert.match(page,/if\(!accessToken\)return status\('Verify your email first\.'\)/);
-  assert.match(page,/qa-verified-course-delivery-check/);
-  assert.match(page,/X-CivicAscent-Artifact/);
-  assert.match(page,/file\.size<1 \|\| file\.size>1048576/);
-  assert.match(page,/id="fileReady" hidden/);
-  assert.match(page,/id="fileLink"/);
-  assert.match(page,/link\.click\(\)/);
-  assert.match(page,/Mobile webviews may block automatic downloads/);
-  assert.match(page,/This is the secured QA README, not the free flyer or the paid course package/);
+  const auto=(page.match(/\$\('openCloudQa'\)\.click\(\);/g)||[]).length;
+  assert.equal(auto,2,'Both Magic Link and code sign-in must open the secure cloud classroom after verification');
+  assert.equal((page.match(/void fetchQaFile\(\);/g)||[]).length,0,'Legacy placeholder must never auto-run for the customer');
+  assert.match(page,/\/functions\/v1\/qa-level1-classroom/,'Private classroom endpoint required');
+  assert.match(page,/sandbox_entitlement/,'Paid QA entitlement must be checked');
+  assert.match(page,/p\.sections\.length!==4/,'Complete four-section classroom required');
+  assert.match(page,/r\.status===403/,'No entitlement must fail visibly rather than disclose a course');
+  assert.match(page,/id="switchQaAccount"/,'Wrong verified account must allow recovery without another checkout');
+  assert.match(page,/id="verifiedQaEmail"/,'Signed-in account must be shown to help distinguish checkout identity');
+  assert.match(page,/X-CivicAscent-Artifact/,'Course download must validate the response marker');
+  assert.match(page,/blob\.size<1000\|\|blob\.size>100000/,'Draft file must have bounded size');
+  assert.match(page,/id="cloudQaText" hidden/,'Never display course until verified');
   assert.doesNotMatch(page,/localStorage|sessionStorage|document\.cookie|sk_live_|sk_test_|SUPABASE_SERVICE_ROLE_KEY/);
 });
 
