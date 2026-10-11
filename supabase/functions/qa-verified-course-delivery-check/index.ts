@@ -32,6 +32,9 @@ function corsHeaders(origin) {
   if (typeof origin !== 'string' || !origin) return {};
   return {'Access-Control-Allow-Origin':origin,'Vary':'Origin',
     'Access-Control-Allow-Headers':'authorization, apikey, content-type',
+    // Browser fetch cannot read custom artifact headers without explicit exposure.
+    // Keep the actual QA file private; expose only harmless response metadata.
+    'Access-Control-Expose-Headers':'X-CivicAscent-Artifact, Content-Disposition',
     'Access-Control-Allow-Methods':'POST, OPTIONS'};
 }
 async function requestJson(url, opts) {
