@@ -102,8 +102,12 @@ Deno.serve(async (req) => {
     const path = product + '/README.md';
     file = await fetch(ctx.url + '/storage/v1/object/authenticated/' + BUCKET + '/' + path,
       {method:'GET',headers:secretHeaders,signal:AbortSignal.timeout(15000)});
-    const size = Number(file.headers.get('content-length'));
-    if (!file.ok || !file.body || !Number.isSafeInteger(size) || size < 1 || size > MAX)
+    // Chunked/streamed Supabase responses may omit Content-Length.
+    // Enforce the 1MB limit on streamed bytes below even without this header.
+    const declared = file.headers.get('content-length');
+    const size = declared === null ? null : Number(declared);
+    if (!file.ok || !file.body ||
+      (size !== null && (!Number.isSafeInteger(size) || size < 1 || size > MAX)))
       return json(503,{error:'QA placeholder unavailable'},ch);
     const mime = (file.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
     if (mime !== 'text/plain' && mime !== 'text/markdown' && mime !== 'application/octet-stream')
