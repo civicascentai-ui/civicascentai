@@ -23,7 +23,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   source-only-not-e2e:
-    if: github.event_name == 'pull_request'
+    # Independent local guard checks run even when the protected preview cannot
+    # authorize this CI caller. They are NEVER proof of checkout or fulfillment.
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010')
     name: Probe source checks only, NOT payment or preview E2E
     runs-on: ubuntu-latest
     permissions:
