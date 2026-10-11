@@ -173,3 +173,19 @@ test('both Starter and Facilitator sandbox Checkout sessions suppress optional L
   assert.match(checkoutSource,/process\.env\.VERCEL_ENV\s*!==\s*'preview'/);
   assert.match(checkoutSource,/product_code:code/);
 });
+
+test('QA learner accepts Supabase Magic Link and numeric OTP without trusting a redirect',()=>{
+  const page=readFileSync(new URL('../qa/learner-access.html',import.meta.url),'utf8');
+  assert.match(page,/\/auth\/v1\/otp\?redirect_to=/);
+  assert.match(page,/encodeURIComponent\(redirectTo\)/);
+  assert.match(page,/async function acceptMagicLink/);
+  assert.match(page,/new URLSearchParams\(fragment\.slice\(1\)\)/);
+  assert.match(page,/history\.replaceState\(null,''/);
+  assert.match(page,/\/auth\/v1\/user/);
+  assert.match(page,/learner\.email_confirmed_at/);
+  assert.match(page,/\/auth\/v1\/verify/);
+  assert.match(page,/\/functions\/v1\/qa-verified-course-delivery-check/);
+  assert.match(page,/X-CivicAscent-Artifact/);
+  assert.doesNotMatch(page,/localStorage|sessionStorage|document\.cookie/);
+  assert.doesNotMatch(page,/sk_live_|sk_test_|whsec_|SUPABASE_SERVICE_ROLE_KEY/);
+});
