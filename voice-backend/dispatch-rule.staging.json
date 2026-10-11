@@ -1,0 +1,19 @@
+{
+  "dispatch_rule": {
+    "rule": {
+      "dispatchRuleIndividual": {
+        "roomPrefix": "civicascent-staging-"
+      }
+    },
+    "name": "CivicAscent Voice Staging",
+    "roomConfig": {
+      "agents": [
+        {
+          "agentName": "civicascent-voice",
+          "deployment": "staging",
+          "metadata": "{\"environment\":\"staging\",\"service\":\"civicascent-phone\"}"
+        }
+      ]
+    }
+  }
+}
