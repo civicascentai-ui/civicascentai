@@ -51,7 +51,7 @@ def main():
         raise SystemExit('Use an isolated auth-only profile.')
     if not check(profile, ROOT / '.runtime/bin/symphony', codex)['passed']:
         raise SystemExit('Restored host health checks failed.')
-    env.update(CODEX_HOME=str(profile), PATH=str(codex.parent) + ':' + env.get('PATH', ''),
+    env.update(PYTHONDONTWRITEBYTECODE='1', CODEX_HOME=str(profile), PATH=str(codex.parent) + ':' + env.get('PATH', ''),
                ROOTDIR=str(release), BINDIR=str(release / 'erts-16.4/bin'), EMU='beam', PROGNAME='erl')
     if subprocess.run([str(codex), 'login', 'status'], env=env, capture_output=True, timeout=20).returncode:
         raise SystemExit('Codex authentication missing.')
