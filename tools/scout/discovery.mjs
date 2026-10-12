@@ -87,7 +87,7 @@ export async function main(){
  if(process.env.GITHUB_ACTIONS!=='true'||process.env.GITHUB_REPOSITORY!=='civicascentai-ui/civicascentai')throw Error('Unauthorized runner');
  const startedAt=new Date().toISOString(),found=await discover();
  const runId=String(process.env.GITHUB_RUN_ID||'unknown'),finishedAt=new Date().toISOString();
- const run={schema:'civicascent.scout.public-research.v2',runId,
+ const run={schema:'civicascent.scout.public-research.v2',coreLawVersion:CORE_LAW_VERSION,runId,
   runUrl:'https://github.com/civicascentai-ui/civicascentai/actions/runs/'+runId,
   startedAt,finishedAt,readOnly:true,noOutreach:true,noPaidProviderCalls:true,
   acceptedPartnerCount:0,verifiedGrantEligibility:false,...found};
