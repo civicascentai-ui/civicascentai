@@ -1,0 +1,38 @@
+name: Zebra portable agent smoke test
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'agents/zebra_runner.py'
+      - '.github/workflows/zebra-smoke.yml'
+  schedule:
+    - cron: '17 13 * * 1'
+permissions:
+  contents: read
+jobs:
+  zebra-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify all agent dry-run dispatches
+        run: |
+          python - <<'PY'
+          import importlib.util
+          spec = importlib.util.spec_from_file_location("zebra", "agents/zebra_runner.py")
+          m = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(m)
+          for agent in m.AGENTS:
+              result = m.run("healthcheck", agent)
+              assert result["status"] == "PASS" and result["cost_usd"] == 0
+          print(f"PASS: {len(m.AGENTS)} offline agent dispatches")
+          PY
+      - name: Write Zebra status
+        run: python agents/zebra_runner.py --agent zebra --task healthcheck
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zebra-health
+          path: artifacts/zebra-health.json
