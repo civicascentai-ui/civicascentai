@@ -193,6 +193,18 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  release-eligibility:
+    name: Six Scene Production Release Hold
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fail closed until six clean media scenes, independent QC and owner approval exist
+        run: python3 tools/qa/safari_release_gate.py
+
   governance:
     name: Governance Guardrails
     runs-on: ubuntu-latest
