@@ -182,6 +182,8 @@ jobs:
         run: node tools/qa/safari_browser_test.cjs
       - name: Test Scene 05 Lab controls and mobile Safari styling
         run: node tools/qa/safari_scene05_browser_test.cjs
+      - name: Test six existing Safari destination URLs in actual browser
+        run: node tools/qa/safari_six_route_browser_test.cjs
       - name: Preserve Safari screenshot evidence
         if: always()
         uses: actions/upload-artifact@v4
