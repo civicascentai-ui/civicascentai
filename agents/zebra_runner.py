@@ -5,6 +5,15 @@ import datetime as dt
 import json
 from pathlib import Path
 
+LAW_PATH = Path(__file__).with_name("core_law.json")
+
+def load_core_law():
+    law = json.loads(LAW_PATH.read_text(encoding="utf-8"))
+    if law.get("id") != "CIVICASCENT-SAFARI-CORE-LAW" or len(law.get("scene_routes", [])) != 6:
+        raise ValueError("CivicAscent core LAW missing or invalid; fail closed")
+    return law
+
+
 AGENTS = {
     "zebra": "Technical migration and dependency audit",
     "codi": "Operations coordination",
@@ -16,6 +25,7 @@ AGENTS = {
 }
 
 def run(task, agent, dry_run=True):
+    law = load_core_law()
     if agent not in AGENTS:
         raise ValueError("Unknown agent")
     if not dry_run:
@@ -24,6 +34,9 @@ def run(task, agent, dry_run=True):
         "timestamp_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "agent": agent, "role": AGENTS[agent], "task": task,
         "execution": "local_dry_run", "status": "PASS",
+        "core_law": law["id"], "core_law_version": law["version"],
+        "source_of_truth": law["source_of_truth"],
+        "acknowledgement": "Read on dispatch; not an autonomous agent memory sync",
         "note": "Dispatch validated; no external autonomous model, API, purchase or hosting action executed",
         "cost_usd": 0,
     }
