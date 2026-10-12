@@ -43,6 +43,7 @@ export function buildReceipt(issues, runtime = {}) {
   const runId = String(runtime.runId || 'local');
   return {
     schema: 'civicascent.scout.qa5-readonly.v1',
+    coreLawVersion: CORE_LAW_VERSION,
     mission: 'QA5 evidence-gap audit',
     execution: 'ACTUAL READ-ONLY AUDIT (not payment or course-access test)',
     migrationTarget: 'GitHub Actions standard runner',
