@@ -1,0 +1,22 @@
+name: Veterans synthetic lifecycle QC
+on:
+  push:
+    paths:
+      - 'tests/veterans_lifecycle_test.py'
+      - '.github/workflows/veterans-lifecycle-qc.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  friday-sam-synthetic-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run synthetic lifecycle regression tests
+        run: python -m unittest discover -s tests -p veterans_lifecycle_test.py -v
