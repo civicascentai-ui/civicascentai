@@ -15,6 +15,10 @@ def load_core_law():
 
 
 AGENTS = {
+    "agent-1-experience": "Safari experience and visual continuity",
+    "agent-2-engineering": "Responsive implementation and accessibility",
+    "agent-3-independent-qa": "Independent QA and accessibility gate",
+    "agent-4-critical-evaluation": "Independent design and risk critique",
     "zebra": "Technical migration and dependency audit",
     "codi": "Operations coordination",
     "sam": "Documentation and system maintenance",
