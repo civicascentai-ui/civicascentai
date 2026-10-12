@@ -3,72 +3,160 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#02050c">
-<meta name="color-scheme" content="dark">
-<meta name="description" content="CivicAscent AI — experience what artificial intelligence can create, explain, translate, plan and automate.">
-<meta name="civicascent-build" content="20260927-living-lab-logo-2">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<meta name="theme-color" content="#21150e">
+<meta name="description" content="A new world of opportunity with AI. Begin with a calm, practical one-minute AI learning experience at CivicAscent AI.">
+<meta name="civicascent-build" content="20261012-prototype09-recovery-candidate">
+<meta name="robots" content="noindex,nofollow">
 <link rel="canonical" href="https://civicascentai.com/">
-<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/ai-showcase-8k.css?v=20260927-2">
-<title>CivicAscent AI — Experience AI</title>
+<link rel="icon" type="image/svg+xml" href="assets/civicascent-logo.svg">
+<title>CivicAscent AI | Safari Learning World | Recovery Candidate</title>
+<style>
+:root{color-scheme:dark;--gold:#ffe3a1;--gold2:#ffca72;--cream:#fff9ed;--ink:#21150e}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#20150f;color:var(--cream);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,a{font:inherit}button{cursor:pointer}a{color:inherit}
+:focus-visible{outline:3px solid #fff0b3;outline-offset:4px}
+.skip{position:fixed;z-index:100;left:12px;top:-120px;padding:13px 16px;background:#fff7e4;color:#20150f;border-radius:9px;font-weight:800}
+.skip:focus{top:12px}
+.world{position:relative;min-height:100svh;min-height:100dvh;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 75% 36%,#b87540 0%,#714323 38%,#281c15 76%,#19130e)}
+.media,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:-3}
+.media{background:transparent}.poster{z-index:-4;background-size:cover;background-position:center;background-image:url("https://d2ol7oe51mr4n9.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/d023dc10-49ff-4203-a0a3-714b659221dc.png")}
+.light{position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(90deg,rgba(18,11,7,.82) 0%,rgba(20,12,7,.65) 30%,rgba(18,11,7,.2) 57%,rgba(16,12,7,.12)),linear-gradient(180deg,rgba(0,0,0,.36),transparent 26%,transparent 63%,rgba(0,0,0,.49));}
+.header{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;position:relative;z-index:4;padding:max(19px,env(safe-area-inset-top)) clamp(20px,4vw,64px) 10px}
+.brand{display:flex;align-items:center;gap:13px;text-decoration:none;min-width:0;text-shadow:0 2px 18px #000}
+.brand img{width:clamp(48px,5.4vw,66px);height:clamp(48px,5.4vw,66px);filter:drop-shadow(0 3px 12px rgba(0,0,0,.35))}
+.brand strong{display:block;font:600 clamp(20px,2vw,28px)/1 Georgia,serif;letter-spacing:-.02em;white-space:nowrap}
+.brand small{display:block;margin-top:6px;color:#ffe7bb;font-size:10px;letter-spacing:.13em;font-weight:800}
+.topnav{display:flex;align-items:center;gap:clamp(13px,2vw,25px)}
+.topnav a{padding:10px 0;font-weight:700;text-decoration:none;text-shadow:0 2px 18px #000}
+.topnav a:hover,.topnav a:focus-visible{text-decoration:underline;text-underline-offset:5px}
+.intro{position:relative;z-index:3;min-height:calc(100dvh - 95px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:48px clamp(24px,6vw,100px) 110px;max-width:850px;text-shadow:0 4px 22px rgba(0,0,0,.72)}
+.kicker{font-size:clamp(12px,1.1vw,14px);letter-spacing:.24em;color:#ffe3a1;font-weight:850;margin:0 0 14px}
+h1{margin:0;max-width:12ch;font:500 clamp(52px,5.7vw,94px)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.035em}
+h1 em{font-style:normal;color:var(--gold)}
+.lede{max-width:510px;font-size:clamp(19px,1.55vw,24px);line-height:1.5;color:#fff6e8;margin:21px 0 24px}
+.primary{display:inline-flex;justify-content:space-between;align-items:center;gap:25px;min-height:62px;min-width:202px;padding:14px 24px;border:2px solid #ffe1a0;border-radius:999px;background:rgba(37,20,8,.7);color:#fff9e9;font-weight:850;font-size:20px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 33px rgba(255,187,77,.22);text-shadow:none}
+.primary:hover{background:rgba(95,48,17,.92);box-shadow:0 0 38px rgba(255,198,105,.38)}
+.primary span{color:var(--gold);font-size:25px}
+.reassure{margin:18px 0 0;color:#fce4c3;font-size:15px;line-height:1.5;font-weight:600}
+.media-tools{position:absolute;z-index:3;bottom:max(22px,env(safe-area-inset-bottom));right:clamp(20px,4vw,64px)}
+.media-tools button{border:1px solid rgba(255,255,255,.65);background:rgba(25,15,9,.7);color:#fff;border-radius:999px;min-height:44px;padding:9px 14px;font-size:14px;font-weight:750}
+.media-tools button[hidden]{display:none}
+.guide-shell[hidden]{display:none}
+.guide-shell{position:fixed;z-index:50;inset:0;display:grid;place-items:center;padding:20px;background:rgba(11,8,5,.68);backdrop-filter:blur(9px)}
+.guide{position:relative;max-height:calc(100dvh - 40px);overflow:auto;width:min(680px,100%);padding:clamp(26px,4vw,48px);border:1px solid rgba(255,222,171,.5);background:linear-gradient(145deg,rgba(32,22,14,.97),rgba(18,17,13,.98));box-shadow:0 35px 90px #000a;border-radius:20px}
+.guide h2{margin:0 45px 15px 0;font:500 clamp(31px,4vw,47px)/1.1 Georgia,serif}
+.guide p{max-width:55ch;line-height:1.65;font-size:clamp(17px,2vw,19px)}
+.guide .eyebrow{font-size:12px;letter-spacing:.18em;font-weight:900;color:var(--gold2);margin:0 0 12px}
+.guide .example{border-left:3px solid var(--gold2);padding:14px 0 14px 18px;background:linear-gradient(90deg,rgba(255,204,109,.1),transparent);font-size:18px;line-height:1.5}
+.guide .small{font-size:14px;color:#f5dbbb}
+.guide .close{position:absolute;right:15px;top:15px;border:1px solid rgba(255,239,211,.55);border-radius:50%;background:rgba(255,255,255,.04);width:48px;height:48px;color:white;font-size:25px}
+.guide .advance{min-height:54px;margin-top:15px;padding:11px 20px;background:var(--gold);border:0;border-radius:12px;color:#1b130b;font-weight:850;font-size:17px}
+.next-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
+.next-actions a{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid rgba(255,230,188,.57);padding:19px 17px;min-height:68px;border-radius:12px;text-decoration:none;font-weight:800;background:rgba(255,255,255,.055)}
+.next-actions a:hover,.next-actions a:focus-visible{background:rgba(255,208,136,.2)}
+.next-actions span{color:var(--gold2)}
+.footer-note{position:absolute;bottom:21px;left:clamp(24px,6vw,100px);font-size:12px;letter-spacing:.03em;color:#f1dec4;z-index:3;text-shadow:0 2px 6px #000}
+@media(max-width:760px){
+.header{padding:14px 20px 0;gap:8px}.brand{gap:8px}.brand img{width:46px;height:46px}.brand strong{font-size:20px}.brand small{display:none}
+.topnav{gap:12px}.topnav a{font-size:13px}.topnav a:nth-child(2),.topnav a:nth-child(3){display:none}
+.media,.poster{object-position:53% center;background-position:53% center}
+.light{background:linear-gradient(180deg,rgba(20,12,8,.48) 0%,rgba(13,9,7,.34) 29%,rgba(12,8,6,.72) 66%,rgba(10,7,5,.86))}
+.intro{min-height:calc(100dvh - 60px);max-width:none;justify-content:flex-end;padding:38px 24px max(105px,calc(env(safe-area-inset-bottom) + 98px))}
+.kicker{font-size:11px;margin-bottom:9px}h1{max-width:12ch;font-size:clamp(42px,11.5vw,68px)}
+.lede{margin:15px 0 19px;font-size:clamp(16px,4.1vw,19px);line-height:1.42;max-width:38ch}
+.primary{min-height:56px;font-size:19px}.reassure{font-size:13px;margin-top:12px}
+.media-tools{right:16px;bottom:max(13px,env(safe-area-inset-bottom))}.footer-note{left:24px;bottom:24px;max-width:60%;font-size:11px}
+.guide-shell{padding:0;align-items:end}.guide{width:100%;border-radius:22px 22px 0 0;max-height:93dvh;padding:32px 23px max(29px,env(safe-area-inset-bottom))}.next-actions{grid-template-columns:1fr;gap:8px}.next-actions a{min-height:55px;padding:14px}
+}
+@media(max-width:360px){.header{padding-left:12px;padding-right:12px}.brand strong{font-size:17px}.intro{padding-left:19px;padding-right:19px}.lede{font-size:16px}.kicker{font-size:10px}.primary{min-width:185px}}
+@media(max-height:660px){.intro{padding-top:20px;padding-bottom:75px}h1{font-size:clamp(39px,8vh,68px)}.lede{margin:12px 0;font-size:16px}.reassure{margin-top:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.media{display:none}}
+</style>
 </head>
 <body>
-<a class="skip" href="#enterVillage">Skip cinematic intro</a>
-<canvas id="cosmos" aria-hidden="true"></canvas>
-<div class="vignette" aria-hidden="true"></div>
-<div class="scan" aria-hidden="true"></div>
-<div class="flash" id="flash" aria-hidden="true"></div>
-
-<header class="hud">
-  <a class="brand" href="index.html" aria-label="CivicAscent AI home">
-    <img src="assets/civicascent-logo.svg" alt="">
-    <span class="brand-copy">
-      <span class="brand-name">CivicAscent <b>AI</b></span>
-      <span class="brand-tag lang-en">AI FOR REAL PEOPLE · REAL SKILLS · REAL LIFE</span>
-      <span class="brand-tag lang-es">IA PARA PERSONAS · HABILIDADES · VIDA REAL</span>
-    </span>
-  </a>
-  <div class="controls">
-    <button class="control" id="lang" type="button" aria-pressed="false">ES</button>
-    <button class="control" id="replay" type="button">↻ Replay</button>
-  </div>
-</header>
-
-<main class="stage">
-  <div class="cue" id="cue" aria-hidden="true"></div>
-  <div class="core" id="core" aria-hidden="true">
-    <img src="assets/civicascent-logo.svg" alt="">
-  </div>
-
-  <section class="hero" aria-label="CivicAscent AI introduction">
-    <p class="eyebrow lang-en">EXPERIENCE AI AT FULL SCALE</p>
-    <p class="eyebrow lang-es">EXPERIMENTA LA IA A GRAN ESCALA</p>
-
-    <h1 class="lang-en">See what <span class="accent">AI</span> can do.</h1>
-    <h1 class="lang-es">Descubre lo que la <span class="accent">IA</span> puede hacer.</h1>
-
-    <p class="lede lang-en">Create images. Speak naturally. Translate languages. Build plans. Automate work. Start with a real goal and see AI turn it into action.</p>
-    <p class="lede lang-es">Crea imágenes. Habla con naturalidad. Traduce idiomas. Crea planes. Automatiza tareas. Empieza con una meta real y mira cómo la IA la convierte en acción.</p>
-
-    <div class="capability-line" aria-label="AI capabilities">
-      <span>CREATE</span><span>VOICE</span><span>TRANSLATE</span><span>PLAN</span><span>AUTOMATE</span>
-    </div>
-
-    <div class="actions">
-      <a class="cta primary lang-en" id="enterVillage" href="village.html?v=20260927-page2-cinematic-5">Explore the Village&nbsp; →</a>
-      <a class="cta primary lang-es" href="village.html?v=20260927-page2-cinematic-5">Explorar la Aldea&nbsp; →</a>
-      <a class="cta secondary lang-en" href="living-ai-lab.html?v=20260927-lab-1">Living AI Lab</a>
-      <a class="cta secondary lang-es" href="living-ai-lab.html?v=20260927-lab-1">Laboratorio de IA</a>
-      <a class="cta secondary lang-en" href="learner-interest.html">Free AI Starter Guide</a>
-      <a class="cta secondary lang-es" href="learner-interest.html" aria-label="Guía gratuita de IA, página en inglés">Guía gratuita (en inglés)</a>
-    </div>
+<a class="skip" href="#start">Skip introduction</a>
+<main class="world" id="top">
+  <div class="poster" aria-hidden="true"></div>
+  <video class="media" id="movie" muted autoplay playsinline loop preload="metadata" aria-hidden="true"
+    poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/d023dc10-49ff-4203-a0a3-714b659221dc.png">
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/hf_20260929_095835_92833d99-5bd0-4982-82cb-2ded0ae10408.mp4" type="video/mp4">
+  </video>
+  <div class="light" aria-hidden="true"></div>
+  <header class="header">
+    <a class="brand" href="index.html" aria-label="CivicAscent AI home">
+      <img src="assets/civicascent-logo.svg" alt="">
+      <span><strong>CivicAscent AI</strong><small>PEOPLE · LEARNING · OPPORTUNITY</small></span>
+    </a>
+    <nav class="topnav" aria-label="Site navigation">
+      <a href="village.html">Explore</a><a href="programs.html">Programs</a><a href="consultation.html">Get help</a>
+    </nav>
+  </header>
+  <section class="intro" aria-labelledby="headline">
+    <p class="kicker">WELCOME TO THE SAFARI LEARNING WORLD</p>
+    <h1 id="headline">A new world of opportunity <em>with AI.</em></h1>
+    <p class="lede">See how AI can make everyday tasks clearer. One easy, practical step is all you need to begin.</p>
+    <button id="start" class="primary" type="button">Start Here <span aria-hidden="true">→</span></button>
+    <p class="reassure">Free introduction · About one minute · No account needed</p>
   </section>
+  <p class="footer-note">Explore · Learn · Create · Grow</p>
+  <div class="media-tools"><button id="motion" type="button" aria-pressed="false">Pause motion</button></div>
 </main>
-
-<div class="timeline" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-<script src="assets/ai-showcase-8k.js?v=20260927-2" defer></script>
+<div id="guideShell" class="guide-shell" hidden>
+  <section class="guide" id="guide" role="dialog" aria-modal="true" aria-labelledby="guideTitle" tabindex="-1">
+    <button class="close" id="closeGuide" type="button" aria-label="Close guided experience">×</button>
+    <p class="eyebrow" id="guideEyebrow">STEP 1 OF 2 · SEE IT</p>
+    <h2 id="guideTitle">Ask AI in your own words.</h2>
+    <p id="guideBody">A useful first step is to tell AI what you want explained and who the explanation is for.</p>
+    <div class="example" id="guideExample">“Explain artificial intelligence in plain language to someone learning it for the first time.”</div>
+    <p class="small" id="guideNote">This is a prepared learning example, not a live AI chat. Always check important information.</p>
+    <button class="advance" id="guideNext" type="button">Show the example →</button>
+    <nav class="next-actions" id="nextActions" aria-label="Choose your next step" hidden>
+      <a href="course.html" data-action="learn">Learn <span aria-hidden="true">→</span></a>
+      <a href="living-ai-lab.html" data-action="try">Try <span aria-hidden="true">→</span></a>
+      <a href="consultation.html" data-action="get-help">Get help <span aria-hidden="true">→</span></a>
+      <a href="village.html" data-action="continue">Continue <span aria-hidden="true">→</span></a>
+    </nav>
+  </section>
+</div>
+<script>
+(function(){
+  "use strict";
+  var movie=document.getElementById("movie"),motion=document.getElementById("motion");
+  var openButton=document.getElementById("start"),shell=document.getElementById("guideShell");
+  var guide=document.getElementById("guide"),closeButton=document.getElementById("closeGuide");
+  var eyebrow=document.getElementById("guideEyebrow"),title=document.getElementById("guideTitle");
+  var body=document.getElementById("guideBody"),example=document.getElementById("guideExample");
+  var note=document.getElementById("guideNote"),next=document.getElementById("guideNext"),actions=document.getElementById("nextActions");
+  var stage=0,lastFocused=null;
+  function track(name,detail){try{window.dispatchEvent(new CustomEvent("civicascent:analytics",{detail:{name:name,value:detail||null}}));}catch(e){}}
+  track("landing_view");
+  function setMotion(paused){
+    if(paused){movie.pause();motion.textContent="Play motion";}
+    else {var played=movie.play();if(played&&played.catch)played.catch(function(){motion.textContent="Motion unavailable";motion.disabled=true;});motion.textContent="Pause motion";}
+    motion.setAttribute("aria-pressed",String(paused));
+  }
+  var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced){motion.textContent="Motion paused";motion.setAttribute("aria-pressed","true");movie.pause();}
+  motion.addEventListener("click",function(){setMotion(!movie.paused);});
+  movie.addEventListener("error",function(){motion.textContent="Motion unavailable";motion.disabled=true;});
+  function render(){
+    actions.hidden=stage!==2;next.hidden=stage===2;
+    if(stage===0){eyebrow.textContent="STEP 1 OF 2 · SEE IT";title.textContent="Ask AI in your own words.";body.textContent="A useful first step is to tell AI what you want explained and who the explanation is for.";example.textContent="“Explain artificial intelligence in plain language to someone learning it for the first time.”";note.textContent="This is a prepared learning example, not a live AI chat. Always check important information.";next.textContent="Show the example →";}
+    else if(stage===1){eyebrow.textContent="STEP 2 OF 2 · UNDERSTAND IT";title.textContent="You can make AI easier to understand.";body.textContent="A sample answer might say: AI is software that finds patterns in information to help with tasks like writing, translating, or planning. It can make mistakes, so you decide what is useful and verify important facts.";example.textContent="Try this next: “Explain it in three short sentences and give me an everyday example.”";note.textContent="The goal is a clearer question, not a perfect first answer.";next.textContent="Finish and choose what's next →";}
+    else{eyebrow.textContent="YOUR NEXT STEP";title.textContent="Choose where to explore.";body.textContent="You have seen one simple way to ask a useful AI question. Pick the path that fits what you want to do now.";example.textContent="See it → Try it → Understand it → Use it.";note.textContent="All four choices open real CivicAscent AI pages.";track("guided_experience_complete");}
+  }
+  function open(){lastFocused=document.activeElement;stage=0;render();shell.hidden=false;document.body.style.overflow="hidden";closeButton.focus();track("start_here");track("guided_experience_start");}
+  function close(){shell.hidden=true;document.body.style.overflow="";(lastFocused||openButton).focus();}
+  openButton.addEventListener("click",open);
+  closeButton.addEventListener("click",close);
+  next.addEventListener("click",function(){stage=Math.min(stage+1,2);render();if(stage===2){actions.querySelector("a").focus();}else{next.focus();}});
+  shell.addEventListener("click",function(e){if(e.target===shell)close();});
+  document.addEventListener("keydown",function(e){if(shell.hidden)return;if(e.key==="Escape"){e.preventDefault();close();return;}if(e.key!=="Tab")return;
+    var items=Array.prototype.slice.call(guide.querySelectorAll("button:not([hidden]):not([disabled]),a:not([hidden])")).filter(function(el){return el.getClientRects().length;});if(!items.length)return;
+    var first=items[0],last=items[items.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+  Array.prototype.forEach.call(actions.querySelectorAll("a"),function(a){a.addEventListener("click",function(){track("next_action",a.getAttribute("data-action"));});});
+})();
+</script>
 </body>
 </html>
