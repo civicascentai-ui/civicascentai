@@ -50,7 +50,7 @@ h1 em{font-style:normal;color:var(--gold)}
 .guide .eyebrow{font-size:12px;letter-spacing:.18em;font-weight:900;color:var(--gold2);margin:0 0 12px}
 .guide .example{border-left:3px solid var(--gold2);padding:14px 0 14px 18px;background:linear-gradient(90deg,rgba(255,204,109,.1),transparent);font-size:18px;line-height:1.5}
 .guide .small{font-size:14px;color:#f5dbbb}
-.guide .close{position:absolute;right:15px;top:15px;border:1px solid rgba(255,239,211,.55);border-radius:50%;background:rgba(255,255,255,.04);width:48px;height:48px;color:white;font-size:25px}
+.guide .close{position:sticky;float:right;top:8px;margin:-12px -8px 4px 12px;z-index:3;border:1px solid rgba(255,239,211,.55);border-radius:50%;background:rgba(255,255,255,.04);width:48px;height:48px;color:white;font-size:25px}
 .guide .advance{min-height:54px;margin-top:15px;padding:11px 20px;background:var(--gold);border:0;border-radius:12px;color:#1b130b;font-weight:850;font-size:17px}
 .next-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px}
 .next-actions a{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid rgba(255,230,188,.57);padding:19px 17px;min-height:68px;border-radius:12px;text-decoration:none;font-weight:800;background:rgba(255,255,255,.055)}
@@ -150,7 +150,7 @@ h1 em{font-style:normal;color:var(--gold)}
   function close(){shell.hidden=true;document.body.style.overflow="";(lastFocused||openButton).focus();}
   openButton.addEventListener("click",open);
   closeButton.addEventListener("click",close);
-  next.addEventListener("click",function(){stage=Math.min(stage+1,2);render();if(stage===2){actions.querySelector("a").focus();}else{next.focus();}});
+  next.addEventListener("click",function(){stage=Math.min(stage+1,2);render();if(stage===2){guide.scrollTop=0;guide.focus({preventScroll:true});}else{next.focus();}});
   shell.addEventListener("click",function(e){if(e.target===shell)close();});
   document.addEventListener("keydown",function(e){if(shell.hidden)return;if(e.key==="Escape"){e.preventDefault();close();return;}if(e.key!=="Tab")return;
     var items=Array.prototype.slice.call(guide.querySelectorAll("button:not([hidden]):not([disabled]),a:not([hidden])")).filter(function(el){return el.getClientRects().length;});if(!items.length)return;
