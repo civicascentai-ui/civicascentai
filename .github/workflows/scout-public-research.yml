@@ -1,0 +1,48 @@
+name: SCOUT Public Research
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/scout-public-research.yml'
+      - 'tools/scout/discovery*'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 15 * * 1-5'
+
+# No paid model APIs, no Replit, no production changes; public repository hosted standard runner.
+permissions:
+  contents: read
+
+concurrency:
+  group: scout-public-research-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-source-scout:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout project without persistent token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Restrict execution to public CivicAscent GitHub
+        run: |
+          test "$GITHUB_REPOSITORY" = 'civicascentai-ui/civicascentai'
+          test "$RUNNER_OS" = 'Linux'
+      - name: Offline tests for lead ranking, output safety and no-outreach
+        run: node --test tools/scout/discovery.test.mjs
+      - name: Run actual bounded public source research
+        run: node tools/scout/discovery.mjs
+      - name: Show lead report as unverified internal review
+        run: cat scout-output/scout-research.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Save report and execution receipt for Reach/CODI
+        uses: actions/upload-artifact@v4
+        with:
+          name: scout-public-research-${{ github.run_id }}
+          path: |
+            scout-output/scout-research.md
+            scout-output/scout-research.json
+          retention-days: 7
+          if-no-files-found: error
