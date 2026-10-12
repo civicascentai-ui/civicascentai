@@ -1,7 +1,11 @@
 // SCOUT: bounded public research, $0 vendor APIs, no outreach, no secrets.
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+
+const civicLaw = JSON.parse(readFileSync(new URL('../../agents/core_law.json', import.meta.url), 'utf8'));
+if (civicLaw.id !== 'CIVICASCENT-SAFARI-CORE-LAW' || civicLaw.scene_routes?.length !== 6) throw Error('Missing valid CivicAscent core LAW');
+export const CORE_LAW_VERSION = civicLaw.version;
 export const SOURCES=[
  {id:'grants',kind:'rss',url:'https://www.grants.gov/rss/GG_OppModByCategory.xml',hosts:['www.grants.gov','grants.gov']},
  {id:'federal-register',kind:'json',url:'https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=workforce%20training&per_page=20&order=newest',hosts:['www.federalregister.gov','federalregister.gov']},
