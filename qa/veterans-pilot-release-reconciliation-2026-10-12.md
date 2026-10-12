@@ -1,0 +1,9 @@
+# Veterans pilot release-readiness reconciliation | QA only | 2026-10-12
+Owner has identified themselves as veteran and facilitator; independent review is still required. The 90-minute draft and corrected workbook are review candidates, not approved public products.
+CONTENT: confirm military-to-civilian skills translation and fictional examples, compare workbook to instructor guide and original Google Doc; original Drive read was unavailable in this run, so synchronization is NOT verified.
+PRICING: free Flyer is free, not the full pilot; $49 Starter and $129 Facilitator are provisional draft figures and must not be represented as authorized veteran tuition. No funded seat or scholarship promise.
+CLAIMS: independent education program, not approved by VA, DoD, SkillBridge or any partner unless independently documented. No guaranteed job, benefit, credential or eligibility outcome.
+ACCESS: test actual accessible Word headings and header rows, keyboard/screen reader with independent reviewer, captions/transcripts only if supplied, printed/offline equivalent, and private accommodation handoff.
+OPERATIONS: run timed owner-led rehearsal; document 90-minute timing, offline failure recovery, support backup, privacy notice, cancellation/refund policy and capacity. Do not collect military discharge, health or benefits records.
+FIELD QC: obtain consenting independent military-connected reviewer and five outside learner tests, document defects and retests, then independent signoff. No role placeholder counts as acceptance.
+STATUS: draft prepared, human gates incomplete, public paid enrollment HOLD.

@@ -1,4 +1,4 @@
-import Stripe from 'stripe';
+// Sandbox-only Stripe webhook; do not load SDK for non-POST requests.
 const PRICE_CENTS = Object.freeze({starter:4900,facilitator:12900});
 async function rpc(name,args){
   const url=process.env.SUPABASE_URL,key=process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -14,10 +14,13 @@ async function rpc(name,args){
 export const config={api:{bodyParser:false}};
 async function readRaw(stream){const chunks=[];let size=0;for await(const chunk of stream){size+=chunk.length;if(size>1024*1024)throw new Error('Oversized webhook');chunks.push(chunk);}return Buffer.concat(chunks);}
 export default async function handler(req,res){
+  res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).end();}
+  if(process.env.VERCEL_ENV!=='preview')return res.status(503).json({error:'Sandbox preview only'});
   const key=process.env.STRIPE_TEST_SECRET_KEY||process.env.STRIPE_SECRET_KEY;
   const secret=process.env.STRIPE_TEST_WEBHOOK_SECRET||process.env.STRIPE_WEBHOOK_SECRET;
   if(!key?.startsWith('sk_test_')||!secret?.startsWith('whsec_'))return res.status(503).json({error:'Sandbox not configured'});
+  const {default: Stripe}=await import('stripe');
   const stripe=new Stripe(key);
   let event;
   try{event=stripe.webhooks.constructEvent(await readRaw(req),req.headers['stripe-signature'],secret);}

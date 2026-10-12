@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CivicAscent AI | Private Sandbox Learner Verification</title>
+<style>
+:root {color-scheme:light;font-family:system-ui,Arial,sans-serif;color:#162540;background:#f1f5f9;}
+body{margin:0}.wrap{max-width:680px;margin:3rem auto;padding:1.5rem}.panel{background:#fff;padding:1.6rem 2rem;border-radius:20px;box-shadow:0 4px 28px #1232;}
+h1{line-height:1.2}label{display:block;margin:1rem 0 .4rem;font-weight:650}input,select,button{font:inherit;padding:.8rem;border:1px solid #70829b;border-radius:9px;box-sizing:border-box;width:100%}
+button{background:#154e91;color:white;border:0;cursor:pointer;margin-top:1rem;font-weight:700;min-height:44px}
+button:disabled{opacity:.6;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible,#fileLink:focus-visible{outline:3px solid #0097d5;outline-offset:2px}
+#fileReady{margin-top:1rem;padding:1rem;background:#e4f6ef;border-left:5px solid #006b4c;border-radius:6px}
+#fileLink{display:block;margin-top:.65rem;padding:.8rem;background:#154e91;color:#fff;text-align:center;border-radius:9px;font-weight:700}
+.notice{padding:1rem;background:#fff0b3;border-left:5px solid #996b00}small{line-height:1.6;display:block;color:#44546d}
+#status{margin-top:1.2rem;min-height:2.3em;padding:.7rem;border-radius:7px;background:#eaf4fe}#verifySection{display:none}
+@media(max-width:700px){.wrap{margin:0;padding:1rem}.panel{padding:1.1rem}}
+</style>
+</head>
+<body><main class="wrap"><div class="panel">
+<h1>CivicAscent AI | Sandbox learner access</h1>
+<p class="notice"><strong>TEST ONLY: No paid course is being delivered.</strong> This page is for internal QA, and only approved test purchase email addresses can access QA placeholder material.</p>
+<p>A purchase confirmation does not grant access. Verify the same email used for your sandbox checkout. We check that email against a verified, active test purchase before any file is served.</p>
+<form id="otpForm">
+<label for="email">Email address used at sandbox checkout</label>
+<input id="email" name="email" type="email" required autocomplete="email" maxlength="254">
+<button id="request" type="submit">Send secure sign-in email</button>
+</form>
+<form id="verifySection">
+<p>Your email may contain a secure sign-in link instead of a code. If it contains a link, open it in this same browser. If it contains a code, enter the code below.</p>
+<label for="code">Email verification code (if provided)</label>
+<input id="code" name="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" required>
+<button id="verify" type="submit">Verify email</button>
+</form>
+<div id="accessSection" hidden>
+<label for="product">QA product purchased</label>
+<select id="product"><option value="starter">Starter $49 (TEST)</option><option value="facilitator">Facilitator $129 (TEST)</option></select>
+<button id="download" type="button">Get private Starter or Facilitator QA file</button>
+<div id="fileReady" hidden><strong>Private test file ready.</strong><p>This is the secured QA README, not the free flyer or the paid course package.</p><a id="fileLink" download="starter-QA-README.md" href="#">Save private QA README</a></div>
+</div>
+<div id="cloudQa" hidden>
+  <p><strong id="verifiedQaEmail" aria-live="polite"></strong></p>
+  <button id="openCloudQa" type="button">Open my Starter QA classroom</button>
+  <button id="switchQaAccount" type="button" style="background:#526375">Use a different checkout email</button>
+  <div id="cloudQaText" hidden></div>
+  <button id="saveCloudQa" type="button" hidden>Save Starter QA lesson</button>
+</div>
+<p id="status" role="status" aria-live="polite">No verification requested.</p>
+<small>Only use fictional or designated tester information. Do not share passwords, payment details, or verification codes with other people. Your access token is held in this page's memory only and disappears when the page closes. Refunds or inactive purchases must block downloads. The released files are not yet approved for sale.</small>
+<p><a href="sandbox-checkout.html">Run a new Stripe sandbox checkout test</a></p>
+<p><a href="../course.html">Return to QA course overview</a></p>
+</div></main>
+<script>
+'use strict';
+const SERVICE='https://lpdvvgdejbsgurtqmrub.supabase.co';
+// This is a PUBLIC Supabase publishable key, not a server credential or service-role key.
+const PUBLIC_KEY="sb_publishable_cw3vZcsKJ2w5gR5m6mwDdA_j-wyy0e4";
+let accessToken=null, verifiedEmail=null, qaDownloadUrl=null;
+const $=id=>document.getElementById(id);
+const status=message=>{$('status').textContent=message;};
+async function request(endpoint,data,token=null){
+  const headers={'Content-Type':'application/json','apikey':PUBLIC_KEY};
+  if(token)headers.Authorization='Bearer '+token;
+  const response=await fetch(SERVICE+endpoint,{method:'POST',headers,body:JSON.stringify(data),cache:'no-store'});
+  return response;
+}
+// Supabase normally sends a Magic Link. Its implicit authentication callback
+// returns a short-lived bearer token in the URL fragment, not a numeric email code.
+// Scrub the fragment immediately; never put tokens into storage or analytics.
+async function acceptMagicLink() {
+  const fragment = location.hash;
+  if(!fragment || !fragment.includes('access_token='))return;
+  history.replaceState(null,'',location.pathname);
+  const params=new URLSearchParams(fragment.slice(1));
+  const token=params.get('access_token');
+  if(!token || token.length>8192 || !/^[A-Za-z0-9._-]+$/.test(token)) {
+    status('Invalid email sign-in link. Request a new one.');
+    return;
+  }
+  status('Verifying secure email sign-in...');
+  try {
+    const response=await fetch(SERVICE+'/auth/v1/user',{
+      headers:{apikey:PUBLIC_KEY,Authorization:'Bearer '+token},
+      cache:'no-store'
+    });
+    if(!response.ok)throw Error('Invalid token');
+    const learner=await response.json();
+    if(typeof learner?.id!=='string'||!learner.id||
+       typeof learner?.email!=='string'||!learner.email_confirmed_at)throw Error('Email unverified');
+    accessToken=token;
+    verifiedEmail=learner.email.trim().toLowerCase();
+    $('email').value=verifiedEmail;
+    $('verifySection').style.display='none';
+    $('otpForm').hidden=true;
+    $('accessSection').hidden=true;$('cloudQa').hidden=false;$('verifiedQaEmail').textContent='Signed in as: '+verifiedEmail;
+    status('Identity verified. Checking the paid test purchase and preparing your private Starter QA file automatically...');
+    // The real backend still checks the verified JWT, paid entitlement and private file.
+    // This removes a confusing second step after opening a sign-in email.
+    $('openCloudQa').click();
+  } catch {
+    accessToken=null;
+    status('This sign-in link could not be verified. Request a new link.');
+  }
+}
+void acceptMagicLink();
+$('otpForm').addEventListener('submit',async event=>{
+  event.preventDefault();accessToken=null;verifiedEmail=null;$('accessSection').hidden=true;$('verifySection').style.display='none';
+  const email=$('email').value.trim().toLowerCase();
+  if(!email || email.length>254)return status('Enter a valid email address.');
+  $('request').disabled=true;status('Requesting test sign-in code...');
+  try{
+    // Stable Vercel QA branch alias, not a per-commit preview URL.
+    // Must be allowlisted in Supabase QA Auth URL Configuration.
+    const redirectTo="https://civicascentai-launch-qa-git-qa-friday-secu-85862f-civicascentai.vercel.app/qa/learner-access.html";
+    const response=await request('/auth/v1/otp?redirect_to='+encodeURIComponent(redirectTo),{email,create_user:true});
+    if(response.status===429){
+      status('Too many sign-in emails requested. Supabase is temporarily limiting email sends. Wait for the limit to reset, then request just one new email. Do not use an older link.');
+      return;
+    }
+    if(!response.ok){
+      status('The QA sign-in email was not sent. Check the Supabase authentication service or ask the QA team to inspect the error logs.');
+      return;
+    }
+    verifiedEmail=email;
+    $('verifySection').style.display='block';
+    status('Check your email for the newest secure sign-in link or verification code. Older links may no longer work.');
+  }catch{status('Could not reach the QA authentication service. Check your connection and try again later.');}
+  finally{$('request').disabled=false;}
+});
+$('verifySection').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const code=$('code').value.trim();
+  if(!/^[0-9]{6,8}$/.test(code)||!verifiedEmail)return status('Enter the 6–8 digit email code.');
+  $('verify').disabled=true;status('Verifying learner identity...');
+  try{
+    const response=await request('/auth/v1/verify',{email:verifiedEmail,token:code,type:'email'});
+    if(!response.ok)throw Error('Verification failed');
+    const body=await response.json();
+    if(!body?.access_token||!body?.user?.email_confirmed_at||body.user.email.toLowerCase()!==verifiedEmail)
+      throw Error('Unverified');
+    accessToken=body.access_token;
+    $('otpForm').hidden=true;
+    $('verifySection').style.display='none';
+    $('accessSection').hidden=true;$('cloudQa').hidden=false;$('verifiedQaEmail').textContent='Signed in as: '+verifiedEmail;
+    status('Identity verified. Preparing your private Starter QA file automatically...');
+    $('openCloudQa').click();
+  }catch{accessToken=null;status('Code invalid or expired. Request a new code if needed.');}
+  finally{$('verify').disabled=false;}
+});
+async function fetchQaFile() {
+  if(!accessToken)return status('Verify your email first.');
+  if($('download').disabled)return;
+  $('download').disabled=true;
+  $('fileReady').hidden=true;
+  status('Checking your verified test purchase and fetching its private QA README...');
+  try{
+    const product=$('product').value;
+    const response=await request('/functions/v1/qa-verified-course-delivery-check',{product_code:product},accessToken);
+    if(!response.ok){
+      status(response.status===403
+        ? 'No active paid QA entitlement for this product. If you purchased Facilitator, select Facilitator and retry.'
+        : 'Private QA delivery could not be completed. The technical team must investigate; do not repeat your purchase.');
+      return;
+    }
+    if(response.headers.get('X-CivicAscent-Artifact')!=='placeholder-not-course')
+      throw Error('Unexpected artifact');
+    const type=(response.headers.get('Content-Type')||'').toLowerCase();
+    if(!type.startsWith('text/plain'))throw Error('Unexpected file format');
+    const file=await response.blob();
+    if(file.size<1 || file.size>1048576)throw Error('Unexpected QA file size');
+    if(qaDownloadUrl)URL.revokeObjectURL(qaDownloadUrl);
+    qaDownloadUrl=URL.createObjectURL(file);
+    const link=$('fileLink');
+    link.href=qaDownloadUrl;
+    link.download=product+'-QA-README.md';
+    link.textContent='Save '+product.charAt(0).toUpperCase()+product.slice(1)+' private QA README';
+    $('fileReady').hidden=false;
+    status('Paid QA entitlement verified and private README transferred. If the file did not save automatically, use the Save button above. This is NOT a paid course package.');
+    // Mobile webviews may block automatic downloads. Keep the user-gesture link
+    // visible and functional instead of claiming a device save succeeded.
+    link.click();
+  }catch{
+    status('Private QA file retrieval failed. No course files were released. Engineering review required; do not make another purchase.');
+  }finally{
+    $('download').disabled=false;
+  }
+}
+$('download').addEventListener('click',fetchQaFile);
+$('product').addEventListener('change',()=>{
+  $('fileReady').hidden=true;
+  if(qaDownloadUrl){URL.revokeObjectURL(qaDownloadUrl);qaDownloadUrl=null;}
+});
+window.addEventListener('pagehide',()=>{
+  if(qaDownloadUrl){URL.revokeObjectURL(qaDownloadUrl);qaDownloadUrl=null;}
+});
+
+$('openCloudQa').addEventListener('click',async ()=>{
+ if(!accessToken)return status('Verify your email before opening the QA classroom.');
+ $('openCloudQa').disabled=true;
+ try{
+  const r=await request('/functions/v1/qa-level1-classroom',{product_code:'starter',action:'view'},accessToken);
+  if(!r.ok){
+     if(r.status===403){status('No active paid Starter test purchase for '+verifiedEmail+'. Use the exact checkout email, or select Use a different checkout email above. No new purchase is required.');}
+     else{status('QA classroom request returned HTTP '+r.status+'. Do not make another purchase.');}
+     return;
+   }
+  const p=await r.json();
+  if(!p.authenticated||!p.sandbox_entitlement||p.release!=='QA ONLY, NOT APPROVED FOR COMMERCIAL SALES'||!Array.isArray(p.sections)||p.sections.length!==4)throw Error('Invalid QA response');
+  const panel=$('cloudQaText');panel.replaceChildren();
+  for(const section of p.sections){
+   const h=document.createElement('h2');h.textContent=section.title;
+   const body=document.createElement('pre');body.textContent=section.content;body.style.cssText='font:inherit;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere';
+   panel.append(h,body);
+  }
+  panel.hidden=false;$('saveCloudQa').hidden=false;
+  status('Four course draft sections unlocked after signed-in sandbox entitlement verification. Not for sale.');
+ }catch(err){status('QA classroom connection failed before lessons could load. Please report this message; do not pay again.')}
+ finally{$('openCloudQa').disabled=false;}
+});
+$('switchQaAccount').addEventListener('click',()=>{
+  accessToken=null;verifiedEmail=null;
+  $('otpForm').hidden=false;
+  $('verifySection').style.display='none';
+  $('cloudQa').hidden=true;
+  $('cloudQaText').hidden=true;
+  $('saveCloudQa').hidden=true;
+  $('accessSection').hidden=true;
+  $('email').value='';
+  $('email').focus();
+  status('Enter the same email used at sandbox checkout and request a secure sign-in link. You do not need to purchase again.');
+});
+$('saveCloudQa').addEventListener('click',async ()=>{
+ if(!accessToken)return;
+ $('saveCloudQa').disabled=true;
+ try{
+  const r=await request('/functions/v1/qa-level1-classroom',{product_code:'starter',action:'download'},accessToken);
+  if(!r.ok||r.headers.get('X-CivicAscent-Artifact')!=='course-qa-text-v1')throw Error('Denied');
+  const blob=await r.blob();if(blob.size<1000||blob.size>100000)throw Error('Size');
+  const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='CivicAscent_Starter_QA_Classroom.md';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);
+  status('QA file download requested; device save still needs verification.');
+ }catch{status('QA download unavailable. Do not repeat the purchase.')}
+ finally{$('saveCloudQa').disabled=false;}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+name: QA checkout live-preview contract
+on:
+  push:
+    branches:
+      - qa/friday-secure-delivery-20261010
+    paths:
+      - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - 'qa/e2e/qa-delivery-cors-preflight.mjs'
+      - '.github/workflows/qa-checkout-live-preview.yml'
+  pull_request:
+    branches:
+      - qa/checkout-bottleneck-repair-20261010
+    paths:
+      - 'qa/e2e/qa-checkout-session-contract.mjs'
+      - 'qa/e2e/qa-delivery-cors-preflight.mjs'
+      - '.github/workflows/qa-checkout-live-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  # Pull-request source checks must never cancel the authorized QA-branch probe.
+  group: qa-checkout-live-preview-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-only-not-e2e:
+    # Independent local guard checks run even when the protected preview cannot
+    # authorize this CI caller. They are NEVER proof of checkout or fulfillment.
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010')
+    name: Probe source checks only, NOT payment or preview E2E
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify secure probe source and local contract guards only
+        run: |
+          node --check qa/e2e/qa-checkout-session-contract.mjs
+          node --test tests/qa-delivery-edge-safety.test.mjs
+  delivery-cors-live-check:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010'
+    name: QA private delivery CORS preflight (no payment or credentials)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify deployed QA edge browser headers and negative origin
+        run: node qa/e2e/qa-delivery-cors-preflight.mjs
+  test-only-checkout:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010'
+    name: Authenticated QA preview probe (no card or delivery)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Request short-lived identity for Vercel trusted preview
+        id: oidc
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/qa/friday-secure-delivery-20261010'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken();
+            core.setSecret(token);
+            core.setOutput('token', token);
+      - name: Verify one preview checkout session without a payment
+        env:
+          QA_GITHUB_OIDC_TOKEN: ${{ steps.oidc.outputs.token }}
+        run: node qa/e2e/qa-checkout-session-contract.mjs
