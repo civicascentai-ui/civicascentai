@@ -159,6 +159,20 @@ jobs:
           print("PASS: historical Safari video and poster URLs returned bytes.")
           PY
 
+
+      - name: Install browser QA tools
+        run: npm install --no-save --ignore-scripts playwright@1.56.0
+      - name: Run real Chrome viewport and guided path tests
+        run: node tools/qa/safari_browser_test.cjs
+      - name: Preserve Safari screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-recovery-mobile-desktop
+          path: qa-artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 7
+
   governance:
     name: Governance Guardrails
     runs-on: ubuntu-latest
