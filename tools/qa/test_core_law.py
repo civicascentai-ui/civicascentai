@@ -32,7 +32,7 @@ assert "Living AI Lab" in (ROOT/law["source_of_truth"]).read_text(encoding="utf-
 spec=importlib.util.spec_from_file_location("zebra_runner",ROOT/"agents/zebra_runner.py")
 zebra=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(zebra)
-assert len(zebra.AGENTS) >= 10
+assert set(zebra.AGENTS) == set(law["agents"]), "Every LAW agent must have a dispatch role"
 for name in zebra.AGENTS:
     receipt=zebra.run("law acknowledgement healthcheck",name)
     assert receipt["core_law_version"] == law["version"]
