@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#020711">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="CivicAscent AI Living AI Lab — a hands-on, voice-guided demonstration of practical AI capabilities.">
-<meta name="civicascent-build" content="20260927-living-ai-lab-1">
-<title>Living AI Lab | CivicAscent AI</title>
+<meta name="civicascent-build" content="20261012-safari-scene05-recovery-review">
+<title>Living AI Lab | Safari Scene 05 | CivicAscent AI</title>
 <link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
 <style>
 :root{--bg:#020711;--panel:rgba(5,18,34,.72);--line:rgba(132,215,255,.28);--cyan:#69d8ff;--gold:#ffd36a;--green:#7be08d;--text:#f5fbff;--muted:#bfd0df}
@@ -47,6 +47,7 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
 }
 @media(prefers-reduced-motion:reduce){.stars i,.orb,.orb::before,.orb::after,.sweep,.wave i{animation:none!important}}
 </style>
+<link rel="stylesheet" href="assets/safari-scene05-lab.css">
 </head>
 <body>
 <a class="skip" href="#labTitle">Skip to lab</a>
@@ -64,9 +65,9 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
   <div class="grid" aria-hidden="true"></div><div class="stars" id="stars" aria-hidden="true"></div>
   <section class="shell" aria-label="Living AI Lab interactive demonstration">
     <div class="heading">
-      <div class="eyebrow" id="eyebrow">LIVE · INTERACTIVE · VOICE GUIDED</div>
+      <div class="eyebrow" id="eyebrow">SCENE 05 · GUIDED AI EXAMPLES</div>
       <h1 id="mainTitle">Living AI Lab</h1>
-      <p id="mainIntro">Touch a capability. The lab changes in real time and explains what AI can do in plain language.</p>
+      <p id="mainIntro">Explore practical AI examples in this Safari learning experience. Choose a skill, then try the next step.</p>
     </div>
     <button class="node n1 active" data-mode="create"><span>01</span><b data-en="CREATE" data-es="CREAR">CREATE</b></button>
     <button class="node n2" data-mode="voice"><span>02</span><b data-en="VOICE" data-es="VOZ">VOICE</b></button>
@@ -74,11 +75,14 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
     <button class="node n4" data-mode="plan"><span>04</span><b data-en="PLAN" data-es="PLANEAR">PLAN</b></button>
     <i class="wire w1"></i><i class="wire w2"></i><i class="wire w3"></i><i class="wire w4"></i>
     <section class="stage" aria-live="polite">
-      <div class="scene-label" id="sceneLabel">LIVE AI EXAMPLE</div>
+      <div class="scene-label" id="sceneLabel">PREPARED AI LEARNING EXAMPLE</div>
       <div class="scene" id="scene"></div>
     </section>
     <div class="voicebar"><button id="play" type="button">🔊 Replay Voice</button><button id="stop" type="button">■ Stop</button><span class="status" id="status">Ready</span></div>
   </section>
+  <aside class="safari-lab-fine-print">These are prepared educational demonstrations, not responses from a connected live AI model. Verify important information before using it.
+    <nav class="safari-lab-links" aria-label="Continue the learning journey"><a href="course.html">Learn AI basics →</a><a href="village.html">Back to the Safari →</a><a href="consultation.html">Ask for help →</a></nav>
+  </aside>
 </main>
 <script>
 const DATA={
@@ -96,14 +100,14 @@ function visual(k){
  return '<div class="visual"><div class="steps"><div class="step"><b>1</b><strong>Define the goal</strong><span class="check">✓</span></div><div class="step"><b>2</b><strong>Build the next steps</strong><span class="check">✓</span></div><div class="step"><b>3</b><strong>Review before acting</strong><span class="check">✓</span></div></div></div>';
 }
 function render(speakNow=false){
- document.querySelectorAll(".node").forEach(n=>n.classList.toggle("active",n.dataset.mode===mode));
+ document.querySelectorAll(".node").forEach(n=>{const active=n.dataset.mode===mode;n.classList.toggle("active",active);n.setAttribute("aria-pressed",String(active));});
  document.querySelectorAll("[data-en]").forEach(n=>n.textContent=n.dataset[lang]);
  const d=DATA[mode][lang];
  E("scene").innerHTML='<h2>'+d.title+'</h2><p>'+d.desc+'</p>'+visual(mode);
- E("sceneLabel").textContent=lang==="en"?"LIVE AI EXAMPLE":"EJEMPLO DE IA EN VIVO";
- E("eyebrow").textContent=lang==="en"?"LIVE · INTERACTIVE · VOICE GUIDED":"EN VIVO · INTERACTIVO · GUIADO POR VOZ";
+ E("sceneLabel").textContent=lang==="en"?"PREPARED AI LEARNING EXAMPLE":"EJEMPLO EDUCATIVO PREPARADO";
+ E("eyebrow").textContent=lang==="en"?"SCENE 05 · GUIDED AI EXAMPLES":"ESCENA 05 · EJEMPLOS GUIADOS";
  E("mainTitle").textContent=lang==="en"?"Living AI Lab":"Laboratorio de IA";
- E("mainIntro").textContent=lang==="en"?"Touch a capability. The lab changes in real time and explains what AI can do in plain language.":"Toca una capacidad. El laboratorio cambia en tiempo real y explica lo que la IA puede hacer con palabras sencillas.";
+ E("mainIntro").textContent=lang==="en"?"Explore practical AI examples in this Safari learning experience. Choose a skill, then try the next step.":"Explora ejemplos prácticos de IA en esta experiencia Safari. Elige una habilidad y prueba el siguiente paso.";
  E("lang").textContent=lang==="en"?"ES":"EN";E("play").textContent=lang==="en"?"🔊 Replay Voice":"🔊 Repetir voz";E("stop").textContent=lang==="en"?"■ Stop":"■ Detener";E("status").textContent=lang==="en"?"Ready":"Listo";
  if(speakNow)speak();
 }
@@ -112,10 +116,10 @@ function pickVoice(){
 }
 function stop(){if("speechSynthesis" in window)speechSynthesis.cancel()}
 function speak(){if(!("speechSynthesis" in window)){E("status").textContent="Voice unavailable";return}stop();const u=new SpeechSynthesisUtterance(DATA[mode][lang].voice);u.lang=lang==="es"?"es-US":"en-US";u.rate=.82;u.pitch=.88;u.volume=1;const v=pickVoice();if(v)u.voice=v;u.onstart=()=>E("status").textContent=lang==="en"?"Playing…":"Reproduciendo…";u.onend=()=>E("status").textContent=lang==="en"?"Ready":"Listo";speechSynthesis.speak(u)}
-document.querySelectorAll(".node").forEach(n=>n.addEventListener("click",()=>{userTouched=true;mode=n.dataset.mode;render(true)}));
+document.querySelectorAll(".node").forEach(n=>n.addEventListener("click",()=>{userTouched=true;mode=n.dataset.mode;render(false)}));
 E("lang").onclick=()=>{userTouched=true;lang=lang==="en"?"es":"en";stop();render(false)};E("play").onclick=()=>{userTouched=true;speak()};E("stop").onclick=()=>{userTouched=true;stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
-const stars=E("stars");for(let i=0;i<60;i++){const s=document.createElement("i");s.style.left=Math.random()*100+"%";s.style.top=Math.random()*100+"%";s.style.animationDelay=(-Math.random()*3)+"s";s.style.opacity=.15+Math.random()*.55;stars.appendChild(s)}
-timer=setInterval(()=>{if(userTouched)return;const order=["create","voice","translate","plan"];mode=order[(order.indexOf(mode)+1)%order.length];render(false)},8500);
+// Space-themed star generation removed from Safari Scene 05.
+// No surprise scene changes: navigation only changes after user action.
 if("speechSynthesis" in window){speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}render(false);
 </script>
 </body>
