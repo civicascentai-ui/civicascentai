@@ -110,6 +110,22 @@ jobs:
           done
 
 
+  core-law:
+    name: Universal Agent Memory and Core LAW
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce binding owner direction and six scene mapping
+        run: python3 tools/qa/test_core_law.py
+      - name: Enforce both independent SCOUT module self-checks (offline)
+        run: |
+          node --test tools/scout/mission.test.mjs
+          node --test tools/scout/discovery.test.mjs
+
   safari-homepage:
     name: Safari Homepage Recovery QC
     runs-on: ubuntu-latest
