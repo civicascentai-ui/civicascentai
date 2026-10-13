@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {pathToFileURL}=require('node:url');
 const root=path.resolve(__dirname,'../..'),artifacts=path.join(root,'qa-artifacts');
 fs.mkdirSync(artifacts,{recursive:true});
-const pages=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','village.html','consultation.html','404.html'];
+const pages=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','village.html','consultation.html','try-chatgpt.html','404.html'];
 const views=[{width:320,height:700},{width:390,height:844},{width:768,height:1024},{width:1440,height:900}];
 const uri=p=>pathToFileURL(path.join(root,p)).href;
 (async()=>{
@@ -49,6 +49,26 @@ try {
        assert.equal(await page.locator('.node').count(),4,'Lab modes missing');
        await page.locator('[data-mode="translate"]').click();
        assert.equal(await page.locator('.scene h2').innerText(),'Translate Language');
+     }
+     if(name==='try-chatgpt.html'){
+       const choices=await page.locator('.choices .choice').evaluateAll(a=>a.map(x=>({href:x.href,target:x.target,rel:x.rel,label:x.textContent.trim()})));
+       assert.equal(choices.length,4,'Four guided ChatGPT choices required');
+       assert.equal(new Set(choices.map(c=>c.href)).size,4,'Guided prompts should not repeat');
+       for(const c of choices){
+         const u=new URL(c.href);
+         assert.equal(u.origin,'https://chatgpt.com');
+         assert.ok(u.searchParams.get('q')?.length>=20,'Missing suggested prompt');
+         assert.equal(c.target,'_blank');
+         assert.ok(c.rel.includes('noopener')&&c.rel.includes('noreferrer'));
+       }
+       assert.ok(await page.locator('.notice').isVisible(),'Third-party privacy notice missing');
+       await page.locator('#language').click();
+       assert.equal(await page.locator('html').getAttribute('lang'),'es');
+       assert.match(await page.locator('h1').innerText(),/conversación/);
+       await page.locator('#language').click();
+       assert.equal(await page.locator('html').getAttribute('lang'),'en');
+       assert.match(await page.locator('h1').innerText(),/real AI conversation/);
+       console.log('PASS',name,view.width,'all four prompts, bilingual and disclosure');
      }
      if(name==='village.html'){
        await page.locator('#menuBtn').click();
