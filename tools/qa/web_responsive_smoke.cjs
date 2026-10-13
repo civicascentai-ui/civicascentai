@@ -33,6 +33,9 @@ async function checkPage(browser,file,viewport) {
       const link=page.getByRole('link',{name:'Free AI Starter Guide'});
       assert.equal(await link.count(),1,'English guide CTA missing or duplicated');
       assert.equal(await link.getAttribute('href'),'free-ai-starter.html');
+      // Motion-sensitive visitors must not see the six-second flash triggered on load.
+      assert.equal(await page.locator('#flash').evaluate(
+        el=>getComputedStyle(el).display),'none','Reduced-motion flash overlay visible');
     }
     if(file==='consultation.html') {
       assert.ok(await page.locator('a[href^="mailto:civicascentai@gmail.com"]').count()>=3,

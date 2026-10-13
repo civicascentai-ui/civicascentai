@@ -85,5 +85,6 @@ body.ready .timeline{opacity:0;pointer-events:none}
 }
 @media(prefers-reduced-motion:reduce){
   .scan,.cue,.core::before,.core::after{animation:none!important}
+  .flash{display:none!important;animation:none!important}
   .hero{opacity:1!important;transform:none!important;filter:none!important}.core,.timeline{display:none!important}
 }

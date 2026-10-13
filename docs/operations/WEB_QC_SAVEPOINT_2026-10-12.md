@@ -16,3 +16,9 @@
 - Consultation page uses the business inbox `civicascentai@gmail.com` already used by contact and interest pages; does not assume an unverified domain-alias mailbox works.
 - Added source regression checks and offline Chrome responsive smoke testing at 320, 375, 390, 430, 768 and 1440 px for homepage, consultation and 404, with screenshots retained in workflow artifacts.
 - QA screenshots need human/independent visual interpretation; geometry checks are not film/background aesthetic approval.
+
+## Reduced-motion flash repair (2026-10-12)
+- Independently reviewed GitHub Action screenshots displayed a washed-out homepage at load even with reduced motion requested.
+- Root cause: startup animation used the `finish()` elapsed-time shortcut, which still triggered the `.flash.fire` whiteout. Reduced-motion CSS did not disable flash.
+- Added both JS guard `!reduced` and CSS `.flash{display:none!important;animation:none!important}` in reduced-motion mode.
+- Browser QA now asserts the flash overlay cannot appear in reduced-motion mode at all test viewport widths. Film-first Safari recovery PR #69 remains a separate design release.
