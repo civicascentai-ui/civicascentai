@@ -4,6 +4,10 @@ on:
     paths:
       - 'index.html'
       - 'mentor.html'
+      - 'living-ai-lab.html'
+      - 'village.html'
+      - 'try-chatgpt.html'
+      - 'tools/qa/safari_original_customer_test.cjs'
       - 'consultation.html'
       - 'free-ai-starter.html'
       - '404.html'
@@ -29,11 +33,60 @@ jobs:
         run: npm install --no-save --ignore-scripts playwright@1.56.0
       - name: Test approved Safari routes on phone, tablet and desktop
         run: node tools/qa/safari_original_customer_test.cjs
+      - name: Package complete static staging website source
+        if: success()
+        run: |
+          python3 - <<'PY'
+          import subprocess,zipfile,hashlib,json
+          from pathlib import Path
+          out=Path('qa-artifacts/CivicAscent_Safari_Staging_Source_2026-10-13.zip')
+          files=subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          root_extensions={'.html','.css','.js','.json','.txt','.xml','.md'}
+          asset_extensions={'.svg','.webp','.png','.jpg','.jpeg','.gif','.avif','.mp4','.mp3','.wav','.woff','.woff2','.css','.js','.html','.json'}
+          selected=[]
+          for item in files:
+              if not item: continue
+              p=Path(item)
+              if not p.is_file() or p.name.startswith('.env'):continue
+              if len(p.parts)==1 and (p.suffix in root_extensions or p.name=='.nojekyll'):selected.append(item)
+              elif p.parts[0] in ('assets','public') and p.suffix.lower() in asset_extensions:selected.append(item)
+              elif p.parts[0]=='api' and p.suffix in ('.js','.json'):selected.append(item)
+          required=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','try-chatgpt.html']
+          missing=[p for p in required if p not in selected]
+          if missing:raise SystemExit('Missing core pages: '+str(missing))
+          out.parent.mkdir(exist_ok=True)
+          with zipfile.ZipFile(out,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=7) as z:
+              for name in selected:z.write(name)
+              z.writestr('STAGING_ONLY_READ_ME_FIRST.txt',
+                  'CivicAscent AI — Safari Learning World staging source.\n'
+                  'DO NOT publish as production. The five-scene visual release gate is on HOLD.\n'
+                  'Historical Scene 1 video is watermarked and not cleared.\n'
+                  'Clean, rights-verified visual masters and owner visual acceptance are required.\n'
+                  'No API keys are included. Checkout/delivery were not validated by this QA.\n'
+                  'Source commit: '+subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()+'\n')
+          with zipfile.ZipFile(out) as z:
+              bad=z.testzip()
+              assert bad is None,bad
+              assert all(p in z.namelist() for p in required)
+          manifest={'git_sha':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'tracked_static_files':len(selected),'zip_bytes':out.stat().st_size,'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'production_approved':False,'release_hold_reason':'Unapproved/watermarked scene media'}
+          Path('qa-artifacts/SOURCE_PACKAGE_MANIFEST.json').write_text(json.dumps(manifest,indent=2))
+          print('PASS website source packaged:',json.dumps(manifest))
+          PY
+      - name: Retain staged static source ZIP and integrity manifest
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: civicascent-safari-source-staging-20261013
+          path: |
+            qa-artifacts/CivicAscent_Safari_Staging_Source_2026-10-13.zip
+            qa-artifacts/SOURCE_PACKAGE_MANIFEST.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Retain actual scene screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: owner-original-six-scene-browser-evidence
+          name: owner-original-five-scene-browser-evidence
           path: qa-artifacts/owner-safari-*.png
           if-no-files-found: warn
           retention-days: 7

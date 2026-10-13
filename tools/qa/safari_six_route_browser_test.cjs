@@ -1,4 +1,4 @@
-// Six-scene connected journey regression: real browsers, no checkout/account side effects.
+// Five-scene connected journey regression: real browsers, no checkout/account side effects.
 const {chromium}=require('playwright');
 const path=require('node:path');
 const fs=require('node:fs');
@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'../..'),folder=path.join(root,'qa-artifacts')
 fs.mkdirSync(folder,{recursive:true});
 const scenes=[
  [1,'index.html'],[2,'free-ai-starter.html'],[3,'mentor.html'],
- [4,'course.html'],[5,'living-ai-lab.html'],[6,'village.html']
+ [4,'course.html'],[5,'living-ai-lab.html']
 ];
 (async()=>{
  const browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox']});
@@ -27,7 +27,7 @@ const scenes=[
     assert.ok(result.scroll<=result.width+2,
        'Scene '+scene+' horizontal overflow at '+width+': '+JSON.stringify(result));
     await page.screenshot({path:path.join(folder,'safari-journey-scene'+scene+'-'+width+'.png'),fullPage:true});
-    console.log('PASS six-scene routing: '+scene+' '+file+' '+width+'px, h1 and navigation visible, no horizontal overflow');
+    console.log('PASS five-scene routing: '+scene+' '+file+' '+width+'px, h1 and navigation visible, no horizontal overflow');
     await page.close();
    }
   }

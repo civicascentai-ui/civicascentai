@@ -1,7 +1,7 @@
 {
   "schema": "civicascent.safari.scene-release.v1",
-  "date": "2026-10-12",
-  "scope": "draft PR #69; isolated recovery branch only",
+  "date": "2026-10-13",
+  "scope": "Five active Safari scenes, isolated staging branch; historic six-scene plan superseded",
   "status": "HOLD",
   "production_approved": false,
   "owner_visual_approved": false,
@@ -9,7 +9,7 @@
   "media_license_verified": false,
   "watermark_free_all_scenes": false,
   "budget_usd": 0,
-  "reason": "OpenArt watermark in root movie; clean six-scene masters not yet attached to repository; Scenic Scene 05 CSS is only atmospheric fallback.",
+  "reason": "OpenArt watermark in root movie; clean five-scene masters not yet attached to repository; Scenic Scene 05 CSS is only atmospheric fallback. Scene 6 explicitly retired by owner.",
   "scene_media": [
     {
       "scene": 1,
@@ -40,13 +40,13 @@
       "route": "living-ai-lab.html",
       "asset": null,
       "status": "FUNCTIONAL_QA_PASS_VISUAL_ASSET_PENDING"
-    },
-    {
-      "scene": 6,
-      "route": "village.html",
-      "asset": null,
-      "status": "WAITING_CLEAN_SOURCE"
     }
   ],
-  "release_instructions": "To authorize production, verify six clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release."
+  "release_instructions": "To authorize production, verify five clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release.",
+  "retired_scene_6": {
+    "former_route": "village.html",
+    "active": false,
+    "compatibility": "redirects to index.html",
+    "replacement_scene": null
+  }
 }

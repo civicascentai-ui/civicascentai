@@ -119,7 +119,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Enforce binding owner direction and six scene mapping
+      - name: Enforce binding owner direction and five active scene mapping
         run: python3 tools/qa/test_core_law.py
       - name: Enforce both independent SCOUT module self-checks (offline)
         run: |
@@ -182,7 +182,7 @@ jobs:
         run: node tools/qa/safari_browser_test.cjs
       - name: Test Scene 05 Lab controls and mobile Safari styling
         run: node tools/qa/safari_scene05_browser_test.cjs
-      - name: Test six existing Safari destination URLs in actual browser
+      - name: Test five active Safari destination URLs in actual browser
         run: node tools/qa/safari_six_route_browser_test.cjs
       - name: Preserve Safari screenshot evidence
         if: always()
@@ -194,7 +194,7 @@ jobs:
           retention-days: 7
 
   release-eligibility:
-    name: Six Scene Production Release Hold
+    name: Five Scene Production Release Hold
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:

@@ -1,11 +1,12 @@
-"""Offline source tests for the OWNER-APPROVED six Safari destinations, not launch certification."""
+"""Offline source tests for the five active Safari destinations, not launch certification."""
 from pathlib import Path
 from html.parser import HTMLParser
 import re
+import json
 import unittest
 import xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
-ROUTES=("index.html","free-ai-starter.html","mentor.html","course.html","living-ai-lab.html","village.html")
+ROUTES=("index.html","free-ai-starter.html","mentor.html","course.html","living-ai-lab.html")
 BUSINESS="civicascentai@gmail.com"
 
 class Tags(HTMLParser):
@@ -30,6 +31,15 @@ class SafariOriginalIntegrity(unittest.TestCase):
                 if route!="index.html":
                     self.assertTrue(any(h in t.links for h in ("index.html","https://civicascentai.com","/")),
                                     "Missing path to actual Safari home "+route)
+    def test_retired_scene_6_absent_from_active_navigation(self):
+        for name in ROUTES:
+            page=(ROOT/name).read_text(encoding="utf-8")
+            self.assertNotIn('href="village.html"',page,name)
+        legacy=(ROOT/"village.html").read_text(encoding="utf-8")
+        self.assertIn('url=index.html',legacy)
+        law=json.loads((ROOT/"agents/core_law.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(law["scene_routes"]),5)
+        self.assertNotIn("village.html",[row["file"] for row in law["scene_routes"]])
     def test_guide_is_free_and_has_home_and_interest_paths(self):
         h=(ROOT/"free-ai-starter.html").read_text(encoding="utf-8")
         self.assertIn('href="index.html">← Return to Safari',h)
