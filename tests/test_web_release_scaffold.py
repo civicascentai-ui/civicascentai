@@ -58,5 +58,18 @@ class WebReleaseScaffoldTests(unittest.TestCase):
         self.assertIn('href="/free-ai-starter.html"', html)
         self.assertIn("prefers-reduced-motion", html)
 
+    def test_homepage_free_guide_opens_actual_guide(self):
+        import re
+        html = (ROOT / "index.html").read_text(encoding="utf-8")
+        hrefs = re.findall(r'<a[^>]+href="([^"]+)"[^>]*>Free AI Starter Guide</a>', html)
+        self.assertEqual(hrefs, ["free-ai-starter.html"])
+        self.assertIn('href="free-ai-starter.html" aria-label="Guía gratuita de IA, página en inglés"', html)
+        self.assertTrue((ROOT / "free-ai-starter.html").is_file())
+
+    def test_consultation_uses_verified_business_inbox(self):
+        html = (ROOT / "consultation.html").read_text(encoding="utf-8")
+        self.assertNotIn("mailto:info@civicascentai.com", html)
+        self.assertGreaterEqual(html.count("mailto:civicascentai@gmail.com"), 3)
+
 if __name__ == "__main__":
     unittest.main()
