@@ -3,7 +3,7 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 export const SOURCES=[
- {id:'grants',kind:'rss',url:'https://www.grants.gov/rss/GG_OppModByCategory.xml',hosts:['www.grants.gov','grants.gov']},
+ {id:'grants',kind:'grants-api',url:'https://api.grants.gov/v1/api/search2',hosts:['www.grants.gov','grants.gov']},
  {id:'federal-register',kind:'json',url:'https://www.federalregister.gov/api/v1/documents.json?conditions%5Bterm%5D=workforce%20training&per_page=20&order=newest',hosts:['www.federalregister.gov','federalregister.gov']},
  {id:'veterans-news',kind:'rss',url:'https://news.google.com/rss/search?q=veterans%20AI%20workforce%20training&hl=en-US&gl=US&ceid=US%3Aen',hosts:['news.google.com']},
  {id:'older-adults-news',kind:'rss',url:'https://news.google.com/rss/search?q=AI%20digital%20literacy%20older%20adults&hl=en-US&gl=US&ceid=US%3Aen',hosts:['news.google.com']}
@@ -36,6 +36,16 @@ export function parseJson(text,s){
  if(!Array.isArray(d.results))throw Error('Invalid JSON source');
  return d.results.slice(0,25).map(x=>({source:s.id,title:clean(x.title),url:safeUrl(x.html_url,s.hosts),published:clean(x.publication_date)||null})).filter(x=>x.title&&x.url);
 }
+export function parseGrantsApi(text,s){
+ const d=JSON.parse(text);
+ if(d.errorcode!==0||!Array.isArray(d.data?.oppHits))throw Error('Invalid Grants.gov search2 response');
+ return d.data.oppHits.slice(0,25).filter(x=>['posted','forecasted'].includes(x.oppStatus))
+ .map(x=>{
+  const id=Number(x.id);
+  const url=Number.isSafeInteger(id)&&id>0?safeUrl('https://www.grants.gov/search-results-detail/'+id,s.hosts):null;
+  return {source:s.id,title:clean(x.title),url,published:clean(x.openDate)||null};
+ }).filter(x=>x.title&&x.url);
+}
 export function rank(items){
  const terms=[[/\b(veterans?|military|service members?|military spouses?)\b/i,4],
   [/\b(workforce|employment|skills?|career|job training)\b/i,3],
@@ -52,12 +62,15 @@ export function rank(items){
  return out.sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title)).slice(0,18);
 }
 async function download(s){
- const response=await fetch(s.url,{redirect:'error',headers:{'User-Agent':'CivicAscent-SCOUT-PublicFeed/1.0'},
+ const isGrants=s.kind==='grants-api';
+ const response=await fetch(s.url,{method:isGrants?'POST':'GET',redirect:'error',
+  headers:{'User-Agent':'CivicAscent-SCOUT-PublicFeed/1.0',...(isGrants?{'Content-Type':'application/json'}:{})},
+  ...(isGrants?{body:JSON.stringify({rows:25,keyword:'workforce training',oppStatuses:'posted|forecasted'})}:{}),
   signal:AbortSignal.timeout(12000)});
  if(!response.ok)throw Error('HTTP '+response.status);
  if(Number(response.headers.get('content-length')||0)>2000000)throw Error('Too large');
  const text=await response.text();if(text.length>2000000)throw Error('Too large');
- return s.kind==='rss'?parseRss(text,s):parseJson(text,s);
+ return s.kind==='rss'?parseRss(text,s):s.kind==='grants-api'?parseGrantsApi(text,s):parseJson(text,s);
 }
 export async function discover(sources=SOURCES,loader=download){
  const runs=await Promise.all(sources.map(async s=>{
