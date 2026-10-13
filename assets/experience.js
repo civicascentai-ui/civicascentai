@@ -59,7 +59,9 @@
   }
   if(langBtn)langBtn.addEventListener('click',()=>{body.classList.toggle('es');applyLang();speak()});
   if(playBtn)playBtn.addEventListener('click',speak);
-  if(stopBtn)stopBtn.addEventListener('click',()=>speechSynthesis&&speechSynthesis.cancel());
+  if(stopBtn)stopBtn.addEventListener('click',()=>{
+    if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  });
   if('speechSynthesis' in window){
     speechSynthesis.onvoiceschanged=()=>{};
     setTimeout(()=>{if(params.get('speak')==='1')speak()},650);
