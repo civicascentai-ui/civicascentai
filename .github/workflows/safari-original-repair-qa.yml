@@ -5,6 +5,7 @@ on:
       - 'index.html'
       - 'mentor.html'
       - 'living-ai-lab.html'
+      - 'village.html'
       - 'try-chatgpt.html'
       - 'tools/qa/safari_original_customer_test.cjs'
       - 'consultation.html'
@@ -50,7 +51,7 @@ jobs:
               if len(p.parts)==1 and (p.suffix in root_extensions or p.name=='.nojekyll'):selected.append(item)
               elif p.parts[0] in ('assets','public') and p.suffix.lower() in asset_extensions:selected.append(item)
               elif p.parts[0]=='api' and p.suffix in ('.js','.json'):selected.append(item)
-          required=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','village.html','try-chatgpt.html']
+          required=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','try-chatgpt.html']
           missing=[p for p in required if p not in selected]
           if missing:raise SystemExit('Missing core pages: '+str(missing))
           out.parent.mkdir(exist_ok=True)
@@ -58,7 +59,7 @@ jobs:
               for name in selected:z.write(name)
               z.writestr('STAGING_ONLY_READ_ME_FIRST.txt',
                   'CivicAscent AI — Safari Learning World staging source.\n'
-                  'DO NOT publish as production. The six-scene visual release gate is on HOLD.\n'
+                  'DO NOT publish as production. The five-scene visual release gate is on HOLD.\n'
                   'Historical Scene 1 video is watermarked and not cleared.\n'
                   'Clean, rights-verified visual masters and owner visual acceptance are required.\n'
                   'No API keys are included. Checkout/delivery were not validated by this QA.\n'
@@ -85,7 +86,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: owner-original-six-scene-browser-evidence
+          name: owner-original-five-scene-browser-evidence
           path: qa-artifacts/owner-safari-*.png
           if-no-files-found: warn
           retention-days: 7
