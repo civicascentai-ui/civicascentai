@@ -19,6 +19,16 @@ const layouts=[[320,700],[375,812],[390,844],[430,932],[1440,900]];
    page.on('pageerror',e=>errors.push(String(e)));
    await page.goto(url,{waitUntil:'domcontentloaded'});
    await page.locator('.node').first().waitFor({state:'visible'});
+   const cinema=await page.evaluate(async()=>{
+      const hero=document.querySelector('.safari-cinema'),img=document.querySelector('.safari-scene-photo');
+      if(img&&!img.complete)await new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true});setTimeout(resolve,8000)});
+      const rect=hero.getBoundingClientRect(),ir=img.getBoundingClientRect();
+      return {heroLeft:rect.left,heroWidth:rect.width,imageWidth:ir.width,imageHeight:ir.height,decodedWidth:img.naturalWidth,decodedHeight:img.naturalHeight,source:img.currentSrc};
+   });
+   assert.ok(cinema.heroWidth>=width-2,'Safari hero is not full bleed at '+width+': '+JSON.stringify(cinema));
+   assert.ok(cinema.imageWidth>=width-2 && cinema.decodedWidth>=600,'Safari background not correctly rendered at '+width+': '+JSON.stringify(cinema));
+   assert.match(cinema.source,/scene05-clean-preview.svg/);
+   console.log('PASS Scene05 visual media '+width+'px '+JSON.stringify({heroWidth:cinema.heroWidth,imageWidth:cinema.imageWidth,decoded:cinema.decodedWidth}));
    const viewport=await page.evaluate(()=>{
      const nodes=[...document.querySelectorAll('.node')].map(n=>{const r=n.getBoundingClientRect();return {width:r.width,height:r.height,left:r.left,right:r.right}});
      const panel=document.querySelector('.stage').getBoundingClientRect();
