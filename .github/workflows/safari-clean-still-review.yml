@@ -5,7 +5,7 @@ on:
       - recovery/prototype09-homepage-20261012
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   candidate-qa:
     runs-on: ubuntu-latest
@@ -13,48 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
-          fetch-depth: 0
+          persist-credentials: false
       - name: Static Safari feature and legal-source checks
         run: python3 tools/qa/safari_homepage_smoke.py
       - name: Install browser QA tools
         run: npm install --no-save --ignore-scripts playwright@1.56.0
       - name: Test responsive Safari guided path and still image
         run: node tools/qa/safari_browser_test.cjs
-      - name: Collect license-source photo for durable media migration
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -fL --retry 2 --max-time 45 -A "Mozilla/5.0" "https://images.unsplash.com/photo-1754679996635-9fa307b38c36?auto=format&fit=crop&w=2000&q=78" -o qa-artifacts/safari-source-licensed.jpg
-          test -s qa-artifacts/safari-source-licensed.jpg
-          file qa-artifacts/safari-source-licensed.jpg
-      - name: Vendor free-use Safari source to isolated review branch
-        if: github.event_name == 'pull_request' && github.head_ref == 'recovery/safari-clean-still-candidate-20261013' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        run: |
-          set -euo pipefail
-          BRANCH="recovery/safari-clean-still-candidate-20261013"
-          git fetch origin "$BRANCH"
-          ACTUAL="$(git rev-parse "origin/$BRANCH")"
-          EXPECTED="${{ github.event.pull_request.head.sha }}"
-          if [[ "$ACTUAL" != "$EXPECTED" ]]; then
-            echo "Branch changed; skip write rather than overwrite concurrent changes."
-            exit 0
-          fi
-          git checkout -B "$BRANCH" "origin/$BRANCH"
-          mkdir -p assets/safari
-          cp qa-artifacts/safari-source-licensed.jpg assets/safari/scene-01-savanna-nate-blank.jpg
-          git add assets/safari/scene-01-savanna-nate-blank.jpg
-          if git diff --cached --quiet; then echo "Photo already committed"; exit 0; fi
-          git config user.name "CivicAscent QA Bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "assets(safari): vendor licensed text-free still in recovery branch"
-          git push origin "HEAD:$BRANCH"
       - name: Preserve screenshots for independent review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: safari-clean-still-preview
-          path: qa-artifacts/safari-*.*
+          path: qa-artifacts/safari-*.png
           if-no-files-found: warn
           retention-days: 7

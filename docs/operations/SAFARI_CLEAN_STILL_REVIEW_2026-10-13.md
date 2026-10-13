@@ -16,3 +16,9 @@
 - Different still-image aesthetic requires user visual review and explicit approval before it can replace any original Scene 1 media.
 - The original six-scene media, independent reviewer sign-off, motion equivalence and Scene 05 design acceptance are all incomplete.
 - `safari_release_gate.py` remains fail-closed. No paid purchase activation, production merge, or public release authorized.
+
+## Local media hosting upgrade (2026-10-13)
+- Licensed photo from Nate Blank/Unsplash has been archived in this review branch as `assets/safari/scene-01-savanna-nate-blank.jpg` (2000×1333 JPEG; 370,684 bytes); this replaces the previous CDN-only dependency.
+- Homepage now requests the project's local file; browser tests await image decoding on every mobile width.
+- Removed temporary GitHub Actions write permission and vendor/import stages. The remaining QA job has read-only permissions.
+- The asset remains a still-photo **alternative**, not the original six-scene cinematic film. Independent accessibility, visual, all-scene media, and owner release approvals remain open.

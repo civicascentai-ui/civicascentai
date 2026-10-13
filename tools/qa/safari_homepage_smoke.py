@@ -53,8 +53,10 @@ if "tel:+18179839404" in html:
 if not any(tag == "img" and attrs.get("id") == "safariStill" for tag,attrs in dom.tags):
     errors.append("Real text-free landscape still missing")
 for tag, attrs in dom.tags:
-    if tag == "img" and attrs.get("id") == "safariStill" and not attrs.get("src","").startswith("https://images.unsplash.com/"):
-        errors.append("Unverified still source")
+    if tag == "img" and attrs.get("id") == "safariStill" and attrs.get("src","") != "assets/safari/scene-01-savanna-nate-blank.jpg":
+        errors.append("Unexpected still source")
+    if tag == "img" and attrs.get("id") == "safariStill" and not (ROOT / attrs.get("src","")).is_file():
+        errors.append("Self-hosted still media missing")
 if "cdn.openart.ai" in html or "d8j0ntlcm91z4.cloudfront.net" in html:
     errors.append("Watermarked-source URL remains")
 if errors:
