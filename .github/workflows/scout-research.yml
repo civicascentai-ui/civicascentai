@@ -1,0 +1,37 @@
+name: SCOUT Daily Public Research
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 12 * * *'
+  pull_request:
+    paths:
+      - '.github/workflows/scout-research.yml'
+      - 'tools/scout/research*'
+permissions:
+  contents: read
+concurrency:
+  group: scout-research-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  research:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate source and safeguards
+        run: |
+          test "$GITHUB_REPOSITORY" = 'civicascentai-ui/civicascentai'
+          node --test tools/scout/research.test.mjs
+      - name: Execute public-source research
+        run: node tools/scout/research.mjs
+      - name: Preserve briefing and receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scout-research-${{ github.run_id }}
+          path: scout-output/
+          retention-days: 7
+          if-no-files-found: warn
