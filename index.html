@@ -13,7 +13,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CivicAscent AI | Safari Learning World">
 <meta name="twitter:description" content="Explore practical AI learning through the Safari Learning World.">
-<meta name="civicascent-build" content="20261013-client-path">
+<meta name="civicascent-build" content="20261013-chat-locked">
 <meta property="og:image" content="https://civicascentai.com/assets/safari/scene-01-lodge-panorama.jpg">
 <link rel="canonical" href="https://civicascentai.com/">
 <link rel="icon" type="image/svg+xml" href="assets/civicascent-logo.svg">
@@ -101,58 +101,11 @@ h1 em{font-style:normal;color:var(--gold)}
     <p class="kicker">WELCOME TO THE SAFARI LEARNING WORLD</p>
     <h1 id="headline">A new world of opportunity <em>with AI.</em></h1>
     <p class="lede">See how AI can make everyday tasks clearer. One easy, practical step is all you need to begin.</p>
-    <button id="start" class="primary" type="button">Start Here <span aria-hidden="true">→</span></button>
-    <p class="reassure">Free introduction · About one minute · No account needed</p>
+    <a id="start" class="primary" href="free-ai-starter.html">Start Here <span aria-hidden="true">→</span></a>
+    <p class="reassure">Free practice guide · No chat · No account needed</p>
     <p class="paths"><a href="consultation.html">For organizations</a><a href="register.html">Free workshop</a><a href="programs.html">Programs</a></p>
   </section>
   <p class="footer-note">Explore · Learn · Create · Grow</p>
   </main>
-<div id="guideShell" class="guide-shell" hidden>
-  <section class="guide" id="guide" role="dialog" aria-modal="true" aria-labelledby="guideTitle" tabindex="-1">
-    <button class="close" id="closeGuide" type="button" aria-label="Close guided experience">×</button>
-    <p class="eyebrow" id="guideEyebrow">STEP 1 OF 2 · SEE IT</p>
-    <h2 id="guideTitle">Ask AI in your own words.</h2>
-    <p id="guideBody">A useful first step is to tell AI what you want explained and who the explanation is for.</p>
-    <div class="example" id="guideExample">“Explain artificial intelligence in plain language to someone learning it for the first time.”</div>
-    <p class="small" id="guideNote">This is a prepared learning example, not a live AI chat. Always check important information.</p>
-    <button class="advance" id="guideNext" type="button">Show the example →</button>
-    <nav class="next-actions" id="nextActions" aria-label="Choose your next step" hidden>
-      <a href="course.html" data-action="learn">Learn <span aria-hidden="true">→</span></a>
-      <a href="living-ai-lab.html" data-action="try">Try <span aria-hidden="true">→</span></a>
-      <a href="consultation.html" data-action="get-help">Get help <span aria-hidden="true">→</span></a>
-      <a href="living-ai-lab.html" data-action="continue">Continue <span aria-hidden="true">→</span></a>
-    </nav>
-  </section>
-</div>
-<script>
-(function(){
-  "use strict";
-  var openButton=document.getElementById("start"),shell=document.getElementById("guideShell");
-  var guide=document.getElementById("guide"),closeButton=document.getElementById("closeGuide");
-  var eyebrow=document.getElementById("guideEyebrow"),title=document.getElementById("guideTitle");
-  var body=document.getElementById("guideBody"),example=document.getElementById("guideExample");
-  var note=document.getElementById("guideNote"),next=document.getElementById("guideNext"),actions=document.getElementById("nextActions");
-  var stage=0,lastFocused=null;
-  function track(name,detail){try{window.dispatchEvent(new CustomEvent("civicascent:analytics",{detail:{name:name,value:detail||null}}));}catch(e){}}
-  track("landing_view");
-  function render(){
-    actions.hidden=stage!==2;next.hidden=stage===2;
-    if(stage===0){eyebrow.textContent="STEP 1 OF 2 · SEE IT";title.textContent="Ask AI in your own words.";body.textContent="A useful first step is to tell AI what you want explained and who the explanation is for.";example.textContent="“Explain artificial intelligence in plain language to someone learning it for the first time.”";note.textContent="This is a prepared learning example, not a live AI chat. Always check important information.";next.textContent="Show the example →";}
-    else if(stage===1){eyebrow.textContent="STEP 2 OF 2 · UNDERSTAND IT";title.textContent="You can make AI easier to understand.";body.textContent="A sample answer might say: AI is software that finds patterns in information to help with tasks like writing, translating, or planning. It can make mistakes, so you decide what is useful and verify important facts.";example.textContent="Try this next: “Explain it in three short sentences and give me an everyday example.”";note.textContent="The goal is a clearer question, not a perfect first answer.";next.textContent="Finish and choose what's next →";}
-    else{eyebrow.textContent="YOUR NEXT STEP";title.textContent="Choose where to explore.";body.textContent="You have seen one simple way to ask a useful AI question. Pick the path that fits what you want to do now.";example.textContent="See it → Try it → Understand it → Use it.";note.textContent="All four choices open real CivicAscent AI pages.";track("guided_experience_complete");}
-  }
-  function open(){lastFocused=document.activeElement;stage=0;render();shell.hidden=false;document.body.style.overflow="hidden";closeButton.focus();track("start_here");track("guided_experience_start");}
-  function close(){shell.hidden=true;document.body.style.overflow="";(lastFocused||openButton).focus();}
-  openButton.addEventListener("click",open);
-  closeButton.addEventListener("click",close);
-  next.addEventListener("click",function(){stage=Math.min(stage+1,2);render();if(stage===2){guide.scrollTop=0;guide.focus({preventScroll:true});}else{next.focus();}});
-  shell.addEventListener("click",function(e){if(e.target===shell)close();});
-  document.addEventListener("keydown",function(e){if(shell.hidden)return;if(e.key==="Escape"){e.preventDefault();close();return;}if(e.key!=="Tab")return;
-    var items=Array.prototype.slice.call(guide.querySelectorAll("button:not([hidden]):not([disabled]),a:not([hidden])")).filter(function(el){return el.getClientRects().length;});if(!items.length)return;
-    var first=items[0],last=items[items.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
-  });
-  Array.prototype.forEach.call(actions.querySelectorAll("a"),function(a){a.addEventListener("click",function(){track("next_action",a.getAttribute("data-action"));});});
-})();
-</script>
 </body>
 </html>
