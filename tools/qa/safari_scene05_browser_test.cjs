@@ -44,6 +44,23 @@ const layouts=[[320,700],[375,812],[390,844],[430,932],[1440,900]];
    assert.ok(await page.locator('text=prepared educational demonstrations').count()>0,'no live AI disclaimer');
    const nodes=page.locator('.node');
    assert.equal(await nodes.count(),4,'must preserve four modes');
+   const practice=page.locator('button[data-practice]');
+   assert.equal(await practice.count(),2,'Create mode requires two interactive practice choices');
+   await practice.first().click();
+   assert.match(await page.locator('#practiceOutput').innerText(),/Create a simple invitation/);
+   assert.equal(await practice.first().getAttribute('aria-pressed'),'true');
+   await practice.nth(1).click();
+   assert.match(await page.locator('#practiceOutput').innerText(),/Describe a welcoming image/);
+   assert.equal(await practice.nth(1).getAttribute('aria-pressed'),'true');
+   const practiceBounds=await page.locator('.safari-prompt-practice').evaluate(el=>{
+      const r=el.getBoundingClientRect();const stage=document.querySelector('.stage').getBoundingClientRect();
+      return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,stageBottom:stage.bottom,clientWidth:innerWidth};
+   });
+   assert.ok(practiceBounds.left>=-2 && practiceBounds.right<=width+2,
+     'practice overflows viewport '+width+': '+JSON.stringify(practiceBounds));
+   assert.ok(practiceBounds.bottom<=practiceBounds.stageBottom+3,
+     'practice spills outside stage '+width+': '+JSON.stringify(practiceBounds));
+
    for(const [index,title] of [[0,'Create Images'],[1,'Use Your Voice'],[2,'Translate Language'],[3,'Plan & Organize']]){
       await nodes.nth(index).click();
       assert.equal(await nodes.nth(index).getAttribute('aria-pressed'),'true','pressed state');
@@ -53,8 +70,12 @@ const layouts=[[320,700],[375,812],[390,844],[430,932],[1440,900]];
    assert.equal(await page.locator('#mainTitle').innerText(),'Laboratorio de IA');
    await page.locator('[data-mode="translate"]').click();
    assert.equal(await page.locator('.scene h2').innerText(),'Traducir idiomas');
+   await page.locator('[data-mode="create"]').click();
+   assert.match(await page.locator('.practice-intro').innerText(),/Elige una idea/);
+   await page.locator('[data-practice="workshop"]').click();
+   assert.match(await page.locator('#practiceOutput').innerText(),/Crea una invitación sencilla/);
    await page.locator('#lang').click();
-   assert.equal(await page.locator('.scene h2').innerText(),'Translate Language');
+   assert.equal(await page.locator('.scene h2').innerText(),'Create Images');
    await page.locator('#stop').click();
    assert.equal(await page.locator('#status').innerText(),'Stopped');
    const links=await page.locator('.safari-lab-links a').evaluateAll(a=>a.map(x=>x.getAttribute('href')));
