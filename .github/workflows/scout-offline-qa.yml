@@ -1,6 +1,8 @@
 name: SCOUT offline QA5 evidence receipt
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
   push:
     branches: [qa/tooling-review-playwright-20261010]
     paths:
