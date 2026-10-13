@@ -20,7 +20,7 @@ try {
        const el=[...document.querySelectorAll('h1')].find(x=>x.getClientRects().length);
        const tooWide=[...document.querySelectorAll('main *,header *,footer *')].map(e=>({tag:e.tagName,cls:e.className?.toString().slice(0,35),r:e.getBoundingClientRect()})).filter(x=>x.r.right>innerWidth+2||x.r.left<-2).slice(0,7).map(x=>({tag:x.tag,cls:x.cls,left:Math.round(x.r.left),right:Math.round(x.r.right)}));
        return {scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth,tooWide,
-         title:el?.textContent?.trim()||'',links:document.querySelectorAll('a[href]').length};
+         title:el?.textContent?.trim()||'',links:document.querySelectorAll('a[href]').length,header:[...document.querySelectorAll('.site-header,.site-header .brand,.site-header nav,.hero,.hero-grid,.listen-card,.listen-shell,main')].map(e=>({el:e.tagName+'.'+e.className,offset:e.offsetWidth,scroll:e.scrollWidth,left:Math.round(e.getBoundingClientRect().left),right:Math.round(e.getBoundingClientRect().right),overflow:getComputedStyle(e).overflowX})).slice(0,12)};
      });
      assert.ok(metrics.title,'H1 missing on '+name);
      assert.ok(metrics.scroll<=metrics.client+2,'horizontal overflow '+name+' '+view.width+': '+JSON.stringify(metrics));
