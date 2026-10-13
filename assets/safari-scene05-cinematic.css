@@ -105,3 +105,27 @@ body{background:#120f0b;color:#fff7e9}
 /* True offscreen skip link until keyboard focus; avoid full-page screenshot ghost. */
 a.skip{position:absolute!important;left:12px!important;top:0!important;transform:translateY(-150%)!important;z-index:100!important}
 a.skip:focus{top:12px!important;transform:none!important}
+
+/* Real Scene 05 practice: actual buttons, prepared bilingual learning prompts.
+ * Replaces the generic animated image placeholder without calling a paid AI API. */
+.lab .scene:has(.safari-prompt-practice){min-height:390px}
+.lab .stage:has(.safari-prompt-practice){min-height:420px}
+.lab .visual.safari-prompt-practice{width:min(100%,590px);max-width:100%;height:auto;min-height:185px;
+ display:block;overflow:visible;margin:15px auto 0;padding:15px 17px;text-align:left;
+ border:1px solid rgba(255,215,145,.38);border-radius:13px;background:rgba(31,24,18,.91)}
+.lab .practice-intro{font-size:15px;line-height:1.45;margin:0 0 13px;color:#fff2df}
+.lab .practice-choices{display:flex;gap:10px;flex-wrap:wrap}
+.lab .practice-choices button{min-height:46px;padding:9px 13px;color:#201810;
+ background:#ffe1a5;border:2px solid #f6cc80;border-radius:9px;cursor:pointer;font-weight:800}
+.lab .practice-choices button[aria-pressed="true"]{background:#fff6dc;border-color:#fff9ef}
+.lab .practice-choices button:focus-visible{outline:3px solid white;outline-offset:3px}
+.lab .practice-output{font-size:14px;line-height:1.5;margin:13px 0 0;color:#fff4e3;
+ overflow-wrap:anywhere}
+@media(max-width:520px){
+ .lab .scene:has(.safari-prompt-practice){min-height:420px;padding-top:33px}
+ .lab .stage:has(.safari-prompt-practice){min-height:450px}
+ .lab .visual.safari-prompt-practice{padding:12px 11px;margin-top:10px}
+ .lab .practice-choices{gap:7px}
+ .lab .practice-choices button{min-height:47px;flex:1 1 100%;font-size:13px}
+ .lab .practice-output{font-size:13px}
+}
