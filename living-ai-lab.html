@@ -46,6 +46,17 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
  .brand b{font-size:17px}.brand img{width:46px;height:46px}.actions .pill:first-child{display:none}.shell{width:100%;border-radius:0;min-height:840px}.heading{top:18px}.heading p{max-width:94%}.stage{top:55%;width:94%;height:40%;border-radius:25px}.scene{padding:22px 16px}.visual{margin-top:17px;height:140px}.n1,.n2{top:27%}.n3,.n4{bottom:7%}.node{min-width:116px;font-size:12px}.node span{font-size:9px}.voicebar{bottom:13.5%}
 }
 @media(prefers-reduced-motion:reduce){.stars i,.orb,.orb::before,.orb::after,.sweep,.wave i{animation:none!important}}
+
+/* Optional external ChatGPT learning links; no API key and no embedded chatbot. */
+.try-chatgpt{position:relative;z-index:11;width:min(880px,96vw);margin:28px auto 0;padding:clamp(22px,4vw,34px);border-radius:26px;background:#fff;color:#102039;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.try-chatgpt-kicker{margin:0 0 7px;color:#126b93;font-weight:900;font-size:.75rem;letter-spacing:.12em}
+.try-chatgpt h2{margin:0 0 10px;color:#102039;font-size:clamp(1.3rem,3vw,1.85rem);line-height:1.25}
+.try-chatgpt-copy>p:last-child{max-width:690px;margin:0;color:#35465e;line-height:1.5}
+.chatgpt-try-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:22px}
+.chatgpt-try-link{display:flex;align-items:center;justify-content:center;min-height:48px;padding:10px;border-radius:12px;background:#07365b;color:#fff;text-decoration:none;font-weight:800;text-align:center}
+.chatgpt-try-link:hover,.chatgpt-try-link:focus-visible{background:#125d89;outline-offset:3px}
+.try-chatgpt-disclosure{margin:16px 0 0;color:#475569;font-size:.8rem;line-height:1.5}
+@media(max-width:620px){.chatgpt-try-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.try-chatgpt{margin-top:18px}}
 </style>
 </head>
 <body>
@@ -78,6 +89,20 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
       <div class="scene" id="scene"></div>
     </section>
     <div class="voicebar"><button id="play" type="button">🔊 Replay Voice</button><button id="stop" type="button">■ Stop</button><span class="status" id="status">Ready</span></div>
+  </section>
+  <section class="try-chatgpt" aria-label="Try ChatGPT for yourself">
+    <div class="try-chatgpt-copy">
+      <p class="try-chatgpt-kicker" data-en="READY TO TRY AI?" data-es="¿LISTO PARA PROBAR LA IA?">READY TO TRY AI?</p>
+      <h2 data-en="Take the next step with ChatGPT" data-es="Da el siguiente paso con ChatGPT">Take the next step with ChatGPT</h2>
+      <p data-en="Choose a guided starting point. ChatGPT opens in a new tab, where you can review the question before sending it." data-es="Elige un punto de partida guiado. ChatGPT se abrirá en una pestaña nueva, donde podrás revisar la pregunta antes de enviarla.">Choose a guided starting point. ChatGPT opens in a new tab, where you can review the question before sending it.</p>
+    </div>
+    <div class="chatgpt-try-actions">
+      <a class="chatgpt-try-link" href="https://chatgpt.com/?q=I%20am%20new%20to%20AI.%20Help%20me%20brainstorm%20an%20image%20for%20a%20community%20event.%20Ask%20me%20one%20question%20at%20a%20time." target="_blank" rel="noopener noreferrer" data-en="CREATE ↗" data-es="CREAR ↗">CREATE ↗</a>
+      <a class="chatgpt-try-link" href="https://chatgpt.com/?q=I%20am%20learning%20to%20use%20AI%20voice%20features.%20Explain%20how%20to%20practice%20speaking%20with%20ChatGPT%20and%20include%20privacy%20tips." target="_blank" rel="noopener noreferrer" data-en="VOICE ↗" data-es="VOZ ↗">VOICE ↗</a>
+      <a class="chatgpt-try-link" href="https://chatgpt.com/?q=Help%20me%20practice%20translating%20between%20English%20and%20Spanish.%20Start%20with%20a%20friendly%20everyday%20phrase." target="_blank" rel="noopener noreferrer" data-en="TRANSLATE ↗" data-es="TRADUCIR ↗">TRANSLATE ↗</a>
+      <a class="chatgpt-try-link" href="https://chatgpt.com/?q=Help%20me%20make%20a%20clear%20three-step%20plan%20to%20learn%20one%20useful%20AI%20skill%20this%20week." target="_blank" rel="noopener noreferrer" data-en="PLAN ↗" data-es="PLANEAR ↗">PLAN ↗</a>
+    </div>
+    <p class="try-chatgpt-disclosure" data-en="You are leaving CivicAscent AI for a third-party service. A ChatGPT account may be required. No question is sent by CivicAscent AI." data-es="Saldrás de CivicAscent AI para usar un servicio de terceros. Es posible que necesites una cuenta de ChatGPT. CivicAscent AI no envía ninguna pregunta.">You are leaving CivicAscent AI for a third-party service. A ChatGPT account may be required. No question is sent by CivicAscent AI.</p>
   </section>
 </main>
 <script>
