@@ -48,7 +48,7 @@ const layouts=[[320,700],[375,812],[390,844],[430,932],[1440,900]];
    await page.locator('#stop').click();
    assert.equal(await page.locator('#status').innerText(),'Stopped');
    const links=await page.locator('.safari-lab-links a').evaluateAll(a=>a.map(x=>x.getAttribute('href')));
-   assert.deepEqual(links,['course.html','village.html','consultation.html']);
+   assert.deepEqual(links,['course.html','index.html','consultation.html']);
    await page.locator('[data-mode="create"]').click();
    await page.screenshot({path:path.join(folder,'safari-scene05-'+width+'.png'),fullPage:true});
    assert.deepEqual(errors,[],'browser JS error '+width);
