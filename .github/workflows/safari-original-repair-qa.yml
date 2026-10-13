@@ -6,6 +6,7 @@ on:
       - 'mentor.html'
       - 'living-ai-lab.html'
       - 'try-chatgpt.html'
+      - 'tools/qa/safari_original_customer_test.cjs'
       - 'consultation.html'
       - 'free-ai-starter.html'
       - '404.html'
