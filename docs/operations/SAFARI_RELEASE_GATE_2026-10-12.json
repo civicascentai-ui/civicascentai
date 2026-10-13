@@ -9,7 +9,7 @@
   "media_license_verified": false,
   "watermark_free_all_scenes": false,
   "budget_usd": 0,
-  "reason": "OpenArt watermark in root movie; clean five-scene masters not yet attached to repository; Scenic Scene 05 CSS is only atmospheric fallback.",
+  "reason": "Scene 01 still uses OpenArt-watermarked footage. Scene 05 now has a repo-owned, watermark-free candidate with verified responsive HTML and functional demos, but the approved lodge framing/owner visual acceptance and independent release QA are not complete. Remaining scenes need clean media. Keep release HOLD.",
   "scene_media": [
     {
       "scene": 1,
@@ -38,8 +38,8 @@
     {
       "scene": 5,
       "route": "living-ai-lab.html",
-      "asset": null,
-      "status": "FUNCTIONAL_QA_PASS_VISUAL_ASSET_PENDING"
+      "asset": "assets/safari-scenes/scene05-clean-preview.svg",
+      "status": "CLEAN_CANDIDATE_QA_PASS_OWNER_VISUAL_PENDING"
     }
   ],
   "release_instructions": "To authorize production, verify five clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release.",
