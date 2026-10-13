@@ -25,8 +25,7 @@ class SafariOriginalIntegrity(unittest.TestCase):
                 p=ROOT/route
                 self.assertTrue(p.is_file())
                 text=p.read_text(encoding="utf-8")
-                self.assertRegex(text,r"<h1(?:\\s|>)|<h1\\s") if False else None
-                self.assertRegex(text,r"<h1\\b")
+                self.assertIn("<h1",text)
                 t=Tags();t.feed(text)
                 if route!="index.html":
                     self.assertTrue(any(h in t.links for h in ("index.html","https://civicascentai.com","/")),
