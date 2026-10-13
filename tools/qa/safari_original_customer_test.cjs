@@ -18,7 +18,8 @@ try {
      await page.goto(uri(name),{waitUntil:'domcontentloaded'});
      const metrics=await page.evaluate(()=>{
        const el=[...document.querySelectorAll('h1')].find(x=>x.getClientRects().length);
-       return {scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth,
+       const tooWide=[...document.querySelectorAll('main *,header *,footer *')].map(e=>({tag:e.tagName,cls:e.className?.toString().slice(0,35),r:e.getBoundingClientRect()})).filter(x=>x.r.right>innerWidth+2||x.r.left<-2).slice(0,7).map(x=>({tag:x.tag,cls:x.cls,left:Math.round(x.r.left),right:Math.round(x.r.right)}));
+       return {scroll:document.documentElement.scrollWidth,client:document.documentElement.clientWidth,tooWide,
          title:el?.textContent?.trim()||'',links:document.querySelectorAll('a[href]').length};
      });
      assert.ok(metrics.title,'H1 missing on '+name);
