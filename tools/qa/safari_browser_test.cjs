@@ -25,6 +25,14 @@ async function run(){
       page.on('pageerror',e=>errors.push(String(e)));
       await page.goto(url,{waitUntil:'domcontentloaded'});
       await page.locator('#start').waitFor({state:'visible'});
+      // A loaded scene is necessary for visual QA. The remote-photo fallback
+      // must not be mistaken for the intended final Safari experience.
+      const photoInfo=await page.locator('#safariStill').evaluate(async img=>{
+        try { await img.decode(); }
+        catch(e) { return {loaded:false,reason:String(e)}; }
+        return {loaded:img.complete&&img.naturalWidth>=800,width:img.naturalWidth,height:img.naturalHeight};
+      });
+      assert.ok(photoInfo.loaded,'Safari photo failed to decode on '+viewport.width+': '+JSON.stringify(photoInfo));
       const basics=await page.evaluate(()=>{
         const h=document.querySelector('#headline').getBoundingClientRect();
         const c=document.querySelector('#start').getBoundingClientRect();
