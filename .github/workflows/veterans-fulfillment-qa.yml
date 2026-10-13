@@ -1,5 +1,10 @@
 name: Veterans fulfillment isolated QA
 on:
+  pull_request:
+    paths:
+      - 'agents/veterans_fulfillment.py'
+      - 'tests/test_veterans_fulfillment.py'
+      - '.github/workflows/veterans-fulfillment-qa.yml'
   push:
     branches:
       - qa/veterans-fulfillment-verification-20261012
