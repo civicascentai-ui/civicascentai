@@ -9,7 +9,7 @@ LAW_PATH = Path(__file__).with_name("core_law.json")
 
 def load_core_law():
     law = json.loads(LAW_PATH.read_text(encoding="utf-8"))
-    if law.get("id") != "CIVICASCENT-SAFARI-CORE-LAW" or len(law.get("scene_routes", [])) != 6:
+    if law.get("id") != "CIVICASCENT-SAFARI-CORE-LAW" or len(law.get("scene_routes", [])) != 5:
         raise ValueError("CivicAscent core LAW missing or invalid; fail closed")
     return law
 

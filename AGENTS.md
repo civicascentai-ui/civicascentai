@@ -1,19 +1,19 @@
 # CivicAscent AI | CORE LAW and agent memory index
 
-**Binding owner direction (October 12, 2026):** the six-frame Safari Learning World storyboard maps to six distinct existing site destinations. **Scene 5 / Living AI Lab is the highest creative priority.** This document is the canonical agent entrypoint for this *recovery branch*. Real production release and autonomous-agent memory synchronization require separate verification.
+**Binding owner direction (October 12, 2026):** the five-frame Safari Learning World storyboard maps to five distinct existing site destinations. **Scene 5 / Living AI Lab is the highest creative priority.** This document is the canonical agent entrypoint for this *recovery branch*. Real production release and autonomous-agent memory synchronization require separate verification.
 
 ## Load before work
 1. `agents/core_law.json` (machine-readable rules, mapping, approvals and budget).
-2. `docs/operations/SAFARI_SIX_SCENE_PAGE_ASSIGNMENTS_2026-10-12.md` (full six-scene implementation / QA plan).
+2. `docs/operations/SAFARI_FIVE_SCENE_PAGE_ASSIGNMENTS_2026-10-13.md` (full five-scene implementation / QA plan).
 3. `TEAM_OPERATING_ORDER.md`, `AGENT_04_CRITICAL_EVALUATION_DIRECTOR.md` and relevant QA/release standards.
 
 ## Non-negotiable operating rules
 1. Complete every safe authorized step before asking for user help; do not stop at plans, status updates, or repeated copy/paste instructions.
 2. Never claim any agent executed, remained online, migrated, completed a purchase or contacted anyone without verifiable system evidence.
 3. Preserve all earlier approved page checkpoints; work on isolated branches and keep production unchanged until independent QC and explicit final release.
-4. Safari Learning World is the only active site design. Six original backgrounds, one consistent cinematic African safari world; no disconnected mockups, dashboards, pills or fake interfaces.
+4. Safari Learning World is the only active site design. Five original backgrounds, one consistent cinematic African safari world; no disconnected mockups, dashboards, pills or fake interfaces.
 5. Use live semantic HTML controls, not text/buttons painted into background art. Avoid all externally watermarked, unclear-rights or unapproved image/video assets in production.
-6. Frame 5 Living AI Lab is design/build priority, followed by Scene 1 Home, then 2/3/4/6.
+6. Frame 5 Living AI Lab is design/build priority, followed by Scene 1 Home, then 2/3/4.
 7. Run multi-device, keyboard, reduced-motion, contrast, privacy, disclaimers, link, error-path and payment-scope QC as relevant.
 8. Zero-dollar ceiling; no additional metered Replit, generation or paid AI provider calls without specific cost approval.
 9. All material changes get a savepoint, source/evidence links, honest status and reversible rollback plan.
@@ -25,7 +25,8 @@
 - Scene 3: `mentor.html` — Guided journey
 - Scene 4: `course.html` — Practical learning
 - Scene 5: `living-ai-lab.html` — Living AI Lab (PRIORITY)
-- Scene 6: `village.html` — Return/explore hub
+
+**Owner removal 2026-10-13:** Scene 06 / Village is retired and must not return to the active site or screenshots.
 
 ## Accountability
 - CODI coordinates verified work, protects decisions, saves evidence and escalates only actual blockers.

@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {pathToFileURL}=require('node:url');
 const root=path.resolve(__dirname,'../..'),artifacts=path.join(root,'qa-artifacts');
 fs.mkdirSync(artifacts,{recursive:true});
-const pages=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','village.html','consultation.html','404.html'];
+const pages=['index.html','free-ai-starter.html','mentor.html','course.html','living-ai-lab.html','consultation.html','404.html'];
 const views=[{width:320,height:700},{width:390,height:844},{width:768,height:1024},{width:1440,height:900}];
 const uri=p=>pathToFileURL(path.join(root,p)).href;
 (async()=>{
@@ -49,11 +49,6 @@ try {
        assert.equal(await page.locator('.node').count(),4,'Lab modes missing');
        await page.locator('[data-mode="translate"]').click();
        assert.equal(await page.locator('.scene h2').innerText(),'Translate Language');
-     }
-     if(name==='village.html'){
-       await page.locator('#menuBtn').click();
-       assert.equal(await page.locator('#menuBtn').getAttribute('aria-expanded'),'true');
-       await page.locator('#closeMenu').click();
      }
      await page.screenshot({path:path.join(artifacts,'owner-safari-'+name.replace('.html','')+'-'+view.width+'.png'),fullPage:true});
      console.log('PASS',name,view.width,'no overflow, heading and journey UI');

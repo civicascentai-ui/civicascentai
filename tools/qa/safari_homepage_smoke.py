@@ -32,7 +32,7 @@ if dom.ids.get("guide", ("", {}))[1].get("aria-modal") != "true":
     errors.append("Guided experience must declare aria-modal=true")
 if dom.ids.get("start", ("", {}))[0] != "button":
     errors.append("Start Here must be a keyboard-operable button")
-for link in ("village.html", "course.html", "living-ai-lab.html", "consultation.html", "programs.html"):
+for link in ("free-ai-starter.html", "course.html", "living-ai-lab.html", "consultation.html", "programs.html"):
     if link not in dom.links:
         errors.append(f"Missing next-action/navigation link: {link}")
     if not (ROOT / link).exists():

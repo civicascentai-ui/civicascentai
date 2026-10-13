@@ -1,11 +1,11 @@
-"""Offline source tests for the OWNER-APPROVED six Safari destinations, not launch certification."""
+"""Offline source tests for the OWNER-APPROVED five Safari destinations, not launch certification."""
 from pathlib import Path
 from html.parser import HTMLParser
 import re
 import unittest
 import xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
-ROUTES=("index.html","free-ai-starter.html","mentor.html","course.html","living-ai-lab.html","village.html")
+ROUTES=("index.html","free-ai-starter.html","mentor.html","course.html","living-ai-lab.html")
 BUSINESS="civicascentai@gmail.com"
 
 class Tags(HTMLParser):
@@ -19,7 +19,7 @@ class Tags(HTMLParser):
         if a.get("id"): self.ids.add(a["id"])
 
 class SafariOriginalIntegrity(unittest.TestCase):
-    def test_six_real_pages_and_home_link(self):
+    def test_five_real_pages_and_home_link(self):
         for route in ROUTES:
             with self.subTest(route=route):
                 p=ROOT/route

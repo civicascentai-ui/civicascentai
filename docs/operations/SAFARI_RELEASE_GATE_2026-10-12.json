@@ -9,7 +9,7 @@
   "media_license_verified": false,
   "watermark_free_all_scenes": false,
   "budget_usd": 0,
-  "reason": "OpenArt watermark in root movie; clean six-scene masters not yet attached to repository; Scenic Scene 05 CSS is only atmospheric fallback.",
+  "reason": "OpenArt watermark in root movie; clean five-scene masters not yet attached to repository; Scenic Scene 05 CSS is only atmospheric fallback.",
   "scene_media": [
     {
       "scene": 1,
@@ -40,13 +40,8 @@
       "route": "living-ai-lab.html",
       "asset": null,
       "status": "FUNCTIONAL_QA_PASS_VISUAL_ASSET_PENDING"
-    },
-    {
-      "scene": 6,
-      "route": "village.html",
-      "asset": null,
-      "status": "WAITING_CLEAN_SOURCE"
     }
   ],
-  "release_instructions": "To authorize production, verify six clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release."
+  "release_instructions": "To authorize production, verify five clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release.",
+  "owner_direction_update": "2026-10-13: Former Scene 06 deleted from active project; five-scene route map authoritative."
 }

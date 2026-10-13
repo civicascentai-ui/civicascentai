@@ -55,7 +55,7 @@ async function run(){
       await page.locator('#guideNext').click();
       assert.ok(await page.locator('#nextActions').isVisible(),'end-step links missing');
       assert.equal(await page.locator('#nextActions a').count(),4);
-      const expected=['course.html','living-ai-lab.html','consultation.html','village.html'];
+      const expected=['course.html','living-ai-lab.html','consultation.html','free-ai-starter.html'];
       const actual=await page.locator('#nextActions a').evaluateAll(es=>es.map(a=>a.getAttribute('href')));
       assert.deepEqual(actual,expected,'wrong real destinations');
       await page.screenshot({path:path.join(folder,'safari-guide-'+viewport.width+'.png'),fullPage:true});

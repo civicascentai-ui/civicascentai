@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed central CivicAscent six-scene operating-law and agent-load regression check."""
+"""Fail-closed central CivicAscent five-scene operating-law and agent-load regression check."""
 import importlib.util
 import json
 from pathlib import Path
@@ -10,11 +10,11 @@ assert law["version"].startswith("2026-10-12.")
 assert law["budget_usd"] == 0 and law["default_production_release"] is False
 assert law["status"] == "ADOPTED_FOR_RECOVERY_BRANCH_NOT_YET_RELEASED"
 assert law["secrets"].lower().find("api keys") >= 0
-assert len(law["scene_routes"]) == 6
-assert [r["scene"] for r in law["scene_routes"]] == list(range(1,7))
+assert len(law["scene_routes"]) == 5
+assert [r["scene"] for r in law["scene_routes"]] == list(range(1,6))
 expect={
   1:"index.html",2:"free-ai-starter.html",3:"mentor.html",4:"course.html",
-  5:"living-ai-lab.html",6:"village.html"
+  5:"living-ai-lab.html"
 }
 for row in law["scene_routes"]:
     assert row["file"] == expect[row["scene"]]

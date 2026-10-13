@@ -1,23 +1,24 @@
 {
   "id": "CIVICASCENT-SAFARI-CORE-LAW",
-  "version": "2026-10-12.1",
-  "effective_date": "2026-10-12",
+  "version": "2026-10-13.1",
+  "effective_date": "2026-10-13",
   "authority": "User-approved shared CivicAscent AI operating direction",
   "status": "ADOPTED_FOR_RECOVERY_BRANCH_NOT_YET_RELEASED",
   "budget_usd": 0,
   "default_production_release": false,
-  "source_of_truth": "docs/operations/SAFARI_SIX_SCENE_PAGE_ASSIGNMENTS_2026-10-12.md",
+  "source_of_truth": "docs/operations/SAFARI_FIVE_SCENE_PAGE_ASSIGNMENTS_2026-10-13.md",
   "core_rules": [
     "Complete every safe authorized step before asking for user help; do not stop at plans, status updates, or repeated copy/paste instructions.",
     "Never claim any agent executed, remained online, migrated, completed a purchase or contacted anyone without verifiable system evidence.",
     "Preserve all earlier approved page checkpoints; work on isolated branches and keep production unchanged until independent QC and explicit final release.",
-    "Safari Learning World is the only active site design. Six original backgrounds, one consistent cinematic African safari world; no disconnected mockups, dashboards, pills or fake interfaces.",
+    "Safari Learning World is the only active site design. Five original backgrounds, one consistent cinematic African safari world; no disconnected mockups, dashboards, pills or fake interfaces.",
     "Use live semantic HTML controls, not text/buttons painted into background art. Avoid all externally watermarked, unclear-rights or unapproved image/video assets in production.",
-    "Frame 5 Living AI Lab is design/build priority, followed by Scene 1 Home, then 2/3/4/6.",
+    "Frame 5 Living AI Lab is design/build priority, followed by Scene 1 Home, then 2/3/4.",
     "Run multi-device, keyboard, reduced-motion, contrast, privacy, disclaimers, link, error-path and payment-scope QC as relevant.",
     "Zero-dollar ceiling; no additional metered Replit, generation or paid AI provider calls without specific cost approval.",
     "All material changes get a savepoint, source/evidence links, honest status and reversible rollback plan.",
-    "Independent critical evaluation and QC cannot be self-approved by the implementation agent; final user visual approval and production release remain separate."
+    "Independent critical evaluation and QC cannot be self-approved by the implementation agent; final user visual approval and production release remain separate.",
+    "Former Scene 06 was rejected by owner 2026-10-13. Never reactivate the Village scene or include it in previews."
   ],
   "scene_routes": [
     {
@@ -50,12 +51,6 @@
       "file": "living-ai-lab.html",
       "role": "lab",
       "priority": 1
-    },
-    {
-      "scene": 6,
-      "name": "Return/explore hub",
-      "file": "village.html",
-      "role": "explore"
     }
   ],
   "protect_routes": [
