@@ -1,9 +1,13 @@
 // SCOUT phase-1 read-only QA5 evidence audit. No third-party AI, payment or write API calls.
 // Intended to run on standard GitHub Actions runners for the PUBLIC CivicAscent repository.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+
+const civicLaw = JSON.parse(readFileSync(new URL('../../agents/core_law.json', import.meta.url), 'utf8'));
+if (civicLaw.id !== 'CIVICASCENT-SAFARI-CORE-LAW' || civicLaw.scene_routes?.length !== 5) throw Error('Missing valid CivicAscent core LAW');
+export const CORE_LAW_VERSION = civicLaw.version;
 export const REQUIRED_CASE_IDS = Object.freeze(['QA5-01', 'QA5-02', 'QA5-03', 'QA5-04', 'QA5-05']);
 export const ISSUE_IDS = Object.freeze([56, 57, 34, 36]);
 const REPO = 'civicascentai-ui/civicascentai';
@@ -39,6 +43,7 @@ export function buildReceipt(issues, runtime = {}) {
   const runId = String(runtime.runId || 'local');
   return {
     schema: 'civicascent.scout.qa5-readonly.v1',
+    coreLawVersion: CORE_LAW_VERSION,
     mission: 'QA5 evidence-gap audit',
     execution: 'ACTUAL READ-ONLY AUDIT (not payment or course-access test)',
     migrationTarget: 'GitHub Actions standard runner',

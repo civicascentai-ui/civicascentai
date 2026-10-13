@@ -1,0 +1,47 @@
+{
+  "schema": "civicascent.safari.scene-release.v1",
+  "date": "2026-10-12",
+  "scope": "draft PR #69; isolated recovery branch only",
+  "status": "HOLD",
+  "production_approved": false,
+  "owner_visual_approved": false,
+  "independent_qc_approved": false,
+  "media_license_verified": false,
+  "watermark_free_all_scenes": false,
+  "budget_usd": 0,
+  "reason": "Scene 01 still uses OpenArt-watermarked footage. Scene 05 now has a repo-owned, watermark-free candidate with verified responsive HTML and functional demos, but the approved lodge framing/owner visual acceptance and independent release QA are not complete. Remaining scenes need clean media. Keep release HOLD.",
+  "scene_media": [
+    {
+      "scene": 1,
+      "route": "index.html",
+      "asset": null,
+      "status": "BLOCKED_WATERMARKED_RECOVERY_VIDEO"
+    },
+    {
+      "scene": 2,
+      "route": "free-ai-starter.html",
+      "asset": null,
+      "status": "WAITING_CLEAN_SOURCE"
+    },
+    {
+      "scene": 3,
+      "route": "mentor.html",
+      "asset": null,
+      "status": "WAITING_CLEAN_SOURCE"
+    },
+    {
+      "scene": 4,
+      "route": "course.html",
+      "asset": null,
+      "status": "WAITING_CLEAN_SOURCE"
+    },
+    {
+      "scene": 5,
+      "route": "living-ai-lab.html",
+      "asset": "assets/safari-scenes/scene05-clean-preview.svg",
+      "status": "CLEAN_CANDIDATE_QA_PASS_OWNER_VISUAL_PENDING"
+    }
+  ],
+  "release_instructions": "To authorize production, verify five clean owned/licensed media files, publish provenance, finish visual/mobile tests, set manifest approvals with evidence links, and obtain explicit owner release.",
+  "owner_direction_update": "2026-10-13: Former Scene 06 deleted from active project; five-scene route map authoritative."
+}

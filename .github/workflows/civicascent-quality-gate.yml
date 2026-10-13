@@ -109,6 +109,102 @@ jobs:
             test -s "$f" || { echo "Empty HTML file: $f"; exit 1; }
           done
 
+
+  core-law:
+    name: Universal Agent Memory and Core LAW
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce binding owner direction and five scene mapping
+        run: python3 tools/qa/test_core_law.py
+      - name: Enforce both independent SCOUT module self-checks (offline)
+        run: |
+          node --test tools/scout/mission.test.mjs
+          node --test tools/scout/discovery.test.mjs
+
+  safari-homepage:
+    name: Safari Homepage Recovery QC
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Test actual Safari homepage structure, navigation and guardrails
+        run: python3 tools/qa/safari_homepage_smoke.py
+      - name: Verify saved film and poster remain reachable (media release gate)
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlparse
+          from urllib.request import Request, urlopen
+
+          class Media(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.sources = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if tag == "video" and attrs.get("poster"):
+                      self.sources.append(("poster", attrs["poster"]))
+                  if tag == "source" and attrs.get("type") == "video/mp4":
+                      self.sources.append(("film", attrs.get("src", "")))
+
+          page = Media()
+          page.feed(Path("index.html").read_text(encoding="utf-8"))
+          assert {t for t,_ in page.sources} == {"poster", "film"}, "Missing Safari media reference"
+          for label, url in page.sources:
+              if urlparse(url).scheme != "https":
+                  raise SystemExit(f"{label}: missing secure URL")
+              request = Request(url, headers={"Range":"bytes=0-1","User-Agent":"Mozilla/5.0"})
+              try:
+                  with urlopen(request, timeout=20) as response:
+                      status = response.status
+                      content_type = response.headers.get("content-type", "")
+                      response.read(2)
+                      print(f"{label}: HTTP {status}; type {content_type}")
+                      if status not in (200,206):
+                          raise RuntimeError(f"HTTP {status}")
+              except Exception as e:
+                  raise SystemExit(f"BLOCK RELEASE: {label} cannot be fetched: {type(e).__name__}: {e}")
+          print("PASS: historical Safari video and poster URLs returned bytes.")
+          PY
+
+
+      - name: Install browser QA tools
+        run: npm install --no-save --ignore-scripts playwright@1.56.0
+      - name: Run real Chrome viewport and guided path tests
+        run: node tools/qa/safari_browser_test.cjs
+      - name: Test Scene 05 Lab controls and mobile Safari styling
+        run: node tools/qa/safari_scene05_browser_test.cjs
+      - name: Test five approved Safari destination URLs in actual browser
+        run: node tools/qa/safari_five_route_browser_test.cjs
+      - name: Preserve Safari screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-recovery-mobile-desktop
+          path: qa-artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 7
+
+  release-eligibility:
+    name: Five Scene Production Release Hold
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Fail closed until five clean media scenes, independent QC and owner approval exist
+        run: python3 tools/qa/safari_release_gate.py
+
   governance:
     name: Governance Guardrails
     runs-on: ubuntu-latest
