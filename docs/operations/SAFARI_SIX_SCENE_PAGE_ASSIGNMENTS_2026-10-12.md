@@ -1,3 +1,8 @@
+# ARCHIVED / SUPERSEDED 2026-10-13
+**NOT THE ACTIVE PLAN. Scene 6 is deleted.** Use [FIVE ACTIVE SCENES](SAFARI_FIVE_SCENE_ACTIVE_2026-10-13.md) instead. The six-scene material below is preserved solely as a historical audit record.
+
+---
+
 # CivicAscent AI | Six-Scene Safari Page Assignment & Production Plan
 Owner direction: 2026-10-12 | Status: ROUTE MAP ACCEPTED, VISUAL RELEASE BLOCKED
 GitHub recovery: #68 and draft PR #69; branch \`recovery/prototype09-homepage-20261012\`.
