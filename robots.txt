@@ -1,0 +1,16 @@
+# CivicAscent AI | public site discovery rules
+# robots.txt guides crawlers; it is not an access-control mechanism.
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /backups/
+Disallow: /checkpoints/
+Disallow: /docs/
+Disallow: /tests/
+Disallow: /tools/
+Disallow: /agents/
+Disallow: /prototype-react/
+Disallow: /model-
+Disallow: /layer-
+
+Sitemap: https://civicascentai.com/sitemap.xml

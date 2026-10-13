@@ -1,0 +1,36 @@
+name: Web technical release scaffold
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - '404.html'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'tests/test_web_release_scaffold.py'
+      - '.github/workflows/web-release-scaffold.yml'
+  workflow_dispatch:
+jobs:
+  web-static-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify SEO, accessible 404 and public sitemap
+        run: python3 -m unittest discover -s tests -p 'test_web_release_scaffold.py' -v
+
+      - name: Install free local-browser QA dependency
+        run: npm install --no-save --ignore-scripts playwright@1.56.0
+      - name: Check mobile, desktop, and actual free-guide navigation
+        run: node tools/qa/web_responsive_smoke.cjs
+      - name: Preserve browser screenshot evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-repair-mobile-desktop
+          path: qa-artifacts/*.png
+          if-no-files-found: warn
+          retention-days: 7

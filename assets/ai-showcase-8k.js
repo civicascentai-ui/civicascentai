@@ -147,7 +147,7 @@
     const idx=sec<1.15?-1:sec<1.9?0:sec<2.65?1:sec<3.4?2:sec<4.15?3:sec<4.9?4:sec<5.55?5:-1;
     setCue(idx);
 
-    if(sec>5.0&&!flash.classList.contains('fire'))flash.classList.add('fire');
+    if(!reduced&&sec>5.0&&!flash.classList.contains('fire'))flash.classList.add('fire');
     if(sec>5.28&&!core.classList.contains('show'))core.classList.add('show');
     if(sec>6.72&&!ready){
       ready=true;document.body.classList.add('ready');
