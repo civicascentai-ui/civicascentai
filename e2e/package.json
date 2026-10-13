@@ -1,0 +1,13 @@
+{
+  "name": "civicascent-ai-playwright-qa",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:chromium": "playwright test --project=chromium-desktop --project=chromium-mobile",
+    "test:webkit": "playwright test --project=webkit-desktop"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0"
+  }
+}

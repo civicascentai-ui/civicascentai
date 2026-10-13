@@ -1,0 +1,28 @@
+name: SCOUT offline QA5 evidence receipt
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+  push:
+    branches: [qa/tooling-review-playwright-20261010]
+    paths:
+      - '.github/workflows/scout-offline-qa.yml'
+      - 'docs/operations/zebra-scout-offline-runner-v1.py'
+permissions:
+  contents: read
+jobs:
+  scout-read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute SCOUT offline QA5 inventory
+        run: |
+          python3 docs/operations/zebra-scout-offline-runner-v1.py --output scout-qa5-receipt.json
+          python3 -m json.tool scout-qa5-receipt.json > /dev/null
+      - name: Upload receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: scout-qa5-evidence-receipt
+          path: scout-qa5-receipt.json
+          retention-days: 7
