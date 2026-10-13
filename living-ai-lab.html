@@ -120,7 +120,15 @@ plan:{en:{title:"Plan & Organize",desc:"Turn one goal into clear next steps, mes
 let lang="en",mode="create",timer=null,userTouched=false;
 const E=id=>document.getElementById(id);
 function visual(k){
- if(k==="create")return '<div class="visual"><div class="image-demo"><div class="sweep"></div></div></div>';
+ if(k==="create"){
+  const spanish=lang==="es";
+  return '<div class="visual safari-prompt-practice" aria-label="'+(spanish?'Práctica de una pregunta para IA':'Practice writing an AI prompt')+'">'
+    +'<p class="practice-intro">'+(spanish?'Elige una idea cotidiana para ver cómo escribir una instrucción más clara.':'Choose an everyday idea to see how to write a clearer instruction.')+'</p>'
+    +'<div class="practice-choices"><button type="button" data-practice="workshop">'+(spanish?'Taller comunitario':'Community workshop')+'</button>'
+    +'<button type="button" data-practice="poster">'+(spanish?'Póster de clase':'Class poster')+'</button></div>'
+    +'<p id="practiceOutput" class="practice-output" role="status">'+(spanish?'Selecciona una idea para ver un ejemplo preparado.':'Choose an idea to see a prepared example.')+'</p>'
+    +'</div>';
+}
  if(k==="voice")return '<div class="visual"><div class="wave">'+[30,58,84,42,96,64,36,78,100,54,74,40,88,61,33].map((h,i)=>'<i style="height:'+h+'%;animation-delay:-'+(i*.06)+'s"></i>').join("")+'</div></div>';
  if(k==="translate")return '<div class="visual translate"><div class="bubble">Good morning</div><div class="swap">⇄</div><div class="bubble es">Buenos días</div></div>';
  return '<div class="visual"><div class="steps"><div class="step"><b>1</b><strong>Define the goal</strong><span class="check">✓</span></div><div class="step"><b>2</b><strong>Build the next steps</strong><span class="check">✓</span></div><div class="step"><b>3</b><strong>Review before acting</strong><span class="check">✓</span></div></div></div>';
@@ -142,6 +150,17 @@ function pickVoice(){
 }
 function stop(){if("speechSynthesis" in window)speechSynthesis.cancel()}
 function speak(){if(!("speechSynthesis" in window)){E("status").textContent="Voice unavailable";return}stop();const u=new SpeechSynthesisUtterance(DATA[mode][lang].voice);u.lang=lang==="es"?"es-US":"en-US";u.rate=.82;u.pitch=.88;u.volume=1;const v=pickVoice();if(v)u.voice=v;u.onstart=()=>E("status").textContent=lang==="en"?"Playing…":"Reproduciendo…";u.onend=()=>E("status").textContent=lang==="en"?"Ready":"Listo";speechSynthesis.speak(u)}
+document.getElementById("scene").addEventListener("click",event=>{
+ const button=event.target.closest("button[data-practice]");
+ if(!button)return;
+ const spanish=lang==="es";
+ const examples={
+  workshop:spanish?'Crea una invitación sencilla para un taller gratuito de introducción a la IA, para adultos que nunca la han usado. Usa palabras claras e incluye un espacio para la fecha y el lugar.':'Create a simple invitation for a free beginner AI workshop, written for adults who have never used AI. Use plain language and leave placeholders for date and location.',
+  poster:spanish?'Describe una imagen cálida para un cartel de clase sobre el aprendizaje de IA: personas diversas colaborando en una biblioteca, con luz natural y sin texto en la imagen.':'Describe a welcoming image for a beginner AI class poster: diverse learners working together in a library, natural light, and no written text inside the image.'
+ };
+ const output=document.getElementById("practiceOutput");if(output)output.textContent=examples[button.dataset.practice];
+ document.querySelectorAll("button[data-practice]").forEach(el=>el.setAttribute("aria-pressed",String(el===button)));
+});
 document.querySelectorAll(".node").forEach(n=>n.addEventListener("click",()=>{userTouched=true;mode=n.dataset.mode;render(false)}));
 E("lang").onclick=()=>{userTouched=true;lang=lang==="en"?"es":"en";stop();render(false)};E("play").onclick=()=>{userTouched=true;speak()};E("stop").onclick=()=>{userTouched=true;stop();E("status").textContent=lang==="en"?"Stopped":"Detenido"};
 // Space-themed star generation removed from Safari Scene 05.
