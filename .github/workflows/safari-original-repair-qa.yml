@@ -4,6 +4,8 @@ on:
     paths:
       - 'index.html'
       - 'mentor.html'
+      - 'living-ai-lab.html'
+      - 'try-chatgpt.html'
       - 'consultation.html'
       - 'free-ai-starter.html'
       - '404.html'
