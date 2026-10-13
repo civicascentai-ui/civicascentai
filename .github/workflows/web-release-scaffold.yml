@@ -1,0 +1,23 @@
+name: Web technical release scaffold
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - '404.html'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'tests/test_web_release_scaffold.py'
+      - '.github/workflows/web-release-scaffold.yml'
+  workflow_dispatch:
+jobs:
+  web-static-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify SEO, accessible 404 and public sitemap
+        run: python3 -m unittest discover -s tests -p 'test_web_release_scaffold.py' -v
