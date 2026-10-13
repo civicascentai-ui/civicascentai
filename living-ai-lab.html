@@ -48,6 +48,7 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
 @media(prefers-reduced-motion:reduce){.stars i,.orb,.orb::before,.orb::after,.sweep,.wave i{animation:none!important}}
 </style>
 <link rel="stylesheet" href="assets/safari-scene05-lab.css">
+<link rel="stylesheet" href="assets/safari-scene05-cinematic.css">
 </head>
 <body>
 <a class="skip" href="#labTitle">Skip to lab</a>
@@ -62,11 +63,35 @@ button,a{font:inherit}.skip{position:fixed;left:12px;top:-90px;z-index:99;backgr
   </div>
 </header>
 <main class="lab" id="labTitle">
+  <section class="safari-cinema" aria-labelledby="safariCinemaTitle">
+    <div class="safari-cinema-copy">
+      <p class="safari-cinema-eyebrow">CIVICASCENT AI · SCENE 05 · LIVING AI LAB</p>
+      <h1 id="safariCinemaTitle">See AI <em>in action.</em></h1>
+      <p class="cinema-intro">From an elephant at the watering hole to everyday questions, discover how observation, clear prompts, and careful checking lead to useful AI skills.</p>
+      <div class="safari-cinema-actions">
+        <a href="#lab-experiences">Start exploring <span aria-hidden="true">→</span></a>
+        <a href="course.html" class="secondary">Learn the basics</a>
+      </div>
+      <p class="safari-cinema-caption">Four prepared interactive learning examples · Free to explore · No account required</p>
+    </div>
+    <div class="safari-cinema-hud" aria-hidden="true">
+      <b>FROM OBSERVATION TO INSIGHT</b>
+      <span>01 &nbsp; Notice what's happening</span>
+      <span>02 &nbsp; Ask a clearer question</span>
+      <span>03 &nbsp; Verify the result</span>
+    </div>
+    <svg class="safari-cinema-trace" viewBox="0 0 640 180" fill="none" aria-hidden="true" focusable="false">
+      <path d="M3 137 C105 35,165 156,270 89 S450 2,631 71" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="271" cy="89" r="7" fill="#9febef"/>
+      <circle cx="629" cy="71" r="7" fill="#9febef"/>
+    </svg>
+  </section>
+  <div class="safari-scene-caption"><p>YOUR NEXT STOP · TRY AN AI SKILL</p><span>Choose a demonstration below. No surprises, no autoplay voice.</span></div>
   <div class="grid" aria-hidden="true"></div><div class="stars" id="stars" aria-hidden="true"></div>
-  <section class="shell" aria-label="Living AI Lab interactive demonstration">
+  <section class="shell" id="lab-experiences" aria-label="Living AI Lab interactive demonstration">
     <div class="heading">
       <div class="eyebrow" id="eyebrow">SCENE 05 · GUIDED AI EXAMPLES</div>
-      <h1 id="mainTitle">Living AI Lab</h1>
+      <h2 id="mainTitle">Living AI Lab</h2>
       <p id="mainIntro">Explore practical AI examples in this Safari learning experience. Choose a skill, then try the next step.</p>
     </div>
     <button class="node n1 active" data-mode="create"><span>01</span><b data-en="CREATE" data-es="CREAR">CREATE</b></button>
