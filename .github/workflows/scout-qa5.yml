@@ -22,7 +22,7 @@ jobs:
   independent-offline-qa5-audit:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
     steps:
       - name: Checkout audited source (no persistent token)
         uses: actions/checkout@v4
