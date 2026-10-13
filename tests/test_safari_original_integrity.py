@@ -52,6 +52,11 @@ class SafariOriginalIntegrity(unittest.TestCase):
         release=(ROOT/"docs/operations/SAFARI_RELEASE_GATE_2026-10-12.json").read_text(encoding="utf-8")
         self.assertIn('"status": "HOLD"',release)
         self.assertIn('"owner_visual_approved": false',release)
+    def test_rejected_scene_six_is_absent(self):
+        self.assertFalse((ROOT / "village.html").exists(), "Rejected Scene 06 must not be present")
+        for name in ("index.html","living-ai-lab.html","sitemap.xml","agents/core_law.json"):
+            self.assertNotIn("village.html",(ROOT / name).read_text(encoding="utf-8"))
+
     def test_discovery_and_error_files(self):
         self.assertIn("Sitemap: https://civicascentai.com/sitemap.xml",(ROOT/"robots.txt").read_text())
         locs=[x.text for x in ET.parse(ROOT/"sitemap.xml").findall(".//{*}loc")]

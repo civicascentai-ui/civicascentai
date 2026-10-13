@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 law = json.loads((ROOT/"agents/core_law.json").read_text(encoding="utf-8"))
 assert law["id"] == "CIVICASCENT-SAFARI-CORE-LAW"
-assert law["version"].startswith("2026-10-12.")
+assert law["version"].startswith("2026-10-13.")
 assert law["budget_usd"] == 0 and law["default_production_release"] is False
 assert law["status"] == "ADOPTED_FOR_RECOVERY_BRANCH_NOT_YET_RELEASED"
 assert law["secrets"].lower().find("api keys") >= 0

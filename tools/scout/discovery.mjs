@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 const civicLaw = JSON.parse(readFileSync(new URL('../../agents/core_law.json', import.meta.url), 'utf8'));
-if (civicLaw.id !== 'CIVICASCENT-SAFARI-CORE-LAW' || civicLaw.scene_routes?.length !== 6) throw Error('Missing valid CivicAscent core LAW');
+if (civicLaw.id !== 'CIVICASCENT-SAFARI-CORE-LAW' || civicLaw.scene_routes?.length !== 5) throw Error('Missing valid CivicAscent core LAW');
 export const CORE_LAW_VERSION = civicLaw.version;
 export const SOURCES=[
  {id:'grants',kind:'rss',url:'https://www.grants.gov/rss/GG_OppModByCategory.xml',hosts:['www.grants.gov','grants.gov']},
