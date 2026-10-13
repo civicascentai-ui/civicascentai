@@ -1,0 +1,30 @@
+name: Safari Clean Still Candidate QA
+on:
+  pull_request:
+    branches:
+      - recovery/prototype09-homepage-20261012
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Static Safari feature and legal-source checks
+        run: python3 tools/qa/safari_homepage_smoke.py
+      - name: Install browser QA tools
+        run: npm install --no-save --ignore-scripts playwright@1.56.0
+      - name: Test responsive Safari guided path and still image
+        run: node tools/qa/safari_browser_test.cjs
+      - name: Preserve screenshots for independent review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-clean-still-preview
+          path: qa-artifacts/safari-*.png
+          if-no-files-found: warn
+          retention-days: 7

@@ -19,7 +19,7 @@ button,a{font:inherit}button{cursor:pointer}a{color:inherit}
 .skip:focus{top:12px}
 .world{position:relative;min-height:100svh;min-height:100dvh;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 75% 36%,#b87540 0%,#714323 38%,#281c15 76%,#19130e)}
 .media,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;z-index:-3}
-.media{background:transparent}.poster{z-index:-4;background-size:cover;background-position:center;background-image:url("https://d2ol7oe51mr4n9.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/d023dc10-49ff-4203-a0a3-714b659221dc.png")}
+.media{background:transparent;animation:cinematic-still 24s ease-in-out infinite alternate;transform-origin:52% 48%}.poster{z-index:-4;background-size:cover;background-position:center;background-image:linear-gradient(130deg,#7c4a24,#3b2a22 50%,#162027)}
 .light{position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(90deg,rgba(18,11,7,.82) 0%,rgba(20,12,7,.65) 30%,rgba(18,11,7,.2) 57%,rgba(16,12,7,.12)),linear-gradient(180deg,rgba(0,0,0,.36),transparent 26%,transparent 63%,rgba(0,0,0,.49));}
 .header{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;position:relative;z-index:4;padding:max(19px,env(safe-area-inset-top)) clamp(20px,4vw,64px) 10px}
 .brand{display:flex;align-items:center;gap:13px;text-decoration:none;min-width:0;text-shadow:0 2px 18px #000}
@@ -71,17 +71,15 @@ h1 em{font-style:normal;color:var(--gold)}
 }
 @media(max-width:360px){.footer-note{display:none}.header{padding-left:12px;padding-right:12px}.brand strong{font-size:17px}.intro{padding-left:19px;padding-right:19px}.lede{font-size:16px}.kicker{font-size:10px}.primary{min-width:185px}}
 @media(max-height:660px){.intro{padding-top:20px;padding-bottom:75px}h1{font-size:clamp(39px,8vh,68px)}.lede{margin:12px 0;font-size:16px}.reassure{margin-top:8px}}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.media{display:none}}
+@keyframes cinematic-still{from{transform:scale(1.01)}to{transform:scale(1.065)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.media{transform:none!important}}
 </style>
 </head>
 <body>
 <a class="skip" href="#start">Skip introduction</a>
 <main class="world" id="top">
   <div class="poster" aria-hidden="true"></div>
-  <video class="media" id="movie" muted autoplay playsinline loop preload="metadata" aria-hidden="true"
-    poster="https://d2ol7oe51mr4n9.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/d023dc10-49ff-4203-a0a3-714b659221dc.png">
-    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3JtScanEzSzxXPKWKIblpvV5cMF/hf_20260929_095835_92833d99-5bd0-4982-82cb-2ded0ae10408.mp4" type="video/mp4">
-  </video>
+  <img class="media" id="safariStill" alt="" aria-hidden="true" fetchpriority="high" decoding="async" src="https://images.unsplash.com/photo-1754679996635-9fa307b38c36?auto=format&fit=crop&w=2000&q=78">
   <div class="light" aria-hidden="true"></div>
   <header class="header">
     <a class="brand" href="index.html" aria-label="CivicAscent AI home">
@@ -100,7 +98,7 @@ h1 em{font-style:normal;color:var(--gold)}
     <p class="reassure">Free introduction · About one minute · No account needed</p>
   </section>
   <p class="footer-note">Explore · Learn · Create · Grow</p>
-  <div class="media-tools"><button id="motion" type="button" aria-pressed="false">Pause motion</button></div>
+  
 </main>
 <div id="guideShell" class="guide-shell" hidden>
   <section class="guide" id="guide" role="dialog" aria-modal="true" aria-labelledby="guideTitle" tabindex="-1">
@@ -122,7 +120,6 @@ h1 em{font-style:normal;color:var(--gold)}
 <script>
 (function(){
   "use strict";
-  var movie=document.getElementById("movie"),motion=document.getElementById("motion");
   var openButton=document.getElementById("start"),shell=document.getElementById("guideShell");
   var guide=document.getElementById("guide"),closeButton=document.getElementById("closeGuide");
   var eyebrow=document.getElementById("guideEyebrow"),title=document.getElementById("guideTitle");
@@ -131,15 +128,6 @@ h1 em{font-style:normal;color:var(--gold)}
   var stage=0,lastFocused=null;
   function track(name,detail){try{window.dispatchEvent(new CustomEvent("civicascent:analytics",{detail:{name:name,value:detail||null}}));}catch(e){}}
   track("landing_view");
-  function setMotion(paused){
-    if(paused){movie.pause();motion.textContent="Play motion";}
-    else {var played=movie.play();if(played&&played.catch)played.catch(function(){motion.textContent="Motion unavailable";motion.disabled=true;});motion.textContent="Pause motion";}
-    motion.setAttribute("aria-pressed",String(paused));
-  }
-  var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(reduced){motion.textContent="Motion paused";motion.setAttribute("aria-pressed","true");movie.pause();}
-  motion.addEventListener("click",function(){setMotion(!movie.paused);});
-  movie.addEventListener("error",function(){motion.textContent="Motion unavailable";motion.disabled=true;});
   function render(){
     actions.hidden=stage!==2;next.hidden=stage===2;
     if(stage===0){eyebrow.textContent="STEP 1 OF 2 · SEE IT";title.textContent="Ask AI in your own words.";body.textContent="A useful first step is to tell AI what you want explained and who the explanation is for.";example.textContent="“Explain artificial intelligence in plain language to someone learning it for the first time.”";note.textContent="This is a prepared learning example, not a live AI chat. Always check important information.";next.textContent="Show the example →";}

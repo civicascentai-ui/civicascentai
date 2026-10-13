@@ -25,7 +25,7 @@ class Markup(HTMLParser):
 
 dom = Markup()
 dom.feed(html)
-for element_id in ("start", "guideShell", "guide", "guideNext", "closeGuide", "nextActions", "motion", "movie"):
+for element_id in ("start", "guideShell", "guide", "guideNext", "closeGuide", "nextActions", "safariStill"):
     if element_id not in dom.ids:
         errors.append(f"Missing required experience element: #{element_id}")
 if dom.ids.get("guide", ("", {}))[1].get("aria-modal") != "true":
@@ -50,11 +50,13 @@ if 'id="cosmos"' in html or "ai-showcase-8k" in html:
     errors.append("Rejected starflight mockup found in recovered homepage")
 if "tel:+18179839404" in html:
     errors.append("Personal contact number leaked")
-if not any(tag == "video" for tag, _ in dom.tags):
-    errors.append("Movie-first Safari video element missing")
+if not any(tag == "img" and attrs.get("id") == "safariStill" for tag,attrs in dom.tags):
+    errors.append("Real text-free landscape still missing")
 for tag, attrs in dom.tags:
-    if tag == "source" and attrs.get("type") == "video/mp4" and not attrs.get("src", "").startswith("https://"):
-        errors.append("Missing HTTPS film source")
+    if tag == "img" and attrs.get("id") == "safariStill" and not attrs.get("src","").startswith("https://images.unsplash.com/"):
+        errors.append("Unverified still source")
+if "cdn.openart.ai" in html or "d8j0ntlcm91z4.cloudfront.net" in html:
+    errors.append("Watermarked-source URL remains")
 if errors:
     raise SystemExit("\n".join(errors))
 print("PASS: Safari structural smoke (mockup excluded, journey/links/accessibility hooks present).")

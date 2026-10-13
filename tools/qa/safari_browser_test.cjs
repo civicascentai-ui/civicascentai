@@ -35,7 +35,7 @@ async function run(){
           h1Visible:h.width>0&&h.height>0,
           headerOverlapsHeading:!(header.bottom<h.top||header.top>h.bottom),
           mockup:!!document.getElementById('cosmos'),
-          movieReducedHidden:getComputedStyle(document.getElementById('movie')).display==='none'};
+          stillReducedMotionDisabled:getComputedStyle(document.getElementById('safariStill')).animationName==='none'};
       });
       assert.ok(basics.scrollWidth<=basics.viewport+2,'horizontal overflow at '+viewport.width+': '+JSON.stringify(basics));
       assert.ok(basics.ctaVisible,'Start Here offscreen at '+viewport.width+': '+JSON.stringify(basics));
@@ -43,7 +43,7 @@ async function run(){
       assert.ok(basics.h1Visible,'missing heading at '+viewport.width);
       assert.ok(!basics.headerOverlapsHeading,'header clips heading at '+viewport.width);
       assert.ok(!basics.mockup,'starfield remains at '+viewport.width);
-      assert.ok(basics.movieReducedHidden,'reduced motion must disable movie at '+viewport.width);
+      assert.ok(basics.stillReducedMotionDisabled,'reduced motion must stop background animation at '+viewport.width);
       assert.ok(await page.locator('#guideShell').isHidden(),'guide unexpectedly open');
       await page.screenshot({path:path.join(folder,'safari-home-'+viewport.width+'.png'),fullPage:true});
       await page.locator('#start').click();
@@ -65,23 +65,16 @@ async function run(){
       console.log('PASS viewport '+viewport.width+'x'+viewport.height+': CTA in viewport; no overflow or header overlap; guided 2 steps and 4 routes; Escape; reduced motion; JS clean');
       await context.close();
     }
-    // Validate the cinematic motion path as well as the reduced-motion fallback.
-    const motionContext=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
-    const motionPage=await motionContext.newPage();
-    await motionPage.goto(url,{waitUntil:'domcontentloaded'});
-    await motionPage.waitForFunction(()=>{
-      const v=document.getElementById('movie');
-      return v.readyState>=2 || (v.error&&v.error.code);
-    },{timeout:16000}).catch(()=>{});
-    const film=await motionPage.locator('#movie').evaluate(v=>({
-      width:v.videoWidth,height:v.videoHeight,readyState:v.readyState,
-      paused:v.paused,error:v.error&&v.error.code
-    }));
-    assert.ok(film.width>0&&film.readyState>=2&&!film.error,
-      'Cinematic film not playable in real Chrome: '+JSON.stringify(film));
-    await motionPage.screenshot({path:path.join(folder,'safari-film-desktop.png'),fullPage:true});
-    console.log('PASS cinematic film in Chrome: '+JSON.stringify(film));
-    await motionContext.close();
+    // A remote, no-watermark still is a preview-only fallback, not accepted final Safari film.
+    const context=await browser.newContext({viewport:{width:1440,height:900},reducedMotion:'no-preference'});
+    const page=await context.newPage();
+    await page.goto(url,{waitUntil:'domcontentloaded'});
+    await page.locator('#safariStill').evaluate(img=>img.decode().catch(()=>{}));
+    const info=await page.locator('#safariStill').evaluate(img=>({complete:img.complete,width:img.naturalWidth,height:img.naturalHeight,src:img.currentSrc}));
+    assert.ok(info.complete&&info.width>=800&&info.height>=350,'Still asset failed to load: '+JSON.stringify(info));
+    await page.screenshot({path:path.join(folder,'safari-clean-still-desktop.png'),fullPage:true});
+    console.log('PASS clean still fetched and decoded: '+JSON.stringify(info));
+    await context.close();
   }finally{await browser.close();}
 }
 run().catch(e=>{console.error(e);process.exit(1);});
