@@ -6,6 +6,8 @@ on:
       - '.github/workflows/scout-qa5.yml'
       - 'tools/scout/**'
   workflow_dispatch:
+  schedule:
+    - cron: '17 12 * * *' # Daily UTC; scheduled GitHub Actions can be delayed
 
 # Public repository standard GitHub runners only. No cloud service, Replit or paid provider.
 permissions:
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   independent-offline-qa5-audit:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
