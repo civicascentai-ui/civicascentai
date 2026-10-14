@@ -43,6 +43,16 @@ for(const size of sizes){
    });
    const screenshot='safari-qa/screenshots/scene-'+s.no+'-'+size.name+'.png';
    await page.screenshot({path:screenshot,fullPage:false,timeout:12000});
+   let guidedIntroClick=null;
+   if(s.no===1){
+     try{
+       await page.locator('#start').click({timeout:7000});
+       await page.locator('#guideNext').click({timeout:7000});
+       await page.locator('#guideNext').click({timeout:7000});
+       await page.locator('a[data-action="continue"]').click({timeout:7000});
+       guidedIntroClick={reached:new URL(page.url()).pathname,pass:new URL(page.url()).pathname==='/free-ai-starter.html'};
+     }catch(e){guidedIntroClick={pass:false,error:String(e.message).slice(0,170)}}
+   }
    let labModeTest=null;
    if(s.no===5) {
      const modeResults=[];
@@ -59,9 +69,9 @@ for(const size of sizes){
      const spanishTitle=await page.locator('#mainTitle').textContent();
      labModeTest={modes:modeResults,spanishTitle,passed:modeResults.every(x=>x.pass)&&spanishTitle==='Laboratorio de IA'};
    }
-   report={...report,...dom,status:response?.status(),screenshot,errors:errors.slice(0,6),labModeTest};
+   report={...report,...dom,status:response?.status(),screenshot,errors:errors.slice(0,6),labModeTest,guidedIntroClick};
    report.retiredScene6Links=dom.links.filter(x=>/village\.html/i.test(x.href||''));
-   report.pass=report.status===200&&!!report.h1&&report.bodyCharacters>100&&report.fullWidth<=report.screenWidth+2&&errors.length===0&&(labModeTest===null||labModeTest.passed);
+   report.pass=report.status===200&&!!report.h1&&report.bodyCharacters>100&&report.fullWidth<=report.screenWidth+2&&errors.length===0&&(labModeTest===null||labModeTest.passed)&&(guidedIntroClick===null||guidedIntroClick.pass);
   }catch(e){report.error=String(e?.message||e).slice(0,250)}
   checks.push(report);
   console.log((report.pass?'PASS':'FAIL')+' scene '+s.no+' '+size.name+' status='+String(report.status)+' overflow='+((report.fullWidth||0)-(report.screenWidth||0))+' errors='+errors.length+' retiredLinks='+(report.retiredScene6Links?.length||0));
@@ -107,4 +117,4 @@ writeFileSync('safari-qa/recovery-report.json',JSON.stringify(report,null,2)+'\n
 console.log('FIVE_SCENE_ROUTE_QA '+checks.filter(x=>x.pass).length+'/'+checks.length);
 console.log('HOME_TO_SCENE2_DIRECT '+directScene2);
 console.log('LINKED_FROM_HOME '+JSON.stringify(report.findings.sceneReachabilityFromHomepage));
-if(checks.some(x=>!x.pass))process.exitCode=1;
+if(checks.some(x=>!x.pass)||!directScene2||report.findings.sceneReachabilityFromHomepage.some(x=>!x.linked))process.exitCode=1;
