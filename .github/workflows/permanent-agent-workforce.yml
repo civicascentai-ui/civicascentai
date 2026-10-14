@@ -1,4 +1,4 @@
-name: CivicAscent Permanent Read-Only Agent Workforce
+name: Blue Crew
 on:
   push:
     branches:
