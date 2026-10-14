@@ -32,10 +32,10 @@ for(const size of sizes){
    const response=await page.goto(root+s.path,{waitUntil:'domcontentloaded',timeout:15000});
    await page.waitForTimeout(100);
    const dom=await page.evaluate(()=>{
-     const links=[...document.querySelectorAll('a[href]')].map(a=>({text:a.textContent?.trim().replace(/\\s+/g,' ').slice(0,55),href:a.getAttribute('href')}));
-     const buttons=[...document.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().width>=20).map(b=>b.textContent?.trim().replace(/\\s+/g,' ').slice(0,55));
+     const links=[...document.querySelectorAll('a[href]')].map(a=>({text:a.textContent?.trim().replace(/\s+/g,' ').slice(0,55),href:a.getAttribute('href')}));
+     const buttons=[...document.querySelectorAll('button')].filter(b=>b.getBoundingClientRect().width>=20).map(b=>b.textContent?.trim().replace(/\s+/g,' ').slice(0,55));
      return {
-       title:document.title,h1:document.querySelector('h1')?.textContent?.trim().replace(/\\s+/g,' ').slice(0,120)||null,
+       title:document.title,h1:document.querySelector('h1')?.textContent?.trim().replace(/\s+/g,' ').slice(0,120)||null,
        fullWidth:document.documentElement.scrollWidth,screenWidth:innerWidth,
        imageErrors:[...document.images].filter(i=>i.complete&&i.naturalWidth===0).map(i=>i.getAttribute('src')).slice(0,12),
        links,buttons,bodyCharacters:document.body?.innerText?.trim().length||0
@@ -43,9 +43,25 @@ for(const size of sizes){
    });
    const screenshot='safari-qa/screenshots/scene-'+s.no+'-'+size.name+'.png';
    await page.screenshot({path:screenshot,fullPage:false,timeout:12000});
-   report={...report,...dom,status:response?.status(),screenshot,errors:errors.slice(0,6)};
-   report.retiredScene6Links=dom.links.filter(x=>/village\\.html/i.test(x.href||''));
-   report.pass=report.status===200&&!!report.h1&&report.bodyCharacters>100&&report.fullWidth<=report.screenWidth+2&&errors.length===0;
+   let labModeTest=null;
+   if(s.no===5) {
+     const modeResults=[];
+     for(const mode of ['create','voice','translate','plan']){
+       const btn=page.locator('.node[data-mode="'+mode+'"]');
+       await btn.click({timeout:7000});
+       const state=await page.evaluate(m=>{
+         const el=document.querySelector('.node[data-mode="'+m+'"]');
+         return {active:el?.getAttribute('aria-pressed')==='true',heading:document.querySelector('#scene h2')?.textContent?.trim()||null};
+       },mode);
+       modeResults.push({mode,...state,pass:!!state.heading&&state.active});
+     }
+     await page.locator('#lang').click({timeout:7000});
+     const spanishTitle=await page.locator('#mainTitle').textContent();
+     labModeTest={modes:modeResults,spanishTitle,passed:modeResults.every(x=>x.pass)&&spanishTitle==='Laboratorio de IA'};
+   }
+   report={...report,...dom,status:response?.status(),screenshot,errors:errors.slice(0,6),labModeTest};
+   report.retiredScene6Links=dom.links.filter(x=>/village\.html/i.test(x.href||''));
+   report.pass=report.status===200&&!!report.h1&&report.bodyCharacters>100&&report.fullWidth<=report.screenWidth+2&&errors.length===0&&(labModeTest===null||labModeTest.passed);
   }catch(e){report.error=String(e?.message||e).slice(0,250)}
   checks.push(report);
   console.log((report.pass?'PASS':'FAIL')+' scene '+s.no+' '+size.name+' status='+String(report.status)+' overflow='+((report.fullWidth||0)-(report.screenWidth||0))+' errors='+errors.length+' retiredLinks='+(report.retiredScene6Links?.length||0));
@@ -87,7 +103,7 @@ const report={
  },
  checks
 };
-writeFileSync('safari-qa/recovery-report.json',JSON.stringify(report,null,2)+'\\n');
+writeFileSync('safari-qa/recovery-report.json',JSON.stringify(report,null,2)+'\n');
 console.log('FIVE_SCENE_ROUTE_QA '+checks.filter(x=>x.pass).length+'/'+checks.length);
 console.log('HOME_TO_SCENE2_DIRECT '+directScene2);
 console.log('LINKED_FROM_HOME '+JSON.stringify(report.findings.sceneReachabilityFromHomepage));
