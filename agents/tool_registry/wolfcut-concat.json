@@ -1,0 +1,34 @@
+{
+  "id": "wolfcut-concat",
+  "display_name": "Concat (formerly WolfCut)",
+  "type": "video_editing_and_automation",
+  "website": "https://concatenate.pages.dev/",
+  "upstream_repository": "https://github.com/jub0t/Concat",
+  "license": "AGPL-3.0-or-later",
+  "pricing": "free_no_account_no_subscription_no_watermark",
+  "checked_at": "2026-10-14",
+  "status": "candidate_not_installed",
+  "enabled": false,
+  "automatic_dispatch_allowed": false,
+  "paid_calls_allowed": false,
+  "production_access": false,
+  "social_publishing_allowed": false,
+  "website_work_allowed": false,
+  "approved_roles": [
+    "SCOUT: research and version check",
+    "SAM: isolated integration assessment",
+    "FRIDAY: independent QC",
+    "CODI: owner approval and evidence"
+  ],
+  "testing_requirements": [
+    "trusted release checksums",
+    "local install and rollback",
+    "offline synthetic video smoke test",
+    "caption accessibility and Spanish quality",
+    "export watermark and file validity",
+    "api permission isolation",
+    "no unexpected network traffic",
+    "independent QC evidence"
+  ],
+  "notes": "Free status and license verified from upstream README/LICENSE. Beta software; listing does NOT imply installation or execution."
+}
