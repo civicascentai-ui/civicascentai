@@ -43,7 +43,7 @@ export function parseGrantsApi(text,s){
  .map(x=>{
   const id=Number(x.id);
   const url=Number.isSafeInteger(id)&&id>0?safeUrl('https://www.grants.gov/search-results-detail/'+id,s.hosts):null;
-  return {source:s.id,title:clean(x.title),url,published:clean(x.openDate)||null};
+  return {source:s.id,title:clean(x.title),url,published:clean(x.openDate)||null,closingDate:clean(x.closeDate)||null};
  }).filter(x=>x.title&&x.url);
 }
 export function rank(items){
@@ -88,7 +88,7 @@ export function report(run){
  for(const s of run.sources)lines.push('- '+s.source+': '+s.status+' / '+s.count+(s.error?' ('+clean(s.error)+')':''));
  lines.push('','## Leads for Reach to verify');
  if(!run.leads.length)lines.push('No matching headlines in this run; do not infer that no opportunities exist.');
- for(const item of run.leads)lines.push('- '+clean(item.title)+' | '+item.source+' | '+item.url+' | score '+item.score+' | UNVERIFIED');
+ for(const item of run.leads)lines.push('- '+clean(item.title)+' | '+item.source+' | '+item.url+' | closing '+(item.closingDate||'NOT PROVIDED')+' | score '+item.score+' | UNVERIFIED');
  lines.push('','Reach must verify official details before contacting anyone. No outreach, payments, or course activations occurred.','');
  return lines.join('\n');
 }
