@@ -1,0 +1,36 @@
+name: Safari Five Scene Recovery Review (nonproduction)
+on:
+  pull_request:
+    paths:
+      - 'tools/safari-recovery/**'
+      - '.github/workflows/safari-five-scene-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  five-scene-review:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Checkout historical candidate without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install isolated browser driver
+        run: npm install --prefix tools/safari-recovery --no-save --no-package-lock --ignore-scripts playwright-core@1.57.0
+      - name: Check all five archived routes, functionality and screenshots locally
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 > /tmp/safari-static.log 2>&1 &
+          sleep 1
+          node tools/safari-recovery/five-scene-review.mjs
+      - name: Save receipts regardless of the result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-five-scene-recovery-${{ github.run_id }}
+          path: |
+            safari-qa/recovery-report.json
+            safari-qa/screenshots/*.png
+          retention-days: 7
+          if-no-files-found: warn
