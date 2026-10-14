@@ -1,0 +1,35 @@
+name: CivicAscent Mobile Repair Proof
+on:
+  pull_request:
+    paths:
+      - 'tests/mobile-repair-browser-proof.mjs'
+      - '.github/workflows/mobile-repair-proof.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mobile-local-preview:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install temporary browser driver (no payment credentials)
+        run: npm install --prefix tests --no-save --no-package-lock --ignore-scripts playwright-core@1.57.0
+      - name: Test local preview, not production
+        run: |
+          python3 -m http.server 8123 --bind 127.0.0.1 > /tmp/civic-static-server.log 2>&1 &
+          sleep 1
+          node tests/mobile-repair-browser-proof.mjs
+      - name: Save visual review and test receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-repair-proof-${{ github.run_id }}
+          path: |
+            mobile-qa-output/report.json
+            mobile-qa-output/screenshots/*.png
+          retention-days: 7
+          if-no-files-found: warn
