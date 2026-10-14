@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "pricing": "free_no_account_no_subscription_no_watermark",
   "checked_at": "2026-10-14",
-  "status": "actual_local_api_readonly_passed_export_qc_pending",
+  "status": "isolated_linux_media_e2e_verified_release_hold",
   "enabled": false,
   "automatic_dispatch_allowed": false,
   "paid_calls_allowed": false,
@@ -65,10 +65,30 @@
       "test_count": 14,
       "result": "passed"
     },
-    "full_video_export": "in progress; no completion verified",
+    "full_video_export": {
+      "run_id": 38578849624,
+      "run_url": "https://github.com/civicascentai-ui/civicascentai/actions/runs/38578849624",
+      "artifact_id": 11902711641,
+      "result": "passed",
+      "input": "synthetic testsrc2",
+      "actual_project_created": true,
+      "actual_clip_imported": true,
+      "actual_timeline_edit": true,
+      "h264_output_decodable": true,
+      "duration_seconds": 1,
+      "width": 160,
+      "height": 90,
+      "frame_count": 24,
+      "bytes": 19695,
+      "sha256": "47bb6acae28890dd87e79074e8d7c541c5dee0acff7dca88069c4aeb2cc41791",
+      "machine_independent_decoding": true,
+      "source_output_ssim_all": 0.94769,
+      "remaining": "FRIDAY human QC, captions, Spanish, accessibility, Android, real-user environment, production integration"
+    },
     "friday_human_qc": "not performed",
     "manual_device_install": "not performed",
     "replit_used": false,
-    "website_modified": false
+    "website_modified": false,
+    "qc_report": "docs/qc/CONCAT_FUNCTIONAL_EVIDENCE_2026-10-14.md"
   }
 }
