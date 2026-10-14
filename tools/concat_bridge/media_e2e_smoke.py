@@ -119,6 +119,11 @@ def main():
                             pass
                     time.sleep(.5)
                 if not produced or float(produced["format"]["duration"]) < .9:
+                    lines=(home / "app.log").read_text(encoding="utf-8",errors="replace").splitlines()
+                    matches=[line.replace(token,"[redacted]").replace(str(home),"[sandbox]")[-280:] for line in lines if any(w in line.lower() for w in ("export","error","warn","render","gpu","fail"))]
+                    receipt["diagnostic_log_tail"]=matches[-18:]
+                    receipt["output_file_bytes"]=output.stat().st_size if output.exists() else 0
+                    receipt["export_started_job"]=str(started.get("job"))
                     raise RuntimeError("Rendered MP4 did not become playable")
                 stream=next(x for x in produced["streams"] if x.get("codec_name") in ("h264","hevc","av1"))
                 if stream.get("width")!=160 or stream.get("height")!=90:
