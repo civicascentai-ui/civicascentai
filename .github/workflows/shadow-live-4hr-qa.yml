@@ -1,0 +1,54 @@
+name: "Shadow House: bounded four-hour live QA"
+on:
+  push:
+    branches:
+      - production/shadow-concat-20261014
+    paths:
+      - .github/workflows/shadow-live-4hr-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: civic-shadow-bounded-four-hour-20261014
+  cancel-in-progress: false
+jobs:
+  shadow-live-watch:
+    if: github.repository == 'civicascentai-ui/civicascentai' && github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 220
+    steps:
+      - name: Checkout Shadow branch without persisted credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Assert zero-new-cost and no client/publication privileges
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "civicascentai-ui/civicascentai"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          test "$GITHUB_REF" = "refs/heads/production/shadow-concat-20261014"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          config=json.loads(Path("agents/tool_registry/wolfcut-concat.json").read_text())
+          for key in ("enabled","automatic_dispatch_allowed","paid_calls_allowed","production_access","social_publishing_allowed","website_work_allowed"):
+              assert config[key] is False, key
+          print("Shadow remains disabled for customers, payment, publication and autonomous dispatch")
+          PY
+      - name: Run repeated read-only checks until owner four-hour window ends
+        shell: bash
+        env:
+          CUT_OFF_UTC: "2026-10-15T02:37:00Z"
+          INTERVAL_SECONDS: "300"
+          PYTHONUNBUFFERED: "1"
+        run: |
+          python3 -u tools/qa/shadow_live_watch.py
+      - name: Preserve timestamped security and public health check evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-four-hour-timestamped-qa
+          path: shadow-live-receipts/
+          retention-days: 7
+          if-no-files-found: warn
