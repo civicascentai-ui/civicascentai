@@ -1,0 +1,156 @@
+name: Shadow House production lane: Concat evidence gate
+on:
+  push:
+    branches:
+      - production/shadow-concat-20261014
+    paths:
+      - .github/workflows/shadow-concat-production-verify.yml
+      - agents/tool_registry/wolfcut-concat.json
+      - tools/concat_bridge/media_e2e_smoke.py
+      - tools/concat_bridge/bridge.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-synthetic-render:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout isolated source without credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce $0 public GitHub standard runner
+        run: |
+          test "$GITHUB_REPOSITORY" = "civicascentai-ui/civicascentai"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+      - name: Verify locked-down production registry and website STOP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("agents/tool_registry/wolfcut-concat.json").read_text())
+          for key in ("enabled","automatic_dispatch_allowed","paid_calls_allowed","production_access","social_publishing_allowed","website_work_allowed"):
+              assert d[key] is False,key
+          print("PASS: no paid services, no production/customer access, website STOP")
+          PY
+      - name: Independent 18-case safety gate before media test
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p concat-export-results
+          (python3 -m unittest discover -s tools/concat_bridge -p test_bridge.py -v) 2>&1 | tee concat-export-results/security.log
+          grep -q '^Ran 18 tests' concat-export-results/security.log
+          grep -q '^OK
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 2 --max-time 180 \
+            https://github.com/jub0t/concat/releases/download/v0.2.7/Concat-0.2.7-x86_64.AppImage -o "$RUNNER_TEMP/concat-appimage"
+          echo "3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f  $RUNNER_TEMP/concat-appimage" | sha256sum -c
+          chmod +x "$RUNNER_TEMP/concat-appimage"
+          echo "CONCAT_APPIMAGE=$RUNNER_TEMP/concat-appimage" >> "$GITHUB_ENV"
+      - name: Prepare headless display and media inspection
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb xauth
+          fi
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg mesa-vulkan-drivers libvulkan1
+          fi
+          sudo apt-get install -y -qq mesa-vulkan-drivers libvulkan1
+          ffmpeg -version >/dev/null
+          ffprobe -version >/dev/null
+          test -f /usr/share/vulkan/icd.d/lvp_icd.x86_64.json || true
+      - name: Run real synthetic Concat import, edit, export, and ffprobe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/concat_bridge/media_e2e_smoke.py
+      - name: Verify non-empty E2E receipt and synthetic output
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('concat-export-results/receipt.json')
+          report = json.loads(p.read_text())
+          assert report['result'] == 'passed'
+          assert report['actual_video_export'] is True
+          assert report['playable_mp4'] is True
+          assert report['output_duration_seconds'] >= 0.9
+          assert Path('concat-export-results/rendered-synthetic.mp4').stat().st_size > 1000
+          print('Independent receipt checks PASSED: synthetic only')
+          PY
+      - name: Preserve synthetic MP4 and receipt (not customer media)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-concat-production-evidence
+          path: concat-export-results/
+          retention-days: 7
+          if-no-files-found: warn
+ concat-export-results/security.log
+      - name: Obtain pinned official Concat application
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 2 --max-time 180 \
+            https://github.com/jub0t/concat/releases/download/v0.2.7/Concat-0.2.7-x86_64.AppImage -o "$RUNNER_TEMP/concat-appimage"
+          echo "3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f  $RUNNER_TEMP/concat-appimage" | sha256sum -c
+          chmod +x "$RUNNER_TEMP/concat-appimage"
+          echo "CONCAT_APPIMAGE=$RUNNER_TEMP/concat-appimage" >> "$GITHUB_ENV"
+      - name: Prepare headless display and media inspection
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb xauth
+          fi
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg mesa-vulkan-drivers libvulkan1
+          fi
+          sudo apt-get install -y -qq mesa-vulkan-drivers libvulkan1
+          ffmpeg -version >/dev/null
+          ffprobe -version >/dev/null
+          test -f /usr/share/vulkan/icd.d/lvp_icd.x86_64.json || true
+      - name: Run real synthetic Concat import, edit, export, and ffprobe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/concat_bridge/media_e2e_smoke.py
+      - name: Verify non-empty E2E receipt and synthetic output
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('concat-export-results/receipt.json')
+          report = json.loads(p.read_text())
+          assert report['result'] == 'passed'
+          assert report['actual_video_export'] is True
+          assert report['playable_mp4'] is True
+          assert report['output_duration_seconds'] >= 0.9
+          assert Path('concat-export-results/rendered-synthetic.mp4').stat().st_size > 1000
+          print('Independent receipt checks PASSED: synthetic only')
+          PY
+      - name: Preserve synthetic MP4 and receipt (not customer media)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concat-synthetic-media-e2e
+          path: concat-export-results/
+          retention-days: 2
+          if-no-files-found: warn
