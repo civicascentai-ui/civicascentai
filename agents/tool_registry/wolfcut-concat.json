@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "pricing": "free_no_account_no_subscription_no_watermark",
   "checked_at": "2026-10-14",
-  "status": "linux_headless_gui_smoke_passed_full_qc_pending",
+  "status": "actual_local_api_readonly_passed_export_qc_pending",
   "enabled": false,
   "automatic_dispatch_allowed": false,
   "paid_calls_allowed": false,
@@ -46,5 +46,29 @@
     "warnings": "Headless runner lacks GPU/audio; first-run effect preview card files were missing, despite exit=0; test on real device before approval",
     "independent_log_readback": true,
     "friday_agent_qc": "not executed / pending"
+  },
+  "implementation": {
+    "bridge_path": "tools/concat_bridge/bridge.py",
+    "safety_tests": "tools/concat_bridge/test_bridge.py",
+    "local_api_live_test": "tools/concat_bridge/real_api_smoke.py",
+    "media_e2e_test": "tools/concat_bridge/media_e2e_smoke.py",
+    "read_only_actual_api": {
+      "run_id": 38577200980,
+      "result": "passed",
+      "concat_version": "0.2.7",
+      "api_version": "0.2",
+      "wrong_token_rejected": true,
+      "export_disabled": true
+    },
+    "sandbox_contract": {
+      "run_id": 38576350350,
+      "test_count": 14,
+      "result": "passed"
+    },
+    "full_video_export": "in progress; no completion verified",
+    "friday_human_qc": "not performed",
+    "manual_device_install": "not performed",
+    "replit_used": false,
+    "website_modified": false
   }
 }
