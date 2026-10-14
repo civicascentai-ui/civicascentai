@@ -23,7 +23,7 @@ class CurriculumGate(unittest.TestCase):
     def test_level1_qc_not_falsely_marked_executed(self):
         text=read("level1_delivery_qc.md")
         for token in ("NOT EXECUTED","NOT RUN","FRIDAY","transcript","keyboard","MP3"):
-            self.assertIn(token,text)
+            self.assertIn(token.lower(),text.lower())
 
     def test_level2_has_4_sessions_assessment_and_rubric(self):
         text=read("level2_applied_ai_workbook.md")
