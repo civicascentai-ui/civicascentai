@@ -43,10 +43,12 @@ jobs:
           fi
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
             sudo apt-get update -qq
-            sudo apt-get install -y -qq ffmpeg
+            sudo apt-get install -y -qq ffmpeg mesa-vulkan-drivers libvulkan1
           fi
+          sudo apt-get install -y -qq mesa-vulkan-drivers libvulkan1
           ffmpeg -version >/dev/null
           ffprobe -version >/dev/null
+          test -f /usr/share/vulkan/icd.d/lvp_icd.x86_64.json || true
       - name: Run real synthetic Concat import, edit, export, and ffprobe
         shell: bash
         run: |
