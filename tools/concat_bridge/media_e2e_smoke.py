@@ -4,6 +4,8 @@ No private media, public publishing, real credentials, cloud charges or website 
 """
 from datetime import datetime, timezone
 import json
+import hashlib
+import shutil
 import os
 from pathlib import Path
 import re
@@ -121,7 +123,10 @@ def main():
                 stream=next(x for x in produced["streams"] if x.get("codec_name") in ("h264","hevc","av1"))
                 if stream.get("width")!=160 or stream.get("height")!=90:
                     raise RuntimeError("Rendered dimensions incorrect")
+                shutil.copyfile(output, results / "rendered-synthetic.mp4")
+                digest=hashlib.sha256(output.read_bytes()).hexdigest()
                 receipt.update(stage="complete",result="passed",actual_video_export=True,
+                               output_sha256=digest,
                                created_project=True,synthetic_clip_imported=True,
                                actual_timeline_edit=True,playable_mp4=True,
                                output_bytes=output.stat().st_size,
