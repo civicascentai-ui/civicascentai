@@ -13,6 +13,7 @@ AGENTS = {
     "scout": "Research discovery (offline task preparation only)",
     "reach": "Partnership outreach (draft only)",
     "friday": "Independent QC",
+    "vetrep": "Veterans and military families AI program liaison (human veteran review still required)",
     **{f"qa5-{n:02d}": "Safe simulated QA tester" for n in range(1, 6)},
 }
 
