@@ -42,7 +42,20 @@ try:
             if width<=390:
                 page.locator("details.mobile-nav summary").click()
                 assert page.get_by_role("link",name="Free Workshop").count()>=1
-            results.append({"viewport":width,"status":"PASS","click_throughs":4,"errors":[]})
+                page.locator("details.mobile-nav summary").click()
+            # Preserve four Safari portals while testing the new dedicated Veterans entrance.
+            page.locator(".vet-home-entry a").click()
+            assert page.url.endswith("/veterans.html"), (width,"veterans entrance broken",page.url)
+            assert page.get_by_role("heading",name="New skills. New possibilities.").count()==1,(width,"veterans heading absent")
+            assert page.locator(".vet-resource-list a").count()==3,(width,"veterans resource links")
+            assert "not yet open" in page.locator(".vet-stage").inner_text().lower(),(width,"pilot not accurately labeled")
+            assert page.locator("input,form").count()==0,(width,"unexpected data capture")
+            assert "book.stripe" not in page.content().lower(),(width,"payment path in veterans page")
+            assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"veterans horizontal overflow")
+            page.screenshot(path=str(out/f"veterans-{width}.png"),full_page=True)
+            page.locator(".vet-back a").click()
+            assert page.url.endswith("/index.html"),(width,"veterans return path failed")
+            results.append({"viewport":width,"status":"PASS","click_throughs":5,"veterans":"PASS","errors":[]})
             page.close()
         browser.close()
     (out/"results.json").write_text(json.dumps(results,indent=2))
