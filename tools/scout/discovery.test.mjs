@@ -18,7 +18,7 @@ test('RSS parser reads source and rejects off-domain links',()=>{
 });
 test('Official Grants.gov search2 fixture produces only posted or forecasted official links',()=>{
  const data={errorcode:0,data:{oppHits:[
-  {id:364024,title:'Workforce training grant',openDate:'10/10/2026',oppStatus:'posted'},
+  {id:364024,title:'Workforce training grant',openDate:'10/10/2026',closeDate:'10/15/2026',oppStatus:'posted'},
   {id:364025,title:'Closed grant',oppStatus:'closed'},
   {id:'../evil',title:'Bad ID',oppStatus:'posted'},
   {id:364026,title:'Future training opportunity',oppStatus:'forecasted'}
@@ -27,6 +27,10 @@ test('Official Grants.gov search2 fixture produces only posted or forecasted off
  assert.equal(items.length,2);
  assert.equal(items[0].url,'https://www.grants.gov/search-results-detail/364024');
  assert.equal(items[1].url,'https://www.grants.gov/search-results-detail/364026');
+ assert.equal(items[0].closingDate,'10/15/2026');
+ assert.equal(items[1].closingDate,null);
+ const md=report({sources:[],leads:rank(items),finishedAt:'2026-10-14T00:00:00Z',runUrl:'https://github.com/example/run'});
+ assert.match(md,/closing 10\/15\/2026/);
  assert.throws(()=>parseGrantsApi('{"errorcode":1,"data":{"oppHits":[]}}',source));
  assert.throws(()=>parseGrantsApi('<html>not JSON</html>',source));
 });
