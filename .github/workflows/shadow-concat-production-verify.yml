@@ -100,3 +100,4 @@ jobs:
           path: concat-export-results/
           retention-days: 7
           if-no-files-found: warn
+# Four-hour owner-authorized Shadow House live QA retest, 2026-10-14. Restricted branch; no paid calls, public deployment, or client data.
