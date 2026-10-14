@@ -5,10 +5,8 @@ on:
       - 'tools/site-health/**'
       - '.github/workflows/website-live-readonly.yml'
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   public-health:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
@@ -20,11 +18,33 @@ jobs:
           persist-credentials: false
       - name: Check actual public site from an external GitHub runner
         run: node tools/site-health/read-only-probe.mjs
-      - name: Preserve pass or fail receipt without modifying production
+      - name: Preserve pass/fail receipt without modifying production
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: civic-website-http-${{ github.run_id }}
           path: website-output/live-health.json
+          retention-days: 7
+          if-no-files-found: warn
+  browser-qa:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install test-only browser driver, no deployment
+        run: npm install --prefix tools/site-health --no-save --no-package-lock --ignore-scripts playwright-core@1.57.0
+      - name: Verify mobile/desktop page navigation and produce screenshots
+        run: node tools/site-health/browser-qa.mjs
+      - name: Preserve diagnostics and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: civic-browser-qa-${{ github.run_id }}
+          path: |
+            website-output/browser-qc.json
+            website-output/screenshots/*.png
           retention-days: 7
           if-no-files-found: warn
