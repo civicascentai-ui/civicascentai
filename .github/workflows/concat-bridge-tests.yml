@@ -1,0 +1,48 @@
+name: Concat Shadow connector isolated contract QC
+on:
+  push:
+    branches:
+      - operations/zero-cost-concat-review-20261014
+    paths:
+      - .github/workflows/concat-bridge-tests.yml
+      - tools/concat_bridge/**
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety-contract:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout isolated source with no persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce public standard runner and repository identity
+        run: |
+          test "$GITHUB_REPOSITORY" = 'civicascentai-ui/civicascentai'
+          test "$RUNNER_OS" = 'Linux'
+          test "$RUNNER_ENVIRONMENT" = 'github-hosted'
+      - name: Run fake loopback-only contract tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p concat-test-results
+          python3 -m unittest discover -s tools/concat_bridge -p test_bridge.py -v 2>&1 | tee concat-test-results/tests.log
+      - name: Independently inspect contract test evidence gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '^Ran 14 tests' concat-test-results/tests.log
+          grep -q '^OK$' concat-test-results/tests.log
+          if grep -Eq '^(FAIL|ERROR)' concat-test-results/tests.log; then exit 1; fi
+          printf 'PASS: local mock safety contracts only; no genuine Concat export or Android QC\n' > concat-test-results/gate.txt
+      - name: Preserve evidence for FRIDAY review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concat-bridge-safety-test
+          path: concat-test-results/
+          retention-days: 2
+          if-no-files-found: warn
