@@ -1,0 +1,48 @@
+name: Safari interior three-page browser QA
+on:
+  push:
+    branches:
+      - repair/safari-interior-three-pages-20261014
+    paths:
+      - ".github/workflows/safari-interior-browser-qa.yml"
+      - "assets/safari-interior.css"
+      - "programs.html"
+      - "course.html"
+      - "free-ai-starter.html"
+      - "tests/test_safari_interior_browser.py"
+  pull_request:
+    branches: [main]
+    paths:
+      - "assets/safari-interior.css"
+      - "programs.html"
+      - "course.html"
+      - "free-ai-starter.html"
+      - "tests/test_safari_interior_browser.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect-three-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install fixed-version Chromium QA
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Independent real mobile and desktop browser checks
+        run: python tests/test_safari_interior_browser.py
+      - name: Store visual QC receipts and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-interior-three-page-qa
+          path: artifacts/safari-interior/
+          retention-days: 7
+          if-no-files-found: warn
