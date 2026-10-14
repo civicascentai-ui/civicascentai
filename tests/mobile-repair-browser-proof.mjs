@@ -5,13 +5,13 @@ const executable=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr
 if(!executable) throw new Error('Chrome missing on runner');
 const browser=await chromium.launch({headless:true,executablePath:executable,args:['--no-sandbox','--disable-dev-shm-usage']});
 mkdirSync('mobile-qa-output/screenshots',{recursive:true});
-const views=[{name:'mobile390',width:390,height:844},{name:'mobile360',width:360,height:780},{name:'desktop',width:1366,height:768}];
+const views=[{name:'mobile390',width:390,height:844},{name:'mobile360',width:360,height:780},{name:'mobile320',width:320,height:700},{name:'desktop',width:1366,height:768}];
 const result=[];
 for(const view of views){
  const page=await browser.newPage({viewport:{width:view.width,height:view.height},deviceScaleFactor:1,reducedMotion:'reduce'});
  for(const name of ['course','programs','register']){
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  const response=await page.goto(root+'/'+name+'.html',{waitUntil:'networkidle',timeout:20000});
+  const response=await page.goto(root+'/'+name+'.html',{waitUntil:'domcontentloaded',timeout:15000});
   const nav=await page.locator('.site-header nav').evaluate(el=>({
     scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,
     childCount:el.querySelectorAll('a').length,
