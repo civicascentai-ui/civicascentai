@@ -1,0 +1,30 @@
+name: CivicAscent Website Live Check (read-only)
+on:
+  pull_request:
+    paths:
+      - 'tools/site-health/**'
+      - '.github/workflows/website-live-readonly.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-health:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check actual public site from an external GitHub runner
+        run: node tools/site-health/read-only-probe.mjs
+      - name: Preserve pass or fail receipt without modifying production
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: civic-website-http-${{ github.run_id }}
+          path: website-output/live-health.json
+          retention-days: 7
+          if-no-files-found: warn
