@@ -1,0 +1,67 @@
+name: Blue Crew | Morning and Night Shifts
+on:
+  push:
+    branches:
+      - automation/blue-crew-two-shifts-20261014
+    paths:
+      - .github/workflows/blue-crew-shifts.yml
+      - agents/blue_crew_shifts.py
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+      timezone: 'America/Chicago'
+    - cron: '0 20 * * *'
+      timezone: 'America/Chicago'
+
+# GitHub Actions may delay cron starts. Runner always observes hard end-of-shift.
+# No deployment, social posting, purchases, messages or repository write permission.
+permissions:
+  contents: read
+  issues: read
+
+concurrency:
+  group: blue-crew-two-shifts
+  cancel-in-progress: false
+
+jobs:
+  shift-self-test:
+    if: github.event_name == 'push'
+    name: Shift schedule unit tests (no live tasks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check out without stored GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prove strict windows, Central time and DST
+        run: python3 agents/blue_crew_shifts.py --self-test
+
+  blue-crew-shift:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    name: Active bounded Blue Crew shift
+    runs-on: ubuntu-latest
+    timeout-minutes: 260
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - name: Check out without stored GitHub credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test clock boundaries and daylight savings
+        run: python3 agents/blue_crew_shifts.py --self-test
+      - name: Run five workers and SCOUT repeatedly within approved window
+        run: python3 -u agents/blue_crew_shifts.py
+      - name: Save timestamped shift evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blue-crew-shift-${{ github.run_id }}
+          path: |
+            blue-crew-shift-receipts/
+            agent-receipts/
+            scout-output/
+          retention-days: 1
+          if-no-files-found: warn
