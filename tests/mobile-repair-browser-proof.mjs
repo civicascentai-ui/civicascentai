@@ -30,8 +30,15 @@ for(const view of views){
   const navOK=nav.visibleAnchors===nav.childCount && nav.scrollWidth<=nav.clientWidth+2;
   const buttonsOK=!buttons || (buttons.length===2 && buttons.every(b=>b.left>=0 && b.right<=viewportWidth && b.height>=44) &&
     (buttons[0].bottom<=buttons[1].top || buttons[1].bottom<=buttons[0].top || buttons[0].right<=buttons[1].left || buttons[1].right<=buttons[0].left));
-  const pass=response?.status()===200&&navOK&&buttonsOK&&errors.length===0;
-  result.push({view:view.name,page:name,http:response?.status(),nav,buttons,navOK,buttonsOK,errors,pass,screenshot});
+  let listenClickOK = null;
+  if(name==='course'){
+    try {
+      await page.locator('.hero-actions a[href="#listen"]').click({timeout:6000});
+      listenClickOK = new URL(page.url()).hash === '#listen';
+    } catch (e) { listenClickOK = false; console.log('Course CTA click error: '+String(e.message).slice(0,160)); }
+  }
+  const pass=response?.status()===200&&navOK&&buttonsOK&&(listenClickOK===null||listenClickOK)&&errors.length===0;
+  result.push({view:view.name,page:name,http:response?.status(),nav,buttons,navOK,buttonsOK,listenClickOK,errors,pass,screenshot});
   console.log((pass?'PASS':'FAIL')+' '+view.name+' '+name+' nav='+nav.visibleAnchors+'/'+nav.childCount+' visible; CTA='+buttonsOK);
  }
  await page.close();
