@@ -54,7 +54,71 @@ class ConcatBridge:
             return msg["result"]
         raise BridgeError("Too many events")
 
+    def _authorize(self, method, params):
+        """Every network write enforces the method and sandbox gate itself."""
+        import math
+        import re
+        if not isinstance(params, dict):
+            raise BridgeError("Parameters must be an object")
+        if method in self.READ:
+            return
+        if not self.allow_export or self.root is None:
+            raise BridgeError("Mutation API disabled pending QC")
+        if method == "project.create":
+            if set(params) != {"location", "name", "video"}:
+                raise BridgeError("Unexpected project parameters")
+            if Path(params["location"]).resolve(strict=True) != self.root:
+                raise BridgeError("Project location outside sandbox")
+            name = params["name"]
+            if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,47}", name):
+                raise BridgeError("Unsafe project name")
+            if (self.root / name).exists():
+                raise BridgeError("Project already exists")
+            video=params["video"]
+            if (not isinstance(video, dict) or
+                set(video) != {"width", "height", "rateNum", "rateDen"} or
+                type(video["width"]) is not int or type(video["height"]) is not int or
+                type(video["rateNum"]) is not int or type(video["rateDen"]) is not int or
+                not 1 <= video["width"] <= 1920 or
+                not 1 <= video["height"] <= 1080 or
+                not 1 <= video["rateNum"] <= 60 or video["rateDen"] != 1):
+                raise BridgeError("Unsafe sample video settings")
+            return
+        if method == "media.import":
+            if set(params) != {"path", "file"}:
+                raise BridgeError("Unexpected media parameters")
+            self._in_sandbox(params["path"], existing_dir=True)
+            source=self._in_sandbox(params["file"])
+            if not source.is_file() or source.suffix.lower() not in (".mp4", ".mov"):
+                raise BridgeError("Only existing local video media permitted")
+            return
+        if method == "edit.apply":
+            if set(params) != {"path", "command"}:
+                raise BridgeError("Unexpected edit parameters")
+            self._in_sandbox(params["path"], existing_dir=True)
+            command=params["command"]
+            if (not isinstance(command, dict) or
+                set(command) != {"op", "mediaId", "start"} or
+                command["op"] != "addClipAtFirstFree" or
+                not isinstance(command["mediaId"], str) or
+                not re.fullmatch(r"m[0-9]+", command["mediaId"]) or
+                not isinstance(command["start"], (int, float)) or
+                not math.isfinite(command["start"]) or command["start"] != 0):
+                raise BridgeError("Unsafe edit command")
+            return
+        if method == "export.run":
+            if set(params) != {"path", "output"}:
+                raise BridgeError("Unexpected export parameters")
+            self._in_sandbox(params["path"], existing_dir=True)
+            output=self._in_sandbox(params["output"])
+            if (output.suffix.lower() not in (".mp4", ".mov") or
+                    not output.parent.is_dir() or output.exists()):
+                raise BridgeError("Unsafe export target")
+            return
+        raise BridgeError("Method not on sandbox command allowlist")
+
     def _request(self, method, params):
+        self._authorize(method, params)
         if not self.token or not self.token.strip():
             raise BridgeError("CONCAT_API_TOKEN required")
         try:
