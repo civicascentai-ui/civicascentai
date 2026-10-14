@@ -103,5 +103,33 @@ class SafetyTests(unittest.TestCase):
         with self.assertRaises(BridgeError):
             ConcatBridge(port=1,token="test-only",timeout=.3).read("version")
 
+    def test_internal_request_cannot_bypass_write_denial(self):
+        with self.assertRaisesRegex(BridgeError, "disabled"):
+            self.client()._request("project.create", {"location":"/tmp"})
+
+    def test_sandbox_rejects_unknown_edit(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/"project"
+            p.mkdir()
+            with self.assertRaises(BridgeError):
+                self.client(root=d,allow_export=True)._request(
+                    "edit.apply", {"path":str(p),"command":{"op":"deleteAll"}})
+
+    def test_sandbox_rejects_external_import(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/"project"
+            p.mkdir()
+            with self.assertRaises(BridgeError):
+                self.client(root=d,allow_export=True)._request(
+                    "media.import",{"path":str(p),"file":"/tmp/not-allowed.mp4"})
+
+    def test_sandbox_rejects_traversal_project_name(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaises(BridgeError):
+                self.client(root=d,allow_export=True)._request(
+                    "project.create",{
+                        "location":d,"name":"../unsafe",
+                        "video":{"width":160,"height":90,"rateNum":24,"rateDen":1}})
+
 if __name__=="__main__":
     unittest.main(verbosity=2)
