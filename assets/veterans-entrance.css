@@ -1,0 +1,46 @@
+/* CivicAscent Veterans entrance: scoped styling, leaves original Safari rooms untouched */
+.vet-skip{position:absolute;top:-100px;left:16px;z-index:100;color:#07131b;background:#fff3d8;padding:14px 20px;border-radius:9px;font-weight:850}
+.vet-skip:focus{top:8px}
+.veterans-scene{min-height:100vh;background:#08111b}
+.veterans-scene::before{position:fixed;z-index:-3;background-position:center 28%;filter:saturate(.95)}
+.veterans-scene::after{position:fixed;z-index:-2;background:linear-gradient(110deg,rgba(5,13,24,.96),rgba(5,16,27,.83) 54%,rgba(10,21,36,.72)),linear-gradient(0deg,#060f19,transparent 75%)}
+.veterans-main{width:min(1300px,100%);margin:0 auto;padding:clamp(28px,5vw,72px) clamp(18px,5vw,60px) 60px}
+.veterans-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr);align-items:center;gap:clamp(22px,5vw,75px);padding:32px 0 88px}
+.veterans-hero h1{font:500 clamp(45px,6.5vw,88px)/1.02 Georgia,'Times New Roman',serif;letter-spacing:-.03em;max-width:13ch;margin:0 0 24px;text-shadow:0 3px 20px #000a}
+.veterans-hero h1 em{font-style:normal;color:var(--gold)}
+.vet-intro{font-size:clamp(18px,1.65vw,22px);line-height:1.65;color:#fff3e1;max-width:60ch;margin:0 0 22px}
+.vet-stage{display:inline-flex;gap:11px;align-items:center;flex-wrap:wrap;font-size:15px;line-height:1.5;color:#ffe8af;font-weight:760;background:#1c2c3c;border:1px solid #dcb66caa;padding:12px 16px;border-radius:14px;margin:0 0 25px}
+.vet-dot{display:inline-block;background:#f0cf89;border-radius:50%;width:10px;height:10px;flex:none}
+.vet-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:15px}
+.vet-privacy{font-size:14px;line-height:1.65;color:#e7e7db;max-width:62ch;margin:16px 0 0}
+.vet-feature{padding:clamp(24px,3.1vw,42px);background:linear-gradient(135deg,#10263be8,#07111eea);border:1px solid #e0c285af;border-radius:25px;box-shadow:0 22px 65px #0008,inset 0 0 0 1px #ffffff14}
+.vet-feature-icon{display:grid;place-items:center;width:66px;height:66px;border:1px solid #f4d898;color:#f5d48e;border-radius:18px;font-size:39px;margin-bottom:16px}
+.vet-feature-label{font-size:11px;font-weight:850;letter-spacing:.13em;color:#f6dcaa;margin:0}
+.vet-feature h2{font:500 clamp(27px,3vw,38px)/1.1 Georgia,serif;margin:17px 0;color:#fff5e2}
+.vet-feature ol{padding-left:23px;line-height:1.7;font-size:16px}
+.vet-feature li{padding-left:5px;margin:8px 0}
+.vet-feature-note{padding:12px 0 0;border-top:1px solid #e7c78357;font-size:13px;color:#ebdbc1;line-height:1.6}
+.vet-section{padding:55px 0;border-top:1px solid #dcc29362}
+.vet-section-heading{max-width:790px;margin-bottom:27px}
+.vet-section-heading h2,.vet-closing h2{font:500 clamp(34px,4vw,52px)/1.13 Georgia,serif;margin:6px 0 15px}
+.vet-section-heading>p:last-child,.vet-closing p:not(.eyebrow){font-size:17px;line-height:1.65;color:#ede5dc}
+.vet-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.vet-card{padding:26px;border:1px solid #8cadc684;border-radius:19px;background:linear-gradient(145deg,#0c2536ed,#091724e9)}
+.vet-card-number{color:#ffd68c;font-weight:850;font-size:13px;letter-spacing:.14em}
+.vet-card h3{font-size:22px;margin:18px 0 12px}.vet-card p{font-size:16px;line-height:1.65;color:#e5e8ea}
+.vet-path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.vet-path-item{border-left:4px solid #f0bf70;background:#102338da;padding:24px 22px;border-radius:0 16px 16px 0}
+.vet-path-item>b{color:#ffd68c;letter-spacing:.08em;font-size:13px}.vet-path-item h3{font-size:21px;margin:9px 0}
+.vet-path-item p{line-height:1.6;color:#ecedec}.vet-path-item a{color:#ffe4af;min-height:44px;display:inline-flex;align-items:center;font-weight:780}
+.vet-path-item span{font-size:14px;color:#e4d6bc}
+.vet-resource-list{display:grid;gap:14px}.vet-resource-list>a{padding:22px;min-height:84px;display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #9ab5c085;border-radius:16px;background:#10283bf2;text-decoration:none}
+.vet-resource-list strong{display:block;font-size:18px;color:#fff5e5}.vet-resource-list small{display:block;margin-top:5px;font-size:14px;line-height:1.55;color:#e2eaf0}
+.vet-resource-list>a>span:last-child{font-size:23px;color:var(--gold)}.vet-resource-list>a:hover,.vet-resource-list>a:focus-visible{border-color:#ffe4a7;background:#183951}
+.vet-closing{display:flex;align-items:center;justify-content:space-between;gap:24px;background:linear-gradient(120deg,#132d44,#091626);border:1px solid #dfb97791;padding:clamp(22px,4vw,38px);border-radius:23px}
+.vet-closing div{max-width:760px}.vet-closing .cta{flex:none}.vet-back{margin:28px 0 0}.vet-back a{color:#ffe0a6;font-weight:750;display:inline-flex;min-height:48px;align-items:center}
+.vet-footer{background:#050f19;border-top:1px solid #dfb97765;color:#e2e2df;font-size:13px;padding:24px max(18px,calc((100vw - 1180px)/2));line-height:1.65}.vet-footer p{margin:5px 0}.vet-footer a{color:#ffe2ae}
+.vet-home-entry{margin:16px 0 0;font-size:16px}.vet-home-entry a{color:#ffe0a5;display:inline-flex;align-items:center;gap:8px;min-height:45px;padding:6px 0;text-decoration:underline;text-underline-offset:5px;font-weight:800}
+.vet-home-entry a:hover,.vet-home-entry a:focus-visible{color:#fff}
+@media(max-width:980px){.veterans-hero{grid-template-columns:1fr}.vet-feature{max-width:760px}.vet-closing{flex-direction:column;align-items:flex-start}}
+@media(max-width:700px){.veterans-main{padding:12px 18px 45px}.veterans-hero{gap:32px;padding:24px 0 45px}.veterans-hero h1{font-size:clamp(43px,10vw,60px)}.vet-stage{font-size:13px}.vet-cards,.vet-path-grid{grid-template-columns:1fr}.vet-section{padding:42px 0}.vet-card{padding:21px}.vet-resource-list>a{padding:18px}.vet-resource-list strong{font-size:16px}.vet-closing .cta{width:100%;text-align:center}.vet-footer{padding:24px 18px}}
+@media(prefers-reduced-motion:reduce){.veterans-scene *{scroll-behavior:auto!important}}
