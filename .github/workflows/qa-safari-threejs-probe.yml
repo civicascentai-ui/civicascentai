@@ -1,0 +1,29 @@
+name: Zero-cost Safari Three.js probe QA
+on:
+  push:
+    branches:
+      - 'experiment/zero-cost-threejs-safari-*'
+    paths:
+      - 'experiments/safari-threejs-atmosphere.js'
+      - 'experiments/test-threejs-safari.cjs'
+      - 'index.html'
+      - '.github/workflows/qa-safari-threejs-probe.yml'
+  pull_request:
+    paths:
+      - 'experiments/**'
+      - 'index.html'
+permissions:
+  contents: read
+jobs:
+  static-compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Keep original homepage unchanged and verify optional module
+        run: node experiments/test-threejs-safari.cjs
