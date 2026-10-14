@@ -107,5 +107,10 @@ h1 em{font-style:normal;color:var(--gold)}
   </section>
   <p class="footer-note">Explore · Learn · Create · Grow</p>
   </main>
+<script type="module">
+if (new URLSearchParams(window.location.search).get("codi3d") === "1") {
+  import("./experiments/safari-threejs-atmosphere.js");
+}
+</script>
 </body>
 </html>
