@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "pricing": "free_no_account_no_subscription_no_watermark",
   "checked_at": "2026-10-14",
-  "status": "candidate_not_installed",
+  "status": "linux_headless_gui_smoke_passed_full_qc_pending",
   "enabled": false,
   "automatic_dispatch_allowed": false,
   "paid_calls_allowed": false,
@@ -30,5 +30,21 @@
     "no unexpected network traffic",
     "independent QC evidence"
   ],
-  "notes": "Free status and license verified from upstream README/LICENSE. Beta software; listing does NOT imply installation or execution."
+  "notes": "Free status and license verified from upstream README/LICENSE. Beta software; listing does NOT imply installation or execution.",
+  "test_evidence": {
+    "version": "v0.2.7",
+    "github_run_id": 38572116137,
+    "github_run_url": "https://github.com/civicascentai-ui/civicascentai/actions/runs/38572116137",
+    "github_job_id": 115879732223,
+    "github_artifact_id": 11897903377,
+    "artifact_sha256": "6cd56cba2b3579f2c84415c8fd26e880428510a6635be7c2157eabff4d00a8fc",
+    "release_sha256_verified": "3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f",
+    "gui_smoke_exit_code": 0,
+    "version_command": "concat 0.2.7",
+    "completed_utc": "2026-10-14T13:28:55Z",
+    "scope": "Linux x86_64 AppImage read-only startup under Xvfb; no editing, captions, video export or Android test",
+    "warnings": "Headless runner lacks GPU/audio; first-run effect preview card files were missing, despite exit=0; test on real device before approval",
+    "independent_log_readback": true,
+    "friday_agent_qc": "not executed / pending"
+  }
 }
