@@ -1,0 +1,53 @@
+name: Concat real local API read-only smoke
+on:
+  push:
+    branches:
+      - operations/zero-cost-concat-review-20261014
+    paths:
+      - .github/workflows/concat-real-api-smoke.yml
+      - tools/concat_bridge/real_api_smoke.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  local-api-handshake:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Read-only checkout without persistence
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Guard the free hosted runner
+        run: |
+          test "$GITHUB_REPOSITORY" = "civicascentai-ui/civicascentai"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+      - name: Obtain actual upstream v0.2.7 AppImage and verify official digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 2 --max-time 180 \
+            https://github.com/jub0t/concat/releases/download/v0.2.7/Concat-0.2.7-x86_64.AppImage -o "$RUNNER_TEMP/concat-appimage"
+          echo "3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f  $RUNNER_TEMP/concat-appimage" | sha256sum -c
+          chmod +x "$RUNNER_TEMP/concat-appimage"
+          echo "CONCAT_APPIMAGE=$RUNNER_TEMP/concat-appimage" >> "$GITHUB_ENV"
+      - name: Prepare headless display only
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb xauth
+          fi
+      - name: Exercise real local Concat API (no edits or exports)
+        run: python3 tools/concat_bridge/real_api_smoke.py
+      - name: Preserve execution receipt for independent QC
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concat-real-api-readonly
+          path: concat-api-results/
+          retention-days: 2
+          if-no-files-found: warn
