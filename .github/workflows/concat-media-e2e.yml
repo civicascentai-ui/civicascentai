@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/concat-media-e2e.yml
       - tools/concat_bridge/media_e2e_smoke.py
+      - tools/concat_bridge/bridge.py
   workflow_dispatch:
 permissions:
   contents: read
