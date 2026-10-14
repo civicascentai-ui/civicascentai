@@ -1,0 +1,27 @@
+name: Blue Crew | Coursework Source Gate
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/curriculum/**'
+      - 'tests/test_curriculum_pack.py'
+      - '.github/workflows/blue-crew-curriculum-qc.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coursework-checks:
+    name: Level 1–3 and Veterans source audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout read-only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Deterministic curriculum source tests
+        run: python3 -m unittest discover -s tests -p 'test_curriculum_pack.py' -v
+      - name: Scope reminder
+        run: echo 'Code checks do not replace independent FRIDAY, human veteran review, or owner approval.'
