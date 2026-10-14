@@ -34,7 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q '^Ran 14 tests' concat-test-results/tests.log
+          grep -q '^Ran 18 tests' concat-test-results/tests.log
           grep -q '^OK$' concat-test-results/tests.log
           if grep -Eq '^(FAIL|ERROR)' concat-test-results/tests.log; then exit 1; fi
           printf 'PASS: local mock safety contracts only; no genuine Concat export or Android QC\n' > concat-test-results/gate.txt
