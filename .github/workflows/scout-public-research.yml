@@ -6,8 +6,6 @@ on:
       - '.github/workflows/scout-public-research.yml'
       - 'tools/scout/discovery*'
   workflow_dispatch:
-  schedule:
-    - cron: '17 15 * * 1-5'
 
 # No paid model APIs, no Replit, no production changes; public repository hosted standard runner.
 permissions:

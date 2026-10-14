@@ -6,8 +6,6 @@ on:
       - '.github/workflows/scout-qa5.yml'
       - 'tools/scout/**'
   workflow_dispatch:
-  schedule:
-    - cron: '17 12 * * *' # Daily UTC; scheduled GitHub Actions can be delayed
 
 # Public repository standard GitHub runners only. No cloud service, Replit or paid provider.
 permissions:

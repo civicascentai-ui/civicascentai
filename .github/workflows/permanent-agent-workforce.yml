@@ -7,8 +7,6 @@ on:
       - .github/workflows/permanent-agent-workforce.yml
       - agents/autonomous_worker.py
   workflow_dispatch:
-  schedule:
-    - cron: '29 12,22 * * *'
 
 permissions:
   contents: read
