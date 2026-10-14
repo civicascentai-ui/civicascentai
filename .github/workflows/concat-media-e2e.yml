@@ -1,0 +1,74 @@
+name: Concat synthetic video edit/export E2E
+on:
+  push:
+    branches:
+      - operations/zero-cost-concat-review-20261014
+    paths:
+      - .github/workflows/concat-media-e2e.yml
+      - tools/concat_bridge/media_e2e_smoke.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-synthetic-render:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout isolated source without credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Enforce $0 public GitHub standard runner
+        run: |
+          test "$GITHUB_REPOSITORY" = "civicascentai-ui/civicascentai"
+          test "$RUNNER_OS" = "Linux"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+      - name: Obtain pinned official Concat application
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 2 --max-time 180 \
+            https://github.com/jub0t/concat/releases/download/v0.2.7/Concat-0.2.7-x86_64.AppImage -o "$RUNNER_TEMP/concat-appimage"
+          echo "3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f  $RUNNER_TEMP/concat-appimage" | sha256sum -c
+          chmod +x "$RUNNER_TEMP/concat-appimage"
+          echo "CONCAT_APPIMAGE=$RUNNER_TEMP/concat-appimage" >> "$GITHUB_ENV"
+      - name: Prepare headless display and media inspection
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb xauth
+          fi
+          ffmpeg -version >/dev/null
+          ffprobe -version >/dev/null
+      - name: Run real synthetic Concat import, edit, export, and ffprobe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/concat_bridge/media_e2e_smoke.py
+      - name: Verify non-empty E2E receipt and synthetic output
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('concat-export-results/receipt.json')
+          report = json.loads(p.read_text())
+          assert report['result'] == 'passed'
+          assert report['actual_video_export'] is True
+          assert report['playable_mp4'] is True
+          assert report['output_duration_seconds'] >= 0.9
+          assert Path('concat-export-results/rendered-synthetic.mp4').stat().st_size > 1000
+          print('Independent receipt checks PASSED: synthetic only')
+          PY
+      - name: Preserve synthetic MP4 and receipt (not customer media)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concat-synthetic-media-e2e
+          path: concat-export-results/
+          retention-days: 2
+          if-no-files-found: warn
