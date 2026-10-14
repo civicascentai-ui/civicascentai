@@ -41,3 +41,7 @@ Back: Before consequential actions such as publishing or spending.
 ## Card 10
 Front: What happens after a failed quality check?
 Back: Record the defect, fix it, retest, and review.
+
+## Card 11
+Front: What does VET REP coordinate?
+Back: Veteran learner needs, accessibility, and outside human veteran feedback.
