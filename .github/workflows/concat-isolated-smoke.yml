@@ -1,0 +1,89 @@
+name: Concat free video editor isolated smoke
+on:
+  push:
+    branches:
+      - operations/zero-cost-concat-review-20261014
+    paths:
+      - .github/workflows/concat-isolated-smoke.yml
+permissions:
+  contents: read
+jobs:
+  concat-offline-app-smoke:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      APPIMAGE_EXTRACT_AND_RUN: '1'
+      PACKAGE: Concat-0.2.7-x86_64.AppImage
+      EXPECTED_SHA: 3f4a4afe9e42b3ad40241a978cca96a9710ac3545b6a44220a3c65a79bc5f16f
+    steps:
+      - name: Guard public repository and no sensitive access
+        run: |
+          test "$GITHUB_REPOSITORY" = 'civicascentai-ui/civicascentai'
+          test "$RUNNER_OS" = 'Linux'
+          test "${RUNNER_ENVIRONMENT}" = 'github-hosted'
+      - name: Download, verify and execute upstream binary in disposable runner
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p results
+          stage='not-started'
+          on_exit() {
+            rc=$?
+            export TEST_EXIT="$rc" TEST_STAGE="$stage"
+            python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          payload = {
+            "tool": "Concat (formerly WolfCut)",
+            "release": "v0.2.7",
+            "runtime": "GitHub Actions standard ubuntu-latest hosted runner",
+            "run_id": os.environ.get("GITHUB_RUN_ID"),
+            "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
+            "sha256_expected": os.environ.get("EXPECTED_SHA"),
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "stage": os.environ["TEST_STAGE"],
+            "exit_code": int(os.environ["TEST_EXIT"]),
+            "outcome": "passed" if int(os.environ["TEST_EXIT"]) == 0 else "failed",
+            "website_changed": False,
+            "paid_providers_used": False,
+            "limitations": [
+              "GUI initialization is not an exported-video or caption-quality test",
+              "Android device and direct MCP API integration not tested",
+              "No owner-facing content was published",
+            ],
+          }
+          with open("results/receipt.json", "w", encoding="utf-8") as f:
+              json.dump(payload, f, indent=2, sort_keys=True)
+          print(json.dumps(payload, sort_keys=True))
+          PY
+          }
+          trap on_exit EXIT
+          stage='download'
+          curl --fail --show-error --silent --location --retry 2 --max-time 180 \
+            'https://github.com/jub0t/concat/releases/download/v0.2.7/Concat-0.2.7-x86_64.AppImage' -o "$RUNNER_TEMP/$PACKAGE"
+          stage='checksum'
+          printf '%s  %s\n' "$EXPECTED_SHA" "$RUNNER_TEMP/$PACKAGE" | sha256sum -c | tee results/checksum.log
+          chmod +x "$RUNNER_TEMP/$PACKAGE"
+          stage='dependencies'
+          if ! command -v xvfb-run >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq xvfb xauth
+          fi
+          stage='version'
+          mkdir -p "$RUNNER_TEMP/concat-fresh-home"
+          HOME="$RUNNER_TEMP/concat-fresh-home" timeout --kill-after=5 90s "$RUNNER_TEMP/$PACKAGE" --version | tee results/version.log
+          grep -Eq '^concat 0\.2\.7$' results/version.log
+          stage='smoke'
+          xvfb-run -a -s '-screen 0 1280x800x24' \
+            env HOME="$RUNNER_TEMP/concat-fresh-home" LIBGL_ALWAYS_SOFTWARE=1 \
+            timeout --kill-after=5 180s "$RUNNER_TEMP/$PACKAGE" --smoke 2>&1 | tee results/smoke.log
+          stage='completed'
+      - name: Preserve tiny independent readback logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: concat-smoke-${{ github.run_id }}
+          path: results/
+          retention-days: 1
+          if-no-files-found: warn
