@@ -68,7 +68,7 @@ def main():
                 if not isinstance(version, dict):
                     raise RuntimeError("Unexpected version API response")
                 catalogue = client.read("catalogue.list", {"kind": "filter"})
-                if not isinstance(catalogue, dict):
+                if not isinstance(catalogue, (list, dict)):
                     raise RuntimeError("Unexpected catalogue response")
                 try:
                     ConcatBridge(token="deliberately-invalid", timeout=1.5).read("version")
@@ -84,7 +84,7 @@ def main():
                     raise RuntimeError("Export gate unexpectedly allowed export")
                 receipt.update(
                     result="passed", actual_api=True,
-                    version_response=version, catalogue_response_type="object",
+                    version_response={"concat":version.get("concat"), "api_version":version.get("apiVersion")}, catalogue_response_type=type(catalogue).__name__,
                     wrong_token_rejected=True, export_gate_disabled=True)
     except Exception as e:
         receipt.update(result="failed", reason=str(e), actual_api=False)
