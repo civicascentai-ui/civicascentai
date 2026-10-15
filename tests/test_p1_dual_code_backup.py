@@ -9,7 +9,15 @@ import unittest
 SCRIPT = pathlib.Path(__file__).resolve().parents[1] / 'tools' / 'p1_dual_code_backup.py'
 
 def run(*args):
-    return subprocess.run(args, capture_output=True, text=True, check=True).stdout.strip()
+    result = subprocess.run(args, capture_output=True, text=True)
+    if result.returncode:
+        # Synthetic fixtures only: expose diagnostics for intermittent Git fsck.
+        print("Synthetic subprocess failed:", " ".join(args), file=sys.stderr)
+        print("Synthetic STDERR:", result.stderr[-4000:], file=sys.stderr)
+        raise subprocess.CalledProcessError(result.returncode, args,
+                                            output=result.stdout,
+                                            stderr=result.stderr)
+    return result.stdout.strip()
 
 class RecoveryChainTests(unittest.TestCase):
     def test_workflow_shell_arguments_expand_and_default(self):
@@ -33,6 +41,12 @@ class RecoveryChainTests(unittest.TestCase):
                 env=env, capture_output=True, text=True, check=True,
             )
             self.assertEqual(checked.stdout.splitlines(), expected)
+
+    def test_legacy_sunday_smoke_checks_stable_standby_alias(self):
+        workflow = (SCRIPT.parents[1] / '.github/workflows/p1-disaster-recovery.yml').read_text()
+        self.assertIn('SHADOW_URL: https://civicascentai-launch-qa.vercel.app/', workflow)
+        self.assertNotIn('civicascentai-launch-9rj1lutsy-civicascentai.vercel.app', workflow)
+        self.assertIn("test \"$status\" = 200", workflow)
 
     def test_full_incremental_and_unchanged_restore_both_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -76,6 +90,32 @@ class RecoveryChainTests(unittest.TestCase):
             self.assertEqual(unchanged['status'], 'restored-and-verified-git-code-only')
             self.assertEqual([unchanged['environments'][n]['kind'] for n in ('production','shadow')],
                              ['unchanged', 'unchanged'])
+
+            # Independent anti-corruption cases: never extend an unverified chain.
+            manifest_file = root / 'backups' / '101' / 'manifest.json'
+            baseline = json.loads(manifest_file.read_text())
+            corrupted = dict(baseline)
+            corrupted['status'] = 'unverified'
+            manifest_file.write_text(json.dumps(corrupted))
+            with self.assertRaises(subprocess.CalledProcessError):
+                backup('103', 3, '101')
+            corrupted = dict(baseline)
+            corrupted['chain_runs'] = ['101']
+            manifest_file.write_text(json.dumps(corrupted))
+            with self.assertRaises(subprocess.CalledProcessError):
+                backup('104', 3, '101')
+            manifest_file.write_text(json.dumps(baseline))
+
+            # A verified parent must remain restorable after these rejected attempts.
+            try:
+                recovered = backup('105', 3, '101')
+            except subprocess.CalledProcessError as exc:
+                self.fail("Valid chain recovery unexpectedly failed: "
+                          + str(exc.returncode) + "\nSTDERR:\n" + (exc.stderr or "")
+                          + "\nSTDOUT:\n" + (exc.stdout or ""))
+            self.assertEqual(recovered['status'], 'restored-and-verified-git-code-only')
+            self.assertEqual(recovered['chain_runs'], ['100', '101', '105'])
+
 
 if __name__ == '__main__':
     unittest.main()
