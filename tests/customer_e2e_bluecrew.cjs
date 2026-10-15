@@ -7,7 +7,7 @@ if(!roles.includes(role))throw Error("Unrecognized role");
 const base="http://127.0.0.1:8767",results=[];
 async function test(name,fn){try{const extra=await fn()||{};results.push({name,status:"PASS",...extra});console.log("PASS",name);}
 catch(e){results.push({name,status:"FAIL",detail:String(e.message||e).slice(0,400)});console.log("FAIL",name,String(e.message||e).slice(0,220));}}
-async function pageAt(browser,path,width=390){const page=await browser.newPage({viewport:{width,height:850},reducedMotion:"reduce",acceptDownloads:false});await page.route("https://**/*",r=>r.abort());const response=await page.goto(base+path,{waitUntil:"domcontentloaded",timeout:20000});assert.equal(response?.status(),200,path);return page;}
+async function pageAt(browser,path,width=390){const page=await browser.newPage({viewport:{width,height:850},reducedMotion:"reduce",acceptDownloads:false});await page.route("https://**/*",r=>r.abort());const response=await page.goto(base+path,{waitUntil:"load",timeout:20000});assert.equal(response?.status(),200,path);return page;}
 async function run(browser){
 if(role==="friday"){
 await test("Homepage to Learn entry",async()=>{const p=await pageAt(browser,"/");assert.equal(await p.locator("main").count(),1);await p.locator('a[href="journey-learn.html"]').first().click();await p.waitForURL(/journey-learn\.html/);await p.close();});
