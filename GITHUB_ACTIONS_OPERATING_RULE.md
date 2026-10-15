@@ -38,3 +38,6 @@ After the Safari living-canvas prototype is visually approved, GitHub Actions ma
 Automate enforcement without creating workflow noise.
 
 Start small. Add checks only when they provide clear protection against defects or regressions.
+
+## P1 Backup and Recovery Law (owner-approved 2026-10-15)
+Daily Mon–Sat **incremental** backups of both production and Shadow House; each Sunday **full** backups of both. Backups must be environment-separated, checksummed, protected, recoverable and independently restore-tested. The existing code-bundle and HTTP smoke workflow does not meet full-scope recovery requirements. The $0 spend/release HOLD remain binding. Implement per [P1 backup law](docs/operations/P1_BACKUP_RECOVERY_LAW_2026-10-15.md) and track proof on [issue #22](https://github.com/civicascentai-ui/civicascentai/issues/22).
