@@ -1,0 +1,77 @@
+name: GG independent site audit
+on:
+  workflow_dispatch:
+    inputs:
+      run_gemini:
+        description: 'Call Gemini API for independent review (may consume API quota)'
+        type: boolean
+        required: true
+        default: false
+  schedule:
+    - cron: '23 9 * * 1'
+permissions:
+  contents: read
+concurrency:
+  group: gg-site-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Read-only site checks and evidence
+        env:
+          RUN_GEMINI: ${{ inputs.run_gemini || 'false' }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p gg-audit
+          cat > /tmp/gg_audit.py <<'PY'
+          import json, os, urllib.request, urllib.error, datetime
+          from pathlib import Path
+          base="https://civicascentai.com/"
+          paths=["","journey-learn.html","journey-try.html","journey-help.html","journey-continue.html","free-ai-starter.html","register.html"]
+          results=[]
+          for p in paths:
+              try:
+                  req=urllib.request.Request(base+p,headers={"User-Agent":"CivicAscent-GG-Audit/1.0"})
+                  with urllib.request.urlopen(req,timeout=18) as resp:
+                      body=resp.read(250000).decode("utf-8","replace")
+                      results.append({"path":"/"+p,"status":resp.status,"final_url":resp.url,"html":("<html" in body.lower()),"title_present":"<title" in body.lower(),"pass":resp.status==200 and "<html" in body.lower()})
+              except Exception as e:
+                  results.append({"path":"/"+p,"pass":False,"error":str(e)[:200]})
+          receipt={"utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"mode":"read_only","site":base,"checks":results,"all_pass":all(r["pass"] for r in results),"limitations":["HTTP checks only; no accessibility certification, browser interaction, payment testing or recovery drill"]}
+          Path("gg-audit/http-audit.json").write_text(json.dumps(receipt,indent=2))
+          report="# GG site audit evidence\n\n"+ "\n".join(f"- {r['path']}: {'PASS' if r['pass'] else 'FAIL'}; HTTP {r.get('status','ERROR')}" for r in results)+"\n\nHTTP-only checks; full site QC is not certified.\n"
+          Path("gg-audit/report.md").write_text(report)
+          if os.getenv("RUN_GEMINI","false").lower()=="true":
+              key=os.getenv("GEMINI_API_KEY","")
+              if not key:
+                  Path("gg-audit/gemini-status.txt").write_text("BLOCKED: GEMINI_API_KEY secret not configured")
+                  raise SystemExit("Gemini requested but secret missing")
+              prompt="Independently audit these READ-ONLY HTTP QC results for a nonprofit AI education site. Identify failures, accessibility testing gaps, priority risks and next tests. Never claim browser, WCAG, payments or disaster recovery were tested. Respond concisely.\n"+json.dumps(receipt)
+              url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+              data=json.dumps({"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"maxOutputTokens":1800}}).encode()
+              req=urllib.request.Request(url,data=data,headers={"x-goog-api-key":key,"Content-Type":"application/json"},method="POST")
+              try:
+                  with urllib.request.urlopen(req,timeout=75) as resp: answer=json.load(resp)
+                  text="\n".join(p.get("text","") for c in answer.get("candidates",[]) for p in c.get("content",{}).get("parts",[]))
+                  Path("gg-audit/gemini-review.md").write_text(text or "No text returned; review incomplete")
+              except Exception as e:
+                  Path("gg-audit/gemini-status.txt").write_text("Gemini API call failed: "+str(e)[:250])
+                  raise
+          PY
+          python3 /tmp/gg_audit.py
+      - name: Upload audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-site-audit-${{ github.run_id }}
+          path: gg-audit/
+          retention-days: 14
+      - name: Fail on HTTP defects
+        run: |
+          python3 - <<'PY'
+          import json
+          r=json.load(open('gg-audit/http-audit.json'))
+          assert r['all_pass'], 'Site HTTP checks failed; inspect GG audit artifact'
+          PY
