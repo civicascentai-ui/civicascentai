@@ -30,6 +30,11 @@ try:
       assert resp.status==200,(width,"page HTTP")
       assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1,(width,"heading")
       assert page.get_by_role("heading",name="What would you like to do?").count()==1,(width,"choice heading")
+      assert page.locator(".reader-toolbar").is_visible(),(width,"sticky reading toolbar")
+      assert page.locator(".reader-toolbar [data-reader-action=increase]").count()==1
+      assert page.locator(".reader-toolbar [data-reader-action=decrease]").count()==1
+      assert page.locator(".reader-toolbar").evaluate("(e)=>getComputedStyle(e).position")=="sticky"
+
       assert page.get_by_role("link",name="Start learning").get_attribute("href")=="journey-learn.html"
       assert page.get_by_role("link",name="Open practice space").get_attribute("href")=="practice-sandbox.html"
       assert page.get_by_role("link",name="Find help").get_attribute("href")=="journey-help.html"
@@ -57,6 +62,9 @@ try:
         page.get_by_role("button",name="Make text larger").click()
       assert page.locator("body").evaluate("el=>parseFloat(getComputedStyle(el).fontSize)")>=30,(width,"150 percent font")
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"150 percent reflow")
+      saved=page.evaluate("JSON.parse(localStorage.getItem('civicascent-reader-preferences-v1'))")
+      assert saved.get("scale")==150,(width,"text size must persist across prototype pages",saved)
+
       for i in range(4):
         nav_box=nav_links.nth(i).bounding_box()
         assert nav_box and nav_box["x"]>=-2 and nav_box["x"]+nav_box["width"]<=width+2, (width,"nav link clipped at 150%",i,nav_box)
@@ -80,6 +88,12 @@ try:
       assert resp.status==200,(width,"sandbox HTTP")
       assert page.get_by_role("heading",name="Student Practice Sandbox.").count()==1
       assert page.locator(".practice-panel:not([hidden])").count()==1
+      assert page.evaluate("window.CivicReader.scale")==150,(width,"practice must inherit reading scale")
+      assert page.locator("body").evaluate("(e)=>parseFloat(getComputedStyle(e).fontSize)")>=30,(width,"practice text size")
+      assert page.locator(".reader-toolbar").is_visible(),(width,"practice sticky tools")
+      assert page.locator("header nav.top-links a").count()==4,(width,"practice functional nav")
+      assert page.locator("body.show-scene").count()==0,(width,"scene off by default unless user opts in")
+
       page.get_by_role("button",name="Load a fictional example").click()
       page.get_by_role("button",name="Build my practice prompt").click()
       assert page.locator("#prompt-output").inner_text().find("My goal")>=0,(width,"prompt built")
@@ -97,6 +111,21 @@ try:
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"sandbox overflow")
       assert not errors,(width,errors)
       page.screenshot(path=str(ART/f"practice-sandbox-{width}.png"),full_page=True)
+      for route, heading in [
+        ("veteran-career-skills.html","Veteran Career Skills"),
+        ("assistive-tools-guide.html","Assistive Learning Tools")]:
+        detail=page.goto(f"http://127.0.0.1:{PORT}/{route}",wait_until="networkidle",timeout=30000)
+        assert detail.status==200,(width,route,"HTTP")
+        assert page.get_by_role("heading",name=heading).count()==1,(width,route,"heading")
+        assert page.locator("header nav.top-links a").count()==4,(width,route,"direct navigation")
+        assert page.locator(".reader-toolbar").is_visible(),(width,route,"shared text controls")
+        assert page.evaluate("window.CivicReader.scale")==150,(width,route,"reading scale persistence")
+        assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+2"),(width,route,"overflow")
+        if route=="assistive-tools-guide.html":
+          page.locator("#header-text-minus").click()
+          assert page.evaluate("window.CivicReader.scale")==137.5,(width,"guide text controls work")
+        page.screenshot(path=str(ART/f"{route.removesuffix('.html')}-{width}.png"),full_page=True)
+
       out.append({"width":width,"clear_start":"PASS","sandbox":"PASS","accessibility_claim":"UNTESTED - manual screen-reader and WCAG audit still needed"})
       page.close()
     browser.close()
