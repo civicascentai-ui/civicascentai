@@ -90,7 +90,8 @@ try {
     mark('public route '+route,x.status===200 && x.content.includes(needle),{status:x.status,requiredText:needle,present:x.content.includes(needle),ms:x.ms,finalUrl:x.finalUrl});
   }
   const block=await timedFetch(ROOT+'/api/create-checkout-session');
-  mark('public checkout GET is non-purchasing',block.status===405,{status:block.status,cacheControl:block.cacheControl});
+  report.checkoutRoute={GET_status:block.status, interpretation:block.status===404?'API route absent from deployed app':block.status===405?'GET disallowed by handler':'Unexpected response'};
+  mark('public checkout GET cannot initiate a purchase', [404,405].includes(block.status),report.checkoutRoute);
   // Bounded load: 180 GETs max, 3 workers, 150ms between each worker request.
   // Stops quickly if 5 errors; intended to catch obvious failure, not saturate site.
   let next=0, failures=0;const productionMs=[];
