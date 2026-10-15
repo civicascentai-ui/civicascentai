@@ -24,14 +24,15 @@ try:
             page.on("pageerror",lambda err:errs.append(str(err)))
             response=page.goto(f"http://127.0.0.1:{PORT}/index.html",wait_until="networkidle",timeout=30000)
             assert response.status==200,(width,"home response",response.status)
-            assert page.locator("h1").inner_text().find("Compassionate")>=0,(width,"wrong homepage")
-            assert page.locator("nav.portals a").count()==4,(width,"missing room portals")
-            image=page.evaluate("getComputedStyle(document.querySelector('.scene'),'::before').backgroundImage")
+            assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1,(width,"accessible homepage heading")
+            assert page.locator("nav.learning-rooms a.learning-room").count()==4,(width,"missing room portals")
+            page.locator("#scenery-toggle").click()
+            image=page.evaluate("getComputedStyle(document.querySelector('.intro')).backgroundImage")
             assert "scene-01-lodge-panorama.jpg" in image,(width,"missing panorama")
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"horizontal overflow")
             # Click every portal and return to site home: actual navigation test, not mere href check
             for title in ["Learn","Try","Get Help","Continue"]:
-                page.locator("nav.portals a").filter(has=page.get_by_role("heading",name=title,exact=True)).click()
+                page.locator("nav.learning-rooms a.learning-room").filter(has=page.locator(".room-title",has_text=title)).click()
                 assert "/journey-" in page.url,(width,title,"bad destination",page.url)
                 assert page.locator(".option-link").count()==4,(width,title,"missing destination choices")
                 assert page.get_by_role("link",name="Back to Safari").count()==1,(width,title,"back missing")
@@ -40,11 +41,12 @@ try:
             assert not errs,(width,errs)
             page.screenshot(path=str(out/f"homepage-{width}.png"),full_page=True)
             if width<=390:
-                page.locator("details.mobile-nav summary").click()
-                assert page.get_by_role("link",name="Free Workshop").count()>=1
-                page.locator("details.mobile-nav summary").click()
+                assert page.locator("header nav.top-links a").count()==4,(width,"visible direct nav")
+                for link in page.locator("header nav.top-links a").all():
+                    bb=link.bounding_box()
+                    assert bb and bb["x"]>=-2 and bb["x"]+bb["width"]<=width+2,(width,"nav clipped",bb)
             # Preserve four Safari portals while testing the new dedicated Veterans entrance.
-            page.locator(".vet-home-entry a").click()
+            page.locator("header nav.top-links a[href=\"veterans.html\"]").click()
             assert page.url.endswith("/veterans.html"), (width,"veterans entrance broken",page.url)
             assert page.get_by_role("heading",name="New skills. New possibilities.").count()==1,(width,"veterans heading absent")
             assert page.locator(".vet-resource-list a").count()==3,(width,"veterans resource links")
