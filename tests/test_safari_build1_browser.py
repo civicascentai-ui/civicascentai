@@ -36,8 +36,7 @@ try:
                 assert page.locator(".option-link").count()==4,(width,title,"missing destination choices")
                 assert page.get_by_role("link",name="Back to Safari").count()==1,(width,title,"back missing")
                 page.get_by_role("link",name="Back to Safari").click()
-                assert page.url.endswith("/index.html"),(width,title,"back broken")
-                page.goto(f"http://127.0.0.1:{PORT}/safari-home.html",wait_until="networkidle")
+                assert page.url.endswith("/safari-home.html"),(width,title,"back should return to Safari porch")
             assert not errs,(width,errs)
             page.screenshot(path=str(out/f"homepage-{width}.png"),full_page=True)
             if width<=390:
@@ -55,7 +54,7 @@ try:
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"veterans horizontal overflow")
             page.screenshot(path=str(out/f"veterans-{width}.png"),full_page=True)
             page.locator(".vet-back a").click()
-            assert page.url.endswith("/index.html"),(width,"veterans return path failed")
+            assert page.url.endswith("/safari-home.html"),(width,"veterans return path failed")
             results.append({"viewport":width,"status":"PASS","click_throughs":5,"veterans":"PASS","errors":[]})
             page.close()
         browser.close()
