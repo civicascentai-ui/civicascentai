@@ -18,6 +18,13 @@ Two connected Supabase projects were observed ACTIVE_HEALTHY:
 
 **Neither project is verified as the database backing the public website or the standby.** Whether any further database, object storage, external service, cloud drive, uploads or external webhook state belongs to production/shadow is OPEN. An empty/unmapped environment is not proof of no stored data.
 
+**Additional read-only storage and serverless function census:**
+- RAG test project: **0 Supabase Storage buckets** and **6 active Edge Functions**.
+- Commerce QA staging: **1 nonpublic Supabase Storage bucket** and **6 active Edge Functions**, including delivery/upload-related handlers.
+- No Supabase records, uploads, object contents, or secret values were copied. Edge Function source, JWT/signature verification configuration, private bucket objects, deployment versions and restoration dependencies are **not** included in the Git code bundles and have **not** been recovered independently.
+- These project roles are not yet tied to production/shadow. The private Commerce QA bucket is a concrete unresolved backup dependency if that project is in recovery scope.
+
+
 Never copy table contents, private learner records, keys, secrets or database dumps into public GitHub, GitHub Actions artifact archives or the public site.
 
 ## Completed vs blocked acceptance gates
@@ -27,7 +34,7 @@ Never copy table contents, private learner records, keys, secrets or database du
 - [x] Draft integrity guard rejects unverified or malformed previous recovery chains; isolated synthetic full/incremental/no-change and tamper test PASS at [isolated test 38765376878](https://github.com/civicascentai-ui/civicascentai/actions/runs/38765376878). **Guard is NOT merged on main.**
 - [ ] Observe first scheduled Mon–Sat incremental run after full bootstrap, download entire chain and independently restore both source SHAs.
 - [ ] Observe Sunday separate full for production and shadow; verify retention across at least four Sundays.
-- [ ] Confirm live/standby database, uploads, secrets/configuration and deployment dependency map with least-privilege **metadata**, without disclosing secret values.
+- [ ] Confirm live/standby database, uploads, Edge Functions, secrets/configuration and deployment dependency map with least-privilege **metadata**, without disclosing secret values.
 - [ ] Establish independently protected $0 storage and documented encryption/key custody/restore procedure for any sensitive data; do not create an unprotected backup.
 - [ ] Execute independently witnessed *full application and data* isolated restore for production and shadow, with measured RPO/RTO.
 - [ ] Execute a non-destructive crossover **and** rollback rehearsal; verify routing, app behavior and data consistency. Do not move production traffic without explicit separate approval.
