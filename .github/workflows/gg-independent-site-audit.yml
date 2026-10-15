@@ -49,7 +49,20 @@ jobs:
                   Path("gg-audit/gemini-status.txt").write_text("BLOCKED: GEMINI_API_KEY secret not configured")
                   raise SystemExit("Gemini requested but secret missing")
               prompt="Independently audit these READ-ONLY HTTP QC results for a nonprofit AI education site. Identify failures, accessibility testing gaps, priority risks and next tests. Never claim browser, WCAG, payments or disaster recovery were tested. Respond concisely.\n"+json.dumps(receipt)
-              url="https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+              # Discover models allowed for this key instead of assuming a fixed model.
+              models_req=urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models",headers={"x-goog-api-key":key})
+              try:
+                  with urllib.request.urlopen(models_req,timeout=25) as resp: models=json.load(resp).get("models",[])
+              except urllib.error.HTTPError as e:
+                  Path("gg-audit/gemini-status.txt").write_text(f"Model discovery failed: HTTP {e.code}; no generation request sent")
+                  raise SystemExit(1)
+              eligible=[m["name"] for m in models if "generateContent" in m.get("supportedGenerationMethods",[]) and "flash" in m.get("name","").lower()]
+              if not eligible:
+                  Path("gg-audit/gemini-status.txt").write_text("No accessible Flash generateContent model; no generation request sent")
+                  raise SystemExit(1)
+              preferred=next((n for n in eligible if n.endswith("/gemini-2.5-flash")),eligible[0])
+              Path("gg-audit/gemini-model.txt").write_text(preferred)
+              url="https://generativelanguage.googleapis.com/v1beta/"+preferred+":generateContent"
               data=json.dumps({"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"maxOutputTokens":1800}}).encode()
               req=urllib.request.Request(url,data=data,headers={"x-goog-api-key":key,"Content-Type":"application/json"},method="POST")
               try:
