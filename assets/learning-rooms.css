@@ -68,3 +68,29 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:4px solid var
 @media(max-width:1090px){.site-nav{display:none}.mobile-nav{display:block}}
 @media(max-width:720px){.room-main,.learning-hub-main{padding:30px 17px 45px}.options,.learning-room-grid{grid-template-columns:1fr}.page-header{padding:12px 16px}.room-panel{padding:23px}.learning-door{padding:22px}.room-panel h1{font-size:2.35rem}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Course grid repair: legacy grid tracks inherited auto minimum sizes.
+   Keep all course content visible rather than clipping the viewport. */
+.site-interior .hero-grid,
+.site-interior .listen-shell,
+.site-interior .grid,
+.site-interior .tiergrid,
+.site-interior .outcome-grid,
+.site-interior .includes{min-width:0;max-width:100%}
+.site-interior .hero-grid>*,
+.site-interior .listen-shell>*,
+.site-interior .grid>*,
+.site-interior .tiergrid>*,
+.site-interior .outcome-grid>*,
+.site-interior .includes>*{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.site-interior .course-hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+.site-interior .course-hero-actions .button{max-width:100%;white-space:normal}
+@media(max-width:800px){
+ .site-interior .hero-grid,
+ .site-interior .listen-shell,
+ .site-interior .grid,
+ .site-interior .tiergrid,
+ .site-interior .outcome-grid,
+ .site-interior .includes{grid-template-columns:minmax(0,1fr)!important}
+ .site-interior .product-card{max-width:100%;min-width:0}
+}
