@@ -1,38 +1,11 @@
-/* Clear Start accessibility controls. Entirely client-side.
- * No API calls, cookies, localStorage, analytics, AI service or payments. */
+/* Optional introduction Read Aloud. No automated voice, no data uploads.
+ * Reading controls use assets/learner-preferences.js across prototype pages. */
 (() => {
   "use strict";
   const id = name => document.getElementById(name);
-  const page = document.body;
   const status = id("settings-status");
   const read = id("read-aloud");
   const stop = id("stop-reading");
-  const theme = id("theme-toggle");
-  const scenery = id("scenery-toggle");
-  let scale = 100;
-  const updateScale = () => {
-    document.documentElement.style.fontSize = scale + "%";
-    document.documentElement.style.setProperty("--font-base", (scale/5) + "px");
-    status.textContent = "Text size: " + (scale === 100 ? "standard large" : scale + "%") + ".";
-    id("text-minus").disabled = scale <= 100;
-    id("text-plus").disabled = scale >= 150;
-  };
-  id("text-minus").addEventListener("click", () => {scale=Math.max(100,scale-12.5);updateScale()});
-  id("text-plus").addEventListener("click", () => {scale=Math.min(150,scale+12.5);updateScale()});
-  updateScale();
-  theme.addEventListener("click", () => {
-    const dark = page.dataset.theme !== "dark";
-    page.dataset.theme = dark ? "dark" : "light";
-    theme.setAttribute("aria-pressed", dark ? "true" : "false");
-    theme.textContent = dark ? "Light background" : "Dark background";
-    status.textContent = dark ? "Dark, high-contrast appearance selected." : "Light, high-contrast appearance selected.";
-  });
-  scenery.addEventListener("click", () => {
-    const visible = page.classList.toggle("show-scene");
-    scenery.setAttribute("aria-pressed", visible ? "true" : "false");
-    scenery.textContent = visible ? "Hide Safari picture" : "Show Safari picture";
-    status.textContent = visible ? "Safari background image shown. Text remains readable." : "Safari picture hidden for a simpler view.";
-  });
   const canRead = typeof window.SpeechSynthesisUtterance !== "undefined" &&
     "speechSynthesis" in window && typeof window.speechSynthesis.speak === "function";
   if (!canRead) {
