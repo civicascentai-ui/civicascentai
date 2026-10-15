@@ -43,6 +43,10 @@ def restore_chain(chain, root, current_dir):
                 manifest = load_manifest(bundle_root / 'manifest.json')
                 if str(manifest['run_id']) != str(run_id):
                     raise ValueError(f'Manifest/run mismatch: {run_id}')
+                if run_id != chain[-1] and manifest.get('status') != 'restored-and-verified-git-code-only':
+                    raise ValueError(f'Previous backup was not restore-verified: {run_id}')
+                if manifest.get('chain_runs') != chain[:chain.index(run_id) + 1]:
+                    raise ValueError(f'Broken backup chain continuity at run {run_id}')
                 entry = manifest['environments'][name]
                 if entry['kind'] != 'unchanged':
                     archive = bundle_root / entry['bundle']
