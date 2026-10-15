@@ -1,0 +1,52 @@
+name: Clear Start Accessibility Prototype Browser QA
+on:
+  push:
+    branches:
+      - design/clear-start-accessible-20261014
+    paths:
+      - "clear-start.html"
+      - "practice-sandbox.html"
+      - "assets/clear-start.css"
+      - "assets/clear-start.js"
+      - "assets/practice-lab.css"
+      - "assets/practice-lab.js"
+      - "tests/test_clear_start_browser.py"
+      - ".github/workflows/clear-start-browser-qa.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "clear-start.html"
+      - "practice-sandbox.html"
+      - "assets/clear-start.css"
+      - "assets/clear-start.js"
+      - "assets/practice-lab.css"
+      - "assets/practice-lab.js"
+      - "tests/test_clear_start_browser.py"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  clarity-first-browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Test navigation, large text, high contrast and practice (no network payments)
+        run: python tests/test_clear_start_browser.py
+      - name: Keep screenshots and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clear-start-prototype-qa
+          path: artifacts/clear-start/
+          retention-days: 7
+          if-no-files-found: warn
