@@ -1,0 +1,56 @@
+name: Production Read-Only Smoke and Bounded Stress
+on:
+  push:
+    branches:
+      - qa/prod-safestress-20261015
+    paths:
+      - tests/prod_safe_load.mjs
+      - tests/prod_safe_browser.py
+      - .github/workflows/prod-safe-stress-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-readonly-stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact isolated QA candidate
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Bounded production GET load and 2400 local requests plus 20000 offline checkout simulations
+        run: node tests/prod_safe_load.mjs
+      - name: Upload stress results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-bounded-stress-results
+          path: artifacts/production-safe-load/results.json
+          retention-days: 14
+          if-no-files-found: warn
+  production-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout isolated QA candidate
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install headless Chromium
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Check public keyboard navigation and sandbox interactions
+        run: python tests/prod_safe_browser.py
+      - name: Save actual browser screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-readonly-browser-screenshots
+          path: artifacts/production-safe-load/
+          retention-days: 14
+          if-no-files-found: warn
