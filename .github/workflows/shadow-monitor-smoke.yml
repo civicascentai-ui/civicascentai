@@ -17,11 +17,24 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Run one read-only checkpoint without extending expired monitoring window
+      - name: Verify release hold and run repaired monitor
         env:
           CUT_OFF_UTC: '2026-10-15T02:37:00Z'
           INTERVAL_SECONDS: '1'
-        run: python3 -u tools/qa/shadow_live_watch.py
+        run: |
+          python3 -u tools/qa/shadow_live_watch.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path('shadow-live-receipts/summary.json').read_text())
+          assert receipt['total_checkpoints'] >= 1, receipt
+          assert receipt['failed_checkpoints'] == 0, receipt
+          assert receipt['fully_passed'] is True, receipt
+          registry = json.loads(Path('agents/tool_registry/wolfcut-concat.json').read_text())
+          for key in ('enabled','automatic_dispatch_allowed','paid_calls_allowed','production_access','social_publishing_allowed','website_work_allowed'):
+              assert registry[key] is False, key
+          print('REPAIRED SHADOW MONITOR PASS: checkpoint evidence and release hold verified')
+          PY
       - name: Upload read-only evidence
         if: always()
         uses: actions/upload-artifact@v4
