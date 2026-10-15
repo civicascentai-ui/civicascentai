@@ -1,0 +1,36 @@
+name: Redesign interior independent functional QC
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tests/test_redesign_interior_functional.py"
+      - ".github/workflows/redesign-interior-functional-qa.yml"
+      - "course.html"
+      - "programs.html"
+      - "free-ai-starter.html"
+      - "assets/sitewide-reference.css"
+permissions:
+  contents: read
+jobs:
+  interior-functional:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Execute functional redesign QC
+        run: python tests/test_redesign_interior_functional.py
+      - name: Preserve screenshots and exact failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: redesign-interior-functional-evidence
+          path: artifacts/redesign-interior-functional/
+          retention-days: 7
+          if-no-files-found: warn
