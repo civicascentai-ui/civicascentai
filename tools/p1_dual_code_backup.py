@@ -18,8 +18,11 @@ SOURCE_REFS = {
 }
 
 def git(*args, cwd=None):
-    p = subprocess.run(['git', *args], cwd=cwd, check=True, text=True,
+    p = subprocess.run(['git', *args], cwd=cwd, check=False, text=True,
                        capture_output=True)
+    if p.returncode:
+        raise RuntimeError(f'Git {args[0]} failed (exit {p.returncode}): '
+                           + p.stderr[-2500:])
     return p.stdout.strip()
 
 def sha256(path):
