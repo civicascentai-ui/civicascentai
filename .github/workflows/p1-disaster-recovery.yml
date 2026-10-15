@@ -1,0 +1,67 @@
+name: P1 nightly recovery snapshot and weekly crossover rehearsal
+on:
+  schedule:
+    - cron: '17 7 * * *'
+    - cron: '47 7 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: p1-recovery-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  nightly-code-recovery:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 7 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Capture restoreable repository history and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p recovery
+          git fetch --no-tags origin main production/shadow-concat-20261014
+          git bundle create recovery/civicascentai-repository.bundle --branches
+          git bundle verify recovery/civicascentai-repository.bundle
+          git rev-parse origin/main > recovery/main.sha
+          git rev-parse origin/production/shadow-concat-20261014 > recovery/shadow.sha
+          sha256sum recovery/civicascentai-repository.bundle > recovery/SHA256SUMS
+          date -u +%Y-%m-%dT%H:%M:%SZ > recovery/captured-at-utc.txt
+          echo 'Code and Git history only. This does NOT back up databases, Vercel environment variables, secrets, or external services.' > recovery/SCOPE.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p1-code-recovery-${{ github.run_id }}
+          path: recovery/
+          retention-days: 30
+          if-no-files-found: error
+  weekly-crossover-rehearsal:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '47 7 * * 0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Read-only public production smoke and isolated shadow checks
+        shell: bash
+        env:
+          PRODUCTION_URL: https://civicascentai.com/
+          SHADOW_URL: https://civicascentai-launch-9rj1lutsy-civicascentai.vercel.app/
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          for name in production shadow; do
+            if [ "$name" = production ]; then url="$PRODUCTION_URL"; else url="$SHADOW_URL"; fi
+            status=$(curl --location --silent --show-error --output "evidence/${name}.html" --write-out '%{http_code}' --max-time 25 "$url")
+            printf '%s HTTP %s\n' "$name" "$status" | tee "evidence/${name}.status"
+            test "$status" = 200
+          done
+          echo 'Read-only production-environment rehearsal. NO traffic switch, payment transaction, or production deployment occurred.' > evidence/SCOPE.txt
+      - name: Preserve pass/fail receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-crossover-evidence-${{ github.run_id }}
+          path: evidence/
+          retention-days: 30
