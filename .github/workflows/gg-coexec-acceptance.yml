@@ -9,6 +9,9 @@ on:
       - TEAM_OPERATING_ORDER.md
       - agents/autonomous_worker.py
       - agents/blue_crew_shifts.py
+      - tests/test_home_wcag.py
+      - tests/test_p1_dual_code_backup.py
+      - tools/p1_dual_code_backup.py
   workflow_dispatch:
 
 permissions:
