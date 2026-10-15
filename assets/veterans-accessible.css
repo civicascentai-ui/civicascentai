@@ -1,0 +1,43 @@
+/* CivicAscent veterans content within the new plain-language accessible design. */
+.veterans-scene{background:#fbfaf7;color:#10233c}
+.veterans-main{width:min(1250px,100%);margin:0 auto;padding:35px clamp(18px,5vw,62px) 70px}
+.veterans-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);align-items:start;gap:32px;padding:30px 0 70px}
+.veterans-hero h1{font-size:clamp(2.6rem,5vw,4.4rem);font-weight:850;line-height:1.1;letter-spacing:-.025em;margin:0 0 18px}
+.veterans-hero h1 em{font-style:normal;color:#095571}
+.vet-intro{font-size:1.17rem;line-height:1.7;max-width:62ch}
+.vet-stage{display:inline-flex;align-items:center;gap:10px;background:#f2f5f8;border-left:5px solid #095571;padding:14px;border-radius:8px;font-size:.9rem;font-weight:800}
+.vet-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#095571}
+.vet-actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;text-decoration:none;border-radius:9px;padding:12px 20px;font-weight:850}
+.cta.primary{background:#095571;color:#fff}
+.cta.outline{background:#fff;color:#10233c;border:2px solid #095571}
+.vet-privacy{font-size:.91rem;max-width:63ch}
+.vet-feature{background:#edf3f7;border:1.5px solid #667e90;border-radius:16px;padding:clamp(22px,3vw,36px);color:#10233c}
+.vet-feature-icon{font-size:2rem;color:#095571}
+.vet-feature-label{font-size:.75rem;font-weight:800;letter-spacing:.05em;color:#095571}
+.vet-feature h2{font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.25;margin:10px 0}
+.vet-feature ol{padding-left:24px;line-height:1.75}
+.vet-feature-note{border-top:1px solid #9cb0bd;padding-top:13px;font-size:.86rem}
+.vet-section{padding:40px 0;border-top:1px solid #9aafbd}
+.vet-section h2,.vet-closing h2{font-size:clamp(1.7rem,3.5vw,2.6rem);line-height:1.2;margin:7px 0 12px}
+.vet-cards,.vet-path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.vet-card,.vet-path-item{background:#fff;border:2px solid #647887;border-radius:12px;padding:23px;min-width:0}
+.vet-card-number,.vet-path-item b{color:#095571;font-weight:850;font-size:.83rem}
+.vet-card h3,.vet-path-item h3{font-size:1.25rem;margin:10px 0}
+.vet-card p,.vet-path-item p{font-size:1rem}
+.vet-path-item{border-left:7px solid #095571}
+.vet-path-item a{min-height:48px;display:inline-flex;align-items:center;color:#095571;font-weight:830}
+.vet-path-item span{color:#3d5260}
+.vet-resource-list{display:grid;gap:12px}
+.vet-resource-list>a{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#fff;border:2px solid #647887;border-radius:11px;padding:19px;min-height:76px;text-decoration:none}
+.vet-resource-list strong{display:block;font-size:1.1rem}
+.vet-resource-list small{display:block;font-size:.9rem;color:#3c5060;margin-top:3px}
+.vet-resource-list>a:hover{border-color:#095571;background:#edf3f7}
+.vet-closing{display:flex;justify-content:space-between;align-items:center;gap:24px;background:#edf3f7;border:2px solid #647887;border-radius:15px;padding:28px}
+.vet-closing>div{max-width:800px}
+.vet-back a{color:#095571;font-weight:850;min-height:48px;display:inline-flex;align-items:center}
+.vet-footer{background:#edf3f7;border-top:2px solid #647887;color:#10233c;padding:23px max(18px,calc((100vw - 1180px)/2));font-size:.75rem}
+.vet-footer p{margin:5px 0}.vet-footer a{color:#095571}
+@media(max-width:1050px){.veterans-hero{grid-template-columns:1fr}.vet-feature{max-width:780px}.vet-closing{flex-direction:column;align-items:flex-start}}
+@media(max-width:700px){.veterans-main{padding:24px 17px 50px}.veterans-hero{padding:18px 0 43px}.vet-cards,.vet-path-grid{grid-template-columns:1fr}.vet-closing .cta{width:100%}}
+@media(prefers-reduced-motion:reduce){.veterans-scene *{scroll-behavior:auto!important}}
