@@ -1,0 +1,89 @@
+name: "P1 production and shadow code: daily incremental, Sunday full"
+on:
+  schedule:
+    - cron: '17 8 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/p1-dual-code-backups.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'auto = Sunday full, otherwise incremental; full = safe manual full'
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - full
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p1-dual-code-backups
+  cancel-in-progress: false
+jobs:
+  backup-and-isolated-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch current production source and verify pinned deployed standby
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin \
+            'refs/heads/main:refs/remotes/origin/main'
+          # Shadow source pinned to the verified Vercel standby deployment Git SHA.
+          # Do not silently substitute the older shadow-concat source branch.
+          git cat-file -e '63e18246756ac615dfa9e7d10248aed0ea4031d6^{commit}'
+      - name: Independent local restore regression tests
+        run: python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+      - name: Locate last verified run and fetch its complete backup chain
+        id: history
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          mkdir -p history
+          # Sunday full and manual full must be independently recoverable, without a prior chain.
+          if [ "$(TZ=America/Chicago date +%u)" = 7 ] || [ "${INPUT_MODE:-auto}" = full ]; then
+            echo 'previous=' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          previous="$(gh run list --workflow p1-dual-code-backups.yml --status success --limit 15 --json databaseId --jq '.[0].databaseId // empty')"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          if [ -n "$previous" ]; then
+            gh run download "$previous" -n "p1-dual-code-$previous" -D "history/$previous"
+            python3 - "$previous" <<'PY'
+          import json, pathlib, subprocess, sys
+          prev = sys.argv[1]
+          prior = json.loads((pathlib.Path('history')/prev/'manifest.json').read_text())
+          for run_id in prior['chain_runs']:
+              run_id = str(run_id)
+              if run_id == prev: continue
+              subprocess.run(['gh', 'run', 'download', run_id, '-n', 'p1-dual-code-'+run_id,
+                              '-D', 'history/'+run_id], check=True)
+          PY
+          fi
+      - name: Create code-only bundles and reconstruct both branches offline
+        env:
+          PREVIOUS_ID: ${{ steps.history.outputs.previous }}
+          INPUT_MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          python3 tools/p1_dual_code_backup.py \
+            --repo . --output recovery --history history \
+            --run-id "$GITHUB_RUN_ID" --previous-id "${PREVIOUS_ID:-}" \
+            --standby-ref '63e18246756ac615dfa9e7d10248aed0ea4031d6' \
+            --mode "${INPUT_MODE:-auto}"
+      - name: Preserve manifests, separate bundles and restore receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-dual-code-${{ github.run_id }}
+          path: recovery/
+          retention-days: 35
+          if-no-files-found: error

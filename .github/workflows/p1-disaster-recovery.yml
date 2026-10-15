@@ -1,8 +1,7 @@
-name: P1 nightly recovery snapshot and weekly crossover rehearsal
+name: P1 legacy manual code snapshot and Sunday production/shadow HTTP smoke
 on:
   schedule:
-    - cron: '17 7 * * *'
-    - cron: '47 7 * * 0'
+    - cron: '47 9 * * 0'
   workflow_dispatch:
 permissions:
   contents: read
@@ -11,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   nightly-code-recovery:
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 7 * * *'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -46,7 +45,7 @@ jobs:
           retention-days: 30
           if-no-files-found: error
   weekly-crossover-rehearsal:
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '47 7 * * 0'
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '47 9 * * 0'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
