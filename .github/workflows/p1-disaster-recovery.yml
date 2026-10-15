@@ -34,6 +34,8 @@ jobs:
           echo 'PASS: backup bundle cloned, checked out at matching commit, and Git objects validated' > recovery/RESTORE-TEST.txt
           git rev-parse origin/main > recovery/main.sha
           git rev-parse origin/production/shadow-concat-20261014 > recovery/shadow.sha
+          git -C "$RUNNER_TEMP/recovery-restore/repository" cat-file -e "$(cat recovery/shadow.sha)^{commit}"
+          echo 'PASS: shadow commit is present in restored bundle' >> recovery/RESTORE-TEST.txt
           sha256sum recovery/civicascentai-repository.bundle > recovery/SHA256SUMS
           date -u +%Y-%m-%dT%H:%M:%SZ > recovery/captured-at-utc.txt
           echo 'Code and Git history only. This does NOT back up databases, Vercel environment variables, secrets, or external services.' > recovery/SCOPE.txt
