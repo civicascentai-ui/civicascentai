@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {SOURCES,clean,safeUrl,parseRss,parseJson,rank,discover,report} from './discovery.mjs';
+import {SOURCES,clean,safeUrl,parseRss,parseJson,parseGrantsApi,rank,discover,report} from './discovery.mjs';
 const source=SOURCES[0];
 test('Source allowlist rejects arbitrary and insecure URLs',()=>{
  assert.equal(safeUrl('http://www.grants.gov/bad',source.hosts),null);
@@ -15,6 +15,24 @@ test('RSS parser reads source and rejects off-domain links',()=>{
  assert.equal(items.length,1);
  assert.equal(items[0].title,'Veterans AI job training grant');
  assert.throws(()=>parseRss('not-xml',source));
+});
+test('Official Grants.gov search2 fixture produces only posted or forecasted official links',()=>{
+ const data={errorcode:0,data:{oppHits:[
+  {id:364024,title:'Workforce training grant',openDate:'10/10/2026',closeDate:'10/15/2026',oppStatus:'posted'},
+  {id:364025,title:'Closed grant',oppStatus:'closed'},
+  {id:'../evil',title:'Bad ID',oppStatus:'posted'},
+  {id:364026,title:'Future training opportunity',oppStatus:'forecasted'}
+ ]}};
+ const items=parseGrantsApi(JSON.stringify(data),source);
+ assert.equal(items.length,2);
+ assert.equal(items[0].url,'https://www.grants.gov/search-results-detail/364024');
+ assert.equal(items[1].url,'https://www.grants.gov/search-results-detail/364026');
+ assert.equal(items[0].closingDate,'10/15/2026');
+ assert.equal(items[1].closingDate,null);
+ const md=report({sources:[],leads:rank(items),finishedAt:'2026-10-14T00:00:00Z',runUrl:'https://github.com/example/run'});
+ assert.match(md,/closing 10\/15\/2026/);
+ assert.throws(()=>parseGrantsApi('{"errorcode":1,"data":{"oppHits":[]}}',source));
+ assert.throws(()=>parseGrantsApi('<html>not JSON</html>',source));
 });
 test('Federal Register JSON parser validates result shape and URLs',()=>{
  const s=SOURCES[1];
