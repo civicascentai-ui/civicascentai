@@ -29,9 +29,9 @@ main{max-width:1350px;margin:0 auto}
 .intro h1{font-size:clamp(2.15rem,5.5vw,3.8rem);font-weight:820;line-height:1.12;letter-spacing:-.027em;max-width:17ch;margin:0 0 23px}
 .intro .lead{font-size:1.15rem;max-width:53ch;line-height:1.65;margin:0 0 24px}
 .intro .note{font-weight:750;max-width:56ch;border-left:6px solid var(--accent);background:var(--band);padding:15px 20px;margin:0;border-radius:6px}
-body.show-scene .intro{background:linear-gradient(90deg,rgba(10,24,39,.96),rgba(10,24,39,.76)),url("safari/scene-01-lodge-panorama.jpg") center / cover;color:#fff!important}
-body.show-scene .intro .eyebrow,body.show-scene .intro .note{color:#fff}
-body.show-scene .intro .note{background:#172d3a;border-left-color:#f9d58c}
+
+
+
 .preferences{margin:0 clamp(20px,6vw,82px);padding:28px clamp(16px,3vw,40px);background:var(--band);border:2px solid var(--line);border-radius:16px}
 .preferences h2,.paths h2,.more h2,.reassurance h2{font-size:clamp(1.45rem,2.8vw,2.15rem);line-height:1.18;letter-spacing:-.01em;margin:0 0 13px}
 .preferences p{font-size:1.125rem;line-height:1.55}

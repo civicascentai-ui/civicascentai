@@ -6,26 +6,24 @@
   const sizes=[90,100,112.5,125,137.5,150];
   let index=1;
   let dark=false;
-  let scenery=false;
+
   const status=get("settings-status");
   const smaller=get("text-minus"),larger=get("text-plus");
-  const theme=get("theme-toggle"),scene=get("scenery-toggle");
+  const theme=get("theme-toggle");
   const read=get("read-aloud"),stop=get("stop-reading");
   const update=(message)=>{
     document.documentElement.style.setProperty("--font-scale",sizes[index]+"%");
     document.body.dataset.theme=dark?"dark":"light";
-    document.body.classList.toggle("show-scene",scenery);
     smaller.disabled=index===0;larger.disabled=index===sizes.length-1;
     theme.setAttribute("aria-pressed",String(dark));
     theme.textContent=dark?"Light background":"Dark background";
-    scene.setAttribute("aria-pressed",String(scenery));
-    scene.textContent=scenery?"Hide Safari picture":"Show Safari picture";
+
     if(message)status.textContent=message;
   };
   smaller.addEventListener("click",()=>{index=Math.max(0,index-1);update("Text size "+sizes[index]+"%.");});
   larger.addEventListener("click",()=>{index=Math.min(sizes.length-1,index+1);update("Text size "+sizes[index]+"%.");});
   theme.addEventListener("click",()=>{dark=!dark;update(dark?"Dark, high-contrast appearance selected.":"Light, high-contrast appearance selected.");});
-  scene.addEventListener("click",()=>{scenery=!scenery;update(scenery?"Optional Safari picture on.":"Optional Safari picture off.");});
+
   update();
 
   const available=typeof window.SpeechSynthesisUtterance!=="undefined"&&

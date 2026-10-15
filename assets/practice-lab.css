@@ -1,4 +1,4 @@
-/* Student Practice Sandbox. Uses existing Safari artwork and shared header.
+/* Student Practice Sandbox. Uses an accessible photo-free header.
    No outside fonts, trackers, images, APIs or registration forms. */
 html{scroll-padding-top:84px}
 body.practice-body{background:#091523;color:#fff5e8;min-width:0}
@@ -9,7 +9,7 @@ body.practice-body{background:#091523;color:#fff5e8;min-width:0}
 .practice-body a:focus-visible,.practice-body button:focus-visible,.practice-body select:focus-visible,.practice-body textarea:focus-visible,.practice-body input:focus-visible,.practice-body summary:focus-visible{outline:3px solid #ffde9f;outline-offset:4px}
 .practice-skip{position:absolute;left:10px;top:-120px;z-index:60;padding:12px 17px;background:#ffe0a0;color:#14202d;border-radius:10px;font-weight:850}
 .practice-skip:focus{top:10px}
-.practice-hero{min-height:clamp(440px,65svh,690px);display:flex;align-items:center;position:relative;isolation:isolate;background:#23221d url("safari/scene-01-lodge-panorama.jpg") center 56%/cover no-repeat;padding:65px clamp(19px,7vw,105px)}
+.practice-hero{min-height:clamp(440px,65svh,690px);display:flex;align-items:center;position:relative;isolation:isolate;background:linear-gradient(130deg,#0A192F,#154862);padding:65px clamp(19px,7vw,105px)}
 .practice-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#050d18e8,#091927b7 58%,#09172360),linear-gradient(0deg,#071321ea,transparent 60%)}
 .practice-hero-inner{max-width:750px}
 .practice-body .eyebrow{font-size:clamp(11px,1.2vw,14px);letter-spacing:.18em;font-weight:800;color:#ffe09d;margin:0 0 18px;text-transform:uppercase}
@@ -85,7 +85,7 @@ body.practice-body{background:#091523;color:#fff5e8;min-width:0}
 /* Clarity-first learner mode. The scene is OPTIONAL and hidden by default. */
 body.practice-body{background:var(--paper);color:var(--ink);font:400 var(--font-base,20px)/1.65 "Atkinson Hyperlegible",Inter,Roboto,system-ui,sans-serif}
 .practice-body .practice-hero{background-image:none;background-color:#0A192F}
-.practice-body.show-scene .practice-hero{background-image:url("safari/scene-01-lodge-panorama.jpg")}
+
 .practice-body .practice-wrap,.practice-body .practice-intro h2,.practice-body .practice-panel h3{color:var(--ink)}
 .practice-body .practice-intro p,.practice-body .practice-grid p{color:var(--muted);font-size:1.125rem}
 .practice-body .practice-panel{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
