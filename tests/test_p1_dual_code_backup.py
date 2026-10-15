@@ -77,5 +77,26 @@ class RecoveryChainTests(unittest.TestCase):
             self.assertEqual([unchanged['environments'][n]['kind'] for n in ('production','shadow')],
                              ['unchanged', 'unchanged'])
 
+            # Independent anti-corruption cases: never extend an unverified chain.
+            manifest_file = root / 'backups' / '101' / 'manifest.json'
+            baseline = json.loads(manifest_file.read_text())
+            corrupted = dict(baseline)
+            corrupted['status'] = 'unverified'
+            manifest_file.write_text(json.dumps(corrupted))
+            with self.assertRaises(subprocess.CalledProcessError):
+                backup('103', 3, '101')
+            corrupted = dict(baseline)
+            corrupted['chain_runs'] = ['101']
+            manifest_file.write_text(json.dumps(corrupted))
+            with self.assertRaises(subprocess.CalledProcessError):
+                backup('104', 3, '101')
+            manifest_file.write_text(json.dumps(baseline))
+
+            # A verified parent must remain restorable after these rejected attempts.
+            recovered = backup('105', 3, '101')
+            self.assertEqual(recovered['status'], 'restored-and-verified-git-code-only')
+            self.assertEqual(recovered['chain_runs'], ['100', '101', '105'])
+
+
 if __name__ == '__main__':
     unittest.main()
