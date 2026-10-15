@@ -2,11 +2,6 @@ name: Gemini API key connection check (manual only)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - automation/gemini-connection-check-20261015
-    paths:
-      - .github/workflows/gemini-connection-check.yml
 
 permissions:
   contents: read
