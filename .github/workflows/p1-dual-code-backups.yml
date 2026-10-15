@@ -71,8 +71,8 @@ jobs:
           set -euo pipefail
           python3 tools/p1_dual_code_backup.py \
             --repo . --output recovery --history history \
-            --run-id "$GITHUB_RUN_ID" --previous-id "$\{PREVIOUS_ID:-\}" \
-            --mode "$\{INPUT_MODE:-auto\}"
+            --run-id "$GITHUB_RUN_ID" --previous-id "${PREVIOUS_ID:-}" \
+            --mode "${INPUT_MODE:-auto}"
       - name: Preserve manifests, separate bundles and restore receipts
         uses: actions/upload-artifact@v4
         with:
