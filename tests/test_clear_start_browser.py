@@ -42,7 +42,7 @@ try:
       nav_links = page.locator("header nav.top-links a")
       assert nav_links.count()==4,(width,"four direct visible navigation links")
       assert [nav_links.nth(i).get_attribute("href") for i in range(4)]==[
-        "index.html","course.html","veterans.html","journey-help.html"],(width,"expected Home/Courses/Veteran Programs/Get Help")
+        "clear-start.html","course.html","veterans.html","journey-help.html"],(width,"expected Home/Courses/Veteran Programs/Get Help")
       assert page.get_by_role("link",name="Text, contrast & audio settings").count()==1,(width,"settings shortcut missing")
       for title in ["Practical Everyday AI","Veteran Career Skills","Digital Safety & Scam Awareness"]:
         assert page.get_by_role("heading",name=title).count()==1,(width,title)
