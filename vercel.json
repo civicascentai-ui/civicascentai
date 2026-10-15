@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/safari-home.html",
+      "destination": "/learning-rooms.html",
+      "permanent": true
+    }
+  ]
+}
