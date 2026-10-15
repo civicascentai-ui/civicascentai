@@ -42,7 +42,7 @@ body.show-scene .intro .note{background:#172d3a;border-left-color:#f9d58c}
 .control-group button[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
 #settings-status{border-left:4px solid var(--accent);padding:9px 12px;margin:12px 0 0;min-height:40px;background:var(--surface);font-size:1.125rem}
 .paths{padding:70px clamp(20px,6vw,82px) 40px}
-.paths .description{max-width:62ch;margin:0 0 28px;color:var(--muted);font-size:1.03rem}
+.paths .description{max-width:62ch;margin:0 0 28px;color:var(--muted);font-size:1.25rem}
 .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
 .choice{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:3px solid var(--line);border-top:6px solid var(--gold);border-radius:15px;padding:clamp(17px,2.6vw,33px);min-width:0}
 .choice .step{margin:0;font-size:1.125rem;font-weight:850;letter-spacing:.09em;color:var(--accent)}
