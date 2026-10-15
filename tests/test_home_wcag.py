@@ -31,7 +31,7 @@ try:
             assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1
             assert page.locator("main#main").get_attribute("tabindex")=="-1"
             assert page.locator("header nav.top-links a").count()==3,(width,"screenshot top navigation")
-            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Safari Home","Español","Free Workshop"]
+            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Learning paths","Español","Free Workshop"]
             assert page.locator("main .choices article.choice").count()==3,(width,"exactly 3 choices")
             assert page.get_by_role("heading",name="What would you like to do?").count()==1
             expected=["journey-learn.html","practice-sandbox.html","journey-help.html"]
@@ -65,29 +65,28 @@ try:
             page.locator("#theme-toggle").click()
             assert page.locator('body[data-theme="dark"]').count()==1
             assert page.locator("#theme-toggle").get_attribute("aria-pressed")=="true"
-            page.locator("#scenery-toggle").click()
-            assert page.locator("body.show-scene").count()==1
-            assert "scene-01-lodge-panorama.jpg" in page.locator(".intro").evaluate("(e)=>getComputedStyle(e).backgroundImage")
-            page.locator("#scenery-toggle").click()
-            assert page.locator("body.show-scene").count()==0
+            assert page.locator("#scenery-toggle").count()==0,(width,"legacy picture toggle removed")
             # User-chosen UI preferences must not be stored or carried into a reload.
             assert page.evaluate("localStorage.length")==0,(width,"unexpected localStorage")
             page.reload(wait_until="networkidle")
             assert page.locator('body[data-theme="dark"]').count()==0
             assert page.evaluate("getComputedStyle(document.documentElement).fontSize")=="16px"
-            # Check reference paths and separate original four-room Safari.
-            page.locator('a[href="safari-home.html"]').first.click()
-            assert page.url.endswith("/safari-home.html"),(width,"Safari Home navigation")
-            assert page.locator("nav.portals a").count()==4,(width,"original Safari rooms preserved")
-            for dest in ["journey-learn.html","journey-try.html","journey-help.html","journey-continue.html"]:
-                assert page.locator(f'nav.portals a[href="{dest}"]').count()==1,(width,"missing Safari portal",dest)
+            # Learning paths must retain the four usable room destinations in the new design.
+            page.locator('a[href="journey-learn.html"]').first.click()
+            assert page.url.endswith("/journey-learn.html"),(width,"Learning paths navigation")
+            assert page.locator('meta[name="civicascent-build"]').get_attribute('content')=="accessible-learning-rooms-20261015"
+            assert page.locator("nav.options a").count()==4,(width,"learning choices preserved")
+            assert page.locator('a[href="index.html"]').count()>=1
+            page.goto(base+"/safari-home.html",wait_until="domcontentloaded")
+            page.wait_for_url("**/index.html",timeout=10000)
+            assert page.locator("main .choices article.choice").count()==3,(width,"legacy URL returns to new homepage")
             page.goto(base+"/index.html",wait_until="networkidle")
             assert not errs,(width,"JS errors",errs)
             page.screenshot(path=str(ART/f"approved-reference-{width}.png"),full_page=True)
-            out.append({"width":width,"status":"PASS","reference_cards":3,"safari_rooms":4,"keyboard":"PASS","text_controls":"PASS","no_local_storage":"PASS"})
+            out.append({"width":width,"status":"PASS","reference_cards":3,"accessible_room_links":4,"keyboard":"PASS","text_controls":"PASS","no_local_storage":"PASS"})
             ctx.close()
         browser.close()
 finally:
     server.shutdown()
 (ART/"results.json").write_text(json.dumps(out,indent=2))
-print(json.dumps({"scope":"screenshot-approved homepage and preserved Safari route","results":out,"manual_wcag":"not certified"},indent=2))
+print(json.dumps({"scope":"screenshot-approved homepage and accessible learning routes and retired legacy entry","results":out,"manual_wcag":"not certified"},indent=2))
