@@ -2,7 +2,7 @@
 """Time-boxed, no-spend Blue Crew shift executor.
 
 Scheduled 04:00-08:00 and 20:00-00:01 America/Chicago every calendar day.
-Runs five existing read-only agent tasks repeatedly, plus SCOUT public research
+Runs six existing read-only agent tasks repeatedly, plus SCOUT public research
 and QA5 audits at bounded intervals. This is an active test/check loop, NOT a
 persistently reasoning LLM or a host that can publish, email, deploy, or charge.
 """
@@ -20,7 +20,7 @@ from zoneinfo import ZoneInfo
 TZ = ZoneInfo("America/Chicago")
 REPO = "civicascentai-ui/civicascentai"
 ROOT = Path(__file__).resolve().parents[1]
-ROLES = ("sam", "friday", "zebra", "reach", "codi")
+ROLES = ("sam", "friday", "zebra", "reach", "codi", "gg")
 INTERVAL = 30 * 60
 OUT = ROOT / "blue-crew-shift-receipts"
 
@@ -60,8 +60,8 @@ def self_test():
     # DST must use Central local clock time in both seasons.
     assert datetime(2026, 7, 15, 4, tzinfo=TZ).utcoffset() == timedelta(hours=-5)
     assert datetime(2026, 12, 15, 4, tzinfo=TZ).utcoffset() == timedelta(hours=-6)
-    assert ROLES == ("sam", "friday", "zebra", "reach", "codi")
-    print("PASS: Blue Crew shift boundaries, midnight rollover, DST, five-role registry")
+    assert ROLES == ("sam", "friday", "zebra", "reach", "codi", "gg")
+    print("PASS: Blue Crew shift boundaries, midnight rollover, DST, six-role registry")
     return 0
 
 def assert_readonly_public_runner():
