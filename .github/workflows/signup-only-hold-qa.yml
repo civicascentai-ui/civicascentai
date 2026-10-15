@@ -1,5 +1,15 @@
 name: Signup-only Paid Checkout Hold QA
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/signup-only-hold-qa.yml
+      - tests/verify_signup_only.mjs
+      - api/create-checkout-session.js
+      - register.html
+      - registro.html
+      - course.html
+      - curso-es.html
   push:
     branches:
       - safety/signup-only-paid-checkout-hold-20261014
