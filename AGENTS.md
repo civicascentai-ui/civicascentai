@@ -1,6 +1,6 @@
 # CivicAscent AI: Shared Agent Instructions
 
-**MANDATORY FOR ALL CODI, SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, LPC AND OTHER REPOSITORY CONTRIBUTORS**
+**MANDATORY FOR ALL CODI, GG (GEMINI), SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, LPC AND OTHER REPOSITORY CONTRIBUTORS**
 
 Read and apply [CivicAscent Sitewide FF Skill](skills/civicascent-sitewide-ff/SKILL.md) **before** working on website or learning content.
 
@@ -12,7 +12,7 @@ The owner's approved screenshots outrank generic proposed designs. The accessibl
 
 **Non-negotiables:** Budget $0, do not enable purchases or subscriptions, fail-closed checkout, avoid collecting private student data, respect reduced motion, avoid dark color combinations without contrast evidence, protect elderly/veteran/disabled learners, keep Spanish Spanish, keep existing lesson and practice functionality, and preserve authorized disclaimers.
 
-**Team roles:** CODI coordinates; SAM implements; FRIDAY independently tests; SCOUT inventories; ZEBRA challenges design and quality; BLUE TEAM handles curriculum; REACH tracks approved outreach; LPC flags risks. These roles are responsibilities, not automatically running independent services.
+**Team roles:** **CODI and GG (Gemini) are equal Co-Executives** with identical delegated coordination, prioritization, delegation and evidence-review authority under the President; neither outranks the other. SAM implements; FRIDAY independently tests; SCOUT inventories; ZEBRA challenges design and quality; BLUE TEAM handles curriculum; REACH tracks approved outreach; LPC flags risks. Co-executive disagreements go to the President; neither bypasses QC, HOLD, $0 or platform permissions. See [GG/CODI Co-Executive Charter](docs/operations/GG_CODI_COEXECUTIVE_CHARTER_2026-10-15.md). These roles are responsibilities, not automatically running independent LLM services.
 
 Use the skill's stage gates, save points, audit matrix, stop conditions and source references in every QC report. Do not publish screenshot reference files to a public repository without owner authorization.
 
