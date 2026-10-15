@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111d">
+<meta name="description" content="Free, private AI practice for CivicAscent AI students. Practice prompts, fact-checking and privacy skills in your browser without an account or purchase.">
+<meta name="robots" content="index,follow">
+<title>Student Practice Sandbox | CivicAscent AI</title>
+<link rel="icon" href="assets/civicascent-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/safari-build1-live.css">
+<link rel="stylesheet" href="assets/practice-lab.css">
+<script src="assets/practice-lab.js" defer></script>
+</head>
+<body class="practice-body">
+<a class="practice-skip" href="#activities">Skip to student activities</a>
+<header class="page-header">
+<a class="brand" href="index.html" aria-label="CivicAscent AI home"><img src="assets/civicascent-logo.svg" alt=""><span><strong>CivicAscent AI</strong><small>PEOPLE · PURPOSE · POSSIBILITY</small></span></a>
+<nav class="site-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="programs.html">Programs</a><a href="course.html">Courses</a><a href="journey-try.html">Try Room</a><a href="es.html" lang="es">Español</a><a href="consultation.html">Get Help</a><a class="join" href="register.html">Free Workshop</a></nav>
+<details class="mobile-nav"><summary aria-label="Open menu">☰ Menu</summary><div class="menu-links"><a href="index.html">Home</a><a href="programs.html">Programs</a><a href="course.html">Courses</a><a href="journey-try.html">Try Room</a><a href="es.html" lang="es">Español</a><a href="consultation.html">Get Help</a><a href="register.html">Free Workshop</a></div></details>
+</header>
+<main>
+<section class="practice-hero" aria-labelledby="practice-title">
+<div class="practice-hero-inner"><p class="eyebrow">CivicAscent AI · Safari Learning World</p><h1 id="practice-title">Student Practice <em>Sandbox.</em></h1>
+<p class="hero-text">Learn by doing. Build a better AI prompt, catch an incorrect answer, and protect your privacy. Go at your own pace.</p>
+<div class="hero-tags"><span>No purchase required</span><span>Beginner to Level 2</span><span>Works on phones</span></div>
+<a class="practice-primary" href="#activities">Start practicing ↓</a>
+</div>
+</section>
+<section id="activities" class="practice-wrap" aria-labelledby="activity-heading">
+<div class="practice-intro"><p class="eyebrow">Interactive student exercises</p><h2 id="activity-heading">Choose your practice station</h2>
+<p>Everything below is a local learning exercise. <strong>No AI service is connected.</strong> Your entries stay in this browser tab and are not sent to CivicAscent AI. This site does not save your answers.</p></div>
+<div class="practice-tabs" role="group" aria-label="Choose exercise">
+<button type="button" class="practice-tab selected" data-activity="prompt" aria-pressed="true"><span aria-hidden="true">01</span> Prompt Builder</button>
+<button type="button" class="practice-tab" data-activity="verify" aria-pressed="false"><span aria-hidden="true">02</span> Check the Facts</button>
+<button type="button" class="practice-tab" data-activity="privacy" aria-pressed="false"><span aria-hidden="true">03</span> Privacy Challenge</button>
+</div>
+<section id="activity-prompt" class="practice-panel" aria-labelledby="prompt-heading">
+<div class="practice-grid"><div>
+<p class="eyebrow">Station 01 · Beginner / Level 2</p><h3 id="prompt-heading">Build a useful prompt</h3>
+<p>Good instructions help AI tools respond clearly. Practice with <strong>fictional information only</strong>. Complete all four parts.</p>
+<label for="practice-scenario">Choose an example</label>
+<select id="practice-scenario">
+<option value="everyday">Everyday life · community reminder</option>
+<option value="career">Workplace · organize a training plan</option>
+<option value="veterans">Veterans · general resource checklist</option>
+<option value="advanced">Level 2 · compare and verify a summary</option>
+</select>
+<button class="practice-secondary" id="load-example" type="button">Load a fictional example</button>
+<label for="prompt-goal">1. Goal: What should the AI help you do?</label>
+<textarea id="prompt-goal" rows="2" maxlength="420" placeholder="For example: Draft a short workshop reminder."></textarea>
+<label for="prompt-context">2. Context: What background matters?</label>
+<textarea id="prompt-context" rows="2" maxlength="420" placeholder="Use fictional names and details only."></textarea>
+<label for="prompt-limits">3. Boundaries: What must the answer avoid or include?</label>
+<textarea id="prompt-limits" rows="2" maxlength="420" placeholder="Plain language, no private details, verify facts."></textarea>
+<label for="prompt-format">4. Output: What form should the answer take?</label>
+<textarea id="prompt-format" rows="2" maxlength="420" placeholder="For example: Four short bullet points."></textarea>
+<div class="practice-controls"><button type="button" class="practice-primary" id="build-prompt">Build my practice prompt</button><button type="button" class="practice-secondary" id="reset-prompt">Clear my draft</button></div>
+</div>
+<aside class="practice-result" aria-label="Prompt practice feedback"><h4>Practice feedback</h4><p id="prompt-feedback" role="status" aria-live="polite">Fill in the four boxes or load a fictional example, then build your prompt.</p>
+<h4>My assembled prompt</h4><pre id="prompt-output" tabindex="0">Your practice prompt will appear here.</pre>
+<button type="button" class="practice-secondary" id="copy-prompt" disabled>Copy practice prompt</button>
+<p class="practice-disclaimer">This tool combines and checks prompt sections. It does not contact a real AI model or judge the truth of an AI answer. Always verify important results.</p></aside></div>
+</section>
+<section id="activity-verify" class="practice-panel" aria-labelledby="verify-heading" hidden>
+<p class="eyebrow">Station 02 · Critical thinking</p><h3 id="verify-heading">Spot what an AI got wrong</h3>
+<p>This is a <strong>fictional classroom example</strong>, not a real event listing. Compare the two cards and select every detail the simulated AI answered incorrectly.</p>
+<div class="practice-duo">
+<div class="practice-result"><h4>Original workshop notice (the source)</h4><p>The example workshop takes place <strong>Friday at 2 PM</strong>, at <strong>East Hall</strong>, and is <strong>free</strong>.</p></div>
+<div class="practice-result"><h4>Simulated AI response (may be wrong)</h4><p>“Join us <strong>Thursday at 3 PM</strong>, at <strong>East Hall</strong>. Admission is <strong>$15</strong>.”</p></div>
+</div>
+<fieldset class="practice-fieldset"><legend>Which parts need correcting?</legend>
+<label class="practice-check"><input type="checkbox" id="verify-time"> Day and time</label>
+<label class="practice-check"><input type="checkbox" id="verify-place"> Location</label>
+<label class="practice-check"><input type="checkbox" id="verify-cost"> Price</label></fieldset>
+<button type="button" class="practice-primary" id="check-facts">Check my choices</button>
+<p class="practice-message" id="verify-feedback" aria-live="polite" role="status">Review the source card before checking.</p>
+</section>
+<section id="activity-privacy" class="practice-panel" aria-labelledby="privacy-heading" hidden>
+<p class="eyebrow">Station 03 · Safer AI habits</p><h3 id="privacy-heading">Which details are safe to share?</h3>
+<p>Select the items you could include in a <strong>practice AI prompt</strong>. Never paste real passwords, medical records, private addresses, or sensitive records here.</p>
+<fieldset class="practice-fieldset"><legend>Choose all safe options</legend>
+<label class="practice-check"><input type="checkbox" id="privacy-fictional"> A fictional person named Alex</label>
+<label class="practice-check"><input type="checkbox" id="privacy-password"> A real account password</label>
+<label class="practice-check"><input type="checkbox" id="privacy-medical"> A private medical document</label>
+<label class="practice-check"><input type="checkbox" id="privacy-goal"> A general learning goal without identifying details</label></fieldset>
+<button type="button" class="practice-primary" id="check-privacy">Check my choices</button>
+<p class="practice-message" id="privacy-feedback" aria-live="polite" role="status">Use fictional details and keep private information out.</p>
+</section>
+<div class="practice-next"><h3>Ready for another step?</h3><p>Return to your Safari room, explore Level 1 lessons, or register for a free workshop. None of these exercises requires payment.</p><div class="practice-controls"><a href="journey-try.html" class="practice-secondary">← Back to the Try Room</a><a href="course.html" class="practice-secondary">Explore Level 1</a><a href="register.html" class="practice-primary">Free Workshop →</a></div></div>
+</section>
+</main>
+<footer class="practice-footer">CivicAscent AI · Serving Fort Worth · English/Spanish assistance available · Educational examples only; no purchases, scores, or personal information collected.</footer>
+</body>
+</html>
