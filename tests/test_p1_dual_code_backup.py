@@ -42,6 +42,12 @@ class RecoveryChainTests(unittest.TestCase):
             )
             self.assertEqual(checked.stdout.splitlines(), expected)
 
+    def test_legacy_sunday_smoke_checks_stable_standby_alias(self):
+        workflow = (SCRIPT.parents[1] / '.github/workflows/p1-disaster-recovery.yml').read_text()
+        self.assertIn('SHADOW_URL: https://civicascentai-launch-qa.vercel.app/', workflow)
+        self.assertNotIn('civicascentai-launch-9rj1lutsy-civicascentai.vercel.app', workflow)
+        self.assertIn("test \"$status\" = 200", workflow)
+
     def test_full_incremental_and_unchanged_restore_both_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp)
