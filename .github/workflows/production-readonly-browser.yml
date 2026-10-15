@@ -1,0 +1,31 @@
+name: Production read-only browser diagnostic
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tests/test_production_readonly.py"
+      - ".github/workflows/production-readonly-browser.yml"
+permissions:
+  contents: read
+jobs:
+  live-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Chromium
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Run GET-only production browser diagnostic
+        run: python tests/test_production_readonly.py
+      - name: Save report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-readonly-browser-evidence
+          path: artifacts/production-readonly/
+          if-no-files-found: warn
