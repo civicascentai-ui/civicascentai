@@ -1,37 +1,15 @@
-name: One-time dispatch verified Gemini workflow on main
+# One-time GitHub Actions dispatcher completed and retired on 2026-10-15.
+# Evidence: https://github.com/civicascentai-ui/civicascentai/actions/runs/38737521532
+# Main Gemini PASS: https://github.com/civicascentai-ui/civicascentai/actions/runs/38737533019
+# This workflow cannot dispatch anything and will not run on push.
+name: Retired one-time Gemini dispatcher (inert)
 on:
-  push:
-    branches:
-      - automation/dispatch-gemini-main-once-20261015
-    paths:
-      - .github/workflows/gemini-main-one-time-dispatch.yml
+  workflow_dispatch:
 permissions:
   contents: read
-  actions: write
 jobs:
-  dispatch:
-    if: github.repository == 'civicascentai-ui/civicascentai' && github.ref == 'refs/heads/automation/dispatch-gemini-main-once-20261015'
+  archived-receipt:
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 1
     steps:
-      - name: Trigger existing manual-only read-only Gemini authentication test on main
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          echo 'Dispatching Gemini authentication workflow on main (no code change on main).'
-          response_file="${RUNNER_TEMP}/gemini-dispatch-response.json"
-          code="$(curl --silent --show-error --connect-timeout 10 --max-time 30 --output "$response_file" --write-out '%{http_code}' \
-            --request POST \
-            --header "Authorization: Bearer $GH_TOKEN" \
-            --header "Accept: application/vnd.github+json" \
-            --header "X-GitHub-Api-Version: 2022-11-28" \
-            --header "Content-Type: application/json" \
-            --data '{"ref":"main"}' \
-            "https://api.github.com/repos/civicascentai-ui/civicascentai/actions/workflows/gemini-connection-check.yml/dispatches")"
-          if [[ "$code" != 204 ]]; then
-            echo "::error::GitHub workflow dispatch was rejected with HTTP $code"
-            exit 1
-          fi
-          echo 'PASS: GitHub accepted one Gemini workflow_dispatch on main.'
+      - run: echo 'One-time dispatcher completed. No GitHub API writes or Gemini calls.'
