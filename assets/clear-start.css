@@ -112,3 +112,18 @@ footer{padding:24px clamp(20px,6vw,82px);background:var(--band);border-top:2px s
  .featured-grid,.support-grid{grid-template-columns:1fr}
  .pathway,.support-grid>div{padding:22px}
 }
+
+/* On-page, persistent text controls, visible on each prototype learning page. */
+.reader-toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;min-height:68px;padding:9px 15px;background:var(--paper);border-bottom:2px solid var(--line);color:var(--ink)}
+.reader-toolbar span{font-size:1.125rem;font-weight:800}
+.reader-toolbar button,.reader-toolbar a,.reset-reading{min-height:56px;min-width:56px;display:inline-flex;justify-content:center;align-items:center;padding:10px 15px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:750 1.125rem/1.35 system-ui,sans-serif;text-decoration:none}
+.reader-toolbar button:disabled{opacity:.56}
+.reader-announcement{background:var(--band);color:var(--ink);text-align:center;min-height:0;margin:0;padding:3px;font-size:1.125rem}
+.reader-announcement:empty{display:none}
+.logo{min-height:54px}
+@media(max-width:760px){
+ .reader-toolbar{justify-content:flex-start;gap:9px;padding:8px 13px}
+ .reader-toolbar button,.reader-toolbar a{flex:1 1 auto}
+ .site-header .logo strong{white-space:normal;overflow-wrap:anywhere}
+ .site-header .logo{width:100%}
+}
