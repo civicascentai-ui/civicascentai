@@ -4,3 +4,9 @@
 html{scroll-padding-top:115px}
 [id]{scroll-margin-top:115px}
 @media(max-width:950px){.site-header{position:relative;top:auto}.site-header nav{padding-bottom:5px}.site-header nav a{padding:10px 0;min-height:44px;display:inline-flex;align-items:center}}
+
+/* Isolated merge QA: restore discoverable mobile navigation without horizontal clipping. */
+@media (max-width:950px){
+  .site-header nav{flex-wrap:wrap;overflow-x:visible;column-gap:13px;row-gap:0;align-content:start}
+  .site-header nav a{min-height:44px;padding:6px 0;line-height:1.25}
+}
