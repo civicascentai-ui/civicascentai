@@ -20,6 +20,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: P1 dual-code backup restore and workflow argument regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+
       - name: Verify critical project files
         shell: bash
         run: |
