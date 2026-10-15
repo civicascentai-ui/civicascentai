@@ -27,12 +27,14 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Fetch source branches
+      - name: Fetch current production source and verify pinned deployed standby
         run: |
           set -euo pipefail
           git fetch --no-tags origin \
-            'refs/heads/main:refs/remotes/origin/main' \
-            'refs/heads/production/shadow-concat-20261014:refs/remotes/origin/production/shadow-concat-20261014'
+            'refs/heads/main:refs/remotes/origin/main'
+          # Shadow source pinned to the verified Vercel standby deployment Git SHA.
+          # Do not silently substitute the older shadow-concat source branch.
+          git cat-file -e '63e18246756ac615dfa9e7d10248aed0ea4031d6^{commit}'
       - name: Independent local restore regression tests
         run: python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
       - name: Locate last verified run and fetch its complete backup chain
@@ -72,6 +74,7 @@ jobs:
           python3 tools/p1_dual_code_backup.py \
             --repo . --output recovery --history history \
             --run-id "$GITHUB_RUN_ID" --previous-id "${PREVIOUS_ID:-}" \
+            --standby-ref '63e18246756ac615dfa9e7d10248aed0ea4031d6' \
             --mode "${INPUT_MODE:-auto}"
       - name: Preserve manifests, separate bundles and restore receipts
         uses: actions/upload-artifact@v4
