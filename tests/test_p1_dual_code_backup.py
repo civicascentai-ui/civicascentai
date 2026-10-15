@@ -15,14 +15,11 @@ class RecoveryChainTests(unittest.TestCase):
     def test_workflow_shell_arguments_expand_and_default(self):
         """Exercise the actual workflow argument expressions using Bash."""
         import os
-        import re
         workflow = (SCRIPT.parents[1] / '.github/workflows/p1-dual-code-backups.yml').read_text()
-        arguments = re.search(
-            r'--previous-id\\s+("[^"\\n]+")\\s*\\\\\\s*\\n\\s*--mode\\s+("[^"\\n]+")',
-            workflow,
-        )
-        self.assertIsNotNone(arguments, 'backup command arguments missing from workflow')
-        previous, mode = arguments.groups()
+        previous_line = workflow.split('--previous-id ', 1)[1].splitlines()[0].strip()
+        self.assertTrue(previous_line.endswith(chr(92)), 'expected continuation')
+        previous = previous_line[:-1].strip()
+        mode = workflow.split('--mode ', 1)[1].splitlines()[0].strip()
         for overrides, expected in (
             ({}, ['', 'auto']),
             ({'PREVIOUS_ID': '1234', 'INPUT_MODE': 'full'}, ['1234', 'full']),
