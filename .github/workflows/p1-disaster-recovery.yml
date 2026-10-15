@@ -24,9 +24,14 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p recovery
-          git fetch --no-tags origin main production/shadow-concat-20261014
+          git fetch --no-tags origin main production/shadow-concat-20261014:refs/remotes/origin/production/shadow-concat-20261014
           git bundle create recovery/civicascentai-repository.bundle --all
           git bundle verify recovery/civicascentai-repository.bundle
+          mkdir -p "$RUNNER_TEMP/recovery-restore"
+          git clone recovery/civicascentai-repository.bundle "$RUNNER_TEMP/recovery-restore/repository"
+          test "$(git -C "$RUNNER_TEMP/recovery-restore/repository" rev-parse HEAD)" = "$(git rev-parse HEAD)"
+          git -C "$RUNNER_TEMP/recovery-restore/repository" fsck --full --no-reflogs
+          echo 'PASS: backup bundle cloned, checked out at matching commit, and Git objects validated' > recovery/RESTORE-TEST.txt
           git rev-parse origin/main > recovery/main.sha
           git rev-parse origin/production/shadow-concat-20261014 > recovery/shadow.sha
           sha256sum recovery/civicascentai-repository.bundle > recovery/SHA256SUMS
