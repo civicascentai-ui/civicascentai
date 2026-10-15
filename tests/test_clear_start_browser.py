@@ -52,6 +52,9 @@ try:
       assert page.get_by_role("link",name="Ask for help").get_attribute("href")=="journey-help.html"
 
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"overflow")
+      # Reference screenshot at default text size before testing 150% zoom.
+      page.evaluate("window.scrollTo(0,0)")
+      page.screenshot(path=str(ART/f"clear-start-default-{width}.png"),full_page=True)
       original=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
       page.locator("#text-plus").click()
       large=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
@@ -83,6 +86,12 @@ try:
       assert page.locator("body.show-scene").count()==0,(width,"scenery hidden")
       page.get_by_role("button",name="Light background").click()
       page.screenshot(path=str(ART/f"clear-start-{width}.png"),full_page=True)
+      # A fresh context previews student practice without any saved preferences.
+      if width in (320,390):
+        preview=browser.new_page(viewport={"width":width,"height":height},device_scale_factor=1,reduced_motion="reduce")
+        preview.goto(f"http://127.0.0.1:{PORT}/practice-sandbox.html",wait_until="networkidle",timeout=30000)
+        preview.screenshot(path=str(ART/f"practice-sandbox-default-{width}.png"),full_page=True)
+        preview.close()
       # Actual student practice should already exist on this isolated branch.
       resp=page.goto(f"http://127.0.0.1:{PORT}/practice-sandbox.html",wait_until="networkidle",timeout=30000)
       assert resp.status==200,(width,"sandbox HTTP")
@@ -130,6 +139,6 @@ try:
       page.close()
     browser.close()
   (ART/"results.json").write_text(json.dumps(out,indent=2))
-  print(json.dumps({"pass":len(out)*2,"widths":[r["width"] for r in out],"manual_wcag":"not certified"},indent=2))
+  print(json.dumps({"tested_page_width_pairs":len(out)*4,"widths":[r["width"] for r in out],"manual_wcag":"not certified"},indent=2))
 finally:
   server.shutdown()
