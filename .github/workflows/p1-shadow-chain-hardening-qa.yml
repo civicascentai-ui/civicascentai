@@ -5,6 +5,7 @@ on:
       - recovery/p1-code-chain-hardening-20261015
     paths:
       - .github/workflows/p1-shadow-chain-hardening-qa.yml
+      - .github/workflows/p1-disaster-recovery.yml
       - tools/p1_dual_code_backup.py
       - tests/test_p1_dual_code_backup.py
   workflow_dispatch:
@@ -39,5 +40,8 @@ jobs:
           assert "Recovery chain prefix mismatch" in content
           assert "'databases'" in content and "'secrets'" in content
           assert "DEFAULT_STANDBY_GIT_SHA" in content
+          legacy=Path(".github/workflows/p1-disaster-recovery.yml").read_text()
+          assert "SHADOW_URL: https://civicascentai-launch-qa.vercel.app/" in legacy
+          assert "civicascentai-launch-9rj1lutsy-" not in legacy
           print("PASS: code-only recovery scope, error handling and immutable branch test confirmed")
           PY
