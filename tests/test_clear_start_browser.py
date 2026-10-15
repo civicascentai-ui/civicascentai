@@ -28,6 +28,12 @@ try:
       page.on("pageerror",lambda e:errors.append(str(e)))
       resp=page.goto(f"http://127.0.0.1:{PORT}/clear-start.html",wait_until="networkidle",timeout=30000)
       assert resp.status==200,(width,"page HTTP")
+      # Start with keyboard navigation, not a scripted click. Skip must move focus.
+      page.keyboard.press("Tab")
+      assert page.evaluate("document.activeElement.classList.contains('skip')"),(width,"skip first in tab order")
+      page.keyboard.press("Enter")
+      assert page.evaluate("document.activeElement.id == 'main'"),(width,"skip main must receive keyboard focus")
+
       assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1,(width,"heading")
       assert page.get_by_role("heading",name="What would you like to do?").count()==1,(width,"choice heading")
       assert page.locator(".reader-toolbar").is_visible(),(width,"sticky reading toolbar")
@@ -95,6 +101,11 @@ try:
       # Actual student practice should already exist on this isolated branch.
       resp=page.goto(f"http://127.0.0.1:{PORT}/practice-sandbox.html",wait_until="networkidle",timeout=30000)
       assert resp.status==200,(width,"sandbox HTTP")
+      page.keyboard.press("Tab")
+      assert page.evaluate("document.activeElement.classList.contains('practice-skip')"),(width,"practice skip first")
+      page.keyboard.press("Enter")
+      assert page.evaluate("document.activeElement.id == 'activities'"),(width,"practice skip must focus activities")
+
       assert page.get_by_role("heading",name="Student Practice Sandbox.").count()==1
       assert page.locator(".practice-panel:not([hidden])").count()==1
       assert page.evaluate("window.CivicReader.scale")==150,(width,"practice must inherit reading scale")
