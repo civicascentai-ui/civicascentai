@@ -57,7 +57,8 @@ class RecoveryChainTests(unittest.TestCase):
                     '--output', str(root / 'backups' / run_id),
                     '--history', str(root / 'backups'),
                     '--run-id', run_id, '--previous-id', previous,
-                    '--weekday', str(weekday))
+                    '--weekday', str(weekday),
+                '--standby-ref', 'refs/remotes/origin/production/shadow-concat-20261014')
                 return json.loads((root / 'backups' / run_id / 'manifest.json').read_text())
 
             sync()
