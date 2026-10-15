@@ -33,13 +33,21 @@ jobs:
           git fetch --no-tags origin \
             'refs/heads/main:refs/remotes/origin/main' \
             'refs/heads/production/shadow-concat-20261014:refs/remotes/origin/production/shadow-concat-20261014'
+      - name: Independent local restore regression tests
+        run: python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
       - name: Locate last verified run and fetch its complete backup chain
         id: history
         env:
           GH_TOKEN: ${{ github.token }}
+          INPUT_MODE: ${{ inputs.mode }}
         run: |
           set -euo pipefail
           mkdir -p history
+          # Sunday full and manual full must be independently recoverable, without a prior chain.
+          if [ "$(TZ=America/Chicago date +%u)" = 7 ] || [ "${INPUT_MODE:-auto}" = full ]; then
+            echo 'previous=' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           previous="$(gh run list --workflow p1-dual-code-backups.yml --status success --limit 15 --json databaseId --jq '.[0].databaseId // empty')"
           echo "previous=$previous" >> "$GITHUB_OUTPUT"
           if [ -n "$previous" ]; then
