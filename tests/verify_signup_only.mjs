@@ -15,7 +15,7 @@ function fakeResponse() {
   };
 }
 
-for (const method of ['POST', 'GET', 'PUT']) {
+for (const method of ['POST', 'GET', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']) {
   const res = fakeResponse();
   handler({ method }, res);
   assert.equal(res.headers['Cache-Control'], 'no-store');
@@ -26,6 +26,15 @@ for (const method of ['POST', 'GET', 'PUT']) {
   } else {
     assert.equal(res.code, 405, 'only POST defined, with payment blocked');
   }
+}
+
+// Repeated and malformed paid checkout attempts must always fail closed.
+for (const body of [undefined, null, {}, { price: 'price_fake' }, { amount: 0 }, { payment_method: 'card' }]) {
+  const res = fakeResponse();
+  handler({ method: 'POST', body, query: { debug: '1', price: 'price_fake' } }, res);
+  assert.equal(res.code, 403, 'No checkout POST may become a payment session');
+  assert.equal(res.body.code, 'PAID_ENROLLMENT_ON_HOLD');
+  assert.ok(!('url' in res.body) && !('session_id' in res.body), 'No redirect or session ID');
 }
 
 const api = readFileSync('api/create-checkout-session.js', 'utf8');
