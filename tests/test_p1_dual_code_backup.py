@@ -93,7 +93,12 @@ class RecoveryChainTests(unittest.TestCase):
             manifest_file.write_text(json.dumps(baseline))
 
             # A verified parent must remain restorable after these rejected attempts.
-            recovered = backup('105', 3, '101')
+            try:
+                recovered = backup('105', 3, '101')
+            except subprocess.CalledProcessError as exc:
+                self.fail("Valid chain recovery unexpectedly failed: "
+                          + str(exc.returncode) + "\nSTDERR:\n" + (exc.stderr or "")
+                          + "\nSTDOUT:\n" + (exc.stdout or ""))
             self.assertEqual(recovered['status'], 'restored-and-verified-git-code-only')
             self.assertEqual(recovered['chain_runs'], ['100', '101', '105'])
 
