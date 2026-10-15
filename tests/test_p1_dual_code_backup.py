@@ -9,7 +9,13 @@ import unittest
 SCRIPT = pathlib.Path(__file__).resolve().parents[1] / 'tools' / 'p1_dual_code_backup.py'
 
 def run(*args):
-    return subprocess.run(args, capture_output=True, text=True, check=True).stdout.strip()
+    result = subprocess.run(args, capture_output=True, text=True, check=False)
+    if result.returncode:
+        raise AssertionError(
+            f"Command failed in synthetic Git recovery fixture, exit {result.returncode}: "
+            f"{args!r}\\nSTDERR:\\n{result.stderr[-3500:]}"
+        )
+    return result.stdout.strip()
 
 class RecoveryChainTests(unittest.TestCase):
     def test_workflow_shell_arguments_expand_and_default(self):
