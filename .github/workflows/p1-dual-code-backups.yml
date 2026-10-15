@@ -1,0 +1,74 @@
+name: "P1 production and shadow code: daily incremental, Sunday full"
+on:
+  schedule:
+    - cron: '17 8 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'auto = Sunday full, otherwise incremental; full = safe manual full'
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - full
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p1-dual-code-backups
+  cancel-in-progress: false
+jobs:
+  backup-and-isolated-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch source branches
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin \
+            'refs/heads/main:refs/remotes/origin/main' \
+            'refs/heads/production/shadow-concat-20261014:refs/remotes/origin/production/shadow-concat-20261014'
+      - name: Locate last verified run and fetch its complete backup chain
+        id: history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p history
+          previous="$(gh run list --workflow p1-dual-code-backups.yml --status success --limit 15 --json databaseId --jq '.[0].databaseId // empty')"
+          echo "previous=$previous" >> "$GITHUB_OUTPUT"
+          if [ -n "$previous" ]; then
+            gh run download "$previous" -n "p1-dual-code-$previous" -D "history/$previous"
+            python3 - "$previous" <<'PY'
+          import json, pathlib, subprocess, sys
+          prev = sys.argv[1]
+          prior = json.loads((pathlib.Path('history')/prev/'manifest.json').read_text())
+          for run_id in prior['chain_runs']:
+              run_id = str(run_id)
+              if run_id == prev: continue
+              subprocess.run(['gh', 'run', 'download', run_id, '-n', 'p1-dual-code-'+run_id,
+                              '-D', 'history/'+run_id], check=True)
+          PY
+          fi
+      - name: Create code-only bundles and reconstruct both branches offline
+        env:
+          PREVIOUS_ID: ${{ steps.history.outputs.previous }}
+          INPUT_MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          python3 tools/p1_dual_code_backup.py \
+            --repo . --output recovery --history history \
+            --run-id "$GITHUB_RUN_ID" --previous-id "$\{PREVIOUS_ID:-\}" \
+            --mode "$\{INPUT_MODE:-auto\}"
+      - name: Preserve manifests, separate bundles and restore receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-dual-code-${{ github.run_id }}
+          path: recovery/
+          retention-days: 35
+          if-no-files-found: error
