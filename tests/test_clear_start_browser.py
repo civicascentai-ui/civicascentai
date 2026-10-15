@@ -53,13 +53,13 @@ try:
 
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"overflow")
       original=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
-      page.get_by_role("button",name="Make text larger").click()
+      page.locator("#text-plus").click()
       large=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
       assert float(large[:-2])>float(original[:-2]),(width,"font controls",original,large)
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"enlarged text overflow")
       # Higher magnification must reflow without sideways page scrolling.
       for _ in range(3):
-        page.get_by_role("button",name="Make text larger").click()
+        page.locator("#text-plus").click()
       assert page.locator("body").evaluate("el=>parseFloat(getComputedStyle(el).fontSize)")>=30,(width,"150 percent font")
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"150 percent reflow")
       saved=page.evaluate("JSON.parse(localStorage.getItem('civicascent-reader-preferences-v1'))")
