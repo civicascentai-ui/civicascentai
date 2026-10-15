@@ -49,11 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Read-only public production smoke and isolated shadow checks
+      - name: Read-only public production smoke and current stable shadow alias checks
         shell: bash
         env:
           PRODUCTION_URL: https://civicascentai.com/
-          SHADOW_URL: https://civicascentai-launch-9rj1lutsy-civicascentai.vercel.app/
+          SHADOW_URL: https://civicascentai-launch-qa.vercel.app/
         run: |
           set -euo pipefail
           mkdir -p evidence
