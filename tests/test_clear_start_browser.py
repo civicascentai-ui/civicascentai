@@ -36,7 +36,7 @@ try:
       assert page.locator("main .choice").count()==3,(width,"3 choices")
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"overflow")
       original=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
-      page.get_by_role("button",name="A+ Larger").click()
+      page.get_by_role("button",name="Make text larger").click()
       large=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
       assert float(large[:-2])>float(original[:-2]),(width,"font controls",original,large)
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"enlarged text overflow")
