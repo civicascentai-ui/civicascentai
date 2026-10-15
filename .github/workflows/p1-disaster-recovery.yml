@@ -62,7 +62,7 @@ jobs:
           mkdir -p evidence
           printf 'route\tproduction_http\tstandby_http\tproduction_sha256\tstandby_sha256\tparity\n' > evidence/route-parity.tsv
           failures=0
-          for route in root index.html safari-home.html es.html register.html journey-learn.html practice-sandbox.html journey-help.html veterans.html assets/home-reference.js assets/civicascent-logo.svg; do
+          for route in root index.html safari-home.html es.html register.html journey-learn.html journey-try.html journey-help.html journey-continue.html practice-sandbox.html veterans.html free-ai-starter.html programs.html course.html consultation.html curso-es.html registro.html clear-start.html capabilities.html mentor.html learner-questions.html assets/home-reference.css assets/home-reference.js assets/civicascent-logo.svg assets/safari-build1-live.css assets/veterans-entrance.css assets/clear-start.css assets/practice-lab.css assets/learner-preferences.js assets/practice-lab.js styles.css; do
             suffix="$route"
             if [ "$route" = root ]; then suffix=""; fi
             slug=$(printf '%s' "$route" | tr '/' '_')
