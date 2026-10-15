@@ -1,0 +1,6 @@
+{
+  "name": "civicascentai-production-readonly-qa",
+  "private": true,
+  "scripts": { "test:production": "playwright test" },
+  "devDependencies": { "@playwright/test": "1.55.0" }
+}
