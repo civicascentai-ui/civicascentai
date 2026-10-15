@@ -74,3 +74,41 @@ footer{padding:24px clamp(20px,6vw,82px);background:var(--band);border-top:2px s
  .reassurance{margin:20px 17px 55px;padding:20px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Owner's expanded blueprint: four visible links instead of a hidden menu. */
+.site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo utilities" "nav nav";row-gap:15px;column-gap:16px}
+.logo{grid-area:logo;min-width:0}
+.logo small{font-size:1.125rem;white-space:normal;line-height:1.4}
+.header-actions{grid-area:utilities;display:flex;align-items:center;justify-content:flex-end;max-width:100%}
+.header-actions a{display:flex;align-items:center;min-height:54px;padding:12px 16px;font-size:1.125rem;line-height:1.45;font-weight:780;text-decoration:underline;border:2px solid var(--line);border-radius:12px;background:var(--surface);max-width:100%}
+.top-links{grid-area:nav;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;justify-content:stretch;width:100%}
+.top-links a{display:flex;align-items:center;justify-content:center;min-width:0;min-height:62px;text-align:center;overflow-wrap:anywhere;line-height:1.35;border-color:var(--line)}
+/* Two calls to action: the second is an existing self-service help page, not a staffed live chat. */
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.hero-cta a,.featured-grid a,.support-grid a{display:inline-flex;align-items:center;justify-content:center;min-height:61px;max-width:100%;padding:13px 20px;font-size:1.125rem;font-weight:800;line-height:1.45;text-decoration:none;text-align:center;border-radius:12px;border:2px solid var(--accent);overflow-wrap:anywhere}
+.hero-cta .primary-cta,.featured-grid a{color:var(--accent-text);background:var(--accent)}
+.hero-cta .secondary-cta,.support-grid a{background:var(--surface);color:var(--ink)}
+.featured,.support-services{padding:55px clamp(20px,6vw,82px)}
+.featured{background:var(--band)}
+.featured h2,.support-services h2{font-size:clamp(1.55rem,3.2vw,2.4rem);line-height:1.2;margin:0 0 15px}
+.featured>p{font-size:1.125rem;line-height:1.65;max-width:64ch;margin:0 0 22px}
+.featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pathway,.support-grid>div{display:flex;flex-direction:column;gap:17px;min-width:0;border:2px solid var(--line);border-top:6px solid var(--gold);border-radius:14px;background:var(--surface);padding:24px}
+.pathway h3,.support-grid h3{font-size:clamp(1.35rem,2.4vw,1.8rem);line-height:1.35;margin:0;overflow-wrap:anywhere}
+.pathway p,.support-grid p{font-size:1.125rem;line-height:1.65;color:var(--muted);margin:0 0 12px;flex:1}
+.pathway a,.support-grid a{margin-top:auto}
+.support-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0 0}
+.support-note{font-size:1.125rem;line-height:1.65;margin:22px 0 0;border-left:5px solid var(--gold);padding:16px 20px;background:var(--band)}
+@media(max-width:1050px){.featured-grid{grid-template-columns:1fr 1fr}.support-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .site-header{grid-template-columns:1fr;grid-template-areas:"logo" "utilities" "nav";row-gap:12px;padding:16px 18px}
+ .header-actions{justify-content:stretch}
+ .header-actions a{width:100%}
+ .top-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .top-links a{width:100%;min-height:63px;padding:10px}
+ .hero-cta{display:grid;grid-template-columns:1fr}
+ .hero-cta a{width:100%}
+ .featured,.support-services{padding:38px 17px}
+ .featured-grid,.support-grid{grid-template-columns:1fr}
+ .pathway,.support-grid>div{padding:22px}
+}
