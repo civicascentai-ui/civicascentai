@@ -1,0 +1,70 @@
+name: All Systems Independent Read-Only QC (no spend)
+on:
+  push:
+    branches:
+      - qa/all-systems-readonly-20261015
+    paths:
+      - tools/qa/all_systems_readonly_audit.py
+      - .github/workflows/all-systems-readonly-qc.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-http-and-parity:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read-only live production and Shadow House HTTP, HTML and body SHA checks
+        run: python3 tools/qa/all_systems_readonly_audit.py
+      - name: Preserve every public test result even on defect
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-systems-public-${{ github.run_id }}
+          path: all-systems-evidence/
+          retention-days: 7
+          if-no-files-found: warn
+
+  offline-hold-and-veteran-qc:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Offline test payment checkout remains disabled (no Stripe call)
+        run: node tests/verify_signup_only.mjs
+      - name: Offline synthetic veteran entitlement lifecycle (no real payments)
+        run: python3 -m unittest discover -s tests -p 'veterans_lifecycle_test.py' -v
+      - name: Offline Git backup full, incremental and no-change restore fixtures
+        run: python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+
+  browser-accessibility:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install fixed browser and local automated accessibility tools
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Read-only axe WCAG automated live production checks (not a compliance certification)
+        run: node tools/qa/wcag_axe_audit.cjs
+      - name: Preserve actual WCAG defects and pass evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-systems-accessibility-${{ github.run_id }}
+          path: wcag-evidence/
+          retention-days: 7
+          if-no-files-found: warn
