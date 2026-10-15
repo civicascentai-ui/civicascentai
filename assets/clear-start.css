@@ -1,0 +1,72 @@
+/* Clarity-first prototype. Native HTML, high contrast, no third-party overlay.
+   WCAG conformance is NOT claimed until independent manual and automated QC. */
+:root{--ink:#11243b;--paper:#fffef9;--surface:#fff;--band:#f3f6f8;--line:#526a7c;--accent:#064e69;--accent-text:#fff;--focus:#d66000;--muted:#293e52;--font-base:20px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;font:400 var(--font-base)/1.65 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.005em;color:var(--ink);background:var(--paper)}
+body[data-theme="dark"]{--ink:#fff9ec;--paper:#0c1a2b;--surface:#162b40;--band:#1a3247;--line:#b9cddb;--accent:#f8d58f;--accent-text:#102030;--focus:#ffce55;--muted:#f2e6d1}
+a{color:inherit;text-underline-offset:4px}
+a:focus-visible,button:focus-visible{outline:4px solid var(--focus)!important;outline-offset:4px}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.skip{position:absolute;top:-120px;left:12px;background:var(--accent);color:var(--accent-text);padding:13px 18px;z-index:100;text-decoration:none;border-radius:8px;font-weight:750}
+.skip:focus{top:12px}
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px clamp(18px,5vw,72px);background:var(--surface);border-bottom:3px solid var(--line)}
+.logo{display:flex;gap:12px;align-items:center;text-decoration:none;min-width:0}
+.logo img{width:50px;height:50px;object-fit:contain;flex-shrink:0}
+.logo span{display:grid;gap:1px;line-height:1.22}
+.logo strong{font-size:1.2rem;font-weight:850;white-space:nowrap}
+.logo small{font-size:.72rem;color:var(--muted);font-weight:680}
+.top-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.top-links a{font-size:.79rem;font-weight:750;border:2px solid var(--line);text-decoration:none;padding:10px 15px;border-radius:10px;min-height:54px;display:inline-flex;align-items:center;background:var(--surface)}
+main{max-width:1350px;margin:0 auto}
+.intro{padding:72px clamp(21px,6vw,82px) 46px;isolation:isolate;position:relative}
+.intro .eyebrow{font-size:.78rem;color:var(--accent);letter-spacing:.095em;font-weight:850;margin:0 0 16px}
+.intro h1{font-size:clamp(2.15rem,5.5vw,3.8rem);font-weight:820;line-height:1.12;letter-spacing:-.027em;max-width:17ch;margin:0 0 23px}
+.intro .lead{font-size:1.15rem;max-width:53ch;line-height:1.65;margin:0 0 24px}
+.intro .note{font-weight:750;max-width:56ch;border-left:6px solid var(--accent);background:var(--band);padding:15px 20px;margin:0;border-radius:6px}
+body.show-scene .intro{background:linear-gradient(90deg,rgba(10,24,39,.96),rgba(10,24,39,.76)),url("safari/scene-01-lodge-panorama.jpg") center / cover;color:#fff!important}
+body.show-scene .intro .eyebrow,body.show-scene .intro .note{color:#fff}
+body.show-scene .intro .note{background:#172d3a;border-left-color:#f9d58c}
+.preferences{margin:0 clamp(20px,6vw,82px);padding:28px clamp(16px,3vw,40px);background:var(--band);border:2px solid var(--line);border-radius:16px}
+.preferences h2,.paths h2,.more h2,.reassurance h2{font-size:clamp(1.45rem,2.8vw,2.15rem);line-height:1.18;letter-spacing:-.01em;margin:0 0 13px}
+.preferences p{font-size:.89rem;line-height:1.55}
+.preferences-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:22px 0 14px}
+.control-group{display:flex;flex-wrap:wrap;align-items:center;align-content:flex-start;gap:9px}
+.control-group strong{flex:1 0 100%;font-size:.86rem}
+.control-group button{border:2px solid var(--line);border-radius:10px;background:var(--surface);min-height:56px;padding:11px 15px;font-size:.83rem;font-weight:750}
+.control-group button[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+#settings-status{border-left:4px solid var(--accent);padding:9px 12px;margin:12px 0 0;min-height:40px;background:var(--surface);font-size:.84rem}
+.paths{padding:70px clamp(20px,6vw,82px) 40px}
+.paths .description{max-width:62ch;margin:0 0 28px;color:var(--muted);font-size:1.03rem}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.choice{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:3px solid var(--line);border-radius:15px;padding:clamp(17px,2.6vw,33px);min-width:0}
+.choice .step{margin:0;font-size:.78rem;font-weight:850;letter-spacing:.09em;color:var(--accent)}
+.choice h3{font-size:clamp(1.3rem,2.3vw,1.8rem);line-height:1.25;margin:0}
+.choice p:not(.step){margin:0;flex:1;color:var(--muted);font-size:.95rem;line-height:1.55}
+.choice-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;border-radius:12px;padding:14px 20px;background:var(--accent);color:var(--accent-text);font-weight:850;text-decoration:none;line-height:1.25;overflow-wrap:anywhere}
+.choice-link:hover,.choice-link:focus-visible{text-decoration:underline}
+.more{margin:15px clamp(20px,6vw,82px);padding:25px 0}
+.more-choices{display:flex;flex-wrap:wrap;gap:11px}
+.more-choices a{display:inline-flex;align-items:center;min-height:60px;padding:12px 18px;border:2px solid var(--line);border-radius:11px;background:var(--surface);font-weight:750;font-size:.92rem}
+.reassurance{margin:35px clamp(20px,6vw,82px) 70px;padding:27px 35px;border-left:6px solid var(--accent);background:var(--band);border-radius:10px}
+.reassurance p{font-size:.96rem;max-width:75ch;line-height:1.65;margin:0}
+footer{padding:24px clamp(20px,6vw,82px);background:var(--band);border-top:2px solid var(--line);text-align:center;font-size:.78rem}
+@media(max-width:1080px){.preferences-controls{grid-template-columns:1fr 1fr}.choices{grid-template-columns:1fr 1fr}.intro{padding-top:52px}}
+@media(max-width:760px){
+ .site-header{align-items:flex-start;flex-direction:column;padding:13px 19px}
+ .top-links{width:100%;justify-content:flex-start}
+ .top-links a{min-height:49px}
+ .intro{padding:46px 20px 28px}
+ .intro h1{font-size:clamp(2.05rem,8vw,3.25rem)}
+ .preferences{margin:0 17px;padding:21px 18px}
+ .preferences-controls{grid-template-columns:1fr}
+ .paths{padding:45px 17px 20px}
+ .choices{grid-template-columns:1fr}
+ .choice{padding:22px}
+ .more{margin:20px 17px}
+ .more-choices{display:grid}
+ .more-choices a{display:flex}
+ .reassurance{margin:20px 17px 55px;padding:20px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
