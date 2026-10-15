@@ -1,0 +1,40 @@
+name: P1 Shadow Recovery Chain Guard - Isolated QC
+on:
+  push:
+    branches:
+      - recovery/p1-code-chain-hardening-20261015
+    paths:
+      - .github/workflows/p1-shadow-chain-hardening-qa.yml
+      - tools/p1_dual_code_backup.py
+      - tests/test_p1_dual_code_backup.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-chain-integrity:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile recovery code and run full, incremental, unchanged, tamper fixtures
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/p1_dual_code_backup.py tests/test_p1_dual_code_backup.py
+          python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+      - name: Check recovery privacy, no deployment and shadow scope limits
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          content=Path("tools/p1_dual_code_backup.py").read_text()
+          assert "restored-and-verified-git-code-only" in content
+          assert "Unverified previous recovery manifest" in content
+          assert "Recovery chain prefix mismatch" in content
+          assert "'databases'" in content and "'secrets'" in content
+          assert "DEFAULT_STANDBY_GIT_SHA" in content
+          print("PASS: code-only recovery scope, error handling and immutable branch test confirmed")
+          PY
