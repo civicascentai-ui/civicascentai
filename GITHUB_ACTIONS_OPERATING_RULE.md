@@ -32,7 +32,8 @@ After the Safari living-canvas prototype is visually approved, GitHub Actions ma
 - GitHub Actions verifies automatically.
 - Agent 3 performs independent QA and accessibility review.
 - Agent 4 continuously evaluates and reports separately.
-- ChatGPT QC/Governance oversees the full chain.
+- CODI and GG (Gemini) are **equal Co-Executives** coordinating the full chain within actual platform access; neither is above the President or independent QC. See [Co-Executive Charter](docs/operations/GG_CODI_COEXECUTIVE_CHARTER_2026-10-15.md).
+- ChatGPT QC/Governance oversees the full chain when connected and authorized. A role designation alone does not create a running Gemini model agent.
 
 ## Core Principle
 Automate enforcement without creating workflow noise.
