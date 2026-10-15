@@ -32,6 +32,37 @@ def load_manifest(path):
         raise ValueError(f'Unrecognized recovery manifest: {path}')
     return data
 
+def validate_chain_manifest(manifest, chain, index, is_current=False):
+    """Fail closed on gaps, unverified artifacts, or tampered parent links."""
+    run_id = str(chain[index])
+    expected_prefix = [str(x) for x in chain[:index + 1]]
+    if str(manifest.get('run_id')) != run_id:
+        raise ValueError(f'Manifest/run mismatch: {run_id}')
+    if manifest.get('chain_runs') != expected_prefix:
+        raise ValueError(f'Recovery chain prefix mismatch: {run_id}')
+    if len(expected_prefix) != len(set(expected_prefix)):
+        raise ValueError('Duplicate recovery chain IDs')
+    expected_parent = str(chain[index - 1]) if index else None
+    if manifest.get('previous_run_id') != expected_parent:
+        raise ValueError(f'Recovery chain parent mismatch: {run_id}')
+    expected_mode = 'full' if index == 0 else 'incremental'
+    if manifest.get('backup_mode') != expected_mode:
+        raise ValueError(f'Recovery mode mismatch: {run_id}')
+    if manifest.get('status') != ('unverified' if is_current else 'restored-and-verified-git-code-only'):
+        raise ValueError(f'Unverified recovery chain entry: {run_id}')
+    envs = manifest.get('environments')
+    if not isinstance(envs, dict) or set(envs) != set(SOURCE_REFS):
+        raise ValueError(f'Incomplete recovery environment inventory: {run_id}')
+    for name, entry in envs.items():
+        if entry.get('kind') not in (('full',) if index == 0 else ('incremental', 'unchanged')):
+            raise ValueError(f'Invalid recovery bundle kind for {name}: {run_id}')
+        expected_bundle = f"{name}-{entry['kind']}.bundle" if entry['kind'] != 'unchanged' else None
+        if entry.get('bundle') != expected_bundle:
+            raise ValueError(f'Unsafe or incorrect bundle path for {name}: {run_id}')
+        if entry['kind'] == 'unchanged' and entry.get('sha256') is not None:
+            raise ValueError(f'Unexpected digest for unchanged {name}: {run_id}')
+
+
 def restore_chain(chain, root, current_dir):
     with tempfile.TemporaryDirectory(prefix='p1-recovery-') as temp:
         for name in SOURCE_REFS:
@@ -41,8 +72,8 @@ def restore_chain(chain, root, current_dir):
             for run_id in chain:
                 bundle_root = current_dir if run_id == chain[-1] else root / run_id
                 manifest = load_manifest(bundle_root / 'manifest.json')
-                if str(manifest['run_id']) != str(run_id):
-                    raise ValueError(f'Manifest/run mismatch: {run_id}')
+                validate_chain_manifest(manifest, chain, chain.index(run_id),
+                                        is_current=(run_id == chain[-1]))
                 entry = manifest['environments'][name]
                 if entry['kind'] != 'unchanged':
                     archive = bundle_root / entry['bundle']
@@ -91,6 +122,17 @@ def main():
         previous = load_manifest(history / args.previous_id / 'manifest.json')
         if str(previous['run_id']) != args.previous_id:
             raise ValueError('Previous run ID does not match manifest')
+        parent_chain = previous.get('chain_runs')
+        if not isinstance(parent_chain, list) or not parent_chain or parent_chain[-1] != args.previous_id:
+            raise ValueError('Invalid previous recovery chain')
+        if previous.get('status') != 'restored-and-verified-git-code-only':
+            raise ValueError('Unverified previous recovery manifest')
+        if len(parent_chain) != len(set(parent_chain)) or previous.get('backup_mode') not in ('full', 'incremental'):
+            raise ValueError('Invalid previous recovery chain manifest')
+        if previous.get('previous_run_id') != (parent_chain[-2] if len(parent_chain) > 1 else None):
+            raise ValueError('Previous recovery chain parent mismatch')
+        if set(previous.get('environments', {})) != set(SOURCE_REFS):
+            raise ValueError('Incomplete previous recovery environment list')
     full = args.mode == 'full' or weekday == 7 or previous is None
     mode = 'full' if full else 'incremental'
     chain = [args.run_id] if full else [*previous['chain_runs'], args.run_id]
