@@ -2,6 +2,10 @@ name: "P1 production and shadow code: daily incremental, Sunday full"
 on:
   schedule:
     - cron: '17 8 * * *'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/p1-dual-code-backups.yml'
   workflow_dispatch:
     inputs:
       mode:
