@@ -1,0 +1,31 @@
+name: Shadow House repaired monitor smoke test
+on:
+  push:
+    branches:
+      - production/shadow-concat-20261014
+    paths:
+      - '.github/workflows/shadow-monitor-smoke.yml'
+      - 'tools/qa/shadow_live_watch.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run one read-only checkpoint without extending expired monitoring window
+        env:
+          CUT_OFF_UTC: '2026-10-15T02:37:00Z'
+          INTERVAL_SECONDS: '1'
+        run: python3 -u tools/qa/shadow_live_watch.py
+      - name: Upload read-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shadow-monitor-smoke-receipts
+          path: shadow-live-receipts/
+          retention-days: 7
