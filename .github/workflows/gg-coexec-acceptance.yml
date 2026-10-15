@@ -32,6 +32,20 @@ jobs:
           python3 agents/autonomous_worker.py --role gg --offline-self-check
       - name: Check Blue Crew schedule and six-role registry
         run: python3 agents/blue_crew_shifts.py --self-test
+      - name: Live read-only co-executive queue checks (public issues only)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 agents/autonomous_worker.py --role codi --output-dir agent-receipts
+          python3 agents/autonomous_worker.py --role gg --output-dir agent-receipts
+      - name: Preserve actual GG and CODI read-only receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-codi-parity-${{ github.run_id }}
+          path: agent-receipts/
+          retention-days: 1
+          if-no-files-found: warn
       - name: Validate authority controls and no Gemini model generation
         run: |
           python3 - <<'PY'
