@@ -25,7 +25,10 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m py_compile tools/p1_dual_code_backup.py tests/test_p1_dual_code_backup.py
-          python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+          for iteration in $(seq 1 12); do
+            echo "Isolated chain restore/tamper regression run $iteration/12"
+            python3 -m unittest discover -s tests -p 'test_p1_dual_code_backup.py' -v
+          done
       - name: Check recovery privacy, no deployment and shadow scope limits
         run: |
           python3 - <<'PY'
