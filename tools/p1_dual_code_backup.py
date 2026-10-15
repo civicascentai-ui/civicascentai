@@ -8,9 +8,13 @@ import pathlib
 import subprocess
 import tempfile
 
+# Verified Vercel standby alias civicascentai-launch-qa.vercel.app was deployed
+# from this Git commit (dpl_B6uYcvPPYqaBh7y5zEhQQrjmTJq1), not the
+# historical production/shadow-concat-20261014 branch. Re-pin on deployments.
+DEFAULT_STANDBY_GIT_SHA = '63e18246756ac615dfa9e7d10248aed0ea4031d6'
 SOURCE_REFS = {
     'production': 'refs/remotes/origin/main',
-    'shadow': 'refs/remotes/origin/production/shadow-concat-20261014',
+    'shadow': DEFAULT_STANDBY_GIT_SHA,
 }
 
 def git(*args, cwd=None):
@@ -65,6 +69,8 @@ def main():
     p.add_argument('--history', required=True)
     p.add_argument('--run-id', required=True)
     p.add_argument('--previous-id', default='')
+    p.add_argument('--standby-ref', default=DEFAULT_STANDBY_GIT_SHA,
+                   help='Exact deployed standby Git SHA; override in isolated fixtures')
     p.add_argument('--mode', choices=['auto', 'full'], default='auto')
     p.add_argument('--weekday', type=int, choices=range(1, 8), default=None,
                    help='1=Monday through 7=Sunday; only for fixture testing')
@@ -93,6 +99,8 @@ def main():
 
     environments = {}
     for name, ref in SOURCE_REFS.items():
+        if name == 'shadow':
+            ref = args.standby_ref
         current = git('-C', args.repo, 'rev-parse', f'{ref}^{{commit}}')
         localref = f'refs/heads/p1-snapshot-{name}'
         git('-C', args.repo, 'update-ref', localref, current)
