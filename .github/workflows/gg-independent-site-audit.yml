@@ -3,9 +3,12 @@ on:
   workflow_dispatch:
     inputs:
       run_gemini:
-        description: 'Call Gemini API for independent review (may consume API quota)'
+        description: 'Request Gemini review (requires separate paid-usage approval)'
         type: boolean
-        required: true
+        default: false
+      gg_paid_usage_approved:
+        description: 'I verified billing and explicitly approve possible Gemini API charges'
+        type: boolean
         default: false
   schedule:
     - cron: '23 9 * * 1'
@@ -15,76 +18,74 @@ concurrency:
   group: gg-site-audit
   cancel-in-progress: false
 jobs:
-  audit:
+  http-and-gemini:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     steps:
-      - name: Read-only site checks and evidence
+      - uses: actions/checkout@v4
+      - name: Run read-only site checks; diagnose Gemini only with separate approval
         env:
           RUN_GEMINI: ${{ inputs.run_gemini || 'false' }}
+          GG_PAID_USAGE_APPROVED: ${{ inputs.gg_paid_usage_approved || 'false' }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          mkdir -p gg-audit
-          cat > /tmp/gg_audit.py <<'PY'
-          import json, os, urllib.request, urllib.error, datetime
-          from pathlib import Path
-          base="https://civicascentai.com/"
-          paths=["","journey-learn.html","journey-try.html","journey-help.html","journey-continue.html","free-ai-starter.html","register.html"]
-          results=[]
-          for p in paths:
-              try:
-                  req=urllib.request.Request(base+p,headers={"User-Agent":"CivicAscent-GG-Audit/1.0"})
-                  with urllib.request.urlopen(req,timeout=18) as resp:
-                      body=resp.read(250000).decode("utf-8","replace")
-                      results.append({"path":"/"+p,"status":resp.status,"final_url":resp.url,"html":("<html" in body.lower()),"title_present":"<title" in body.lower(),"pass":resp.status==200 and "<html" in body.lower()})
-              except Exception as e:
-                  results.append({"path":"/"+p,"pass":False,"error":str(e)[:200]})
-          receipt={"utc":datetime.datetime.now(datetime.timezone.utc).isoformat(),"mode":"read_only","site":base,"checks":results,"all_pass":all(r["pass"] for r in results),"limitations":["HTTP checks only; no accessibility certification, browser interaction, payment testing or recovery drill"]}
-          Path("gg-audit/http-audit.json").write_text(json.dumps(receipt,indent=2))
-          report="# GG site audit evidence\n\n"+ "\n".join(f"- {r['path']}: {'PASS' if r['pass'] else 'FAIL'}; HTTP {r.get('status','ERROR')}" for r in results)+"\n\nHTTP-only checks; full site QC is not certified.\n"
-          Path("gg-audit/report.md").write_text(report)
-          if os.getenv("RUN_GEMINI","false").lower()=="true":
-              key=os.getenv("GEMINI_API_KEY","")
-              if not key:
-                  Path("gg-audit/gemini-status.txt").write_text("BLOCKED: GEMINI_API_KEY secret not configured")
-                  raise SystemExit("Gemini requested but secret missing")
-              prompt="Independently audit these READ-ONLY HTTP QC results for a nonprofit AI education site. Identify failures, accessibility testing gaps, priority risks and next tests. Never claim browser, WCAG, payments or disaster recovery were tested. Respond concisely.\n"+json.dumps(receipt)
-              # Discover models allowed for this key instead of assuming a fixed model.
-              models_req=urllib.request.Request("https://generativelanguage.googleapis.com/v1beta/models",headers={"x-goog-api-key":key})
-              try:
-                  with urllib.request.urlopen(models_req,timeout=25) as resp: models=json.load(resp).get("models",[])
-              except urllib.error.HTTPError as e:
-                  Path("gg-audit/gemini-status.txt").write_text(f"Model discovery failed: HTTP {e.code}; no generation request sent")
-                  raise SystemExit(1)
-              eligible=[m["name"] for m in models if "generateContent" in m.get("supportedGenerationMethods",[]) and "flash" in m.get("name","").lower()]
-              if not eligible:
-                  Path("gg-audit/gemini-status.txt").write_text("No accessible Flash generateContent model; no generation request sent")
-                  raise SystemExit(1)
-              preferred=next((n for n in eligible if n.endswith("/gemini-2.5-flash")),eligible[0])
-              Path("gg-audit/gemini-model.txt").write_text(preferred)
-              url="https://generativelanguage.googleapis.com/v1beta/"+preferred+":generateContent"
-              data=json.dumps({"contents":[{"parts":[{"text":prompt}]}],"generationConfig":{"maxOutputTokens":1800}}).encode()
-              req=urllib.request.Request(url,data=data,headers={"x-goog-api-key":key,"Content-Type":"application/json"},method="POST")
-              try:
-                  with urllib.request.urlopen(req,timeout=75) as resp: answer=json.load(resp)
-                  text="\n".join(p.get("text","") for c in answer.get("candidates",[]) for p in c.get("content",{}).get("parts",[]))
-                  Path("gg-audit/gemini-review.md").write_text(text or "No text returned; review incomplete")
-              except Exception as e:
-                  Path("gg-audit/gemini-status.txt").write_text("Gemini API call failed: "+str(e)[:250])
-                  raise
-          PY
-          python3 /tmp/gg_audit.py
-      - name: Upload audit evidence
+        run: python3 tools/qa/gg_site_audit.py
+      - name: Upload audit evidence even when checks fail
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gg-site-audit-${{ github.run_id }}
+          name: gg-http-evidence-${{ github.run_id }}
           path: gg-audit/
           retention-days: 14
-      - name: Fail on HTTP defects
+  browser-qc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Install headless browser
         run: |
-          python3 - <<'PY'
+          python3 -m pip install --user playwright==1.55.0
+          python3 -m playwright install --with-deps chromium
+      - name: Read-only browser navigation and accessibility indicators
+        run: |
+          mkdir -p gg-browser
+          cat > /tmp/gg_browser.py <<'PY'
           import json
-          r=json.load(open('gg-audit/http-audit.json'))
-          assert r['all_pass'], 'Site HTTP checks failed; inspect GG audit artifact'
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          base="https://civicascentai.com/"
+          paths=["","journey-learn.html","journey-try.html","journey-help.html","journey-continue.html","free-ai-starter.html","register.html"]
+          results=[]
+          with sync_playwright() as pw:
+              browser=pw.chromium.launch(headless=True)
+              for path in paths:
+                  page=browser.new_page(viewport={"width":390,"height":844},reduced_motion="reduce")
+                  item={"path":"/"+path}
+                  try:
+                      resp=page.goto(base+path,wait_until="domcontentloaded",timeout=30000)
+                      page.wait_for_timeout(400)
+                      item["http_status"]=resp.status if resp else None
+                      item["title"]=page.title()
+                      item["main_count"]=page.locator("main").count()
+                      item["html_lang"]=page.locator("html").get_attribute("lang")
+                      item["missing_image_alt"]=page.locator("img:not([alt])").count()
+                      item["unlabeled_buttons"]=page.locator("button:not([aria-label]):not([aria-labelledby])").evaluate_all("(els)=>els.filter(e=>!e.innerText.trim()).length")
+                      item["horizontal_overflow"]=page.evaluate("document.documentElement.scrollWidth > innerWidth + 2")
+                      item["internal_links"]=page.locator('a[href^="/"], a[href^="https://civicascentai.com"]').count()
+                      item["pass"]=item["http_status"]==200 and bool(item["title"]) and bool(item["html_lang"]) and item["missing_image_alt"]==0 and item["unlabeled_buttons"]==0 and not item["horizontal_overflow"]
+                  except Exception as exc:
+                      item["pass"]=False
+                      item["error"]=str(exc)[:250]
+                  results.append(item)
+                  page.close()
+              browser.close()
+          Path("gg-browser/browser-audit.json").write_text(json.dumps({"checks":results,"all_pass":all(r["pass"] for r in results),"limitations":["Automated smoke indicators only; not WCAG certification, full keyboard testing, registration submission or payment testing"]},indent=2))
+          for r in results: print(r["path"],"PASS" if r["pass"] else "FAIL",r.get("error",""))
+          if not all(r["pass"] for r in results): raise SystemExit("Browser QC defects; inspect artifact")
           PY
+          python3 /tmp/gg_browser.py
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-browser-evidence-${{ github.run_id }}
+          path: gg-browser/
+          retention-days: 14
