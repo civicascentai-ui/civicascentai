@@ -1,0 +1,46 @@
+/* Blue Crew deterministic product E2E smoke: local-only. No payments/forms/emails. */
+"use strict";
+const fs=require("fs"), assert=require("node:assert/strict");
+const {chromium}=require("playwright");
+const role=process.argv[2], roles=["sam","friday","scout","zebra","reach"];
+if(!roles.includes(role))throw Error("Unrecognized role");
+const base="http://127.0.0.1:8767",results=[];
+async function test(name,fn){try{const extra=await fn()||{};results.push({name,status:"PASS",...extra});console.log("PASS",name);}
+catch(e){results.push({name,status:"FAIL",detail:String(e.message||e).slice(0,400)});console.log("FAIL",name,String(e.message||e).slice(0,220));}}
+async function pageAt(browser,path,width=390){const page=await browser.newPage({viewport:{width,height:850},reducedMotion:"reduce",acceptDownloads:false});await page.route("https://**/*",r=>r.abort());const response=await page.goto(base+path,{waitUntil:"load",timeout:20000});assert.equal(response?.status(),200,path);return page;}
+async function run(browser){
+if(role==="friday"){
+await test("Homepage to Learn entry",async()=>{const p=await pageAt(browser,"/");assert.equal(await p.locator("main").count(),1);await p.locator('a[href="journey-learn.html"]').first().click();await p.waitForURL(/journey-learn\.html/);await p.close();});
+await test("Veterans entrance to no-cost sample",async()=>{const p=await pageAt(browser,"/veterans.html");await p.locator('a[href="free-ai-starter.html"]').first().click();await p.waitForURL(/free-ai-starter\.html/);assert.match(await p.locator("body").innerText(),/free sample|no payment required/i);assert.equal(await p.locator("h1").count(),1,"Unmerged duplicate h1: see PR #123");await p.close();});
+await test("Fictional prompt builder and reset",async()=>{const p=await pageAt(browser,"/practice-sandbox.html");await p.selectOption("#practice-scenario","veterans");await p.click("#load-example");await p.click("#build-prompt");assert.equal(await p.locator("#prompt-feedback").getAttribute("data-pass"),"true");assert.equal(await p.locator("#copy-prompt").isDisabled(),false);await p.click("#reset-prompt");assert.equal(await p.locator("#copy-prompt").isDisabled(),true);await p.close();});
+await test("Fictional verification and privacy stations",async()=>{const p=await pageAt(browser,"/practice-sandbox.html");await p.locator('.practice-tab[data-activity="verify"]').click();await p.check("#verify-time");await p.check("#verify-cost");await p.click("#check-facts");assert.equal(await p.locator("#verify-feedback").getAttribute("data-pass"),"true");await p.locator('.practice-tab[data-activity="privacy"]').click();await p.check("#privacy-fictional");await p.check("#privacy-goal");await p.click("#check-privacy");assert.equal(await p.locator("#privacy-feedback").getAttribute("data-pass"),"true");await p.close();});
+await test("Free workshop registration visible without paid order",async()=>{const p=await pageAt(browser,"/register.html");assert.match(await p.locator("body").innerText(),/\$0/);assert.ok(await p.locator('a[href^="https://book.stripe.com/"]').count());await p.close();return {limit:"Hosted registration not submitted; no confirmed registration"};});
+}
+if(role==="sam"){
+await test("Five lesson MP3 files available",async()=>{const c=await browser.newContext(),files=[];for(let i=1;i<=5;i++){const x=await c.request.get(base+"/assets/audio/lesson-"+i+".mp3");assert.equal(x.status(),200,"Audio "+i);const bytes=(await x.body()).length;assert.ok(bytes>1000,"Empty lesson audio "+i);files.push({lesson:i,bytes});}await c.close();return {files};});
+await test("Five lesson buttons and transcript switch",async()=>{const p=await pageAt(browser,"/course.html",1280);assert.equal(await p.locator("#lesson-buttons button").count(),5);await p.locator("#lesson-buttons button").last().click();assert.match(await p.locator("#audio-title").innerText(),/Lesson 5/i);assert.ok((await p.locator("#transcript-text").innerText()).length>100);await p.close();});
+await test("Practice scripts no page errors",async()=>{const p=await browser.newPage(),errors=[];p.on("pageerror",e=>errors.push(String(e)));await p.goto(base+"/practice-sandbox.html",{waitUntil:"load"});assert.equal(await p.locator(".practice-tab").count(),3);assert.deepEqual(errors,[]);await p.close();});
+await test("320px reflow of course and sandbox",async()=>{const defects=[];for(const route of ["/course.html","/practice-sandbox.html","/veterans.html"]){const p=await pageAt(browser,route,320);const v=await p.evaluate(()=>({body:document.documentElement.scrollWidth,viewport:innerWidth,main:document.querySelectorAll("main").length}));if(v.body>v.viewport+2||v.main!==1){const offending=await p.evaluate(()=>[...document.querySelectorAll("body *")].filter(el=>{const q=el.getBoundingClientRect();return q.width&&q.right>innerWidth+2}).slice(0,12).map(el=>({tag:el.tagName,classes:el.className?.toString().slice(0,80),right:Math.round(el.getBoundingClientRect().right),width:Math.round(el.getBoundingClientRect().width),text:el.textContent?.trim().slice(0,65)})));defects.push({route,...v,offending});}await p.close();}assert.deepEqual(defects,[]);});
+}
+if(role==="scout"){
+await test("Twenty public learner pages and their internal link targets resolve",async()=>{
+const urls=["/","/index.html","/journey-learn.html","/journey-try.html","/journey-help.html","/journey-continue.html","/veterans.html","/free-ai-starter.html","/course.html","/programs.html","/level2.html","/practice-sandbox.html","/register.html","/registro.html","/registered.html","/consultation.html","/es.html","/curso-es.html","/learner-interest.html","/learner-questions.html"];const c=await browser.newContext(),broken=[],targets=new Set();
+for(const route of urls){const x=await c.request.get(base+route);if(x.status()!==200){broken.push({route,status:x.status()});continue;}const txt=await x.text();for(const m of txt.matchAll(/(?:href|src)=["']([^"'#]+)["']/g)){const link=m[1];if(/^(#|https?:|\/\/|mailto:|tel:|data:|javascript:)/i.test(link))continue;const dest=new URL(link,base+route);if(dest.origin===base)targets.add(dest.pathname);}}
+for(const pathname of targets){const z=await c.request.get(base+pathname);if(z.status()!==200)broken.push({pathname,status:z.status()});}
+await c.close();assert.deepEqual(broken,[]);return {pages:urls.length,unique_assets_and_links:targets.size};
+});
+}
+if(role==="zebra"){
+await test("Server checkout endpoint fails closed by design",async()=>{const script=fs.readFileSync("api/create-checkout-session.js","utf8");assert.match(script,/PAID_ENROLLMENT_ON_HOLD/);assert.match(script,/status\(403\)/);assert.ok(!script.includes("checkout.sessions.create"));});
+await test("English and Spanish course without paid checkout button",async()=>{for(const route of ["/course.html","/curso-es.html"]){const p=await pageAt(browser,route);assert.equal(await p.locator('a[href*="buy.stripe.com"],a[href*="/api/create-checkout-session"],a[href*="checkout.stripe.com"]').count(),0);await p.close();}});
+await test("Direct confirmation page must not claim completed registration without verification",async()=>{const p=await pageAt(browser,"/registered.html");const t=(await p.locator("body").innerText()).toLowerCase();await p.close();assert.doesNotMatch(t,/registration complete|request is recorded|thanks for registering/,"Directly accessible confirmation claims success without provider verification");});
+await test("Veterans does not imply official endorsement",async()=>{const p=await pageAt(browser,"/veterans.html");const t=await p.locator("body").innerText();assert.match(t,/no VA affiliation|no enrollment offer|subject to confirmation/i);await p.close();});
+}
+if(role==="reach"){
+await test("Veterans human contact pathway exists",async()=>{const p=await pageAt(browser,"/veterans.html");assert.ok(await p.locator('a[href^="mailto:"]').count()>0);await p.close();});
+await test("Support and interest pages display",async()=>{for(const path of ["/consultation.html","/learner-interest.html","/learner-questions.html"]){const p=await pageAt(browser,path);assert.ok((await p.title()).length>4);await p.close();}});
+await test("No confirmed pilot start or provider endorsement advertised",async()=>{const p=await pageAt(browser,"/veterans.html");assert.match(await p.locator("body").innerText(),/future free pilot|no enrollment offer|pilot in preparation/i);await p.close();return {limit:"Human staff responses and outside test approvals not verified"};});
+}
+}
+(async()=>{const browser=await chromium.launch({headless:true});try{await run(browser);}finally{await browser.close();fs.mkdirSync("customer-e2e-receipts",{recursive:true});fs.writeFileSync("customer-e2e-receipts/"+role+".json",JSON.stringify({role,actor:"AUTOMATED_SCRIPT_NOT_INDEPENDENT_HUMAN_OR_GEMINI",scope:"isolated localhost simulation; no live purchases, forms, emails or deployment",results,limitations:["Real hosted free registration untested","Paid purchase and delivery not authorized","Real human testing absent","No model-backed GG execution"]},null,2));}
+console.log("RESULT",role,results.filter(x=>x.status==="PASS").length,"passed",results.filter(x=>x.status==="FAIL").length,"failed");if(results.some(x=>x.status==="FAIL"))process.exitCode=1;})().catch(e=>{console.error(e);process.exitCode=1});
