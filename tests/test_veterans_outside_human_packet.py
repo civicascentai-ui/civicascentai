@@ -32,7 +32,7 @@ class VeteransOutsideHumanTestPacketQC(unittest.TestCase):
     def test_voluntary_consent_and_safe_data(self):
         for phrase in ("consent", "fictional", "offline",
                        "military records", "medical", "government ID",
-                       "do not record audio/video", "public GitHub"):
+                       "will not record audio/video", "public GitHub"):
             self.assertIn(phrase.lower(), self.packet.lower())
 
     def test_five_outside_test_identifiers_and_scoring(self):
@@ -61,7 +61,7 @@ class VeteransOutsideHumanTestPacketQC(unittest.TestCase):
             self.assertIn(term.lower(), both.lower())
 
     def test_source_is_real_link_not_mocked(self):
-        self.assertRegex(self.packet, r"https://docs\\.google\\.com/document/d/[A-Za-z0-9_-]+/edit")
+        self.assertIn("https://docs.google.com/document/d/1XgmhSXgJeRryxxvwHqpLG4TgLuAwGphoQMYAqecqKBs/edit", self.packet)
 
 if __name__ == "__main__":
     unittest.main()
