@@ -1,0 +1,72 @@
+name: Blue Crew - Customer E2E Simulation (isolated, no charge)
+on:
+  push:
+    branches:
+      - qa/customer-end-to-end-blue-crew-20261015
+    paths:
+      - .github/workflows/blue-crew-customer-e2e.yml
+      - tests/customer_e2e_bluecrew.cjs
+      - docs/operations/2026-10-15-customer-acceptance-report.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: customer-e2e-blue-crew-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  role-customer-review:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    strategy:
+      fail-fast: false
+      matrix:
+        role: [sam, friday, scout, zebra, reach]
+    name: "${{ matrix.role }} | simulated customer QA"
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm read-only public-source runner
+        run: |
+          test "$GITHUB_REPOSITORY" = "civicascentai-ui/civicascentai"
+          test "$RUNNER_ENVIRONMENT" = "github-hosted"
+          test "$RUNNER_OS" = "Linux"
+          test "${{ github.ref }}" = "refs/heads/qa/customer-end-to-end-blue-crew-20261015"
+      - name: Install Playwright on free public repository GitHub runner
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start localhost preview of UNMERGED source
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 > /tmp/customer-test-server.log 2>&1 &
+          for attempt in $(seq 1 25); do
+            curl --fail --silent http://127.0.0.1:8767/index.html >/dev/null && exit 0
+            sleep 1
+          done
+          exit 1
+      - name: Execute ${{ matrix.role }} actual browser checks
+        run: node tests/customer_e2e_bluecrew.cjs ${{ matrix.role }}
+      - name: Save independent per-role pass/fail receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-e2e-${{ matrix.role }}-${{ github.run_id }}
+          path: customer-e2e-receipts/${{ matrix.role }}.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  checkout-guard-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Confirm no real paid customer checkout starts
+        run: node tests/verify_signup_only.mjs
+      - name: Verify synthetic Veteran lifecycle only
+        run: python3 -m unittest discover -s tests -p veterans_lifecycle_test.py -v
