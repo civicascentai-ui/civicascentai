@@ -1,0 +1,49 @@
+name: Safari Historical Archive Export (read-only source packaging)
+on:
+  push:
+    branches: [archive/safari-source-20261015]
+    paths: [.github/workflows/safari-archive-export-20261015.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Package historical Safari source and images without modifying site
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          cat > SAFARI_ARCHIVE_README.txt <<'EOF'
+          CivicAscent AI historical Safari materials, before owner-directed removal.
+          Original source baseline: 1daaa640734aae9d9f8ea7c07a98d6e8f0db42e3
+          The archive is not a live web deployment. The original Git branch
+          savepoint/pre-safari-removal-20261015 keeps the complete source snapshot.
+          Keep this archive as backup; do not enable payments from it.
+          EOF
+          sha256sum safari-home.html assets/safari/scene-01-lodge-panorama.jpg > artifacts/SOURCE_CHECKSUMS.txt
+          zip -q -9 -r artifacts/CivicAscent_Safari_Historical_Archive_2026-10-15.zip \
+            SAFARI_ARCHIVE_README.txt index.html safari-home.html \
+            journey-learn.html journey-try.html journey-help.html journey-continue.html \
+            veterans.html assets/safari assets/safari-build1-live.css \
+            assets/safari-interior.css assets/veterans-entrance.css \
+            tests/test_safari_build1_browser.py tests/test_safari_interior_browser.py \
+            .github/workflows/safari-build1-browser-qa.yml \
+            .github/workflows/safari-interior-browser-qa.yml \
+            SAFARI_RESTRAINT_RULE.md backups/SAFARI_VERIFIED_BACKUP_2026-09-28.md \
+            checkpoints/PAUSE-SAFARI-RESTRAINT-AUDIT.md \
+            checkpoints/SAVEPOINT-SAFARI-REACT-PROTOTYPE-A.md
+          unzip -t artifacts/CivicAscent_Safari_Historical_Archive_2026-10-15.zip | tail -1
+          ls -lh artifacts/*
+      - name: Save private archive and verification evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: civicascent-safari-historical-archive
+          path: artifacts/
+          retention-days: 30
+          if-no-files-found: error
