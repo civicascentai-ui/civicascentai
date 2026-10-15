@@ -23,7 +23,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p all-systems-detail
-          cat > /tmp/inspect-public-axe.cjs <<'JS'
+          cat > ./inspect-public-axe.cjs <<'JS'
           const fs = require('fs');
           const {chromium} = require('playwright');
           const axe = require.resolve('axe-core/axe.min.js');
@@ -48,7 +48,7 @@ jobs:
             console.log(JSON.stringify(results,null,2));
           })().catch(e=>{console.error(e);process.exitCode=1});
           JS
-          node /tmp/inspect-public-axe.cjs
+          node ./inspect-public-axe.cjs
       - name: Preserve exact public-page accessibility defects
         if: always()
         uses: actions/upload-artifact@v4
