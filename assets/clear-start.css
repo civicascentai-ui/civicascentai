@@ -7,7 +7,7 @@
 :root{--ink:#0A192F;--paper:#F8F9FA;--surface:#FFFFFF;--band:#EEF2F6;--line:#526a7c;--accent:#0A192F;--accent-text:#FFFFFF;--focus:#A85400;--muted:#293e52;--gold:#D97706;--font-base:20px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:24px}
-body{margin:0;font:400 var(--font-base)/1.65 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.005em;color:var(--ink);background:var(--paper)}
+body{margin:0;font:400 var(--font-base)/1.65 "Atkinson Hyperlegible",Inter,Roboto,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.005em;color:var(--ink);background:var(--paper)}
 body[data-theme="dark"]{--ink:#F8F9FA;--paper:#0A192F;--surface:#122A42;--band:#19334C;--line:#B9CDDB;--accent:#F8F9FA;--accent-text:#0A192F;--focus:#FFD489;--muted:#F8F9FA;--gold:#FFD489}
 a{color:inherit;text-underline-offset:4px}
 a:focus-visible,button:focus-visible{outline:4px solid var(--focus)!important;outline-offset:4px}
