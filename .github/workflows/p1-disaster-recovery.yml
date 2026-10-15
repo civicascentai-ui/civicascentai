@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: '47 9 * * 0'
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/p1-disaster-recovery.yml'
 permissions:
   contents: read
 concurrency:
@@ -45,25 +48,42 @@ jobs:
           retention-days: 30
           if-no-files-found: error
   weekly-crossover-rehearsal:
-    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '47 9 * * 0'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' || github.event.schedule == '47 9 * * 0'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Read-only public production smoke and isolated shadow checks
+      - name: Read-only production/standby page and asset parity gate
         shell: bash
         env:
-          PRODUCTION_URL: https://civicascentai.com/
-          SHADOW_URL: https://civicascentai-launch-9rj1lutsy-civicascentai.vercel.app/
+          PRODUCTION_URL: https://civicascentai.com
+          SHADOW_URL: https://civicascentai-launch-qa.vercel.app
         run: |
           set -euo pipefail
           mkdir -p evidence
-          for name in production shadow; do
-            if [ "$name" = production ]; then url="$PRODUCTION_URL"; else url="$SHADOW_URL"; fi
-            status=$(curl --location --silent --show-error --output "evidence/${name}.html" --write-out '%{http_code}' --max-time 25 "$url")
-            printf '%s HTTP %s\n' "$name" "$status" | tee "evidence/${name}.status"
-            test "$status" = 200
+          printf 'route\tproduction_http\tstandby_http\tproduction_sha256\tstandby_sha256\tparity\n' > evidence/route-parity.tsv
+          failures=0
+          for route in root index.html safari-home.html es.html register.html journey-learn.html journey-try.html journey-help.html journey-continue.html practice-sandbox.html veterans.html free-ai-starter.html programs.html course.html consultation.html curso-es.html registro.html clear-start.html capabilities.html mentor.html learner-questions.html assets/home-reference.css assets/home-reference.js assets/civicascent-logo.svg assets/safari-build1-live.css assets/veterans-entrance.css assets/clear-start.css assets/practice-lab.css assets/learner-preferences.js assets/practice-lab.js styles.css; do
+            suffix="$route"
+            if [ "$route" = root ]; then suffix=""; fi
+            slug=$(printf '%s' "$route" | tr '/' '_')
+            production_file="$RUNNER_TEMP/p1-production-$slug"
+            standby_file="$RUNNER_TEMP/p1-standby-$slug"
+            production_http=$(curl --location --silent --show-error --max-time 25 --output "$production_file" --write-out '%{http_code}' "$PRODUCTION_URL/$suffix") || production_http=000
+            standby_http=$(curl --location --silent --show-error --max-time 25 --output "$standby_file" --write-out '%{http_code}' "$SHADOW_URL/$suffix") || standby_http=000
+            production_sha="-"
+            standby_sha="-"
+            if [ -f "$production_file" ]; then production_sha=$(sha256sum "$production_file" | cut -d' ' -f1); fi
+            if [ -f "$standby_file" ]; then standby_sha=$(sha256sum "$standby_file" | cut -d' ' -f1); fi
+            parity=FAIL
+            if [ "$production_http" = 200 ] && [ "$standby_http" = 200 ] && cmp -s "$production_file" "$standby_file"; then
+              parity=PASS
+            else
+              failures=$((failures + 1))
+            fi
+            printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$route" "$production_http" "$standby_http" "$production_sha" "$standby_sha" "$parity" | tee -a evidence/route-parity.tsv
           done
-          echo 'Read-only production-environment rehearsal. NO traffic switch, payment transaction, or production deployment occurred.' > evidence/SCOPE.txt
+          echo 'Read-only GET parity only. NO DNS cutover, production rollback, database recovery, payments, or production deployment was performed.' > evidence/SCOPE.txt
+          test "$failures" -eq 0
       - name: Preserve pass/fail receipts
         if: always()
         uses: actions/upload-artifact@v4
