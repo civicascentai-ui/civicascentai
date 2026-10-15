@@ -1,0 +1,143 @@
+/* Clear Start accessibility-first visual specification, owner reference 2026-10-14.
+   Body starts at 20px, supporting copy and controls >=18px, line-height 1.65.
+   Primary navy #0A192F on #F8F9FA ~16.7:1. Amber #D97706 is a
+   NON-TEXT accent on light surfaces: its light-background text contrast is
+   only ~3:1, insufficient for ordinary WCAG AAA text. No AAA certification.
+   Native HTML, accessible actions and no third-party widget dependency. */
+:root{--ink:#0A192F;--paper:#F8F9FA;--surface:#FFFFFF;--band:#EEF2F6;--line:#526a7c;--accent:#0A192F;--accent-text:#FFFFFF;--focus:#A85400;--muted:#293e52;--gold:#D97706;--font-base:20px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;font:400 var(--font-base)/1.65 "Atkinson Hyperlegible",Inter,Roboto,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.005em;color:var(--ink);background:var(--paper)}
+body[data-theme="dark"]{--ink:#F8F9FA;--paper:#0A192F;--surface:#122A42;--band:#19334C;--line:#B9CDDB;--accent:#F8F9FA;--accent-text:#0A192F;--focus:#FFD489;--muted:#F8F9FA;--gold:#FFD489}
+a{color:inherit;text-underline-offset:4px}
+a:focus-visible,button:focus-visible{outline:4px solid var(--focus)!important;outline-offset:4px}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.skip{position:absolute;top:-120px;left:12px;background:var(--accent);color:var(--accent-text);padding:13px 18px;z-index:100;text-decoration:none;border-radius:8px;font-weight:750}
+.skip:focus{top:12px}
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px clamp(18px,5vw,72px);background:var(--surface);border-bottom:3px solid var(--line)}
+.logo{display:flex;gap:12px;align-items:center;text-decoration:none;min-width:0}
+.logo img{width:50px;height:50px;object-fit:contain;flex-shrink:0}
+.logo span{display:grid;gap:1px;line-height:1.22}
+.logo strong{font-size:1.2rem;font-weight:850;white-space:nowrap}
+.logo small{font-size:1rem;color:var(--muted);font-weight:680}
+.top-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
+.top-links a{font-size:1.125rem;font-weight:750;border:2px solid var(--line);text-decoration:none;padding:10px 15px;border-radius:10px;min-height:54px;display:inline-flex;align-items:center;background:var(--surface)}
+main{max-width:1350px;margin:0 auto}
+.intro{padding:72px clamp(21px,6vw,82px) 46px;isolation:isolate;position:relative}
+.intro .eyebrow{font-size:1.125rem;color:var(--accent);letter-spacing:.095em;font-weight:850;margin:0 0 16px}
+.intro h1{font-size:clamp(2.15rem,5.5vw,3.8rem);font-weight:820;line-height:1.12;letter-spacing:-.027em;max-width:17ch;margin:0 0 23px}
+.intro .lead{font-size:1.15rem;max-width:53ch;line-height:1.65;margin:0 0 24px}
+.intro .note{font-weight:750;max-width:56ch;border-left:6px solid var(--accent);background:var(--band);padding:15px 20px;margin:0;border-radius:6px}
+body.show-scene .intro{background:linear-gradient(90deg,rgba(10,24,39,.96),rgba(10,24,39,.76)),url("safari/scene-01-lodge-panorama.jpg") center / cover;color:#fff!important}
+body.show-scene .intro .eyebrow,body.show-scene .intro .note{color:#fff}
+body.show-scene .intro .note{background:#172d3a;border-left-color:#f9d58c}
+.preferences{margin:0 clamp(20px,6vw,82px);padding:28px clamp(16px,3vw,40px);background:var(--band);border:2px solid var(--line);border-radius:16px}
+.preferences h2,.paths h2,.more h2,.reassurance h2{font-size:clamp(1.45rem,2.8vw,2.15rem);line-height:1.18;letter-spacing:-.01em;margin:0 0 13px}
+.preferences p{font-size:1.125rem;line-height:1.55}
+.preferences-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:22px 0 14px}
+.control-group{display:flex;flex-wrap:wrap;align-items:center;align-content:flex-start;gap:9px}
+.control-group strong{flex:1 0 100%;font-size:1.125rem}
+.control-group button{border:2px solid var(--line);border-radius:10px;background:var(--surface);min-height:56px;padding:11px 15px;font-size:1.125rem;font-weight:750}
+.control-group button[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+#settings-status{border-left:4px solid var(--accent);padding:9px 12px;margin:12px 0 0;min-height:40px;background:var(--surface);font-size:1.125rem}
+.paths{padding:70px clamp(20px,6vw,82px) 40px}
+.paths .description{max-width:62ch;margin:0 0 28px;color:var(--muted);font-size:1.25rem}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.choice{display:flex;flex-direction:column;gap:14px;background:var(--surface);border:3px solid var(--line);border-top:6px solid var(--gold);border-radius:15px;padding:clamp(17px,2.6vw,33px);min-width:0}
+.choice .step{margin:0;font-size:1.125rem;font-weight:850;letter-spacing:.09em;color:var(--accent)}
+.choice h3{font-size:clamp(1.3rem,2.3vw,1.8rem);line-height:1.25;margin:0}
+.choice p:not(.step){margin:0;flex:1;color:var(--muted);font-size:1.125rem;line-height:1.55}
+.choice-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;border-radius:12px;padding:14px 20px;background:var(--accent);color:var(--accent-text);font-weight:850;text-decoration:none;line-height:1.25;overflow-wrap:anywhere}
+.choice-link:hover,.choice-link:focus-visible{text-decoration:underline}
+.more{margin:15px clamp(20px,6vw,82px);padding:25px 0}
+.more-choices{display:flex;flex-wrap:wrap;gap:11px}
+.more-choices a{display:inline-flex;align-items:center;min-height:60px;padding:12px 18px;border:2px solid var(--line);border-radius:11px;background:var(--surface);font-weight:750;font-size:1.125rem}
+.reassurance{margin:35px clamp(20px,6vw,82px) 70px;padding:27px 35px;border-left:6px solid var(--accent);background:var(--band);border-radius:10px}
+.reassurance p{font-size:1.125rem;max-width:75ch;line-height:1.65;margin:0}
+footer{padding:24px clamp(20px,6vw,82px);background:var(--band);border-top:2px solid var(--line);text-align:center;font-size:1.125rem}
+@media(max-width:1080px){.preferences-controls{grid-template-columns:1fr 1fr}.choices{grid-template-columns:1fr 1fr}.intro{padding-top:52px}}
+@media(max-width:760px){
+ .site-header{align-items:flex-start;flex-direction:column;padding:13px 19px}
+ .top-links{width:100%;justify-content:flex-start}
+ .top-links a{min-height:49px}
+ .intro{padding:46px 20px 28px}
+ .intro h1{font-size:clamp(2.05rem,8vw,3.25rem)}
+ .preferences{margin:0 17px;padding:21px 18px}
+ .preferences-controls{grid-template-columns:1fr}
+ .paths{padding:45px 17px 20px}
+ .choices{grid-template-columns:1fr}
+ .choice{padding:22px}
+ .more{margin:20px 17px}
+ .more-choices{display:grid}
+ .more-choices a{display:flex}
+ .reassurance{margin:20px 17px 55px;padding:20px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Owner's expanded blueprint: four visible links instead of a hidden menu. */
+.site-header{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo utilities" "nav nav";row-gap:15px;column-gap:16px}
+.logo{grid-area:logo;min-width:0}
+.logo small{font-size:1.125rem;white-space:normal;line-height:1.4}
+.header-actions{grid-area:utilities;display:flex;align-items:center;justify-content:flex-end;max-width:100%}
+.header-actions a{display:flex;align-items:center;min-height:54px;padding:12px 16px;font-size:1.125rem;line-height:1.45;font-weight:780;text-decoration:underline;border:2px solid var(--line);border-radius:12px;background:var(--surface);max-width:100%}
+.top-links{grid-area:nav;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;justify-content:stretch;width:100%}
+.top-links a{display:flex;align-items:center;justify-content:center;min-width:0;min-height:62px;text-align:center;overflow-wrap:anywhere;line-height:1.35;border-color:var(--line)}
+/* Two calls to action: the second is an existing self-service help page, not a staffed live chat. */
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.hero-cta a,.featured-grid a,.support-grid a{display:inline-flex;align-items:center;justify-content:center;min-height:61px;max-width:100%;padding:13px 20px;font-size:1.125rem;font-weight:800;line-height:1.45;text-decoration:none;text-align:center;border-radius:12px;border:2px solid var(--accent);overflow-wrap:anywhere}
+.hero-cta .primary-cta,.featured-grid a{color:var(--accent-text);background:var(--accent)}
+.hero-cta .secondary-cta,.support-grid a{background:var(--surface);color:var(--ink)}
+.featured,.support-services{padding:55px clamp(20px,6vw,82px)}
+.featured{background:var(--band)}
+.featured h2,.support-services h2{font-size:clamp(1.55rem,3.2vw,2.4rem);line-height:1.2;margin:0 0 15px}
+.featured>p{font-size:1.125rem;line-height:1.65;max-width:64ch;margin:0 0 22px}
+.featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.pathway,.support-grid>div{display:flex;flex-direction:column;gap:17px;min-width:0;border:2px solid var(--line);border-top:6px solid var(--gold);border-radius:14px;background:var(--surface);padding:24px}
+.pathway h3,.support-grid h3{font-size:clamp(1.35rem,2.4vw,1.8rem);line-height:1.35;margin:0;overflow-wrap:anywhere}
+.pathway p,.support-grid p{font-size:1.125rem;line-height:1.65;color:var(--muted);margin:0 0 12px;flex:1}
+.pathway a,.support-grid a{margin-top:auto}
+.support-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:20px 0 0}
+.support-note{font-size:1.125rem;line-height:1.65;margin:22px 0 0;border-left:5px solid var(--gold);padding:16px 20px;background:var(--band)}
+@media(max-width:1050px){.featured-grid{grid-template-columns:1fr 1fr}.support-grid{grid-template-columns:1fr}}
+@media(max-width:760px){
+ .site-header{grid-template-columns:1fr;grid-template-areas:"logo" "utilities" "nav";row-gap:12px;padding:16px 18px}
+ .header-actions{justify-content:stretch}
+ .header-actions a{width:100%}
+ .top-links{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .top-links a{width:100%;min-height:63px;padding:10px}
+ .hero-cta{display:grid;grid-template-columns:1fr}
+ .hero-cta a{width:100%}
+ .featured,.support-services{padding:38px 17px}
+ .featured-grid,.support-grid{grid-template-columns:1fr}
+ .pathway,.support-grid>div{padding:22px}
+}
+
+/* On-page, persistent text controls, visible on each prototype learning page. */
+.reader-toolbar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;min-height:68px;padding:9px 15px;background:var(--paper);border-bottom:2px solid var(--line);color:var(--ink)}
+.reader-toolbar span{font-size:1.125rem;font-weight:800}
+.reader-toolbar button,.reader-toolbar a,.reset-reading{min-height:56px;min-width:56px;display:inline-flex;justify-content:center;align-items:center;padding:10px 15px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:750 1.125rem/1.35 system-ui,sans-serif;text-decoration:none}
+.reader-toolbar button:disabled{opacity:.56}
+.reader-announcement{background:var(--band);color:var(--ink);text-align:center;min-height:0;margin:0;padding:3px;font-size:1.125rem}
+.reader-announcement:empty{display:none}
+.logo{min-height:54px}
+@media(max-width:760px){
+ .reader-toolbar{justify-content:flex-start;gap:9px;padding:8px 13px}
+ .reader-toolbar button,.reader-toolbar a{flex:1 1 auto}
+ .site-header .logo strong{white-space:normal;overflow-wrap:anywhere}
+ .site-header .logo{width:100%}
+}
+
+/* Accessible standalone veteran career and assistive tools guides. */
+.guide-main{max-width:1050px;margin:auto;padding:42px clamp(18px,5vw,70px) 70px}
+.guide-intro{padding:10px 0 27px}
+.guide-intro .eyebrow{font-size:1.125rem;color:var(--accent);font-weight:800}
+.guide-intro h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin:8px 0 23px;overflow-wrap:anywhere}
+.guide-intro p,.guide-step p,.guide-outro p{font-size:1.125rem;line-height:1.65}
+.guide-steps{display:grid;grid-template-columns:1fr;gap:15px}
+.guide-step{padding:22px 25px;border:2px solid var(--line);border-left:7px solid var(--gold);border-radius:12px;background:var(--surface)}
+.guide-step h2,.guide-outro h2{font-size:1.55rem;line-height:1.28;margin:0 0 13px}
+.guide-step p{color:var(--muted);margin:0}
+.guide-outro{margin-top:30px;padding:27px;border-radius:14px;background:var(--band)}
+.guide-outro .disclaimer{font-size:1.125rem;margin-top:25px;border-top:2px solid var(--line);padding-top:15px}
+@media(max-width:760px){.guide-main{padding:29px 18px 55px}.guide-step{padding:20px}.guide-outro{padding:20px}}
