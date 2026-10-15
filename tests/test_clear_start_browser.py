@@ -40,6 +40,16 @@ try:
       large=page.locator("body").evaluate("el=>getComputedStyle(el).fontSize")
       assert float(large[:-2])>float(original[:-2]),(width,"font controls",original,large)
       assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"enlarged text overflow")
+      # Higher magnification must reflow without sideways page scrolling.
+      for _ in range(3):
+        page.get_by_role("button",name="Make text larger").click()
+      assert page.locator("body").evaluate("el=>parseFloat(getComputedStyle(el).fontSize)")>=30,(width,"150 percent font")
+      assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(width,"150 percent reflow")
+      # If labels collide at maximum text size, the controls are not usable.
+      for button_id in ["#theme-toggle","#scenery-toggle","#read-aloud"]:
+        box=page.locator(button_id).bounding_box()
+        assert box and box["x"]>=-2 and box["x"]+box["width"]<=width+2,(width,"large text button offscreen",button_id,box)
+
       page.get_by_role("button",name="Dark background").click()
       assert page.locator('body[data-theme="dark"]').count()==1,(width,"dark option")
       page.get_by_role("button",name="Show Safari picture").click()
