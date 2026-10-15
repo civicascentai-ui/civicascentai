@@ -127,3 +127,17 @@ footer{padding:24px clamp(20px,6vw,82px);background:var(--band);border-top:2px s
  .site-header .logo strong{white-space:normal;overflow-wrap:anywhere}
  .site-header .logo{width:100%}
 }
+
+/* Accessible standalone veteran career and assistive tools guides. */
+.guide-main{max-width:1050px;margin:auto;padding:42px clamp(18px,5vw,70px) 70px}
+.guide-intro{padding:10px 0 27px}
+.guide-intro .eyebrow{font-size:1.125rem;color:var(--accent);font-weight:800}
+.guide-intro h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin:8px 0 23px;overflow-wrap:anywhere}
+.guide-intro p,.guide-step p,.guide-outro p{font-size:1.125rem;line-height:1.65}
+.guide-steps{display:grid;grid-template-columns:1fr;gap:15px}
+.guide-step{padding:22px 25px;border:2px solid var(--line);border-left:7px solid var(--gold);border-radius:12px;background:var(--surface)}
+.guide-step h2,.guide-outro h2{font-size:1.55rem;line-height:1.28;margin:0 0 13px}
+.guide-step p{color:var(--muted);margin:0}
+.guide-outro{margin-top:30px;padding:27px;border-radius:14px;background:var(--band)}
+.guide-outro .disclaimer{font-size:1.125rem;margin-top:25px;border-top:2px solid var(--line);padding-top:15px}
+@media(max-width:760px){.guide-main{padding:29px 18px 55px}.guide-step{padding:20px}.guide-outro{padding:20px}}
