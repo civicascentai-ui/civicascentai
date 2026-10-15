@@ -118,10 +118,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify active Safari governance files
+      - name: Verify current project governance skill
         shell: bash
         run: |
           set -euo pipefail
-          grep -qi "Safari" checkpoints/SAVEPOINT-HARNESS-OPUS-APPROVED.md
+          test -f skills/civicascent-sitewide-ff/SKILL.md
+          grep -qi "retired" skills/civicascent-sitewide-ff/SKILL.md
+          test -f AGENTS.md
           grep -qi "constant evaluation loop" AGENT_04_CRITICAL_EVALUATION_DIRECTOR.md
           grep -qi "specialist engineering capability" HARNESS_OPUS_OPERATING_RULE.md

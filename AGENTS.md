@@ -1,17 +1,12 @@
-# CivicAscent AI: Shared Agent Instructions
+# CivicAscent AI active agent instructions
 
-**MANDATORY FOR ALL CODI, SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, LPC AND OTHER REPOSITORY CONTRIBUTORS**
+All CODI, SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, and LPC roles must follow:
+[Sitewide FF and Accessibility Skill](skills/civicascent-sitewide-ff/SKILL.md).
 
-Read and apply [CivicAscent Sitewide FF Skill](skills/civicascent-sitewide-ff/SKILL.md) **before** working on website or learning content.
+**Owner's latest decision, October 15, 2026:** Historical Safari-themed website materials were retired from the active public site and moved to the persistent Library at `/CivicAscent AI/Safari Archive 2026-10-15/`. The original source remains in a protected pre-change Git branch. DO NOT restore images, old themes, or links unless explicitly authorized.
 
-The owner's approved screenshots outrank generic proposed designs. The accessible homepage has **three** choice cards, while the separate cinematic Safari Home has **four** distinct learning rooms and their originally approved artwork/color identity. Preserve both. Do not turn different pages into a uniform single-color template.
+Preserve approved accessible homepage: warm off-white surface, deep navy text, pale settings card, teal buttons, exactly THREE choices (Learn, Practice, Help). Replace the previous themed navigation link with **Learning Rooms**, a separate four-path educational hub; preserve each room's purpose and lesson links, with its own clear color accent. Apply approved accessibility-first visual system to other current pages, including veterans and classwork. Do not use one monochromatic generic design.
 
-**FF = Find → Fix → Retest** with independent evidence. Save before and after; preserve meaningful tests and correct back-navigation; avoid micro-update approval requests except for real human decisions. Continue isolated, reversible repairs after failures.
+**FF means Find → Fix → Retest.** Record before/after save points, verified browser results, screenshot QC, redirects, payments hold, unresolved blockers. Never claim independent agent execution or complete WCAG 2.2 AA certification without evidence.
 
-**Evidence rule:** Never report merged, deployed, live, passed, complete, WCAG-certified, emailed, charged, or tested without verified evidence from the actual target. A Github merge is not a production deployment. The server target must serve the intended Git SHA and pass post-deploy smoke. A green automated browser run is not full WCAG certification.
-
-**Non-negotiables:** Budget $0, do not enable purchases or subscriptions, fail-closed checkout, avoid collecting private student data, respect reduced motion, avoid dark color combinations without contrast evidence, protect elderly/veteran/disabled learners, keep Spanish Spanish, keep existing lesson and practice functionality, and preserve authorized disclaimers.
-
-**Team roles:** CODI coordinates; SAM implements; FRIDAY independently tests; SCOUT inventories; ZEBRA challenges design and quality; BLUE TEAM handles curriculum; REACH tracks approved outreach; LPC flags risks. These roles are responsibilities, not automatically running independent services.
-
-Use the skill's stage gates, save points, audit matrix, stop conditions and source references in every QC report. Do not publish screenshot reference files to a public repository without owner authorization.
+Budget $0. No paid checkout, real purchases, subscriptions or secret-sharing. Owner-validated production SHA is required for live status; GitHub merge alone is insufficient. Preserve Spanish, veterans, student practice and no-surprise data handling.

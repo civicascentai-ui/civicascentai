@@ -80,16 +80,14 @@ try:
         assert nav_box["height"]>=48,(width,"touch target too small",i,nav_box)
 
       # If labels collide at maximum text size, the controls are not usable.
-      for button_id in ["#theme-toggle","#scenery-toggle","#read-aloud"]:
+      for button_id in ["#theme-toggle","#read-aloud"]:
         box=page.locator(button_id).bounding_box()
         assert box and box["x"]>=-2 and box["x"]+box["width"]<=width+2,(width,"large text button offscreen",button_id,box)
 
+      assert page.locator("#scenery-toggle").count()==0,(width,"retired photo toggle removed")
       page.get_by_role("button",name="Dark background").click()
       assert page.locator('body[data-theme="dark"]').count()==1,(width,"dark option")
-      page.get_by_role("button",name="Show Safari picture").click()
-      assert page.locator("body.show-scene").count()==1,(width,"scenery toggle")
-      page.get_by_role("button",name="Hide Safari picture").click()
-      assert page.locator("body.show-scene").count()==0,(width,"scenery hidden")
+
       page.get_by_role("button",name="Light background").click()
       page.screenshot(path=str(ART/f"clear-start-{width}.png"),full_page=True)
       # A fresh context previews student practice without any saved preferences.
@@ -112,7 +110,6 @@ try:
       assert page.locator("body").evaluate("(e)=>parseFloat(getComputedStyle(e).fontSize)")>=30,(width,"practice text size")
       assert page.locator(".reader-toolbar").is_visible(),(width,"practice sticky tools")
       assert page.locator("header nav.top-links a").count()==4,(width,"practice functional nav")
-      assert page.locator("body.show-scene").count()==0,(width,"scene off by default unless user opts in")
 
       page.get_by_role("button",name="Load a fictional example").click()
       page.get_by_role("button",name="Build my practice prompt").click()
