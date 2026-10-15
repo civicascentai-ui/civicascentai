@@ -1,0 +1,46 @@
+name: Gemini API key connection check (manual only)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gemini-connection-check
+  cancel-in-progress: false
+
+jobs:
+  verify-gemini:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check GitHub secret without revealing it
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${GEMINI_API_KEY:-}" ]]; then
+            echo '::error::GEMINI_API_KEY is missing. Add it in Settings > Secrets and variables > Actions.'
+            exit 1
+          fi
+          echo 'PASS: GitHub Actions can access the GEMINI_API_KEY secret (value not displayed).'
+      - name: Check read-only Gemini API authentication (no generated content)
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          response_file="${RUNNER_TEMP}/gemini-models.json"
+          http_code="$(curl --silent --show-error --location --connect-timeout 10 --max-time 25 \
+            --output "${response_file}" --write-out '%{http_code}' \
+            --header "x-goog-api-key: ${GEMINI_API_KEY}" \
+            'https://generativelanguage.googleapis.com/v1beta/models?pageSize=1')"
+          if [[ "${http_code}" != 200 ]]; then
+            echo "::error::Gemini model-list authentication returned HTTP ${http_code}. Check key restrictions, API enablement and account access."
+            exit 1
+          fi
+          echo 'PASS: Google Gemini API accepted the GitHub secret for a read-only model-list request.'
+          echo 'SCOPE: No content generation, website changes, deployments, or paid service activation performed.'
