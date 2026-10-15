@@ -31,9 +31,12 @@ assert not (ROOT/"assets"/"safari-interior.css").exists()
 for f in active:
     raw=(ROOT/f).read_text(encoding="utf-8")
     assert not re.search("safari|scene-01-lodge-panorama",raw,re.I), f"Retired artwork/branding in active page {f}"
+asset_violations=[]
 for folder in (ROOT/"assets",):
     for f in list(folder.glob("*.css"))+list(folder.glob("*.js")):
-        assert not re.search("safari|scene-01-lodge-panorama",f.read_text(encoding="utf-8"),re.I),f"Retired artwork in active asset {f}"
+        if re.search("safari|scene-01-lodge-panorama",f.read_text(encoding="utf-8"),re.I):
+            asset_violations.append(str(f.relative_to(ROOT)))
+assert not asset_violations, f"Retired artwork in active assets: {asset_violations}"
 try:
   with sync_playwright() as pw:
     browser=pw.chromium.launch(headless=True)
