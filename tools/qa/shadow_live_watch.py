@@ -99,7 +99,9 @@ def main():
     total = 0
     failures = 0
     print("SHADOW LIVE QA: bounded runner started, cutoff UTC:", DEADLINE.isoformat(), flush=True)
-    while datetime.now(timezone.utc) < DEADLINE:
+    # A rerun after the original window must still execute one read-only checkpoint.
+    # Do not extend the owner-authorized monitoring window.
+    while total == 0 or datetime.now(timezone.utc) < DEADLINE:
         total += 1
         try:
             ok = checkpoint(total)
@@ -116,7 +118,7 @@ def main():
         "finish_utc": datetime.now(timezone.utc).isoformat(),
         "total_checkpoints": total,
         "failed_checkpoints": failures,
-        "fully_passed": failures == 0,
+        "fully_passed": failures == 0 and total >= 1,
         "warning": "Continuous runner is time bounded, not a persistent autonomous agent, and tests exclude real customer transactions and Android/Spanish captions."
     }
     (EVIDENCE / "summary.json").write_text(json.dumps(receipt, indent=2))
