@@ -4,3 +4,9 @@
 html{scroll-padding-top:115px}
 [id]{scroll-margin-top:115px}
 @media(max-width:950px){.site-header{position:relative;top:auto}.site-header nav{padding-bottom:5px}.site-header nav a{padding:10px 0;min-height:44px;display:inline-flex;align-items:center}}
+
+/* Zebra isolated accessibility hardening: keep existing brand palette and layout. */
+.site-header nav a{min-height:44px;display:inline-flex;align-items:center;padding-top:10px;padding-bottom:10px}
+.register,.button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;line-height:1.4}
+.site-header a:focus-visible,.button:focus-visible,.register:focus-visible{outline:3px solid #ffdf4d;outline-offset:3px}
+@media(max-width:560px){.register{font-size:.875rem;padding:12px 14px}.site-header nav a{font-size:.875rem}}
