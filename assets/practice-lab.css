@@ -81,3 +81,37 @@ body.practice-body{background:#091523;color:#fff5e8;min-width:0}
  .practice-hero h1{font-size:38px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.practice-body *,.practice-body *::before,.practice-body *::after{animation:none!important;transition:none!important}}
+
+/* Clarity-first learner mode. The scene is OPTIONAL and hidden by default. */
+body.practice-body{background:var(--paper);color:var(--ink);font:400 var(--font-base,20px)/1.65 "Atkinson Hyperlegible",Inter,Roboto,system-ui,sans-serif}
+.practice-body .practice-hero{background-image:none;background-color:#0A192F}
+.practice-body.show-scene .practice-hero{background-image:url("safari/scene-01-lodge-panorama.jpg")}
+.practice-body .practice-wrap,.practice-body .practice-intro h2,.practice-body .practice-panel h3{color:var(--ink)}
+.practice-body .practice-intro p,.practice-body .practice-grid p{color:var(--muted);font-size:1.125rem}
+.practice-body .practice-panel{background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.practice-body .practice-panel>p{color:var(--ink);font-size:1.125rem}
+.practice-body .practice-panel label:not(.practice-check),.practice-body .practice-fieldset legend,.practice-body .practice-result h4,.practice-body .practice-result p,.practice-body .practice-result .practice-disclaimer{color:var(--ink)}
+.practice-body .practice-body .eyebrow,.practice-body .practice-panel .eyebrow{color:var(--accent);font-size:1.125rem}
+.practice-body .practice-tab{background:var(--band);color:var(--ink);border:2px solid var(--line);font-size:1.125rem;min-height:60px}
+.practice-body .practice-tab span{color:var(--ink)}
+.practice-body .practice-tab.selected,.practice-body .practice-tab[aria-pressed="true"]{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+.practice-body .practice-tab.selected span{color:var(--accent-text)}
+.practice-body .practice-fieldset{border-color:var(--line)}
+.practice-body .practice-check{color:var(--ink);min-height:56px;font-size:1.125rem}
+.practice-body .practice-result{background:var(--band);color:var(--ink);border-color:var(--line)}
+.practice-body .practice-message{color:var(--ink);background:var(--band);border-color:var(--gold)}
+.practice-body .practice-next{background:var(--band);color:var(--ink);border-color:var(--line)}
+.practice-body .practice-next p{color:var(--muted);font-size:1.125rem}
+.practice-body .practice-primary{background:var(--accent);color:var(--accent-text);box-shadow:none;font-size:1.125rem;min-height:56px}
+.practice-body .practice-secondary{background:var(--surface);color:var(--ink);border-color:var(--line);font-size:1.125rem;min-height:56px}
+.practice-body .practice-hero .practice-primary{background:#F8F9FA;color:#0A192F}
+.practice-body .practice-panel textarea,.practice-body .practice-panel select{background:var(--surface);color:var(--ink);border-color:var(--line);font-size:1.125rem}
+.practice-body .practice-result pre{color:#0A192F;background:#F8F9FA;font-size:1.125rem}
+.practice-body .practice-footer{font-size:1.125rem}
+.practice-body .practice-panel label:not(.practice-check){font-size:1.125rem}
+.practice-body .practice-body .hero-tags span,.practice-body .hero-tags span{font-size:1.125rem}
+@media(max-width:760px){
+ .practice-body .practice-hero{min-height:0;padding:52px 19px 58px}
+ .practice-body .practice-intro h2{font-size:clamp(1.65rem,6vw,2.3rem)}
+ .practice-body .reader-toolbar{position:sticky}
+}
