@@ -1,0 +1,26 @@
+name: WCAG 2.2 AA automated QC
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 10 * * 2'
+permissions:
+  contents: read
+jobs:
+  accessibility-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install open-source browser and axe-core
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Scan public pages without submitting forms
+        run: node tools/qa/wcag_axe_audit.cjs
+      - name: Upload WCAG evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wcag-axe-evidence-${{ github.run_id }}
+          path: wcag-evidence/
+          retention-days: 14
