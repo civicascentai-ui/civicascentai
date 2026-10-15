@@ -41,47 +41,50 @@ class RecoveryChainTests(unittest.TestCase):
             self.assertEqual(checked.stdout.splitlines(), expected)
 
     def test_full_incremental_and_unchanged_restore_both_branches(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            root = pathlib.Path(tmp)
-            repo = root / 'repo'
-            repo.mkdir()
-            run('git', 'init', '-q', str(repo))
-            run('git', '-C', str(repo), 'config', 'user.email', 'backup-test@example.invalid')
-            run('git', '-C', str(repo), 'config', 'user.name', 'Backup Test')
-            (repo / 'file.txt').write_text('original\n')
-            run('git', '-C', str(repo), 'add', '.')
-            run('git', '-C', str(repo), 'commit', '-qm', 'base')
-            run('git', '-C', str(repo), 'branch', '-M', 'main')
-            run('git', '-C', str(repo), 'branch', 'production/shadow-concat-20261014')
+        # Catch nondeterministic restore failures; all attempts must pass.
+        for trial in range(4):
+            with self.subTest(trial=trial):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = pathlib.Path(tmp)
+                    repo = root / 'repo'
+                    repo.mkdir()
+                    run('git', 'init', '-q', str(repo))
+                    run('git', '-C', str(repo), 'config', 'user.email', 'backup-test@example.invalid')
+                    run('git', '-C', str(repo), 'config', 'user.name', 'Backup Test')
+                    (repo / 'file.txt').write_text('original\n')
+                    run('git', '-C', str(repo), 'add', '.')
+                    run('git', '-C', str(repo), 'commit', '-qm', 'base')
+                    run('git', '-C', str(repo), 'branch', '-M', 'main')
+                    run('git', '-C', str(repo), 'branch', 'production/shadow-concat-20261014')
 
-            def sync():
-                for b in ('main', 'production/shadow-concat-20261014'):
-                    run('git', '-C', str(repo), 'update-ref', 'refs/remotes/origin/' + b, b)
+                    def sync():
+                        for b in ('main', 'production/shadow-concat-20261014'):
+                            run('git', '-C', str(repo), 'update-ref', 'refs/remotes/origin/' + b, b)
 
-            def backup(run_id, weekday, previous=''):
-                run(sys.executable, str(SCRIPT), '--repo', str(repo),
-                    '--output', str(root / 'backups' / run_id),
-                    '--history', str(root / 'backups'),
-                    '--run-id', run_id, '--previous-id', previous,
-                    '--weekday', str(weekday),
-                '--standby-ref', 'refs/remotes/origin/production/shadow-concat-20261014')
-                return json.loads((root / 'backups' / run_id / 'manifest.json').read_text())
+                    def backup(run_id, weekday, previous=''):
+                        run(sys.executable, str(SCRIPT), '--repo', str(repo),
+                            '--output', str(root / 'backups' / run_id),
+                            '--history', str(root / 'backups'),
+                            '--run-id', run_id, '--previous-id', previous,
+                            '--weekday', str(weekday),
+                        '--standby-ref', 'refs/remotes/origin/production/shadow-concat-20261014')
+                        return json.loads((root / 'backups' / run_id / 'manifest.json').read_text())
 
-            sync()
-            full = backup('100', 7)
-            self.assertEqual([full['environments'][n]['kind'] for n in ('production','shadow')],
-                             ['full', 'full'])
-            (repo / 'file.txt').write_text('production changed\n')
-            run('git', '-C', str(repo), 'add', '.')
-            run('git', '-C', str(repo), 'commit', '-qm', 'change')
-            sync()
-            daily = backup('101', 1, '100')
-            self.assertEqual(daily['environments']['production']['kind'], 'incremental')
-            self.assertEqual(daily['environments']['shadow']['kind'], 'unchanged')
-            unchanged = backup('102', 2, '101')
-            self.assertEqual(unchanged['status'], 'restored-and-verified-git-code-only')
-            self.assertEqual([unchanged['environments'][n]['kind'] for n in ('production','shadow')],
-                             ['unchanged', 'unchanged'])
+                    sync()
+                    full = backup('100', 7)
+                    self.assertEqual([full['environments'][n]['kind'] for n in ('production','shadow')],
+                                     ['full', 'full'])
+                    (repo / 'file.txt').write_text('production changed\n')
+                    run('git', '-C', str(repo), 'add', '.')
+                    run('git', '-C', str(repo), 'commit', '-qm', 'change')
+                    sync()
+                    daily = backup('101', 1, '100')
+                    self.assertEqual(daily['environments']['production']['kind'], 'incremental')
+                    self.assertEqual(daily['environments']['shadow']['kind'], 'unchanged')
+                    unchanged = backup('102', 2, '101')
+                    self.assertEqual(unchanged['status'], 'restored-and-verified-git-code-only')
+                    self.assertEqual([unchanged['environments'][n]['kind'] for n in ('production','shadow')],
+                                     ['unchanged', 'unchanged'])
 
 if __name__ == '__main__':
     unittest.main()
