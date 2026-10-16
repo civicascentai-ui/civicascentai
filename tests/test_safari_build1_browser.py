@@ -59,6 +59,13 @@ try:
                 assert snapshot.count("/url:")==4,(width,route,"four exposed destinations",snapshot)
                 # Real Tab navigation from focused main: first choice must receive visible keyboard focus.
                 page.keyboard.press("Tab")
+                # Wait for the rendered :focus-visible outline; first-event computed style may lag a paint frame.
+                # This remains a firm >=3px focus-indicator gate, not a bypass.
+                page.wait_for_function("""() => {
+                    const e=document.activeElement;
+                    return e.matches('nav.options a.option-link:focus-visible') &&
+                        parseFloat(getComputedStyle(e).outlineWidth)>=3
+                }""",timeout=4000)
                 focused=page.evaluate("""() => {
                     const e=document.activeElement;
                     const b=e.getBoundingClientRect();
