@@ -46,6 +46,32 @@ Following explicit owner approval (“Go”, confirmed “Yes”), a single new 
 
 **Disposition:** `SHADOW_BUILD_READY_SOURCE_SHA_MATCHED`; **NOT** full standby restoration or recoverability. No real end-user smoke of the protected preview, full data/config restore, failover rehearsal, or public DNS transition. The earlier canceled request `dpl_2KrAMPXpqvaiY5i3pCGRFy1zf8fm` remains accurately recorded as an earlier attempt, not the final deployment. Keep #22 open, budget policy $0 and public traffic unchanged.
 
+## Read-only static-site rollback rehearsal — verified (2026-10-16)
+
+Following the owner's request to finish outstanding safe recovery work, the draft PR adds `tools/p0_isolated_cutover_rollback.py` to the existing loopback-only recovery workflow. It reconstructs **two release Git commits** from disposable full local bundles, checks `git fsck`, and switches only a Python localhost HTTP-server document-root pointer:
+
+1. Prior successful Pages release `af7edd4fb1be1507542db899611bcb63a207045c`.
+2. Current Pages production `fe50da6dd04762c9cca1d35525f559c7afe8e085`.
+3. Rollback to prior release `af7edd4`.
+4. Recovery/roll-forward to current `fe50da6`.
+
+The [exact-source PR check 38936490722](https://github.com/civicascentai-ui/civicascentai/actions/runs/38936490722) **PASS**: **4 × 16 = 64 HTTP 200 checks**, version-specific SHA header assertions, approved homepage/room/Veterans/Spanish markers and archived JSON receipts (artifact `12060622924`). The measured per-step durations are **local smoke timings only**, not real recovery RTO. Bundles/worktrees are discarded. This is an **isolated code-and-static-site cutover/rollback simulation**; it does **not** alter GitHub Pages, DNS, Vercel routing, visitors, Supabase, secrets, checkout or paid features. Do not claim live failover, Vercel runtime QC or full disaster recovery.
+
+## Live private-service inventory (metadata only; NO protected data exported)
+
+Provider reports two Supabase projects `ACTIVE_HEALTHY`, both in `us-east-1`:
+
+- **CivicAscent RAG Phase 1 Test**: 7 `public` tables, all RLS enabled; **18** recorded migrations; **6** active Edge Functions.
+- **CivicAscent Course Commerce QA Staging**: 4 `public` tables, all RLS enabled; **8** recorded migrations; **6** active Edge Functions. One webhook endpoint is configured for its own authentication mechanism and must be independently validated before any production attribution; an API metadata flag alone is not a security conclusion.
+
+This is a **read-only schema/manifest inventory**, not a Postgres dump, storage export, encrypted or off-provider copy, config/secret restore or validation of live production dependencies. No private table row values, source secrets or environment variable values were read or saved in GitHub. `#138` remains responsible for protected RAG preservation; `#22` remains responsible for determining which services are truly production-critical.
+
+## Protected Vercel preview — independent runtime QC limitation
+
+The Vercel connector independently reports the shadow preview `dpl_3wmTfUoQkzamp9eZVhhdJCtDDTqf` as **READY**, with exact Git source `fe50da6`, no production target and a single branch preview alias. Its authenticated provider build logs show the source checkout and successful compilation/deployment. **Public HTTP opens Vercel's SSO protection page rather than the application.** The provider's deployment file-tree endpoint returned 404, and direct authenticated file-content lookups for `index.html` were also unavailable, so no actual preview-page runtime test is claimed. Preserve SSO; an explicitly authenticated review (owner's Vercel session / permitted independent reviewer) is still required.
+
+The shadow project's earlier ignored-build and preview-suppression settings were restored by a successful Vercel project update API call, but the available read endpoints omit those fields, so the **configuration has not been independently read back**. Do not disable SSO or weaken production security to get a green check.
+
 ## Independent retained full + incremental archive restore (2026-10-16)
 
 Separate from the fresh-bundle test, **the actual previously stored GitHub Actions backup artifacts were downloaded and restored independently** into temporary local bare repositories, without accessing production or customer data:
