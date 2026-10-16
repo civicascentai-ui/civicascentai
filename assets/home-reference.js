@@ -19,13 +19,13 @@
     theme.setAttribute("aria-pressed",String(dark));
     theme.textContent=dark?"Light background":"Dark background";
     scene.setAttribute("aria-pressed",String(scenery));
-    scene.textContent=scenery?"Hide Safari picture":"Show Safari picture";
+    scene.textContent=scenery?"Hide background picture":"Show background picture";
     if(message)status.textContent=message;
   };
   smaller.addEventListener("click",()=>{index=Math.max(0,index-1);update("Text size "+sizes[index]+"%.");});
   larger.addEventListener("click",()=>{index=Math.min(sizes.length-1,index+1);update("Text size "+sizes[index]+"%.");});
   theme.addEventListener("click",()=>{dark=!dark;update(dark?"Dark, high-contrast appearance selected.":"Light, high-contrast appearance selected.");});
-  scene.addEventListener("click",()=>{scenery=!scenery;update(scenery?"Optional Safari picture on.":"Optional Safari picture off.");});
+  scene.addEventListener("click",()=>{scenery=!scenery;update(scenery?"Optional background picture on.":"Optional background picture off.");});
   update();
 
   const available=typeof window.SpeechSynthesisUtterance!=="undefined"&&

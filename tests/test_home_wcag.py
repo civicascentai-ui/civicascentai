@@ -31,7 +31,9 @@ try:
             assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1
             assert page.locator("main#main").get_attribute("tabindex")=="-1"
             assert page.locator("header nav.top-links a").count()==3,(width,"screenshot top navigation")
-            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Safari Home","Español","Free Workshop"]
+            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Programs","Español","Free Workshop"]
+            assert page.locator('header nav.top-links a').evaluate_all("(a)=>a.map(x=>x.getAttribute('href'))")==["programs.html","es.html","register.html"]
+            assert "Safari" not in page.locator("body").inner_text(),(width,"legacy Safari label still visible on homepage")
             assert page.locator("main .choices article.choice").count()==3,(width,"exactly 3 choices")
             assert page.get_by_role("heading",name="What would you like to do?").count()==1
             expected=["journey-learn.html","practice-sandbox.html","journey-help.html"]
@@ -65,20 +67,24 @@ try:
             page.locator("#theme-toggle").click()
             assert page.locator('body[data-theme="dark"]').count()==1
             assert page.locator("#theme-toggle").get_attribute("aria-pressed")=="true"
+            assert page.locator("#scenery-toggle").inner_text()=="Show background picture"
             page.locator("#scenery-toggle").click()
             assert page.locator("body.show-scene").count()==1
+            assert page.locator("#scenery-toggle").inner_text()=="Hide background picture"
             assert "scene-01-lodge-panorama.jpg" in page.locator(".intro").evaluate("(e)=>getComputedStyle(e).backgroundImage")
             page.locator("#scenery-toggle").click()
             assert page.locator("body.show-scene").count()==0
+            assert page.locator("#scenery-toggle").inner_text()=="Show background picture"
             # User-chosen UI preferences must not be stored or carried into a reload.
             assert page.evaluate("localStorage.length")==0,(width,"unexpected localStorage")
             page.reload(wait_until="networkidle")
             assert page.locator('body[data-theme="dark"]').count()==0
             assert page.evaluate("getComputedStyle(document.documentElement).fontSize")=="16px"
-            # Check reference paths and separate original four-room Safari.
-            page.locator('a[href="safari-home.html"]').first.click()
-            assert page.url.endswith("/safari-home.html"),(width,"Safari Home navigation")
-            assert page.locator("nav.portals a").count()==4,(width,"original Safari rooms preserved")
+            # The legacy four-room route remains preserved but is no longer exposed in homepage navigation.
+            assert page.locator('a[href="safari-home.html"]').count()==0,(width,"legacy Safari route must not be linked from homepage")
+            page.goto(base+"/safari-home.html",wait_until="networkidle")
+            assert page.url.endswith("/safari-home.html"),(width,"preserved legacy route")
+            assert page.locator("nav.portals a").count()==4,(width,"legacy rooms preserved")
             for dest in ["journey-learn.html","journey-try.html","journey-help.html","journey-continue.html"]:
                 assert page.locator(f'nav.portals a[href="{dest}"]').count()==1,(width,"missing Safari portal",dest)
             page.goto(base+"/index.html",wait_until="networkidle")
