@@ -95,6 +95,22 @@ def exercise(base_url, sha):
             "approvedDesignMarkers": "PASS"}
 
 
+
+def verify_offline_checkout_hold(restored_root, probe_script):
+    """Execute recovered serverless handler locally, never touch Stripe."""
+    process = subprocess.run(
+        ["node", str(probe_script), str(restored_root)],
+        check=True, capture_output=True, text=True, timeout=20,
+    )
+    proof = json.loads(process.stdout)
+    assert proof["scope"] == "OFFLINE_RECOVERED_SOURCE_ONLY"
+    assert proof["restoredPaidCheckoutPOST"] == "403_PAID_ENROLLMENT_ON_HOLD"
+    assert proof["restoredPaidCheckoutGET"] == "405_METHOD_NOT_ALLOWED"
+    assert proof["actualPaymentSubmitted"] is False
+    assert proof["stripeNetworkRequest"] is False
+    assert all(v["sourceLinkPresent"] for v in proof["hostedRegistration"].values())
+    return proof
+
 def run(repo, output, current_ref, rollback_sha):
     output.mkdir(parents=True, exist_ok=True)
     current = git("-C", str(repo), "rev-parse", current_ref + "^{commit}")
@@ -122,7 +138,11 @@ def run(repo, output, current_ref, rollback_sha):
                 server.active_commit = commit
                 begin = time.monotonic()
                 result = exercise(base, commit)
+                offline = verify_offline_checkout_hold(
+                    root, repo / "tools" / "p0_checkout_guard_probe.mjs"
+                )
                 receipts.append({"step": label, "commit": commit, **result,
+                                 "offlineCheckoutGuard": offline,
                                  "localSmokeSeconds": round(time.monotonic() - begin, 4)})
         finally:
             server.shutdown()
@@ -134,6 +154,8 @@ def run(repo, output, current_ref, rollback_sha):
         "previousPublishedSourceSha": rollback_sha,
         "gitBundles": {"current": now_digest, "previous": old_digest},
         "isolatedGitIntegrity": "PASS",
+        "allFourSourceVersionsPaidCheckoutClosed": True,
+        "freeStripeHostedForm": "EXTERNAL_DEPENDENCY_UNVERIFIED",
         "steps": receipts, "checksTotal": len(ROUTES) * len(receipts),
         "realTrafficSwitched": False,
         "realCrossoverSeconds": "NOT_MEASURED",
@@ -145,6 +167,7 @@ def run(repo, output, current_ref, rollback_sha):
     (output / "isolated-cutover-rollback.json").write_text(
         json.dumps(receipt, indent=2) + "\n", encoding="utf8")
     print("PASS: 4 local phases, %d restored route checks" % receipt["checksTotal"])
+    print("PASS: 4 offline recovered payment API checks, both source registration links")
     print("NOT VERIFIED: live traffic switch, Vercel preview function, data restoration")
     return receipt
 
