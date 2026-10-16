@@ -15,6 +15,18 @@ This document is an **evidence-backed release and recovery checklist**, not an a
 | Persistent databases/uploads | Supabase RAG Phase 1 Test and Course Commerce QA Staging discovered; live production linkage not established | Protected export and isolated data restore **NOT VERIFIED** |
 | Human witnessed timed failover/rollback | No observed authorized traffic switch or return test | **NOT VERIFIED** |
 
+## Independent retained full + incremental archive restore (2026-10-16)
+
+Separate from the fresh-bundle test, **the actual previously stored GitHub Actions backup artifacts were downloaded and restored independently** into temporary local bare repositories, without accessing production or customer data:
+
+- Full baseline action `38737102989`, artifact `11974307272` (run's `p1-dual-code-38737102989`).
+- Friday incremental action `38875404596`, artifact `12034469020` (`p1-dual-code-38875404596`, 2026-10-16 08:41:59 UTC).
+- Manifests, two Git-bundle hashes, full-to-incremental source continuity, exact recovered SHAs and `git fsck --full --no-reflogs` **PASS for production and shadow separately**.
+- Actual archived **production recovered at `96655c60ab3e3e5ae9f4248635380bb69acba98f`**; a loopback server using this *reconstructed retained backup* returned HTTP 200 for `index.html`, `programs.html`, `veterans.html`, `register.html`, `es.html` (5/5). Shadow recovered at `63e18246756ac615dfa9e7d10248aed0ea4031d6`; its commit matches the archived manifest.
+- This independently demonstrates the **stored prior code-only backup chain is actually restorable**, not merely that the original workflow passed. No repository source or secrets were copied into a public issue or artifact.
+
+**Freshness HOLD:** The restored retained production backup is OLDER than public production commit `fe50da6dd04762c9cca1d35525f559c7afe8e085`. Today's fresh-bundle static-site proof at the newest SHA is **ephemeral**, not a retained durable backup. A new verified scheduled/current production backup is still mandatory. This is not full application/data/Shadow House disaster recovery.
+
 ## What the non-destructive code-only rehearsal does
 
 1. On a disposable GitHub Actions runner, fetch the current `origin/main` commit without changing remote branches.
