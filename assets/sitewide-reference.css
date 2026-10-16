@@ -1,0 +1,52 @@
+/* CivicAscent AI sitewide visual alignment, owner reference Oct 15 2026.
+   Interior pages only. Preserve page scripts, layout behavior, and homepage. */
+body.ff-interior{--ff-ink:#10233c;--ff-paper:#fbfaf7;--ff-panel:#f2f5f8;--ff-teal:#095571;--ff-line:#5b7080;background:var(--ff-paper);color:var(--ff-ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-wrap:break-word}
+body.ff-interior :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #a85400;outline-offset:3px}
+body.ff-interior :is(button,a){touch-action:manipulation}
+body.ff-interior :is(.page-header,.site-header){background:#fff;color:var(--ff-ink);border-bottom:2px solid var(--ff-line);box-shadow:none}
+body.ff-interior :is(.page-header,.site-header) a{color:var(--ff-ink)}
+body.ff-interior :is(.page-header,.site-header) .brand i{color:var(--ff-teal)}
+body.ff-interior :is(.page-header,.site-header) .brand strong{color:var(--ff-ink)}
+body.ff-interior :is(.page-header,.site-header) .brand small{color:var(--ff-line)}
+body.ff-interior :is(.site-nav,.site-header nav) a{min-height:44px;display:inline-flex;align-items:center}
+body.ff-interior :is(.hero,.mentor-hero,.guide-hero){background:var(--ff-paper)!important;color:var(--ff-ink)!important}
+body.ff-interior :is(.hero,.mentor-hero,.guide-hero) :is(h1,h2,p){color:var(--ff-ink)}
+body.ff-interior :is(.product-card,.card,.listen-card,.sheet){background:#fff;color:var(--ff-ink);border:2px solid var(--ff-line);border-radius:12px;box-shadow:none}
+body.ff-interior :is(.product-card,.card,.listen-card,.sheet) :is(h2,h3){color:var(--ff-ink)}
+body.ff-interior :is(.button,.join,.guide-actions a,.toolbar button){background:var(--ff-teal);color:#fff;border-radius:8px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;font-weight:750}
+body.ff-interior :is(.section2,.mentor-wrap){background:var(--ff-paper);color:var(--ff-ink)}
+body.ff-interior :is(.eyebrow){color:var(--ff-teal);letter-spacing:.08em}
+body.ff-interior :is(.toolbar){background:var(--ff-panel);border:1px solid var(--ff-line)}
+body.ff-interior :is(.choice,.listen-card button){min-height:44px}
+body.ff-interior .guide-hero{padding-block:54px}
+body.ff-interior .mentor-hero{padding-block:60px}
+body.ff-interior .hero{padding-block:70px}
+body.ff-interior .guide-hero-inner,body.ff-interior .mentor-hero .inner{max-width:1060px}
+@media(max-width:767px){body.ff-interior :is(.hero,.mentor-hero,.guide-hero){padding:35px 20px!important}body.ff-interior :is(.hero-grid,.mentor-grid){grid-template-columns:minmax(0,1fr)}body.ff-interior :is(.site-header,.page-header){flex-wrap:wrap}body.ff-interior :is(.hero h1,.mentor-hero h1,.guide-hero h1){font-size:clamp(2rem,9vw,3rem);line-height:1.14}body.ff-interior :is(.card,.product-card){padding:20px}}
+@media(prefers-reduced-motion:reduce){body.ff-interior *,body.ff-interior *::before,body.ff-interior *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* The lab keeps its interactive geometry, but adopts approved cream/navy/teal surfaces. */
+body.ff-interior.ff-lab{--text:#10233c;--muted:#283c52;--cyan:#095571;--gold:#095571;--green:#095571;--panel:#f2f5f8;--line:#5b7080;background:#fbfaf7!important;color:#10233c}
+body.ff-interior.ff-lab .grid,body.ff-interior.ff-lab .stars{opacity:.06}
+body.ff-interior.ff-lab :is(.shell,.stage,.scene,.heading,.voicebar){color:#10233c}
+body.ff-interior.ff-lab :is(.pill,.node,.voicebar button){min-height:44px}
+
+
+/* FF design reconciliation: retire legacy scenic art and dark scrims while
+   retaining the proven mobile-navigation and printable-guide geometry. */
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero){
+  background:#fbfaf7!important;color:#10233c!important;
+}
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero)::before{
+  display:none!important;content:none!important;
+}
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero) :is(h1,h2,p){
+  color:#10233c!important;
+}
+body.ff-interior.program-safari .p-hero{
+  min-height:0;padding:70px clamp(20px,6vw,100px);
+}
+@media(max-width:767px){
+  body.ff-interior.program-safari .p-hero{
+    min-height:0;padding:35px 20px!important;
+  }
+}

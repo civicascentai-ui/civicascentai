@@ -1,0 +1,48 @@
+name: Consolidated release candidate accessibility QC
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - register.html
+      - es.html
+      - free-ai-starter.html
+      - tests/gg_a11y_branch_qc.cjs
+      - .github/workflows/consolidated-a11y-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-a11y:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install pinned browser and axe locally
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Start a local-only static preview (not production)
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/gg-local-server.log 2>&1 &
+          for attempt in $(seq 1 25); do
+            if curl --fail --silent http://127.0.0.1:8765/register.html > /dev/null; then
+              echo "Local test server ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Local server failed to start"
+          exit 1
+      - name: Run 12 real Chromium WCAG and 320px reflow tests on staged pages
+        run: node tests/gg_a11y_branch_qc.cjs
+      - name: Retain actual failing and passing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-a11y-branch-${{ github.run_id }}
+          path: gg-repair-evidence/
+          retention-days: 7
+          if-no-files-found: warn
