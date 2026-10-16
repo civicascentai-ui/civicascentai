@@ -1,0 +1,59 @@
+name: All Systems Accessibility Defect Detail - Isolated
+on:
+  push:
+    branches:
+      - qa/all-systems-readonly-20261015
+    paths:
+      - .github/workflows/all-systems-accessibility-detail.yml
+permissions:
+  contents: read
+jobs:
+  public-a11y-detail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install fixed browser and automated public accessibility scanner
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Capture exact WCAG failure selectors and public-page descriptions
+        shell: bash
+        run: |
+          mkdir -p all-systems-detail
+          cat > ./inspect-public-axe.cjs <<'JS'
+          const fs = require('fs');
+          const {chromium} = require('playwright');
+          const axe = require.resolve('axe-core/axe.min.js');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const results=[];
+            for(const route of ['/register.html','/es.html']){
+              for(const width of [390,1280]){
+                const page=await browser.newPage({viewport:{width,height:850},reducedMotion:'reduce'});
+                try{
+                  const response=await page.goto('https://civicascentai.com'+route,{waitUntil:'domcontentloaded',timeout:25000});
+                  await page.addScriptTag({path:axe});
+                  const outcome=await page.evaluate(()=>axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}}));
+                  const violations=outcome.violations.map(x=>({id:x.id,impact:x.impact,title:x.help,nodes:x.nodes.slice(0,8).map(y=>({selector:y.target,reason:y.failureSummary?.slice(0,300),html:y.html?.slice(0,240)}))}));
+                  results.push({route,width,http:response?.status(),violations});
+                }catch(e){results.push({route,width,error:String(e).slice(0,250)});}
+                await page.close();
+              }
+            }
+            await browser.close();
+            fs.writeFileSync('all-systems-detail/axe-defects.json',JSON.stringify(results,null,2));
+            console.log(JSON.stringify(results,null,2));
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          JS
+          node ./inspect-public-axe.cjs
+      - name: Preserve exact public-page accessibility defects
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-systems-a11y-detail-${{ github.run_id }}
+          path: all-systems-detail/
+          retention-days: 7
+          if-no-files-found: warn
