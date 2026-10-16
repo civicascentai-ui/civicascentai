@@ -1,0 +1,61 @@
+name: Pre-merge WCAG axe audit (isolated review branch)
+on:
+  push:
+    branches:
+      - repair/wcag-safari-removal-20261015
+    paths:
+      - '*.html'
+      - 'assets/**'
+      - 'tools/qa/wcag_axe_audit.cjs'
+      - '.github/workflows/wcag-premerge-axe.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'assets/**'
+      - 'tools/qa/wcag_axe_audit.cjs'
+      - '.github/workflows/wcag-premerge-axe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: wcag-pr-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  axe-branch-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout review source without persisted credential
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install open-source browser and axe
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Audit 10 isolated local pages across 320, 390, 768 and 1280px
+        shell: bash
+        env:
+          WCAG_AUDIT_BASE_URL: http://127.0.0.1:8765
+          WCAG_AUDIT_LOCAL: '1'
+          WCAG_AUDIT_WIDTHS: 320,390,768,1280
+          WCAG_AUDIT_OUTPUT: wcag-evidence/pr-local
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory . > /tmp/wcag-pr-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:8765/index.html; then break; fi
+            sleep 1
+          done
+          curl --fail --silent --output /dev/null http://127.0.0.1:8765/index.html
+          node tools/qa/wcag_axe_audit.cjs
+      - name: Preserve browser audit evidence even when accessibility defects remain
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-branch-axe-40-viewport-results
+          path: wcag-evidence/pr-local/results.json
+          retention-days: 14
+          if-no-files-found: warn
