@@ -57,6 +57,15 @@ Following the owner's request to finish outstanding safe recovery work, the draf
 
 The [exact-source PR check 38936490722](https://github.com/civicascentai-ui/civicascentai/actions/runs/38936490722) **PASS**: **4 × 16 = 64 HTTP 200 checks**, version-specific SHA header assertions, approved homepage/room/Veterans/Spanish markers and archived JSON receipts (artifact `12060622924`). The measured per-step durations are **local smoke timings only**, not real recovery RTO. Bundles/worktrees are discarded. This is an **isolated code-and-static-site cutover/rollback simulation**; it does **not** alter GitHub Pages, DNS, Vercel routing, visitors, Supabase, secrets, checkout or paid features. Do not claim live failover, Vercel runtime QC or full disaster recovery.
 
+## Checkout and hosted-registration safety during recovered rollback
+
+- PR #139 adds `tools/p0_checkout_guard_probe.mjs` and requires the local rollback runner to **load the checkout handler directly from each independently restored Git release**. No HTTP request to Stripe/Vercel or any production payment provider is issued.
+- [Action 38948166321](https://github.com/civicascentai-ui/civicascentai/actions/runs/38948166321) **PASS**: four localhost cutover/rollback/recovery phases × 16 routes = **64/64**; the restored paid-enrollment handler was invoked in each phase, with `POST → HTTP 403 / PAID_ENROLLMENT_ON_HOLD` and `GET → HTTP 405` in **all four** phases. `Cache-Control: no-store` verified. This is a source-level functional harness, NOT proof of external serverless runtime behavior.
+- Both English `register.html` and Spanish `registro.html` source contain their intended **external** `https://book.stripe.com/` registration link and $0 messaging; these forms are **NOT** part of GitHub Pages or Vercel code/data backup. Their provider configuration, actual no-card requirements, availability, confirmation return, and the handling of attendee data must be reviewed independently under the provider account. Source copy asserting "$0" is **not** provider proof.
+- A provider outage could break free registration even when the static website and rollback tests pass. Safe fallback: show clear free-workshop contact/help instructions only after owner approval of content; do not fabricate an existing working replacement form or import private attendee data into public GitHub.
+
+**Recovery acceptance:** The actual public-site restore/checkout guard is tested offline, but full end-to-end enrollment availability and privacy remain separate external dependencies.
+
 ## Live private-service inventory (metadata only; NO protected data exported)
 
 Provider reports two Supabase projects `ACTIVE_HEALTHY`, both in `us-east-1`:
