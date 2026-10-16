@@ -1,19 +1,30 @@
-# CivicAscent AI: Shared Agent Instructions
+# CivicAscent AI — mandatory shared agent instructions
 
-**MANDATORY FOR ALL CODI, SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, LPC AND OTHER REPOSITORY CONTRIBUTORS**
+**Applies to all CODI, GG, SAM, FRIDAY, SCOUT, ZEBRA, BLUE TEAM, REACH, LPC and future repository contributors.** Read the versioned reusable skills before changes:
 
-Read and apply [CivicAscent Sitewide FF Skill](skills/civicascent-sitewide-ff/SKILL.md) **before** working on website or learning content.
+- [Sitewide FF + WCAG + Release Skill](skills/civicascent-sitewide-ff/SKILL.md)
+- [GG independent issue-review Skill](skills/civicascent-gg-operations/SKILL.md)
+- [Latest project decision/evidence memory](docs/project-memory/skills-governance-2026-10-16.md)
+- [P1 Production and Shadow Backup Law](docs/operations/P1_BACKUP_RECOVERY_LAW_2026-10-15.md)
 
-The owner's approved screenshots outrank generic proposed designs. The accessible homepage has **three** choice cards, while the separate cinematic Safari Home has **four** distinct learning rooms and their originally approved artwork/color identity. Preserve both. Do not turn different pages into a uniform single-color template.
+## Critical current owner directions (October 16, 2026)
 
-**FF = Find → Fix → Retest** with independent evidence. Save before and after; preserve meaningful tests and correct back-navigation; avoid micro-update approval requests except for real human decisions. Continue isolated, reversible repairs after failures.
+The owner **replaced** previous orders to preserve cinematic Safari Home and its optional picture. Do NOT restore obsolete Safari navigation or scenery based on old screenshots or outdated skills. Preserve **four functional** learning-room routes with the newer accessible design. The homepage has **three main choices** and latest public navigation **Programs → programs.html**, **Español → es.html**, **Free Workshop → register.html** (main hotfix #134).
 
-**Evidence rule:** Never report merged, deployed, live, passed, complete, WCAG-certified, emailed, charged, or tested without verified evidence from the actual target. A Github merge is not a production deployment. The server target must serve the intended Git SHA and pass post-deploy smoke. A green automated browser run is not full WCAG certification.
+The homepage update is newer than the original PR #133 and must survive rebasing. PR #133 has passed automated axe and browser QC, but remains draft and does NOT constitute production release or WCAG 2.2 AA conformance. Preserve owner visual approval and independent manual assistive-technology/learner review. Never weaken tests.
 
-**Non-negotiables:** Budget $0, do not enable purchases or subscriptions, fail-closed checkout, avoid collecting private student data, respect reduced motion, avoid dark color combinations without contrast evidence, protect elderly/veteran/disabled learners, keep Spanish Spanish, keep existing lesson and practice functionality, and preserve authorized disclaimers.
+**FF = Find → Fix → Retest**, with source-vs-production SHA, reproducible failure, independent QC, before/after save point, rollback plan, CI receipt and post-release smoke. Reports distinguish Complete / Staged / Tested / Blocked / Deployed / Human Approval Required.
 
-**Team roles:** CODI coordinates; SAM implements; FRIDAY independently tests; SCOUT inventories; ZEBRA challenges design and quality; BLUE TEAM handles curriculum; REACH tracks approved outreach; LPC flags risks. These roles are responsibilities, not automatically running independent services.
+## Governance and safety
 
-Use the skill's stage gates, save points, audit matrix, stop conditions and source references in every QC report. Do not publish screenshot reference files to a public repository without owner authorization.
+CODI and GG are equal delegated Co-Executives beneath the President. GG's independent private repo, civicascentai-ui/civicascent-gg-operations, has 14/14 offline unit tests and read-only issue evidence, but NO verified autonomous Gemini model. Agent role labels do not mean teammates are currently running.
 
-**P1 backup and disaster recovery law:** Every Monday–Saturday, incremental backup of BOTH production and Shadow House; every Sunday, independent FULL backup of BOTH, with isolated restoration evidence, integrity checks, protected storage, and $0 budget constraints. All agents must follow [Production + Shadow Backup Law](docs/operations/P1_BACKUP_RECOVERY_LAW_2026-10-15.md). A code-only Git bundle or HTTP 200 smoke test does not satisfy this law. Policy adoption is not proof of execution.
+SAM handles engineering, FRIDAY independent accessibility QC, ZEBRA independent challenges, SCOUT inventory, BLUE TEAM curriculum, REACH only authorized outreach, LPC compliance-risk triage.
+
+**Budget $0.** Never enable paid checkout, subscriptions, AI API charges, unnecessary learner data transfer or unapproved emails or marketing. Respect provider age and account terms. Keep paid-enrollment fail-closed safeguards. No real student payment or paid model tests.
+
+Production and Shadow House backups: incremental Monday–Saturday and full Sunday **for both**, with independent restore/integrity evidence. Git bundles and HTTP 200 are insufficient proof of disaster recovery. Main merges may trigger GitHub Pages publication; do not merge held PRs before authorized release gates.
+
+## Durable skills and memory
+
+For each project task: load this file, the related SKILL.md, the dated project-memory note, and then check the latest owner instruction and current Git state. Record new decisions/test evidence in version-controlled project files. Git commits provide durable project reference, NOT irrevocable preservation, universal ChatGPT personal memory, or automatic synchronization to all third-party agents.

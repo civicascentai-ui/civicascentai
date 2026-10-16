@@ -1,3 +1,13 @@
+# 2026-10-16 current operational order (overrides historic station proposals)
+
+The President's latest priority is the inclusive, three-choice homepage and sitewide WCAG 2.2 AA target, with original Safari themed navigation/pictures retired while keeping four functioning accessible learning-room destinations. The current homepage header links to **Programs, Español, Free Workshop**. Draft PR #133 holds the independently automated-tested next replacement; no production release without human visual/assistive QC and explicit authorization.
+
+**CODI and GG are equal delegated Co-Executives** beneath the President. GG's private GitHub repository executes offline and public-readonly tests only; no Gemini generative service is independently verified. SAM implements fixes, FRIDAY QC, SCOUT inventories, ZEBRA challenges, BLUE TEAM supports accessible curriculum, REACH performs only authorized outreach, LPC reviews risk. Naming a role does not establish autonomous agents.
+
+**Mandatory versioned team skills:** [sitewide FF/WCAG](skills/civicascent-sitewide-ff/SKILL.md) and [GG operating SOP](skills/civicascent-gg-operations/SKILL.md), plus [current memory](docs/project-memory/skills-governance-2026-10-16.md). Historical design notes below are superseded wherever they conflict with these instructions. Budget $0, release HOLD and independent QC remain non-negotiable.
+
+---
+
 # CivicAscent AI — Team Operational Order
 
 ## Shared mission
