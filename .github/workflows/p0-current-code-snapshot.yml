@@ -1,0 +1,68 @@
+name: P0 on-demand current-production retained Git code snapshot
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/p0-current-code-snapshot.yml'
+      - 'tools/p1_dual_code_backup.py'
+      - 'tests/test_p1_dual_code_backup.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: p0-current-code-snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  retained-full-git-backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Read latest production main and pinned previous standby source
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git cat-file -e '63e18246756ac615dfa9e7d10248aed0ea4031d6^{commit}'
+          printf 'sourceMain=%s\n' "$(git rev-parse refs/remotes/origin/main)" >> "$GITHUB_STEP_SUMMARY"
+          echo 'WARNING: old standby is NOT in current production parity' >> "$GITHUB_STEP_SUMMARY"
+      - name: Run existing isolated code-backup regression suite
+        run: python3 -m unittest discover -s tests -p test_p1_dual_code_backup.py -v
+      - name: Create independent CURRENT FULL code snapshots and verify both restores
+        run: |
+          set -euo pipefail
+          python3 tools/p1_dual_code_backup.py \
+            --repo . --output recovery --history history \
+            --run-id "$GITHUB_RUN_ID" --standby-ref '63e18246756ac615dfa9e7d10248aed0ea4031d6' \
+            --mode full
+          python3 - <<'PY'
+          import json,pathlib,subprocess
+          p=pathlib.Path('recovery/manifest.json')
+          m=json.loads(p.read_text())
+          got=subprocess.check_output(['git','rev-parse','refs/remotes/origin/main'],text=True).strip()
+          assert m['scope']=='git-code-only'
+          assert m['status']=='restored-and-verified-git-code-only'
+          assert m['backup_mode']=='full' and m['chain_runs']==[str(m['run_id'])]
+          assert m['environments']['production']['sha']==got
+          assert all(m['environments'][n]['kind']=='full' for n in ('production','shadow'))
+          assert all(m['environments'][n]['bundle'] and m['environments'][n]['sha256'] for n in ('production','shadow'))
+          print('CURRENT MAIN FULL BACKUP AND ISOLATED RESTORE PASS:',got)
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('## Retained code backup only — no data recovery or Vercel shadow parity\n')
+            f.write('Captured exact main SHA: `'+got+'`\n')
+            f.write('Both full code bundles verified offline before artifact upload.\n')
+          PY
+      - name: Retain verified production and old standby Git bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: p0-current-full-code-${{ github.run_id }}
+          path: recovery/
+          retention-days: 35
+          if-no-files-found: error
