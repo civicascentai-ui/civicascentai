@@ -65,9 +65,6 @@ body[data-theme="dark"] .choice-link{background:#e0f2fa;color:#09243a}
 body[data-theme="dark"] .brand,body[data-theme="dark"] .intro h1{color:#f7f9fc}
 body[data-theme="dark"] .choice p{color:#f7f9fc}
 body[data-theme="dark"] .note{background:#183851}
-body.show-scene .intro{background:linear-gradient(90deg,#0a192ff2,#0a192fbd),url("safari/scene-01-lodge-panorama.jpg") center /cover;border-radius:11px;padding:30px;max-width:100%;color:#fff}
-body.show-scene .intro .eyebrow{color:#b7eaff}
-body.show-scene .intro .note{background:#122e47;color:#fff}
 @media(max-width:760px){
  .site-header{padding:12px 18px;align-items:flex-start;flex-direction:column;gap:11px}
  .top-links{width:100%;justify-content:flex-start}
@@ -90,6 +87,5 @@ body.show-scene .intro .note{background:#122e47;color:#fff}
  .other-links{display:grid;grid-template-columns:1fr}
  .other-links a{width:100%}
  .remember{padding:18px}
- body.show-scene .intro{padding:20px}
-}
+ }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
