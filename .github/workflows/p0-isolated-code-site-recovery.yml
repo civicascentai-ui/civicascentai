@@ -1,0 +1,111 @@
+name: P0 isolated code and served-site recovery proof
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tools/p1_isolated_code_site_restore.py"
+      - "tools/p0_isolated_cutover_rollback.py"
+      - "tools/p0_checkout_guard_probe.mjs"
+      - "tools/p0_dr_acceptance_gate.py"
+      - "tools/p0_backup_crypto.sh"
+      - "tests/test_p0_encrypted_restore.py"
+      - "docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json"
+      - ".github/workflows/p0-isolated-code-site-recovery.yml"
+      - "docs/operations/P0_RECOVERY_ACCEPTANCE_2026-10-16.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0-isolated-code-site-recovery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  restore-code-and-serve-ephemerally:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch the published source commit without editing production
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git rev-parse refs/remotes/origin/main
+      - name: Independently recover Git bundle and serve restored site on loopback
+        run: |
+          python3 tools/p1_isolated_code_site_restore.py \
+            --repo . --output evidence --ref refs/remotes/origin/main
+      - name: Cut over, roll back and re-forward on loopback (64 site-route checks)
+        run: |
+          python3 tools/p0_isolated_cutover_rollback.py \
+            --repo . --output evidence \
+            --current-ref refs/remotes/origin/main \
+            --previous-sha af7edd4fb1be1507542db899611bcb63a207045c
+      - name: Fail-closed full-DR acceptance and negative control
+        run: |
+          set -euo pipefail
+          python3 tools/p0_dr_acceptance_gate.py \
+            --manifest docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json \
+            --output evidence/p0-full-dr-decision.json \
+            --production-sha "$(git rev-parse refs/remotes/origin/main)"
+          # Mutating only a disposable JSON copy to make an unsupported
+          # "recovery ready" claim MUST fail; original source is unchanged.
+          python3 - <<'PY'
+          import json,pathlib,tempfile,subprocess,sys
+          m=json.loads(pathlib.Path('docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json').read_text())
+          m['recovery']['fullDisasterRecoveryReady']=True
+          with tempfile.TemporaryDirectory() as tmp:
+              src=pathlib.Path(tmp)/'unproved-ready.json'
+              receipt=pathlib.Path(tmp)/'decision.json'
+              src.write_text(json.dumps(m))
+              p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
+                                '--manifest',str(src),'--output',str(receipt),
+                                '--production-sha',m['published']['sourceCommit']],
+                               text=True,capture_output=True)
+              assert p.returncode!=0, 'DR checker allowed unsupported release-ready claim'
+              assert 'FAIL-CLOSED' in p.stderr, p.stderr
+          m['recovery']['fullDisasterRecoveryReady']=False
+          m['published']['sourceCommit']='0'*40
+          with tempfile.TemporaryDirectory() as tmp:
+              src=pathlib.Path(tmp)/'stale-production.json'
+              receipt=pathlib.Path(tmp)/'decision.json'
+              src.write_text(json.dumps(m))
+              p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
+                                '--manifest',str(src),'--output',str(receipt),
+                                '--production-sha',subprocess.check_output(
+                                    ['git','rev-parse','refs/remotes/origin/main'],
+                                    text=True).strip()],
+                               text=True,capture_output=True)
+              assert p.returncode!=0, 'DR checker allowed stale production SHA'
+              assert 'FAIL-CLOSED' in p.stderr, p.stderr
+          print('PASS: unsupported full recovery claim and stale source SHA rejected')
+          PY
+      - name: Synthetic encrypted-backup and protected restore (NO REAL DATA)
+        run: |
+          python3 -m unittest discover -s tests -p test_p0_encrypted_restore.py -v
+
+      - name: Explain limited restoration scope
+        if: always()
+        run: |
+          {
+            echo '## Recovery progress — code and static site only'
+            echo 'This rehearsal constructs a fresh temporary full Git bundle for current main, verifies its SHA and Git objects, and serves the recovered static pages over 127.0.0.1; then cycles current/previous/current release roots with 64 isolated HTTP checks, exercising the restored paid-enrollment handler locally at all four stages (403 on POST; 405 on GET) with no provider network call.'
+            echo 'No Vercel deployment, DNS change, third-party request, database/secret access, paid enrollment, or real traffic rollback is attempted. Stripe-hosted $0 registration is a separate external provider dependency, NOT restored/tested by this action. Encryption tests use synthetic fixture bytes and disposable throwaway GnuPG keys only; no private rows, external storage upload or real decryption key is used.'
+            echo '**This is not full disaster recovery readiness**: shadow parity, database, uploads, protected configuration and a timed rollback remain open.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve metadata receipt, never the Git bundle or website source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: isolated-code-site-recovery-${{ github.run_id }}
+          path: |
+            evidence/isolated-code-site-recovery.json
+            evidence/isolated-cutover-rollback.json
+            evidence/p0-full-dr-decision.json
+          retention-days: 14
+          if-no-files-found: warn
