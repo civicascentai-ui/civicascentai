@@ -1,0 +1,34 @@
+/* CivicAscent accessible learning rooms, replaces legacy themed scenes in release candidate. */
+:root{--ink:#10233c;--paper:#fbfaf7;--surface:#fff;--line:#5b7080;--teal:#095571;--focus:#a85400}
+*{box-sizing:border-box}
+html{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;scroll-behavior:auto}
+body{margin:0;background:var(--paper);color:var(--ink);line-height:1.55}
+a{color:#07536c;text-underline-offset:3px}
+a:focus-visible,summary:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+.skip-link{position:absolute;left:12px;top:-160px;padding:12px;background:#fff;color:#10233c;z-index:100}
+.skip-link:focus{top:12px}
+.page-header{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#fff;border-bottom:2px solid var(--line);padding:16px clamp(16px,4vw,60px)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font-size:1rem}
+.brand img{width:46px;height:46px}
+.brand span{display:flex;flex-direction:column}
+.brand small{font-size:.75rem;letter-spacing:.02em}
+.site-nav{display:flex;gap:6px;flex-wrap:wrap}
+.site-nav a,.menu-links a,.back{display:inline-flex;align-items:center;min-height:48px;padding:10px 14px;border-radius:7px;border:1.5px solid var(--line);color:var(--ink);background:#fff;font-weight:750;text-decoration:none}
+.site-nav .join{background:var(--teal);border-color:var(--teal);color:#fff}
+.mobile-nav{display:none}
+.room-main{min-height:70vh;max-width:1050px;margin:auto;padding:clamp(20px,5vw,60px) 20px}
+.room-panel{padding:clamp(20px,4vw,45px);border:2px solid var(--line);border-radius:16px;background:#fff}
+.eyebrow{font-size:.9rem;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:#075571}
+.room-panel h1{font-size:clamp(2.1rem,5vw,3.5rem);line-height:1.15;margin:.25em 0}
+.room-sub{font-size:1.25rem;font-weight:750}
+.intro-desc{font-size:1.05rem;max-width:66ch}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:28px 0}
+.option-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:16px;background:var(--teal);color:#fff;text-decoration:none;border-radius:9px;font-weight:800}
+.option-link:hover,.site-nav .join:hover{background:#073c52}
+.option-link{min-width:0}
+.option-link span:first-child{min-width:0;overflow-wrap:anywhere}
+.option-link span:last-child{flex:none}
+.room-next{font-weight:650}
+.room-footer{padding:22px;text-align:center;border-top:1px solid var(--line);background:#f2f5f8}
+@media(max-width:780px){.site-nav{display:none}.mobile-nav{display:block}.mobile-nav summary{cursor:pointer;min-height:48px;padding:12px;border:2px solid var(--line);border-radius:7px;font-weight:800}.menu-links{display:flex;flex-direction:column;padding-top:10px;gap:5px}.options{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
