@@ -22,7 +22,7 @@
     const heading = sections[name].querySelector("h3");
     heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });
-    sections[name].scrollIntoView({ block: "start", behavior: "instant" });
+    sections[name].scrollIntoView({ block: "start", behavior: "auto" });
   }
   buttons.forEach(button => button.addEventListener("click", () => openStation(button.dataset.activity)));
 
