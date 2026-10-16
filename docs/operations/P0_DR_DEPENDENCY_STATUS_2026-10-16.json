@@ -1,0 +1,64 @@
+{
+  "scope": "PUBLIC_METADATA_ONLY_NO_PRIVATE_ROWS_OR_SECRETS",
+  "asOf": "2026-10-16",
+  "published": {
+    "platform": "GitHub Pages",
+    "sourceCommit": "fe50da6dd04762c9cca1d35525f559c7afe8e085",
+    "siteCodeRestoreVerified": true,
+    "codeOnlyOffProviderBackupVerified": true,
+    "staticRouteRollbackVerified": true,
+    "paidCheckoutGuardOfflineVerified": true
+  },
+  "standby": {
+    "platform": "Vercel Hobby preview",
+    "matchingSourceCommit": true,
+    "previewBuildReady": true,
+    "protectedPreviewRuntimeAccepted": false,
+    "buildSuppressionReadBack": false,
+    "actualTrafficFailoverVerified": false
+  },
+  "dataScope": {
+    "supabaseOrganizationPlan": "free",
+    "productionDatabaseDependencyProven": false,
+    "projects": [
+      {
+        "role": "Course Commerce QA Staging",
+        "status": "ACTIVE_HEALTHY",
+        "publicTables": 4,
+        "privateTables": 0,
+        "schemaMigrations": 8,
+        "activeEdgeFunctions": 6,
+        "storageBuckets": 1,
+        "storageObjectsApprox": 2,
+        "schemaAndRowLevelSecurityInventoryOnly": true,
+        "dataBackupVerified": false,
+        "isolatedDataRestoreVerified": false
+      },
+      {
+        "role": "RAG Phase 1 Test",
+        "status": "ACTIVE_HEALTHY",
+        "publicTables": 7,
+        "privateTables": 4,
+        "schemaMigrations": 18,
+        "activeEdgeFunctions": 6,
+        "storageBuckets": 0,
+        "storageObjectsApprox": 0,
+        "schemaAndRowLevelSecurityInventoryOnly": true,
+        "dataBackupVerified": false,
+        "isolatedDataRestoreVerified": false
+      }
+    ],
+    "privateDataBackupEncryptedOffProvider": false,
+    "privateDataRestoreVerified": false,
+    "storageBackupRestoreVerified": false,
+    "productionSecretsReconstructionVerified": false,
+    "stripeHostedRegistrationRecoverabilityVerified": false
+  },
+  "recovery": {
+    "measuredFullEnvironmentRPO": false,
+    "measuredFullEnvironmentRTO": false,
+    "independentWitnessSignoff": false,
+    "fullDisasterRecoveryReady": false
+  },
+  "caveat": "QA/test project metadata does not establish these projects are serving the public GitHub Pages site. Free-plan automatic database backup cannot be assumed."
+}
