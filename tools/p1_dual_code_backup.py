@@ -18,8 +18,12 @@ SOURCE_REFS = {
 }
 
 def git(*args, cwd=None):
-    p = subprocess.run(['git', *args], cwd=cwd, check=True, text=True,
+    p = subprocess.run(['git', *args], cwd=cwd, check=False, text=True,
                        capture_output=True)
+    if p.returncode:
+        raise RuntimeError('Git recovery check failed (exit '
+                           + str(p.returncode) + '): '
+                           + (p.stderr or p.stdout).strip()[-4000:])
     return p.stdout.strip()
 
 def sha256(path):
@@ -49,7 +53,10 @@ def restore_chain(chain, root, current_dir):
                     if sha256(archive) != entry['sha256']:
                         raise ValueError(f'Checksum mismatch: {archive}')
                     # Incremental fetch requires the previous backed-up Git objects.
-                    git('-C', str(dest), 'fetch', '-q', str(archive),
+                    # Disable asynchronous auto-maintenance for this isolated restore
+                    # fetch so fsck cannot race transient .tmp-*.pack files.
+                    git('-C', str(dest), '-c', 'maintenance.auto=false',
+                        '-c', 'gc.auto=0', 'fetch', '-q', str(archive),
                         f'refs/heads/p1-snapshot-{name}')
                     commit = git('-C', str(dest), 'rev-parse', 'FETCH_HEAD')
                     git('-C', str(dest), 'update-ref', 'refs/heads/recovered', commit)
