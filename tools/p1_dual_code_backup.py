@@ -49,7 +49,11 @@ def restore_chain(chain, root, current_dir):
                     if sha256(archive) != entry['sha256']:
                         raise ValueError(f'Checksum mismatch: {archive}')
                     # Incremental fetch requires the previous backed-up Git objects.
-                    git('-C', str(dest), 'fetch', '-q', str(archive),
+                    # Avoid asynchronous Git auto-maintenance racing this restore's
+                    # immediate full integrity check (Git fsck exit 68).
+                    # This does not disable or weaken the mandatory fsck.
+                    git('-C', str(dest), '-c', 'maintenance.auto=false',
+                        '-c', 'gc.auto=0', 'fetch', '-q', str(archive),
                         f'refs/heads/p1-snapshot-{name}')
                     commit = git('-C', str(dest), 'rev-parse', 'FETCH_HEAD')
                     git('-C', str(dest), 'update-ref', 'refs/heads/recovered', commit)

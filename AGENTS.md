@@ -17,3 +17,11 @@ The owner's approved screenshots outrank generic proposed designs. The accessibl
 Use the skill's stage gates, save points, audit matrix, stop conditions and source references in every QC report. Do not publish screenshot reference files to a public repository without owner authorization.
 
 **P1 backup and disaster recovery law:** Every Monday–Saturday, incremental backup of BOTH production and Shadow House; every Sunday, independent FULL backup of BOTH, with isolated restoration evidence, integrity checks, protected storage, and $0 budget constraints. All agents must follow [Production + Shadow Backup Law](docs/operations/P1_BACKUP_RECOVERY_LAW_2026-10-15.md). A code-only Git bundle or HTTP 200 smoke test does not satisfy this law. Policy adoption is not proof of execution.
+
+
+## October 15, 2026: Codex + GitHub + Cloudflare Pages $0 handoff
+Owner has approved dividing roles: **Codex = engineering and tests; GitHub = source/history/reviews/QC; Cloudflare Pages = proposed staging and future hosting**. All three must stay within the user's existing $0 incremental budget and account allowances. Read [the three-platform handoff and release guards](docs/operations/CODEX_GITHUB_CLOUDFLARE_ZERO_COST_HANDOFF_2026-10-15.md) before acting.
+
+Public site stays served by existing GitHub Pages while the redesign is repaired and owner-reviewed on isolated QA branch/PR #129. Do **not** merge to main, enable an automatic production deploy, update DNS, change hosting, activate payments, access or publish private data, or certify WCAG/recovery based only on automated checks. Cloudflare DNS ownership is not evidence that a Pages project is configured. A Codex instruction file is not evidence that a Codex Cloud job is running.
+
+If an older Safari-themed instruction conflicts with the newest specifically approved screenshots or explicit removal of Safari public branding, honor the latest owner-approved visual direction while **preserving each room's distinct approved artwork/colors and function**. Keep original sources archived, not destroyed. Never impose one uniform template on visually distinct destinations.
