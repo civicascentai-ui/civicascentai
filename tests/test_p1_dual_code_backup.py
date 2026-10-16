@@ -9,7 +9,14 @@ import unittest
 SCRIPT = pathlib.Path(__file__).resolve().parents[1] / 'tools' / 'p1_dual_code_backup.py'
 
 def run(*args):
-    return subprocess.run(args, capture_output=True, text=True, check=True).stdout.strip()
+    result = subprocess.run(args, capture_output=True, text=True)
+    if result.returncode:
+        raise AssertionError(
+            "Recovery fixture subprocess failed: " + repr(args)
+            + "\\nSTDERR: " + result.stderr[-4000:]
+            + "\\nSTDOUT: " + result.stdout[-4000:]
+        )
+    return result.stdout.strip()
 
 class RecoveryChainTests(unittest.TestCase):
     def test_workflow_shell_arguments_expand_and_default(self):
