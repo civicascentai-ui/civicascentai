@@ -5,6 +5,9 @@ body.ff-interior :is(a,button,input,select,textarea,summary):focus-visible{outli
 body.ff-interior :is(button,a){touch-action:manipulation}
 body.ff-interior :is(.page-header,.site-header){background:#fff;color:var(--ff-ink);border-bottom:2px solid var(--ff-line);box-shadow:none}
 body.ff-interior :is(.page-header,.site-header) a{color:var(--ff-ink)}
+body.ff-interior :is(.page-header,.site-header) .brand i{color:var(--ff-teal)}
+body.ff-interior :is(.page-header,.site-header) .brand strong{color:var(--ff-ink)}
+body.ff-interior :is(.page-header,.site-header) .brand small{color:var(--ff-line)}
 body.ff-interior :is(.site-nav,.site-header nav) a{min-height:44px;display:inline-flex;align-items:center}
 body.ff-interior :is(.hero,.mentor-hero,.guide-hero){background:var(--ff-paper)!important;color:var(--ff-ink)!important}
 body.ff-interior :is(.hero,.mentor-hero,.guide-hero) :is(h1,h2,p){color:var(--ff-ink)}
