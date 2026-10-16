@@ -53,6 +53,7 @@ try:
                     toggle.click()
                     assert page.locator(".mobile-nav .menu-links").is_visible(),(width,route,"mobile menu not shown")
                     toggle.click()
+                page.screenshot(path=str(out/f"learning-room-{route.removesuffix('.html')}-{width}.png"),full_page=True)
                 assert page.get_by_role("link",name="Back to home").count()==1
                 page.get_by_role("link",name="Back to home").click()
                 assert page.url.endswith("/index.html"),(width,route,"broken return")
