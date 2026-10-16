@@ -6,6 +6,7 @@ on:
     paths:
       - "tools/p1_isolated_code_site_restore.py"
       - ".github/workflows/p0-isolated-code-site-recovery.yml"
+      - "docs/operations/P0_RECOVERY_ACCEPTANCE_2026-10-16.md"
   workflow_dispatch:
 
 permissions:
