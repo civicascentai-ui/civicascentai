@@ -29,7 +29,7 @@ The repository's `tools/p0_backup_crypto.sh` requires an **already imported owne
 
 ## Synthetic encryption test supplied in PR #139
 
-`tests/test_p0_encrypted_restore.py` creates **disposable CI-only RSA test identities** and synthetic bytes. It exercises `tools/p0_backup_crypto.sh`, then verifies byte-identical decrypt with the proper key; wrong key, ciphertext tampering, truncation, overwrite attempts and missing public key must all fail without leaving recovered plaintext outputs. Test keys and fake data are discarded by the CI runner. **This proves the encryption wrapper behavior, not real protected-data backup or data restore.**
+`tests/test_p0_encrypted_restore.py` creates **disposable CI-only RSA test identities** and synthetic bytes. It exercises `tools/p0_backup_crypto.sh`, then verifies byte-identical decrypt with the proper key; wrong key, ciphertext tampering, truncation, overwrite attempts and missing public key must all fail without leaving recovered plaintext outputs. Test keys and fake data are discarded by the CI runner. **Verified FF test:** [GH Actions 38969395372](https://github.com/civicascentai-ui/civicascentai/actions/runs/38969395372) passed after fixing GnuPG output to the uniquely protected pre-created temp file. **This proves the encryption wrapper behavior, not real protected-data backup or data restore.**
 
 ## Mandatory block if no owner-held recovery key exists
 
@@ -37,6 +37,6 @@ The repository's `tools/p0_backup_crypto.sh` requires an **already imported owne
 
 ### Current disposition
 
-`CODE_RECOVERY=PASS`, `OFF_PROVIDER_GIT_CODE_COPY=PASS`, `SYNTHETIC_OPENPGP_TEST=PENDING`, `PRIVATE_DATA_ENCRYPTED_BACKUP=NOT_VERIFIED`, `OFFLINE_OWNER_KEY=NOT_VERIFIED`, `ISOLATED_PROTECTED_DATABASE_RESTORE=NOT_VERIFIED`, `FULL_DR_READY=false`.
+`CODE_RECOVERY=PASS`, `OFF_PROVIDER_GIT_CODE_COPY=PASS`, `SYNTHETIC_OPENPGP_TEST=PASS`, `PRIVATE_DATA_ENCRYPTED_BACKUP=NOT_VERIFIED`, `OFFLINE_OWNER_KEY=NOT_VERIFIED`, `ISOLATED_PROTECTED_DATABASE_RESTORE=NOT_VERIFIED`, `FULL_DR_READY=false`.
 
 Track evidence in [issue #22](https://github.com/civicascentai-ui/civicascentai/issues/22) and keep [PR #139](https://github.com/civicascentai-ui/civicascentai/pull/139) DRAFT pending separate release approval.
