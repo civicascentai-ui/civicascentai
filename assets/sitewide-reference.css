@@ -26,3 +26,24 @@ body.ff-interior.ff-lab{--text:#10233c;--muted:#283c52;--cyan:#095571;--gold:#09
 body.ff-interior.ff-lab .grid,body.ff-interior.ff-lab .stars{opacity:.06}
 body.ff-interior.ff-lab :is(.shell,.stage,.scene,.heading,.voicebar){color:#10233c}
 body.ff-interior.ff-lab :is(.pill,.node,.voicebar button){min-height:44px}
+
+
+/* FF design reconciliation: retire legacy scenic art and dark scrims while
+   retaining the proven mobile-navigation and printable-guide geometry. */
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero){
+  background:#fbfaf7!important;color:#10233c!important;
+}
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero)::before{
+  display:none!important;content:none!important;
+}
+body.ff-interior.safari-interior :is(.p-hero,.hero,.guide-hero) :is(h1,h2,p){
+  color:#10233c!important;
+}
+body.ff-interior.program-safari .p-hero{
+  min-height:0;padding:70px clamp(20px,6vw,100px);
+}
+@media(max-width:767px){
+  body.ff-interior.program-safari .p-hero{
+    min-height:0;padding:35px 20px!important;
+  }
+}
