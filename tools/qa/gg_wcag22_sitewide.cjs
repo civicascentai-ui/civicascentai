@@ -68,6 +68,15 @@ const records = [];
             count:v.nodes.length
           }));
           entry.incomplete=a.incomplete.map(v=>({id:v.id,count:v.nodes.length}));
+          // Bounded, selector-only diagnostics: no page text, form values, or secrets.
+          // Keep the hard fail condition untouched; this emits remediation evidence.
+          for(const v of entry.violations) {
+            console.log("GG_A11Y_DETAIL", JSON.stringify({
+              route, viewport:width, rule:v.id, impact:v.impact, count:v.count,
+              targets:v.elements.map(n=>n.selector).slice(0,8)
+            }));
+          }
+
           entry.automated_pass = entry.http_status===200 &&
             entry.violations.length===0 &&
             !issues.horizontal_overflow && issues.main_count===1;
