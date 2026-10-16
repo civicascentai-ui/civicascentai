@@ -1,0 +1,79 @@
+name: P1 recovery topology read-only audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/p1-recovery-readiness-audit.yml'
+      - 'docs/operations/P1_RECOVERY_TOPOLOGY_2026-10-16.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topology-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record source parity and public HTTP evidence
+        shell: bash
+        env:
+          PRODUCTION_URL: https://civicascentai.com/
+          STANDBY_URL: https://civicascentai-launch-m343vxg2y-civicascentai.vercel.app/
+          PINNED_STANDBY_SHA: 63e18246756ac615dfa9e7d10248aed0ea4031d6
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          git fetch --no-tags origin 'refs/heads/main:refs/remotes/origin/main'
+          prod_sha="$(git rev-parse refs/remotes/origin/main)"
+          printf '%s\n' "$prod_sha" > evidence/production-source.sha
+          printf '%s\n' "$PINNED_STANDBY_SHA" > evidence/standby-source.sha
+
+          if [ "$prod_sha" = "$PINNED_STANDBY_SHA" ]; then
+            parity=PASS
+          else
+            parity=BLOCKED_STALE_STANDBY
+          fi
+          printf '%s\n' "$parity" > evidence/source-parity.status
+
+          prod_http="$(curl --location --silent --show-error --output evidence/production.html --write-out '%{http_code}' --max-time 25 "$PRODUCTION_URL")"
+          printf '%s\n' "$prod_http" > evidence/production-http.status
+          test "$prod_http" = 200
+
+          # Standby is read-only evidence. A login redirect/non-200 is recorded as a blocker,
+          # not treated as successful crossover and not used to change traffic.
+          set +e
+          standby_http="$(curl --location --silent --show-error --output evidence/standby.html --write-out '%{http_code}' --max-time 25 "$STANDBY_URL")"
+          curl_rc=$?
+          set -e
+          printf '%s\n' "$standby_http" > evidence/standby-http.status
+          printf '%s\n' "$curl_rc" > evidence/standby-curl.exit
+          if [ "$curl_rc" -eq 0 ] && [ "$standby_http" = 200 ]; then
+            printf 'HTTP_RETRIEVABLE_ONLY_NOT_PARITY_PROOF\n' > evidence/standby-retrieval.status
+          else
+            printf 'BLOCKED_NOT_PUBLICLY_RETRIEVABLE\n' > evidence/standby-retrieval.status
+          fi
+
+          cat > evidence/SCOPE.txt <<'EOF'
+          Read-only topology evidence only.
+          No deployment, DNS change, traffic switch, database write, secret export, checkout, payment, or customer action.
+          A green workflow does NOT mean disaster recovery acceptance is complete.
+          EOF
+
+          printf 'production=%s standby=%s parity=%s prod_http=%s standby_http=%s\n' \
+            "$prod_sha" "$PINNED_STANDBY_SHA" "$parity" "$prod_http" "$standby_http"
+
+      - name: Preserve topology evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-recovery-topology-${{ github.run_id }}
+          path: evidence/
+          retention-days: 35
+          if-no-files-found: error
