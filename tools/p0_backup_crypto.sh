@@ -28,11 +28,12 @@ tmp="$(mktemp "$output".partial.XXXXXXXX)" || die "unable to create protected te
 cleanup() { rm -f -- "$tmp"; }
 trap cleanup EXIT
 if [[ "$mode" == encrypt ]]; then
-  gpg --batch --no-tty --trust-model always --recipient "$fingerprint" \
+  # --yes is scoped to the unique mktemp file, never the final destination.
+  gpg --batch --yes --no-tty --trust-model always --recipient "$fingerprint" \
     --compress-algo none --encrypt --output "$tmp" -- "$input" ||
     die "encryption failed; source untouched"
 else
-  gpg --batch --no-tty --decrypt --output "$tmp" -- "$input" ||
+  gpg --batch --yes --no-tty --decrypt --output "$tmp" -- "$input" ||
     die "authentication/decryption failed; discarded temporary output"
 fi
 [[ -s "$tmp" ]] || die "empty cipher or restore refused"
