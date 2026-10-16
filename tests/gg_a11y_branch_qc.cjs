@@ -40,6 +40,14 @@ const findings = [];
         } catch(e){item.error=String(e).slice(0,320)}
         findings.push(item);
         console.log(route,width,item.pass?'PASS':'FAIL',item.error||item.violations?.map(x=>x.id).join(','));
+        if(!item.pass && item.violations?.length) {
+          for (const violation of item.violations) {
+            for (const node of violation.nodes || []) {
+              console.log('A11Y NODE', route, width, violation.id,
+                          JSON.stringify(node.selector), String(node.reason || '').replace(/\s+/g,' ').slice(0,700));
+            }
+          }
+        }
         await page.close();
       }
     }
