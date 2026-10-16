@@ -1,0 +1,58 @@
+name: GG sitewide WCAG 2.2 AA evidence
+on:
+  push:
+    branches:
+      - gg/wcag22-fullsite-audit-20261016
+    paths:
+      - .github/workflows/gg-wcag22-sitewide.yml
+      - tools/qa/gg_wcag22_sitewide.cjs
+      - '*.html'
+      - assets/**
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: gg-sitewide-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  full-route-axe:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [primary, support]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Use Node LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned zero-cost axe and Chromium
+        run: |
+          npm install --no-save playwright@1.55.0 axe-core@4.10.3
+          npx playwright install --with-deps chromium
+      - name: Launch isolated static web server
+        shell: bash
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 > /tmp/gg-wcag-http.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:8766/index.html; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Run independent public-route audit (no form submission)
+        env:
+          GG_WCAG_BASE: http://127.0.0.1:8766
+        run: node tools/qa/gg_wcag22_sitewide.cjs "${{ matrix.group }}"
+      - name: Preserve failure and pass records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-wcag22-${{ matrix.group }}-${{ github.run_id }}
+          path: wcag-evidence/gg-sitewide/${{ matrix.group }}/
+          if-no-files-found: warn
+          retention-days: 7
