@@ -58,11 +58,20 @@ try:
                 assert page.url.endswith("/index.html"),(width,route,"broken return")
             page.goto(base+"/veterans.html",wait_until="domcontentloaded")
             assert page.get_by_role("heading",name="New skills. New possibilities.").count()==1
+            assert page.get_by_role("link",name="Back to home").count()==1,(width,"retired Veterans link missing")
+            assert page.locator('a[href="safari-home.html"]').count()==0,(width,"retired Safari link on Veterans")
+            assert "Safari" not in page.locator("body").inner_text(),(width,"obsolete Safari text on Veterans")
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.classList.contains('vet-skip')"),(width,"Veterans first-tab skip link")
+            page.keyboard.press("Enter")
+            assert page.evaluate("document.activeElement.id==='main'"),(width,"Veterans skip link focus landing")
             assert page.locator(".vet-resource-list a").count()==3
             assert page.locator("input,form").count()==0
             assert "book.stripe" not in page.content().lower()
             assert not errors,(width,"browser JS errors",errors)
             page.screenshot(path=str(out/f"accessible-veterans-{width}.png"),full_page=True)
+            page.get_by_role("link",name="Back to home").click()
+            assert page.url.endswith("/index.html"),(width,"Veterans return must reach approved homepage")
             results.append({"viewport":width,"result":"PASS","rooms":4,"legacy_redirect":"PASS","veterans":"PASS"})
             page.close()
         browser.close()
