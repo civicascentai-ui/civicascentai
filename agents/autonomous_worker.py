@@ -26,13 +26,15 @@ TASKS = {
     "zebra": (22, 26, 68),
     "reach": (33, 34, 36),
     "codi": (17, 20, 21, 22, 26, 50, 68, 92),
+    "gg": (17, 20, 21, 22, 26, 50, 68, 92),
 }
 MISSIONS = {
     "sam": "Engineering: production route health and safety blockers",
     "friday": "Independent QA: visitor links, accessibility basics, checkout hold",
     "zebra": "Independent critical review: risky checkout links and release gates",
     "reach": "Partner/reviewer lead triage: read and prepare, NEVER contact",
-    "codi": "Coordinator: current P0 issue inventory and next priority",
+    "codi": "Co-Executive CODI: current P0 issue inventory and next priority",
+    "gg": "Co-Executive GG (Gemini): equal P0 issue coordination and independent priority review",
 }
 
 class PageLinks(HTMLParser):
@@ -162,12 +164,26 @@ def do_reach(report):
     report["warnings"].append("No outreach, new contacts, external sharing, or volunteer acceptance performed.")
 
 def do_codi(report):
+    report["co_executive_parity"] = True
+    report["co_executive_peer"] = "gg" if report["role"] == "codi" else "codi"
     issues = report.get("issues", [])
     opens = [x for x in issues if x.get("state") == "open"]
     rank = (68, 22, 26, 50, 21, 20, 17, 92)
     report["priority_open_queue"] = [x["number"] for key in rank for x in opens if x["number"] == key]
     check(report, "tracked_open_backlog", bool(opens))
     report["next_safe_action"] = "Assign next P0 from priority_open_queue to engineering or independent QA; do not assert external staffing or completion."
+
+def do_gg(report):
+    """GG has CODI-equivalent read-only operating authority and queue access.
+
+    This deterministic worker is not a Gemini model call.
+    """
+    do_codi(report)
+    report["next_safe_action"] = (
+        "Co-lead the P0 queue with CODI; independently challenge priorities, "
+        "request separate FRIDAY/ZEBRA QC, escalate conflicts to President; never deploy."
+    )
+    report["model_execution"] = "NOT_INVOKED_DETERMINISTIC_ROLE_RECEIPT"
 
 def main(argv=None):
     p=argparse.ArgumentParser()
@@ -181,7 +197,9 @@ def main(argv=None):
         parser = PageLinks()
         parser.feed('<html><h1>Safe</h1><a href="index.html">Back</a></html>')
         assert parser.headings == ["Safe"] and "index.html" in parser.links
-        assert sorted(TASKS) == ["codi","friday","reach","sam","zebra"]
+        assert sorted(TASKS) == ["codi","friday","gg","reach","sam","zebra"]
+        assert TASKS["gg"] == TASKS["codi"]
+        assert MISSIONS["gg"].startswith("Co-Executive GG")
         try:
             get_page("../bad-route")
         except ValueError:
@@ -212,7 +230,8 @@ def main(argv=None):
         "friday":do_friday,
         "zebra":do_zebra,
         "reach":do_reach,
-        "codi":do_codi
+        "codi":do_codi,
+        "gg":do_gg
     }[args.role](report)
     report["status"] = "FAIL" if report["critical_failures"] else ("ATTENTION" if report["warnings"] else "PASS")
     out = Path(args.output_dir)

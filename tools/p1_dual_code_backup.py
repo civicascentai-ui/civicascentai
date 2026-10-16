@@ -18,8 +18,11 @@ SOURCE_REFS = {
 }
 
 def git(*args, cwd=None):
-    p = subprocess.run(['git', *args], cwd=cwd, check=True, text=True,
+    p = subprocess.run(['git', *args], cwd=cwd, check=False, text=True,
                        capture_output=True)
+    if p.returncode:
+        raise RuntimeError(f'Git {args[0]} failed (exit {p.returncode}): '
+                           + p.stderr[-2500:])
     return p.stdout.strip()
 
 def sha256(path):
@@ -37,6 +40,11 @@ def restore_chain(chain, root, current_dir):
         for name in SOURCE_REFS:
             dest = pathlib.Path(temp) / name
             git('init', '--bare', '-q', str(dest))
+            # These isolated restore repositories are ephemeral. Git's background
+            # auto-maintenance can race git fsck and remove a temporary pack file.
+            # Disable automatic cleanup here, never disable integrity validation.
+            git('-C', str(dest), 'config', 'gc.auto', '0')
+            git('-C', str(dest), 'config', 'maintenance.auto', 'false')
             last = None
             for run_id in chain:
                 bundle_root = current_dir if run_id == chain[-1] else root / run_id

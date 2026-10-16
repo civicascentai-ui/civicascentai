@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        role: [sam, friday, zebra, reach, codi]
+        role: [sam, friday, zebra, reach, codi, gg]
     steps:
       - name: Checkout source with no persistent credentials
         uses: actions/checkout@v4

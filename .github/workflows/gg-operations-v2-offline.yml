@@ -1,0 +1,31 @@
+name: GG Operations v2 - Offline Safety Gate
+on:
+  pull_request:
+    paths:
+      - 'gg-operations/**'
+      - '.github/workflows/gg-operations-v2-offline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      GG_EXECUTION_MODE: self-test
+      GG_FREE_TIER_VERIFIED: 'no'
+      GG_MODEL_RUN_APPROVED: 'no'
+      GG_PUBLIC_ONLY: 'yes'
+    steps:
+      - name: Checkout read-only with no persisted token
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Python syntax verification
+        run: python3 -m py_compile gg-operations/gg_agent.py gg-operations/tests/test_gg_safety.py
+      - name: Verify GG defaults to offline
+        working-directory: gg-operations
+        run: python3 gg_agent.py --mode self-test
+      - name: Run isolated GG v2 regression suite (mocked HTTP only)
+        working-directory: gg-operations
+        run: python3 -m unittest discover -s tests -v

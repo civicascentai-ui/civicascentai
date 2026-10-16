@@ -1,0 +1,66 @@
+name: GG and CODI Co-Executive Acceptance (offline)
+on:
+  push:
+    branches:
+      - governance/gg-codi-coexecutives-20261015
+    paths:
+      - .github/workflows/gg-coexec-acceptance.yml
+      - AGENTS.md
+      - TEAM_OPERATING_ORDER.md
+      - agents/autonomous_worker.py
+      - agents/blue_crew_shifts.py
+      - tests/test_home_wcag.py
+      - tests/test_p1_dual_code_backup.py
+      - tools/p1_dual_code_backup.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  parity-and-safety:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compile worker modules
+        run: python3 -m py_compile agents/autonomous_worker.py agents/blue_crew_shifts.py
+      - name: Check CODI and GG worker role parity
+        run: |
+          python3 agents/autonomous_worker.py --role codi --offline-self-check
+          python3 agents/autonomous_worker.py --role gg --offline-self-check
+      - name: Check Blue Crew schedule and six-role registry
+        run: python3 agents/blue_crew_shifts.py --self-test
+      - name: Live read-only co-executive queue checks (public issues only)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 agents/autonomous_worker.py --role codi --output-dir agent-receipts
+          python3 agents/autonomous_worker.py --role gg --output-dir agent-receipts
+      - name: Preserve actual GG and CODI read-only receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gg-codi-parity-${{ github.run_id }}
+          path: agent-receipts/
+          retention-days: 1
+          if-no-files-found: warn
+      - name: Validate authority controls and no Gemini model generation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path("agents/autonomous_worker.py").read_text()
+          charter=Path("docs/operations/GG_CODI_COEXECUTIVE_CHARTER_2026-10-15.md").read_text()
+          assert "gg" in s and "do_gg" in s and "co_executive_peer" in s
+          assert "same" not in charter.lower() or "President" in charter
+          assert "Co-Executive" in charter and "President" in charter
+          assert "No live checkout changes" in charter
+          assert "model_execution" in s and "NOT_INVOKED" in s
+          workflow=Path(".github/workflows/permanent-agent-workforce.yml").read_text()
+          assert "reach, codi, gg" in workflow
+          print("PASS: equal coordination permissions documented, independent QC and hold maintained; no model calls made")
+          PY

@@ -52,7 +52,7 @@ jobs:
           persist-credentials: false
       - name: Test clock boundaries and daylight savings
         run: python3 agents/blue_crew_shifts.py --self-test
-      - name: Run five workers and SCOUT repeatedly within approved window
+      - name: Run six workers including GG and SCOUT within approved window
         run: python3 -u agents/blue_crew_shifts.py
       - name: Save timestamped shift evidence
         if: always()

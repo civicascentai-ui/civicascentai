@@ -78,6 +78,9 @@ try:
             # Check reference paths and separate original four-room Safari.
             page.locator('a[href="safari-home.html"]').first.click()
             assert page.url.endswith("/safari-home.html"),(width,"Safari Home navigation")
+            page.wait_for_load_state("domcontentloaded")
+            assert page.locator('meta[name="civicascent-build"]').get_attribute('content')=="build1-porch-four-rooms-20261014",(width,"approved Safari build")
+            page.locator("nav.portals a").first.wait_for(state="attached",timeout=10000)
             assert page.locator("nav.portals a").count()==4,(width,"original Safari rooms preserved")
             for dest in ["journey-learn.html","journey-try.html","journey-help.html","journey-continue.html"]:
                 assert page.locator(f'nav.portals a[href="{dest}"]').count()==1,(width,"missing Safari portal",dest)
