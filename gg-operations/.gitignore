@@ -1,0 +1,10 @@
+.env
+.env.*
+*.key
+*.pem
+*.log
+gg-receipt.json
+gg-public-receipt.json
+__pycache__/
+.pytest_cache/
+.venv/
