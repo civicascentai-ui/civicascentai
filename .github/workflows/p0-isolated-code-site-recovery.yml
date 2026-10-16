@@ -49,7 +49,8 @@ jobs:
           set -euo pipefail
           python3 tools/p0_dr_acceptance_gate.py \
             --manifest docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json \
-            --output evidence/p0-full-dr-decision.json
+            --output evidence/p0-full-dr-decision.json \
+            --production-sha "$(git rev-parse refs/remotes/origin/main)"
           # Mutating only a disposable JSON copy to make an unsupported
           # "recovery ready" claim MUST fail; original source is unchanged.
           python3 - <<'PY'
@@ -61,11 +62,24 @@ jobs:
               receipt=pathlib.Path(tmp)/'decision.json'
               src.write_text(json.dumps(m))
               p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
-                                '--manifest',str(src),'--output',str(receipt)],
+                                '--manifest',str(src),'--output',str(receipt),
+                                '--production-sha',m['published']['sourceCommit']],
                                text=True,capture_output=True)
               assert p.returncode!=0, 'DR checker allowed unsupported release-ready claim'
               assert 'FAIL-CLOSED' in p.stderr, p.stderr
-          print('PASS: unsupported full recovery claim is rejected')
+          m['recovery']['fullDisasterRecoveryReady']=False
+          m['published']['sourceCommit']='0'*40
+          with tempfile.TemporaryDirectory() as tmp:
+              src=pathlib.Path(tmp)/'stale-production.json'
+              receipt=pathlib.Path(tmp)/'decision.json'
+              src.write_text(json.dumps(m))
+              p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
+                                '--manifest',str(src),'--output',str(receipt),
+                                '--production-sha','fe50da6dd04762c9cca1d35525f559c7afe8e085'],
+                               text=True,capture_output=True)
+              assert p.returncode!=0, 'DR checker allowed stale production SHA'
+              assert 'FAIL-CLOSED' in p.stderr, p.stderr
+          print('PASS: unsupported full recovery claim and stale source SHA rejected')
           PY
       - name: Explain limited restoration scope
         if: always()
