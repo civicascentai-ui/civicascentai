@@ -81,8 +81,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--production-sha", required=True, help="Actual fetched origin/main commit SHA")
     args = parser.parse_args()
     data = json.loads(pathlib.Path(args.manifest).read_text(encoding="utf-8"))
+    if data["published"]["sourceCommit"] != args.production_sha:
+        raise AssertionError(
+            "FAIL-CLOSED: metadata backup baseline does not match actual production SHA "
+            f"({data['published']['sourceCommit']} != {args.production_sha})"
+        )
     result = inspect(data)
     dest = pathlib.Path(args.output)
     dest.parent.mkdir(parents=True, exist_ok=True)
