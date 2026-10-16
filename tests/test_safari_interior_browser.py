@@ -1,4 +1,4 @@
-"""Independent visual/functional QA of repaired Safari interior pages.
+"""Independent visual/functional QC of approved accessible interior design.
 
 Real Chromium, 320/390/768/1366px; screenshots and JSON are evidence.
 No purchases, form submissions or external credentials.
@@ -35,14 +35,16 @@ try:
             ]:
                 response=page.goto("http://127.0.0.1:%d/%s"%(PORT,slug),wait_until="networkidle",timeout=30000)
                 assert response.status==200,(slug,width,response.status)
-                assert page.locator("body.safari-interior").count()==1,(slug,width,"wrong design")
+                assert page.locator("body.ff-interior").count()==1,(slug,width,"approved design missing")
                 assert page.locator("header.page-header").count()==1,(slug,width,"wrong header")
                 assert page.locator("header.page-header .brand").count()==1,(slug,width,"missing brand")
                 assert page.locator(selector).count()==1,(slug,width,"hero absent")
-                assert "scene-01-lodge-panorama.jpg" in page.locator(selector).evaluate("(e)=>getComputedStyle(e).backgroundImage"),(slug,width,"wrong scenic art")
+                assert page.locator(selector).evaluate("(e)=>getComputedStyle(e).backgroundImage")=="none",(slug,width,"legacy scenic image still active")
+                assert page.locator(selector).evaluate("(e)=>getComputedStyle(e).color")=="rgb(16, 35, 60)",(slug,width,"hero text not approved navy")
+                assert page.locator(selector).evaluate("(e)=>getComputedStyle(e,'::before').display")=="none",(slug,width,"legacy scenic scrim still active")
                 assert page.locator("h1").first.is_visible(),(slug,width,"title invisible")
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(slug,width,"horizontal overflow",page.evaluate("document.documentElement.scrollWidth"))
-                assert page.locator('link[href="assets/safari-interior.css"]').count()==1,(slug,width,"shared stylesheet absent")
+                assert page.locator('link[href="assets/sitewide-reference.css"]').count()==1,(slug,width,"approved shared stylesheet absent")
                 if width<=850:
                     mobile=page.locator("header.page-header details.mobile-nav")
                     assert mobile.is_visible(),(slug,width,"mobile menu missing")
