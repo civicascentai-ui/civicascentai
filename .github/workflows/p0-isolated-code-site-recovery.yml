@@ -1,0 +1,52 @@
+name: P0 isolated code and served-site recovery proof
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "tools/p1_isolated_code_site_restore.py"
+      - ".github/workflows/p0-isolated-code-site-recovery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p0-isolated-code-site-recovery-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  restore-code-and-serve-ephemerally:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Fetch the published source commit without editing production
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git rev-parse refs/remotes/origin/main
+      - name: Independently recover Git bundle and serve restored site on loopback
+        run: |
+          python3 tools/p1_isolated_code_site_restore.py \
+            --repo . --output evidence --ref refs/remotes/origin/main
+      - name: Explain limited restoration scope
+        if: always()
+        run: |
+          {
+            echo '## Recovery progress — code and static site only'
+            echo 'This rehearsal constructs a fresh temporary full Git bundle for current main, verifies its SHA and Git objects, and serves the recovered static pages over 127.0.0.1.'
+            echo 'No Vercel deployment, DNS change, third-party request, database/secret access, paid enrollment, or destructive rollback is attempted.'
+            echo '**This is not full disaster recovery readiness**: shadow parity, database, uploads, protected configuration and a timed rollback remain open.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve metadata receipt, never the Git bundle or website source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: isolated-code-site-recovery-${{ github.run_id }}
+          path: evidence/isolated-code-site-recovery.json
+          retention-days: 14
+          if-no-files-found: warn
