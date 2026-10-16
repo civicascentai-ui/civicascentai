@@ -50,7 +50,11 @@ try:
                 assert page.get_by_role("navigation",name=f"{title} choices").count()==1,(width,route,"named learner choices landmark")
                 assert page.locator("html").get_attribute("lang")=="en",(width,route,"document language")
                 snapshot=page.locator("nav.options").aria_snapshot()
-                assert snapshot.count("- link ")==4,(width,route,"accessible links missing",snapshot)
+                # Playwright quotes link snapshots that contain punctuation differently.
+                # Query the accessibility role instead of parsing the snapshot's formatting.
+                option_roles=page.get_by_role("navigation",name=f"{title} choices").get_by_role("link")
+                assert option_roles.count()==4,(width,route,"four accessible link roles",snapshot)
+                assert snapshot.count("/url:")==4,(width,route,"four exposed destinations",snapshot)
                 # Real Tab navigation from focused main: first choice must receive visible keyboard focus.
                 page.keyboard.press("Tab")
                 focused=page.evaluate("""() => {
