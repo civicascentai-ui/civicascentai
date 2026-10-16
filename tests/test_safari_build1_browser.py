@@ -39,6 +39,12 @@ try:
             ]:
                 page.goto(base+"/"+route,wait_until="domcontentloaded")
                 assert page.locator('meta[name="civicascent-build"]').get_attribute("content")=="accessible-learning-rooms-20261015",(width,route,"new accessible build")
+                # Keyboard-only acceptance: skip link must be first and move focus into main.
+                page.keyboard.press("Tab")
+                assert page.evaluate("document.activeElement.classList.contains('skip-link')"),(width,route,"skip link must be first tab stop")
+                page.keyboard.press("Enter")
+                assert page.evaluate("document.activeElement.id==='main'"),(width,route,"skip link must focus main")
+                assert page.locator("main#main").get_attribute("tabindex")=="-1",(width,route,"accessible skip destination")
                 assert page.get_by_role("heading",name=title,exact=True).count()==1,(width,route,"room title")
                 assert page.locator(".options a.option-link").count()==4,(width,route,"four learning paths")
                 assert page.locator('link[href="assets/learning-rooms-accessible.css"]').count()==1,(width,route,"accessible stylesheet")
@@ -50,9 +56,12 @@ try:
                 if width<=780:
                     toggle=page.locator(".mobile-nav summary")
                     assert toggle.is_visible(),(width,route,"mobile navigation missing")
-                    toggle.click()
+                    toggle.focus()
+                    page.keyboard.press("Enter")
+                    assert page.locator(".mobile-nav").get_attribute("open") is not None,(width,route,"keyboard menu does not open")
                     assert page.locator(".mobile-nav .menu-links").is_visible(),(width,route,"mobile menu not shown")
-                    toggle.click()
+                    page.keyboard.press("Enter")
+                    assert page.locator(".mobile-nav").get_attribute("open") is None,(width,route,"keyboard menu does not close")
                 page.screenshot(path=str(out/f"learning-room-{route.removesuffix('.html')}-{width}.png"),full_page=True)
                 assert page.get_by_role("link",name="Back to home").count()==1
                 page.get_by_role("link",name="Back to home").click()
