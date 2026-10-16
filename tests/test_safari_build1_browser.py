@@ -45,6 +45,27 @@ try:
                 page.keyboard.press("Enter")
                 assert page.evaluate("document.activeElement.id==='main'"),(width,route,"skip link must focus main")
                 assert page.locator("main#main").get_attribute("tabindex")=="-1",(width,route,"accessible skip destination")
+                # Automated accessible-name/role preflight, not a real screen-reader session.
+                assert page.get_by_role("main").count()==1,(width,route,"single named main landmark")
+                assert page.get_by_role("navigation",name=f"{title} choices").count()==1,(width,route,"named learner choices landmark")
+                assert page.locator("html").get_attribute("lang")=="en",(width,route,"document language")
+                snapshot=page.locator("nav.options").aria_snapshot()
+                assert snapshot.count("- link ")==4,(width,route,"accessible links missing",snapshot)
+                # Real Tab navigation from focused main: first choice must receive visible keyboard focus.
+                page.keyboard.press("Tab")
+                focused=page.evaluate("""() => {
+                    const e=document.activeElement;
+                    const b=e.getBoundingClientRect();
+                    const c=getComputedStyle(e);
+                    return {firstChoice:e.matches('nav.options a.option-link'),
+                        focusVisible:e.matches(':focus-visible'),
+                        outlineStyle:c.outlineStyle,
+                        outlineWidth:parseFloat(c.outlineWidth)||0,
+                        boxLeft:b.left,boxRight:b.right,
+                        inViewport:b.left>=-2 && b.right<=innerWidth+2}
+                }""")
+                assert focused["firstChoice"] and focused["focusVisible"],(width,route,"Tab to first choice and focus-visible",focused)
+                assert focused["outlineStyle"]!="none" and focused["outlineWidth"]>=3 and focused["inViewport"],(width,route,"visible focus indication",focused)
                 assert page.get_by_role("heading",name=title,exact=True).count()==1,(width,route,"room title")
                 assert page.locator(".options a.option-link").count()==4,(width,route,"four learning paths")
                 assert page.locator('link[href="assets/learning-rooms-accessible.css"]').count()==1,(width,route,"accessible stylesheet")
@@ -63,6 +84,15 @@ try:
                     page.keyboard.press("Enter")
                     assert page.locator(".mobile-nav").get_attribute("open") is None,(width,route,"keyboard menu does not close")
                 page.screenshot(path=str(out/f"learning-room-{route.removesuffix('.html')}-{width}.png"),full_page=True)
+                # 200% root-text scaling is an automated stress proxy, NOT actual 200% browser zoom.
+                page.evaluate("document.documentElement.style.fontSize='200%'")
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 2"),(width,route,"200 percent text reflow overflow")
+                for element in page.locator(".options a.option-link").all():
+                    box=element.bounding_box()
+                    assert box and box["x"]>=-2 and box["x"]+box["width"]<=width+2,(width,route,"200 percent text choice clipped",box)
+                if width in (320,390):
+                    page.screenshot(path=str(out/f"learning-room-{route.removesuffix('.html')}-text200-{width}.png"),full_page=True)
+                page.evaluate("document.documentElement.style.fontSize=''")
                 assert page.get_by_role("link",name="Back to home").count()==1
                 page.get_by_role("link",name="Back to home").click()
                 assert page.url.endswith("/index.html"),(width,route,"broken return")
