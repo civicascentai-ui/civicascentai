@@ -12,7 +12,7 @@ This document is an **evidence-backed release and recovery checklist**, not an a
 | **NEW retained full current production snapshot** | GitHub Actions [38901152418](https://github.com/civicascentai-ui/civicascentai/actions/runs/38901152418), artifact ID `12046370563`, retention 35 days, FULL code-only production + legacy shadow; independent ZIP/bundle SHA256 + Git fsck and exact SHA checked | **PASS: live `fe50da6` now backed up in a retained GitHub artifact** |
 | Preexisting Git-code backups | `.github/workflows/p1-dual-code-backups.yml`, daily 08:17 UTC; last reviewed successful scheduled run `38875404596` before the subsequent merges | Verified **code-only**, freshness to latest SHA unverified |
 | Latest code + served-site rehearsal | PR #139 workflow `p0-isolated-code-site-recovery.yml`; ephemeral full Git bundle, `git fsck`, recovered HEAD equals current main, 16 loopback HTTP routes | Automated PASS on tested run, **not durable stored backup** |
-| Vercel standby `civicascentai-launch-qa` | New Git branch `recovery/shadow-source-candidate-20261016` equals current `main` SHA `fe50da6` (0 ahead/behind); one preview request `dpl_2KrAMPXpqvaiY5i3pCGRFy1zf8fm` canceled under intact ignored-build guard | **SOURCE PARITY PREPARED, DEPLOYMENT BLOCKED** |
+| Vercel standby `civicascentai-launch-qa` | Exact-source preview `dpl_3wmTfUoQkzamp9eZVhhdJCtDDTqf` reported `READY` at `fe50da6`; Vercel's protected-login page blocks independent public page smoke; ignore-build suppression restored after launch | **PREVIEW BUILD READY / PAGE QA AND LIVE CUTOVER NOT VERIFIED** |
 | Persistent databases/uploads | Supabase RAG Phase 1 Test and Course Commerce QA Staging discovered; live production linkage not established | Protected export and isolated data restore **NOT VERIFIED** |
 | Human witnessed timed failover/rollback | No observed authorized traffic switch or return test | **NOT VERIFIED** |
 
@@ -26,11 +26,25 @@ The owner authorized the next #22 phase. A **one-time independent full-code snap
 - From the **actually retained** latest production archive, separately checked out a fresh copy, served it over loopback `127.0.0.1`, and verified **16/16** URLs (13 HTML, 3 CSS/JS) return HTTP 200, including approved homepage, learner rooms, Veterans and Spanish markers.
 - **No copy** of database rows, uploads, environment variables or protected settings is in this snapshot. It is time-limited GitHub artifact storage, **not** an off-provider protected disaster backup. Do not infer it protects against GitHub provider-wide failure. Future scheduled Mon–Sat incremental and Sunday full archival policy still needs ongoing chain evidence.
 
-### Shadow House scoped preview — blocked by existing control
+### Earlier preview request — blocked before owner-approved temporary build window
 
 - Created GitHub branch `recovery/shadow-source-candidate-20261016` at **exact same code commit** `fe50da6` as current public `main`, independently compared: **identical, 0 commits ahead / 0 behind**. This is **source-code readiness**, not a deployed standby.
 - Confirmed connected Vercel team reports **Hobby** plan. Sent **one** isolated deployment request to *shadow project* `civicascentai-launch-qa`, from the pinned candidate source, targeting an unaliased preview (no `production` target, no Vercel project settings override). Result deployment `dpl_2KrAMPXpqvaiY5i3pCGRFy1zf8fm`: **CANCELED** by existing ignored-build step. A canceled deployment is **not** READY and proves **no** failover parity.
 - Did **not** disable ignored-build control, change existing domains, checkout, public DNS, database, or production routing. An actual READY standby preview remains gated by controlled review of preview build suppression and guaranteed nonchargeable resource usage.
+
+## Scoped READY Shadow preview — October 16, 2026
+
+Following explicit owner approval (“Go”, confirmed “Yes”), a single new isolated Vercel **preview** was built for the connected shadow project `civicascentai-launch-qa` (team's existing Hobby plan), pinned to the currently published production Git commit `fe50da6dd04762c9cca1d35525f559c7afe8e085`. No public-domain aliases, DNS, production target, checkout controls, data or secret settings were deliberately changed.
+
+**Controlled build-window sequence and exact receipts:**
+
+1. Rechecked both production `main` and the isolated shadow-source branch: **identical** at `fe50da6`.
+2. Temporarily allowed a preview build on **the shadow project only** (ignored-build command changed from `exit 0` to `exit 1`, preview-disable switched off).
+3. Created one preview deploy `dpl_3wmTfUoQkzamp9eZVhhdJCtDDTqf`, target **preview** (Vercel reports `target=null`, not production), at exact SHA `fe50da6`. Build logs confirm the intended branch and commit, `exit 1` allowed the build, the Vercel output was successfully built and deployed, and deployment API reports **READY**.
+4. **Restored** the existing project suppression settings immediately after the build entered BUILDING: `commandForIgnoringBuildStep="exit 0"`; `previewDeploymentsDisabled=true`. Vercel's project-update API confirmed both write requests succeeded. The project API currently omits those flags in its read-only response; their restored values were **not independently read back**. Do not claim subsequent automatic preview builds are disabled based solely on this call if a new contradiction emerges.
+5. Verified Vercel reports this preview as latest deployment, its source SHA is correct and the project retains Vercel SSO protection for its previews. An unauthenticated GET showed the **Protected Deployment – Vercel** login page rather than the real website, so **human authenticated route/browser checks remain incomplete**. A Git deployment source-file-list endpoint returned 404 (file tree not available), so the returned build logs are the build verification.
+
+**Disposition:** `SHADOW_BUILD_READY_SOURCE_SHA_MATCHED`; **NOT** full standby restoration or recoverability. No real end-user smoke of the protected preview, full data/config restore, failover rehearsal, or public DNS transition. The earlier canceled request `dpl_2KrAMPXpqvaiY5i3pCGRFy1zf8fm` remains accurately recorded as an earlier attempt, not the final deployment. Keep #22 open, budget policy $0 and public traffic unchanged.
 
 ## Independent retained full + incremental archive restore (2026-10-16)
 
@@ -65,7 +79,8 @@ Separate from the fresh-bundle test, **the actual previously stored GitHub Actio
 - [ ] Inventory actual public-service dependencies: static Pages, DNS, redirect rules, contact/registration forms, analytics and any real production-linked persistent services. QA-only projects must not silently be counted as current production.
 - [ ] Recreate complete application **from a retained restore point** in isolated protected environment, independently inspect its contents and conduct functional smoke.
 - [ ] For real production-linked data, conduct an isolated backup restoration with sensitive data protected. Never modify the source database during rehearsal.
-- [ ] Rebuild the **Shadow House Vercel project** from the approved current source in a separate authenticated **preview** only after confirming $0 incremental cost and getting scoped permission to suspend preview build suppression. Do not use production target, alter domains or disable checkout; restore suppression after the test.
+- [x] Request owner-approved isolated Vercel preview for the matching Git SHA: deployment **READY**; build suppression restoration requested/accepted. It stayed on the Hobby plan and used no paid upgrade.
+- [ ] Independently verify the **authenticated preview's actual pages and assets**, route interactions and data-free checkout hold; Vercel SSO blocks anonymous HTTP smoke. Read back restored build settings via a provider source that exposes them, or separately validate the next intended skipped build without triggering an unauthorized deployment.
 - [ ] Independently confirm latest deployed standby Git SHA equals approved production source and that all critical functions/assets resolve from standby; do not equate HTTP 200 with parity.
 - [ ] Time the proposed non-destructive crossover/rollback rehearsal using isolated/test domains; a public DNS cutover remains separately authorized. Record independent QC sign-off and documented fallback.
 - [ ] Open issues #40 and #138 remain separate: manual WCAG 2.2 AA screen reader/learner review and protected RAG data preservation.
