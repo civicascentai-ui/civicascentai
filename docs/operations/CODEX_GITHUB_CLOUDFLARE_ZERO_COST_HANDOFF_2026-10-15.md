@@ -1,0 +1,40 @@
+# CivicAscent AI | Codex + GitHub + Cloudflare Pages handoff
+**Authorized October 15, 2026 | $0 additional spend | Public site stays live | Draft PR #129**
+
+## Assignment and exact source
+- **Codex**: development agent, implementation, targeted bug fixes, test execution, honest PASS/FAIL report. Codex must actively inspect the current source, not manufacture screenshots or results. Being named in this document does **not** mean a cloud Codex job has been launched.
+- **GitHub**: canonical code/version history, branch-isolated changes, issue/PR receipts, standard Actions tests, rollback points. Repository: `civicascentai-ui/civicascentai`.
+- **Cloudflare Pages**: proposed isolated preview host and eventual release host, subject to connecting an owner-authorized Cloudflare account and verifying the Free tier. Cloudflare currently holds DNS, but the public domain is still routed to GitHub Pages. A Cloudflare management connection/project **has not yet been verified**.
+- **Live site**: `https://civicascentai.com` remains reachable on its current hosting until the owner independently signs off on visual design and operational release. DO NOT edit DNS, detach a domain, switch traffic, disable GitHub Pages, deploy a release, or activate purchases.
+- **Primary overhaul**: existing draft PR #129 (`qa/redesign-main-integration-20261016`). Preserve existing changes and the owner's approved screenshot references. Do not start a second inconsistent theme/rebuild. Existing backup law, sitewide FF skill, release HOLD, and full-environment recovery issue #22 remain authoritative.
+
+## Codex engineering brief (execute on an isolated branch, PR to #129's integration branch)
+1. First read `AGENTS.md`, `skills/civicascent-sitewide-ff/SKILL.md`, issue #92 and draft PRs #129 and #125, along with current actual HTML/CSS, mobile scripts, and current GitHub Actions. Locate, name, and resolve conflicting owner instructions only with the owner's *latest explicit* approved screenshots; don't invent approval. Avoid changing approved imagery/color identity or flattening visually different rooms.
+2. Finish the approved sitewide redesign while retaining the three-choice accessible main homepage, FOUR separate learning-room destinations, and each room's distinct approved theme/imagery. Navigation from Home -> chosen room -> themed learning page -> Home must work with keyboard, touch, and browser back. Avoid stale Safari branding in current public navigation. Do not delete historical archived assets or classes without proving nothing uses them.
+3. At 320, 390, 768 and 1366 pixels test key pages and real clicks: Home; four journey rooms; programs; courses/listen and captions/transcript; free printable guide; veteran entrance; starter sandbox; Spanish; help/consultation and workshop entry. Prevent offscreen dropdowns, oversized menus, horizontal scrolling, obscured controls, broken links, mixed-language headings, focus traps, invalid announcements, and false form-confirmation claims. Provide separately inspectable screenshots and actual test logs.
+4. Fix existing failed code-quality and recovery tests as substantive bugs, never by removing tests or suppressing failed assertions. Exercise P1 code backup full + incremental + unchanged chain and separate standby source mapping. Maintain the full mandatory Git integrity check. A code-only bundle does not certify database/storage recovery.
+5. Accessibility goal: WCAG 2.2 AA-oriented real browser automated checks, semantic headings, skip link, color contrast, 44px targets where appropriate, visible focus, operable menus, keyboard sequence, screen zoom/reflow, reduced motion, and understandable Spanish. Do not claim formal compliance/certification without independent assistive-technology and human evidence.
+6. Keep payment flows fail-closed. Do not create real registrations, real buyer payments, personal learner data, background contact collection, promotional emails, or claims of government authorization. Free workshop interest is not confirmed registration without provider evidence.
+7. Preserve **all existing public-site behavior** until visual and release approval. Work in QA branches and draft PRs only; never commit/merge to `main` or enable deploy workflows. Create an explicit QA matrix with pass/fail, Git SHAs, artifacts, screenshot links and each unresolved blocker. Keep all additions $0.
+
+## Cloudflare Pages staging design (PREP ONLY, NOT CONNECTED)
+- Use Free plan only and verify subscription/usage allowance before provisioning. No add-on, paid domain transfer, Workers Paid, R2 billing, external paid integrations, or added payment details. If the free allowance is exhausted, stop rather than pay.
+- **No live-domain attachment.** Use a fresh `*.pages.dev` staging address only after an authorized Cloudflare account connection. Keep `civicascentai.com` and `www` on their current GitHub Pages destination.
+- Git integration: connect only the existing GitHub repository; choose a safe isolated release-preview source branch (for example the checked QA branch), **disable automatic production deployments**, and restrict previews to explicitly approved QA branches (rather than all branches) to avoid 500-build/month waste. Do not silently allow pushes to `main` to publish Cloudflare production.
+- Build an allowlisted static export in an isolated output directory such as `dist`: current HTML entry points, referenced CSS/JS, images/fonts, `404.html`, and any essential non-secret public resources. Do **not** use the entire repository root as the published output folder: internal tests, policy docs, .github workflows and recovery files must not be exposed by Pages as website assets. Create the export script and verify links and required files in local/CI tests before deploying.
+- Site is currently mostly static HTML; do not impose a new framework or paid build service unless source inspection proves necessary. Confirm the deployed Pages build source SHA exactly matches the approved candidate.
+- Compare the Cloudflare staging URL against current public routes under automated browser tests; preserve URLs/redirects as appropriate. Keep Shadow House on Vercel separately until recovery/parity has independently passed; a new Cloudflare preview is not a Shadow House failover and must not be described as one.
+- Cloudflare Pages Git branch controls and free limits must be rechecked at account setup. A `pages.dev` preview is internet-accessible, so never publish real student records, private documents, API keys, or sensitive prototypes.
+
+## Release acceptance: all mandatory
+1. Latest owner-approved visuals accepted page-by-page in screenshot order. Preserve distinctive color/visual identity and accessibility-first layout.
+2. GitHub Actions and independent Playwright browser suite green on exact SHA; no red mandatory safety checks; no tests deleted to force green.
+3. Public vs preview route matrix and desktop/mobile accessibility checks pass; human assistive-technology review still required before claiming WCAG compliance.
+4. Independent full-environment restore/rollback status transparently reported, with code-only versus database/files/settings gaps distinguished.
+5. Written owner approval of the **specific** release commit and cutover, with tested rollback and live traffic safeguards. No approval is implied by approving this planning document or the Cloudflare product choice.
+
+## Current evidence and blockers
+- Prior PR #129 had five browser/safety suites PASS while the backup regression initially failed; a targeted fix was made in draft head `d1c541cb95c829b9c3684080851778f55df19ed0`, and further exact-head checks require inspection. Never describe previous checks as current without matching SHA.
+- Cloudflare Pages account connection and an actual preview deployment are not established.
+- Codex Cloud job has not been launched from this document. The owner may start it in the Codex experience using this repository and this brief, subject to included usage allowance.
+- The public site continues on GitHub Pages; production release HOLD remains.
