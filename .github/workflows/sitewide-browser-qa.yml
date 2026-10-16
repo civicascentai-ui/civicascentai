@@ -1,0 +1,42 @@
+name: Sitewide redesign real-browser QC
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "course.html"
+      - "mentor.html"
+      - "free-ai-starter.html"
+      - "living-ai-lab.html"
+      - "programs.html"
+      - "es.html"
+      - "register.html"
+      - "journey-*.html"
+      - "assets/sitewide-reference.css"
+      - "tests/test_sitewide_browser.py"
+      - ".github/workflows/sitewide-browser-qa.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright==1.55.0
+          python -m playwright install --with-deps chromium
+      - name: Test real browser and capture screenshots
+        run: python tests/test_sitewide_browser.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sitewide-browser-evidence
+          path: artifacts/sitewide-browser/
+          if-no-files-found: warn
