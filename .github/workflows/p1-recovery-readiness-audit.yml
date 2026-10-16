@@ -1,0 +1,126 @@
+name: P1 recovery topology read-only audit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/p1-recovery-readiness-audit.yml'
+      - 'docs/operations/P1_RECOVERY_TOPOLOGY_2026-10-16.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topology-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record source parity and public HTTP evidence
+        shell: bash
+        env:
+          PRODUCTION_URL: https://civicascentai.com/
+          STANDBY_URL: https://civicascentai-launch-m343vxg2y-civicascentai.vercel.app/
+          PINNED_STANDBY_SHA: 63e18246756ac615dfa9e7d10248aed0ea4031d6
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          git fetch --no-tags origin 'refs/heads/main:refs/remotes/origin/main'
+          prod_sha="$(git rev-parse refs/remotes/origin/main)"
+          printf '%s\n' "$prod_sha" > evidence/production-source.sha
+          printf '%s\n' "$PINNED_STANDBY_SHA" > evidence/standby-source.sha
+
+          if [ "$prod_sha" = "$PINNED_STANDBY_SHA" ]; then
+            parity=PASS
+          else
+            parity=BLOCKED_STALE_STANDBY
+          fi
+          printf '%s\n' "$parity" > evidence/source-parity.status
+
+          prod_http="$(curl --location --silent --show-error --output evidence/production.html --write-out '%{http_code}' --max-time 25 "$PRODUCTION_URL")"
+          printf '%s\n' "$prod_http" > evidence/production-http.status
+          test "$prod_http" = 200
+
+          # New live #133 route canary; this does NOT prove standby restoration.
+          for route in journey-learn.html journey-try.html journey-help.html journey-continue.html veterans.html register.html es.html; do
+            status="$(curl --location --silent --show-error --output "evidence/$route" --write-out '%{http_code}' --max-time 25 "$PRODUCTION_URL$route")"
+            printf '%s %s\n' "$route" "$status" >> evidence/route-http.status
+            test "$status" = 200
+          done
+          python3 - <<'PY'
+          import json, pathlib, re
+          e=pathlib.Path('evidence')
+          home=(e/'production.html').read_text(encoding='utf8')
+          assert all(t in home for t in ['Learn AI, one step at a time.','programs.html','register.html','es.html'])
+          assert not any(t in home for t in ['Safari Home','safari-home.html','scenery-toggle'])
+          rooms={}
+          for route in ['journey-learn.html','journey-try.html','journey-help.html','journey-continue.html']:
+              h=(e/route).read_text(encoding='utf8')
+              rooms[route]=all(t in h for t in ['accessible-learning-rooms-20261015','Back to home','class="option-link"','tabindex="-1"'])
+          assert all(rooms.values()),rooms
+          assert 'Return to the Safari porch' not in (e/'veterans.html').read_text()
+          assert re.search(r'<html[^>]*lang="es"', (e/'es.html').read_text())
+          (e/'public-smoke.json').write_text(json.dumps({
+              'scope':'read-only-web-smoke','mainLanding':'PASS','rooms':rooms,
+              'limits':['Not live user/AT testing','Not app+data restore','No payment submitted']
+          },indent=2)+'\n')
+          PY
+
+          # Standby is read-only evidence. A login redirect/non-200 is recorded as a blocker,
+          # not treated as successful crossover and not used to change traffic.
+          set +e
+          standby_http="$(curl --location --silent --show-error --output evidence/standby.html --write-out '%{http_code}' --max-time 25 "$STANDBY_URL")"
+          curl_rc=$?
+          set -e
+          printf '%s\n' "$standby_http" > evidence/standby-http.status
+          printf '%s\n' "$curl_rc" > evidence/standby-curl.exit
+          if [ "$curl_rc" -eq 0 ] && [ "$standby_http" = 200 ]; then
+            printf 'HTTP_RETRIEVABLE_ONLY_NOT_PARITY_PROOF\n' > evidence/standby-retrieval.status
+          else
+            printf 'BLOCKED_NOT_PUBLICLY_RETRIEVABLE\n' > evidence/standby-retrieval.status
+          fi
+
+          cat > evidence/SCOPE.txt <<'EOF'
+          Read-only topology evidence only.
+          No deployment, DNS change, traffic switch, database write, secret export, checkout, payment, or customer action.
+          A green workflow does NOT mean disaster recovery acceptance is complete.
+          EOF
+
+          printf 'production=%s standby=%s parity=%s prod_http=%s standby_http=%s\n' \
+            "$prod_sha" "$PINNED_STANDBY_SHA" "$parity" "$prod_http" "$standby_http"
+
+      - name: Explicit DR gate summary (read-only checks do NOT certify restore)
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          e=pathlib.Path('evidence');e.mkdir(exist_ok=True)
+          def value(name): return (e/name).read_text().strip() if (e/name).exists() else 'UNAVAILABLE'
+          o={'scope':'READ_ONLY_TOPOLOGY','productionSha':value('production-source.sha'),
+             'shadowSha':value('standby-source.sha'),'sourceParity':value('source-parity.status'),
+             'publicHttp':value('production-http.status'),'standbyHttp':value('standby-http.status'),
+             'standbyRetrieval':value('standby-retrieval.status'),
+             'fullEnvironmentRestore':'NOT_VERIFIED','actualCrossover':'NOT_VERIFIED',
+             'shadowReadyForCurrentProduction':False,'recoveryReady':False}
+          (e/'recovery-gate.json').write_text(json.dumps(o,indent=2)+'\n')
+          with open(__import__('os').environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## Recovery acceptance: BLOCKED / NOT VERIFIED\n')
+              f.write('GitHub Pages is production; an older Vercel standby is not current failover.\n')
+              f.write('Source parity: '+o['sourceParity']+'; application+data restore, real crossover and rollback remain unverified.\n')
+              f.write('Green read-only audit is **not** a green disaster-recovery acceptance.\n')
+          PY
+
+      - name: Preserve topology evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-recovery-topology-${{ github.run_id }}
+          path: evidence/
+          retention-days: 35
+          if-no-files-found: error
