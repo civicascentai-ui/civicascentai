@@ -31,9 +31,10 @@ try:
             assert page.get_by_role("heading",name="Learn AI, one step at a time.").count()==1
             assert page.locator("main#main").get_attribute("tabindex")=="-1"
             assert page.locator("header nav.top-links a").count()==3,(width,"screenshot top navigation")
-            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Learning paths","Español","Free Workshop"]
+            assert page.locator("header nav.top-links a").evaluate_all("(a)=>a.map(x=>x.textContent.trim())")==["Programs","Español","Free Workshop"]
             assert page.locator("main .choices article.choice").count()==3,(width,"exactly 3 choices")
             assert page.get_by_role("heading",name="What would you like to do?").count()==1
+            assert page.locator('header nav.top-links a').evaluate_all("(els)=>els.map(el=>el.getAttribute('href'))")==["programs.html","es.html","register.html"],(width,"newer Programs hotfix retained")
             expected=["journey-learn.html","practice-sandbox.html","journey-help.html"]
             assert page.locator(".choices a.choice-link").evaluate_all("(a)=>a.map(x=>x.getAttribute('href'))")==expected,(width,"choice destinations")
             assert page.get_by_role("heading",name="Other ways to begin").count()==1
