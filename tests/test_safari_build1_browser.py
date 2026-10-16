@@ -37,7 +37,9 @@ try:
                 ("journey-help.html","Get Help"),
                 ("journey-continue.html","Continue"),
             ]:
-                page.goto(base+"/"+route,wait_until="domcontentloaded")
+                # CSS must be loaded before measuring focus outlines or reflow.
+                page.goto(base+"/"+route,wait_until="load")
+                page.evaluate("document.fonts.ready")
                 assert page.locator('meta[name="civicascent-build"]').get_attribute("content")=="accessible-learning-rooms-20261015",(width,route,"new accessible build")
                 # Keyboard-only acceptance: skip link must be first and move focus into main.
                 page.keyboard.press("Tab")
@@ -70,15 +72,7 @@ try:
                 }""")
                 assert focused["firstChoice"] and focused["focusVisible"],(width,route,"Tab to first choice and focus-visible",focused)
                 page.screenshot(path=str(out/f"focused-{route.removesuffix('.html')}-{width}.png"),full_page=True)
-                if not (focused["outlineStyle"]!="none" and focused["outlineWidth"]>=3 and focused["inViewport"]):
-                    diagnostic=page.evaluate("""() => {
-                        const e=document.activeElement, cs=getComputedStyle(e);
-                        const sheets=Array.from(document.styleSheets).map(s=>({href:s.href,ruleCount:(()=>{try{return s.cssRules.length}catch(_){return -1}})()}));
-                        return {outerHTML:e.outerHTML, css:{outline:cs.outline,outlineWidth:cs.outlineWidth,outlineStyle:cs.outlineStyle,outlineColor:cs.outlineColor,
-                            focusVisible:e.matches(':focus-visible'), background:cs.background, bodyBackground:getComputedStyle(document.body).background,
-                            rootFocus:getComputedStyle(document.documentElement).getPropertyValue('--focus')},sheets}
-                    }""")
-                    raise AssertionError((width,route,"focus style debug",diagnostic))
+                assert focused["outlineStyle"]!="none" and focused["outlineWidth"]>=3 and focused["inViewport"],(width,route,"visible loaded-CSS keyboard focus ring",focused)
                 assert page.get_by_role("heading",name=title,exact=True).count()==1,(width,route,"room title")
                 assert page.locator(".options a.option-link").count()==4,(width,route,"four learning paths")
                 assert page.locator('link[href="assets/learning-rooms-accessible.css"]').count()==1,(width,route,"accessible stylesheet")
