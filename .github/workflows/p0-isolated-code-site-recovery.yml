@@ -75,7 +75,9 @@ jobs:
               src.write_text(json.dumps(m))
               p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
                                 '--manifest',str(src),'--output',str(receipt),
-                                '--production-sha','fe50da6dd04762c9cca1d35525f559c7afe8e085'],
+                                '--production-sha',subprocess.check_output(
+                                    ['git','rev-parse','refs/remotes/origin/main'],
+                                    text=True).strip()],
                                text=True,capture_output=True)
               assert p.returncode!=0, 'DR checker allowed stale production SHA'
               assert 'FAIL-CLOSED' in p.stderr, p.stderr
