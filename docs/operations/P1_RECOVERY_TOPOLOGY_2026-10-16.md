@@ -1,6 +1,8 @@
 # P1 Recovery Topology — Verified Read-Only State (2026-10-16)
 
-Status: **RECOVERY ACCEPTANCE OPEN / RELEASE HOLD PRESERVED**
+Status: **PRODUCTION RELEASE #133 LIVE / FULL RECOVERY ACCEPTANCE OPEN**
+
+**As-of evidence:** October 16, 2026, after PR #133. Human WCAG 2.2 AA and full recovery continue as distinct open projects; the owner approved the site release with these risks outstanding.
 
 This document records the currently verified recovery topology. It is evidence for Issue #22; it is not a declaration that failover or full-environment recovery is complete.
 
@@ -8,8 +10,8 @@ This document records the currently verified recovery topology. It is evidence f
 
 - Public site: `https://civicascentai.com/`.
 - Current Git source: `main`.
-- Verified production source at this checkpoint: `5ac15fee929ca71c6c363c1316ca689c61946a1a`.
-- Public delivery path is GitHub Pages. The post-hotfix Pages build/deployment completed successfully.
+- Verified production source at this checkpoint: `af7edd4fb1be1507542db899611bcb63a207045c` (merged PR #133).
+- Public delivery path is GitHub Pages. The Pages build/deployment completed successfully for commit `af7edd4fb1be1507542db899611bcb63a207045c` in [run 38895279586](https://github.com/civicascentai-ui/civicascentai/actions/runs/38895279586). Live public HTTP read-only acceptance confirmed the three-choice homepage, four accessible learning rooms, Veterans, Programs, Spanish and registration. This is website smoke, not DR acceptance.
 - Vercel project `civicascentai` remains connected to the repository, but builds for current main are intentionally canceled by the existing ignored-build release hold. The custom domain is therefore not evidence that Vercel is serving current public traffic.
 - Paid checkout remains fail-closed. The repository endpoint returns `403 PAID_ENROLLMENT_ON_HOLD`, and the published course page contains no paid checkout link.
 
@@ -18,7 +20,7 @@ This document records the currently verified recovery topology. It is evidence f
 - Standby Vercel project: `civicascentai-launch-qa`.
 - Last specifically verified READY standby source SHA used by the recovery workflow: `63e18246756ac615dfa9e7d10248aed0ea4031d6`.
 - Verified READY deployment for that SHA: `civicascentai-launch-m343vxg2y-civicascentai.vercel.app`.
-- The latest Vercel record for current main is CANCELED because the build hold is still active.
+- The newest Vercel project deployment records for commit `af7edd4fb1be1507542db899611bcb63a207045c` are both **CANCELED**, due to the preexisting ignored-build hold: production project `dpl_8Fh44UTCYePm9DqRLbQtFCV3FAQG`, shadow project `dpl_An3JTEX3yoUp6FBfkN7JaAkgnQ6A`. Neither is READY nor a rollback candidate. A successful GitHub/Vercel source-status check must NOT be misinterpreted as a deployed standby.
 - Therefore **standby source parity with current production is NOT verified**. Do not treat HTTP availability of an older standby as a current failover proof.
 
 ## Git code backup evidence
@@ -27,7 +29,7 @@ This document records the currently verified recovery topology. It is evidence f
 - The run selected the prior successful chain `38737102989`, created an **incremental** code backup, and reconstructed/verified production and pinned standby Git histories in isolation.
 - Artifact `p1-dual-code-38875404596` exists and was unexpired when checked.
 - This establishes current scheduled incremental **Git-code** recovery operation, not full application/data recovery.
-- The run occurred before the later production merges to `5ac15fee`; the next scheduled code backup must capture the newer production source.
+- The run occurred before the later production merges to `5ac15fee`; the next scheduled code backup must capture the newly published merge commit `af7edd4fb1be1507542db899611bcb63a207045c`; do not claim that the earlier backup contains it.
 
 ## Persistent services discovered
 
