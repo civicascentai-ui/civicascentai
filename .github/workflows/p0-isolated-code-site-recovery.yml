@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "tools/p1_isolated_code_site_restore.py"
+      - "tools/p0_isolated_cutover_rollback.py"
       - ".github/workflows/p0-isolated-code-site-recovery.yml"
       - "docs/operations/P0_RECOVERY_ACCEPTANCE_2026-10-16.md"
   workflow_dispatch:
@@ -34,13 +35,19 @@ jobs:
         run: |
           python3 tools/p1_isolated_code_site_restore.py \
             --repo . --output evidence --ref refs/remotes/origin/main
+      - name: Cut over, roll back and re-forward on loopback (64 site-route checks)
+        run: |
+          python3 tools/p0_isolated_cutover_rollback.py \
+            --repo . --output evidence \
+            --current-ref refs/remotes/origin/main \
+            --previous-sha af7edd4fb1be1507542db899611bcb63a207045c
       - name: Explain limited restoration scope
         if: always()
         run: |
           {
             echo '## Recovery progress — code and static site only'
-            echo 'This rehearsal constructs a fresh temporary full Git bundle for current main, verifies its SHA and Git objects, and serves the recovered static pages over 127.0.0.1.'
-            echo 'No Vercel deployment, DNS change, third-party request, database/secret access, paid enrollment, or destructive rollback is attempted.'
+            echo 'This rehearsal constructs a fresh temporary full Git bundle for current main, verifies its SHA and Git objects, and serves the recovered static pages over 127.0.0.1; then cycles current/previous/current release roots with 64 isolated HTTP checks.'
+            echo 'No Vercel deployment, DNS change, third-party request, database/secret access, paid enrollment, or real traffic rollback is attempted.'
             echo '**This is not full disaster recovery readiness**: shadow parity, database, uploads, protected configuration and a timed rollback remain open.'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Preserve metadata receipt, never the Git bundle or website source
@@ -48,6 +55,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: isolated-code-site-recovery-${{ github.run_id }}
-          path: evidence/isolated-code-site-recovery.json
+          path: |
+            evidence/isolated-code-site-recovery.json
+            evidence/isolated-cutover-rollback.json
           retention-days: 14
           if-no-files-found: warn
