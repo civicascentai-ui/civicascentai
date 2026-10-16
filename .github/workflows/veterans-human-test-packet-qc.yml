@@ -1,0 +1,28 @@
+name: Veterans Human Test Packet - Draft QC
+on:
+  push:
+    branches:
+      - veterans/outside-human-pilot-20261015
+    paths:
+      - docs/veterans/2026-10-15-outside-human-test-packet.md
+      - docs/veterans/2026-10-15-reviewer-referral-tracker.md
+      - tests/test_veterans_outside_human_packet.py
+      - .github/workflows/veterans-human-test-packet-qc.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  packet-preflight:
+    if: github.repository == 'civicascentai-ui/civicascentai'
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate privacy, consent, independent QC, and untested status
+        run: |
+          python3 -m py_compile tests/test_veterans_outside_human_packet.py
+          python3 -m unittest discover -s tests -p 'test_veterans_outside_human_packet.py' -v
+      - name: Declare human testing still independently required
+        run: echo "PASS means structural draft preflight only. No humans were recruited or tested."
