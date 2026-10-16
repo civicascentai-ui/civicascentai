@@ -5,6 +5,8 @@ html{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;scroll-beha
 body{margin:0;background:var(--paper);color:var(--ink);line-height:1.55}
 a{color:#07536c;text-underline-offset:3px}
 a:focus-visible,summary:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+/* Explicit keyboard-ring rule prevents link presentation overrides from hiding focus. */
+.options a.option-link:focus-visible{outline-style:solid!important;outline-width:4px!important;outline-color:#a85400!important;outline-offset:3px!important}
 .skip-link{position:absolute;left:12px;top:-160px;padding:12px;background:#fff;color:#10233c;z-index:100}
 .skip-link:focus{top:12px}
 .page-header{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#fff;border-bottom:2px solid var(--line);padding:16px clamp(16px,4vw,60px)}
