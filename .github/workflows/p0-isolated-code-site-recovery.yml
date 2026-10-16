@@ -7,6 +7,8 @@ on:
       - "tools/p1_isolated_code_site_restore.py"
       - "tools/p0_isolated_cutover_rollback.py"
       - "tools/p0_checkout_guard_probe.mjs"
+      - "tools/p0_dr_acceptance_gate.py"
+      - "docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json"
       - ".github/workflows/p0-isolated-code-site-recovery.yml"
       - "docs/operations/P0_RECOVERY_ACCEPTANCE_2026-10-16.md"
   workflow_dispatch:
@@ -42,6 +44,29 @@ jobs:
             --repo . --output evidence \
             --current-ref refs/remotes/origin/main \
             --previous-sha af7edd4fb1be1507542db899611bcb63a207045c
+      - name: Fail-closed full-DR acceptance and negative control
+        run: |
+          set -euo pipefail
+          python3 tools/p0_dr_acceptance_gate.py \
+            --manifest docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json \
+            --output evidence/p0-full-dr-decision.json
+          # Mutating only a disposable JSON copy to make an unsupported
+          # "recovery ready" claim MUST fail; original source is unchanged.
+          python3 - <<'PY'
+          import json,pathlib,tempfile,subprocess,sys
+          m=json.loads(pathlib.Path('docs/operations/P0_DR_DEPENDENCY_STATUS_2026-10-16.json').read_text())
+          m['recovery']['fullDisasterRecoveryReady']=True
+          with tempfile.TemporaryDirectory() as tmp:
+              src=pathlib.Path(tmp)/'unproved-ready.json'
+              receipt=pathlib.Path(tmp)/'decision.json'
+              src.write_text(json.dumps(m))
+              p=subprocess.run([sys.executable,'tools/p0_dr_acceptance_gate.py',
+                                '--manifest',str(src),'--output',str(receipt)],
+                               text=True,capture_output=True)
+              assert p.returncode!=0, 'DR checker allowed unsupported release-ready claim'
+              assert 'FAIL-CLOSED' in p.stderr, p.stderr
+          print('PASS: unsupported full recovery claim is rejected')
+          PY
       - name: Explain limited restoration scope
         if: always()
         run: |
@@ -59,5 +84,6 @@ jobs:
           path: |
             evidence/isolated-code-site-recovery.json
             evidence/isolated-cutover-rollback.json
+            evidence/p0-full-dr-decision.json
           retention-days: 14
           if-no-files-found: warn
