@@ -45,10 +45,15 @@ try:
       assert page.get_by_role("link",name="Open practice space").get_attribute("href")=="practice-sandbox.html"
       assert page.get_by_role("link",name="Find help").get_attribute("href")=="journey-help.html"
       assert page.locator("main .choice").count()==3,(width,"3 choices")
-      nav_links = page.locator("header nav.top-links a")
-      assert nav_links.count()==4,(width,"four direct visible navigation links")
-      assert [nav_links.nth(i).get_attribute("href") for i in range(4)]==[
-        "clear-start.html","course.html","veterans.html","journey-help.html"],(width,"expected Home/Courses/Veteran Programs/Get Help")
+      # The latest approved Clear Start header has three always-visible
+      # navigation destinations. Older four-link top-links assertions were
+      # tied to retired header markup; independent content links remain tested.
+      nav = page.locator("header nav.p1-top-nav")
+      assert nav.count()==1 and nav.is_visible(),(width,"visible navigation")
+      assert nav.get_attribute("aria-label")=="Main navigation",(width,"nav name")
+      nav_links=nav.locator("a")
+      assert [a.get_attribute("href") for a in nav_links.all()]==[
+        "programs.html","es.html","register.html"],(width,"visible nav destinations")
       assert page.get_by_role("link",name="Text, contrast & audio settings").count()==1,(width,"settings shortcut missing")
       for title in ["Practical Everyday AI","Veteran Career Skills","Digital Safety & Scam Awareness"]:
         assert page.get_by_role("heading",name=title).count()==1,(width,title)
@@ -74,7 +79,7 @@ try:
       saved=page.evaluate("JSON.parse(localStorage.getItem('civicascent-reader-preferences-v1'))")
       assert saved.get("scale")==150,(width,"text size must persist across prototype pages",saved)
 
-      for i in range(4):
+      for i in range(3):
         nav_box=nav_links.nth(i).bounding_box()
         assert nav_box and nav_box["x"]>=-2 and nav_box["x"]+nav_box["width"]<=width+2, (width,"nav link clipped at 150%",i,nav_box)
         assert nav_box["height"]>=48,(width,"touch target too small",i,nav_box)
@@ -111,7 +116,8 @@ try:
       assert page.evaluate("window.CivicReader.scale")==150,(width,"practice must inherit reading scale")
       assert page.locator("body").evaluate("(e)=>parseFloat(getComputedStyle(e).fontSize)")>=30,(width,"practice text size")
       assert page.locator(".reader-toolbar").is_visible(),(width,"practice sticky tools")
-      assert page.locator("header nav.top-links a").count()==4,(width,"practice functional nav")
+      assert [a.get_attribute("href") for a in page.locator("header nav.p1-top-nav a").all()]==[
+        "programs.html","es.html","register.html"],(width,"practice visible navigation")
       assert page.locator("body.show-scene").count()==0,(width,"scene off by default unless user opts in")
 
       page.get_by_role("button",name="Load a fictional example").click()
@@ -137,7 +143,13 @@ try:
         detail=page.goto(f"http://127.0.0.1:{PORT}/{route}",wait_until="networkidle",timeout=30000)
         assert detail.status==200,(width,route,"HTTP")
         assert page.get_by_role("heading",name=heading).count()==1,(width,route,"heading")
-        assert page.locator("header nav.top-links a").count()==4,(width,route,"direct navigation")
+        expected_nav=["clear-start.html","course.html","veterans.html","journey-help.html"] if route=="veteran-career-skills.html" else ["programs.html","es.html","register.html"]
+        locator=page.locator("header nav.top-links a") if route=="veteran-career-skills.html" else page.locator("header nav.p1-top-nav a")
+        assert [a.get_attribute("href") for a in locator.all()]==expected_nav,(width,route,"direct navigation destinations")
+        for a in locator.all():
+          box=a.bounding_box()
+          assert a.is_visible() and box and box["height"]>=44,(width,route,"accessible navigation target")
+
         assert page.locator(".reader-toolbar").is_visible(),(width,route,"shared text controls")
         assert page.evaluate("window.CivicReader.scale")==150,(width,route,"reading scale persistence")
         assert page.evaluate("document.documentElement.scrollWidth<=innerWidth+2"),(width,route,"overflow")
