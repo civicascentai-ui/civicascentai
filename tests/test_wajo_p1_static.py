@@ -4,6 +4,7 @@ QA only: these checks do not certify WCAG, user comprehension, Stripe fields,
 actual seat inventory, email delivery, or production state.
 """
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,6 +66,34 @@ class WajoP1StaticAcceptance(unittest.TestCase):
         for name in TARGETS + ("about.html", "privacy.html"):
             with self.subTest(page=name):
                 self.assertNotIn("info@civicascentai.com", self.read(name).lower())
+
+    def test_shared_header_links_match_owner_approved_home(self):
+        primary = ("programs.html", "es.html", "register.html")
+        pages = ("programs.html", "course.html", "register.html", "registered.html",
+                 "mentor.html", "consultation.html", "capabilities.html", "es.html",
+                 "free-ai-starter.html", "about.html", "privacy.html", "veterans.html",
+                 "level2.html", "journey-learn.html", "journey-help.html",
+                 "journey-try.html", "journey-continue.html", "curso-es.html",
+                 "registro.html", "thank-you.html")
+        for name in pages:
+            with self.subTest(page=name):
+                page = self.read(name)
+                header = re.search(r'<header class="(?:page-header|site-header)">.*?</header>', page, re.DOTALL)
+                self.assertIsNotNone(header)
+                nav = re.search(r'<nav class="p1-top-nav"[^>]*>(.*?)</nav>', header.group(), re.DOTALL)
+                self.assertIsNotNone(nav)
+                hrefs = re.findall(r'<a href="([^"]+)"', nav.group(1))
+                self.assertEqual(list(primary), hrefs)
+                self.assertIn('href="assets/p1-header.css"', page)
+
+    def test_spanish_registration_does_not_claim_a_reserved_seat(self):
+        registration = self.read("registro.html")
+        confirmation = self.read("registrado.html")
+        self.assertIn("no garantiza una plaza", registration)
+        self.assertIn("fecha, la hora y el lugar", registration)
+        self.assertIn("no comprueba el envío ni reserva una plaza", confirmation)
+        self.assertIn("privacidad", registration.lower())
+        self.assertIn("9B628sg779W1a0XfIO00003", registration)
 
     def test_no_public_testimonials_were_invented(self):
         self.assertNotIn("testimonials", self.read("about.html").lower())
