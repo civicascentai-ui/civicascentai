@@ -34,16 +34,26 @@ try:
                 check("semantic page heading visible",page.locator("h1").first.is_visible())
                 check("no horizontal overflow",page.evaluate("document.documentElement.scrollWidth<=innerWidth+2"))
                 check("header and brand exist",page.locator("header.page-header .brand").count()==1)
-                if width<=850:
-                    nav=page.locator("header.page-header details.mobile-nav")
-                    check("mobile menu visible",nav.is_visible())
-                    if nav.count():
-                        nav.locator("summary").click()
-                        check("mobile links revealed",page.locator("header.page-header .mobile-nav .menu-links").is_visible())
-                        check("mobile navigation destinations",page.locator("header.page-header .mobile-nav .menu-links a").count()>=6)
-                        nav.locator("summary").click()
-                else:
-                    check("desktop navigation visible",page.locator("header.page-header .site-nav").is_visible())
+                # Approved Wajo P1 interiors deliberately use a visible, 3-link
+                # navigation bar instead of the old dropdown. A former test
+                # demanded details.mobile-nav/site-nav, neither in this design.
+                nav=page.locator("header.page-header nav.p1-top-nav")
+                check("approved navigation visible",nav.count()==1 and nav.is_visible())
+                check("navigation has accessible name",
+                      nav.get_attribute("aria-label")=="Main navigation")
+                links=nav.locator("a")
+                check("three expected destinations",
+                      links.count()==3 and
+                      [a.get_attribute("href") for a in links.all()]==
+                      ["programs.html","es.html","register.html"])
+                check("all navigation links visible",
+                      links.count()==3 and all(a.is_visible() for a in links.all()))
+                check("mobile-size navigation touch targets",
+                      links.count()==3 and all(
+                          a.bounding_box() is not None and
+                          a.bounding_box()["height"]>=44 and
+                          a.bounding_box()["width"]>=44
+                          for a in links.all()))
                 if slug=="programs.html":
                     check("eight course tracks retained",page.locator(".track").count()>=8)
                     check("free workshop link",page.get_by_role("link",name="Start Free").count()==1)

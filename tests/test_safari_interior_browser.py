@@ -45,16 +45,19 @@ try:
                 assert page.locator("h1").first.is_visible(),(slug,width,"title invisible")
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth+2"),(slug,width,"horizontal overflow",page.evaluate("document.documentElement.scrollWidth"))
                 assert page.locator('link[href="assets/sitewide-reference.css"]').count()==1,(slug,width,"approved shared stylesheet absent")
-                if width<=850:
-                    mobile=page.locator("header.page-header details.mobile-nav")
-                    assert mobile.is_visible(),(slug,width,"mobile menu missing")
-                    mobile.locator("summary").click()
-                    assert page.locator("header.page-header .mobile-nav .menu-links a").count()>=6,(slug,width,"nav links missing")
-                    assert page.locator("header.page-header .mobile-nav .menu-links").is_visible(),(slug,width,"menu didn't open")
-                    assert page.locator("header.page-header .menu-links").evaluate("(e)=>e.getBoundingClientRect().right<=innerWidth+2"),(slug,width,"menu offscreen")
-                    mobile.locator("summary").click()
-                else:
-                    assert page.locator("header.page-header .site-nav").is_visible(),(slug,width,"desktop nav missing")
+                # Current owner-approved header: direct visible links, not the
+                # retired dropdown. Validate the actual mobile and desktop UX.
+                navigation=page.locator("header.page-header nav.p1-top-nav")
+                assert navigation.count()==1 and navigation.is_visible(),(slug,width,"approved navigation missing")
+                assert navigation.get_attribute("aria-label")=="Main navigation",(slug,width,"nav landmark")
+                nav_links=navigation.locator("a")
+                assert [a.get_attribute("href") for a in nav_links.all()]==[
+                    "programs.html","es.html","register.html"],(slug,width,"wrong navigation destinations")
+                for link in nav_links.all():
+                    bounds=link.bounding_box()
+                    assert link.is_visible() and bounds,(slug,width,"navigation link hidden")
+                    assert bounds["height"]>=44 and bounds["width"]>=44,(slug,width,"small tap target")
+                    assert bounds["x"]>=-2 and bounds["x"]+bounds["width"]<=width+2,(slug,width,"navigation link clipped")
                 if slug=="course.html":
                     first=page.locator(".course-hero-actions a").nth(0)
                     second=page.locator(".course-hero-actions a").nth(1)
