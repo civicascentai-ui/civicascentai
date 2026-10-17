@@ -74,7 +74,8 @@ class WajoP1StaticAcceptance(unittest.TestCase):
                  "free-ai-starter.html", "about.html", "privacy.html", "veterans.html",
                  "level2.html", "journey-learn.html", "journey-help.html",
                  "journey-try.html", "journey-continue.html", "curso-es.html",
-                 "registro.html", "thank-you.html")
+                 "registro.html", "thank-you.html", "registrado.html",
+                 "clear-start.html", "practice-sandbox.html", "assistive-tools-guide.html")
         for name in pages:
             with self.subTest(page=name):
                 page = self.read(name)
@@ -94,6 +95,22 @@ class WajoP1StaticAcceptance(unittest.TestCase):
         self.assertIn("no comprueba el envío ni reserva una plaza", confirmation)
         self.assertIn("privacidad", registration.lower())
         self.assertIn("9B628sg779W1a0XfIO00003", registration)
+
+    def test_consistent_menu_css_has_keyboard_and_mobile_rules(self):
+        css = self.read("assets/p1-header.css")
+        self.assertIn("min-height:48px", css)
+        self.assertIn(":focus-visible", css)
+        self.assertIn("@media(max-width:760px)", css)
+        self.assertIn("[aria-current=\"page\"]", css)
+
+    def test_registration_provider_button_label_is_explained(self):
+        self.assertIn("Complete order", self.read("register.html"))
+        self.assertIn("Complete order", self.read("registro.html"))
+        self.assertIn("$0", self.read("register.html"))
+
+    def test_spanish_confirmation_has_private_information_route(self):
+        self.assertIn("privacy.html", self.read("registrado.html"))
+        self.assertIn("aria-label=\"Sitewide help and learning links\"", self.read("registrado.html"))
 
     def test_no_public_testimonials_were_invented(self):
         self.assertNotIn("testimonials", self.read("about.html").lower())
