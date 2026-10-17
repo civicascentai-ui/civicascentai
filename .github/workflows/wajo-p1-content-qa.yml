@@ -1,0 +1,29 @@
+name: Wajo P1 Trust & Navigation QA
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'programs.html'
+      - 'course.html'
+      - 'register.html'
+      - 'registered.html'
+      - 'mentor.html'
+      - 'consultation.html'
+      - 'capabilities.html'
+      - 'es.html'
+      - 'free-ai-starter.html'
+      - 'about.html'
+      - 'privacy.html'
+      - 'tests/test_wajo_p1_static.py'
+      - '.github/workflows/wajo-p1-content-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-content-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source-level safety and content assertions (not WCAG certification)
+        run: python3 -m unittest discover -s tests -p 'test_wajo_p1_static.py' -v
