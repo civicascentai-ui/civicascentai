@@ -50,3 +50,10 @@ body.ff-interior.program-safari .p-hero{
     min-height:0;padding:35px 20px!important;
   }
 }
+
+/* Wajo P1 QA: explicit high-contrast eyebrow treatment on verified complaint routes.
+   Restrict to small-label text; do not recolor approved panels or alter layout.
+   Retest with axe on the actual rendered backgrounds before sign-off. */
+body.ff-interior .reg-card .eyebrow,
+body.ff-interior .section-es .eyebrow,
+body.ff-interior .bilingual .eyebrow { color:#095571 !important; }
