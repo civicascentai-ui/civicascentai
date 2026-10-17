@@ -88,15 +88,19 @@ try:
                 for el in page.locator(".options a.option-link").all():
                     box=el.bounding_box()
                     assert box and box["height"]>=48,(width,route,"small choice target")
-                if width<=780:
-                    toggle=page.locator(".mobile-nav summary")
-                    assert toggle.is_visible(),(width,route,"mobile navigation missing")
-                    toggle.focus()
-                    page.keyboard.press("Enter")
-                    assert page.locator(".mobile-nav").get_attribute("open") is not None,(width,route,"keyboard menu does not open")
-                    assert page.locator(".mobile-nav .menu-links").is_visible(),(width,route,"mobile menu not shown")
-                    page.keyboard.press("Enter")
-                    assert page.locator(".mobile-nav").get_attribute("open") is None,(width,route,"keyboard menu does not close")
+                # Wajo-approved visible header replaces the old dropdown.
+                # Keep hard navigation visibility, targets and destination checks.
+                top_nav=page.locator("header.page-header nav.p1-top-nav")
+                assert top_nav.count()==1 and top_nav.is_visible(),(width,route,"visible navigation missing")
+                assert top_nav.get_attribute("aria-label")=="Main navigation",(width,route,"nav name")
+                direct_links=top_nav.locator("a")
+                assert [a.get_attribute("href") for a in direct_links.all()]==[
+                    "programs.html","es.html","register.html"],(width,route,"visible destinations wrong")
+                for link in direct_links.all():
+                    bounds=link.bounding_box()
+                    assert link.is_visible() and bounds,(width,route,"header link not visible")
+                    assert bounds["height"]>=44 and bounds["width"]>=44,(width,route,"touch target")
+                    assert bounds["x"]>=-2 and bounds["x"]+bounds["width"]<=width+2,(width,route,"clipped link")
                 page.screenshot(path=str(out/f"learning-room-{route.removesuffix('.html')}-{width}.png"),full_page=True)
                 # 200% root-text scaling is an automated stress proxy, NOT actual 200% browser zoom.
                 page.evaluate("document.documentElement.style.fontSize='200%'")
