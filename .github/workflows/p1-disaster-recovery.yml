@@ -1,4 +1,4 @@
-name: P1 legacy manual code snapshot and Sunday production/shadow HTTP smoke
+name: P1 scheduled code snapshot and Sunday production/shadow HTTP smoke
 on:
   schedule:
     - cron: '47 9 * * 0'
@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   nightly-code-recovery:
-    if: github.event_name == 'workflow_dispatch'
+    # Run on scheduled Sundays and manual dispatch.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
