@@ -34,7 +34,7 @@ jobs:
           INSERT INTO learners VALUES (1,1),(2,2),(3,1);
           SQL
           docker exec "$name" pg_dump -Fc -U postgres -d source > evidence/synthetic.dump
-          sha256sum evidence/synthetic.dump > evidence/SHA256SUMS
+          (cd evidence && sha256sum synthetic.dump > SHA256SUMS)
           docker exec "$name" createdb -U postgres restored
           docker exec -i "$name" pg_restore --exit-on-error -U postgres -d restored < evidence/synthetic.dump
           result="$(docker exec "$name" psql -X -At -U postgres -d restored -c "SELECT (SELECT count(*) FROM departments)::text || ':' || (SELECT count(*) FROM learners)::text || ':' || (SELECT count(*) FROM pg_constraint WHERE contype='f' AND conrelid='learners'::regclass)::text")"
