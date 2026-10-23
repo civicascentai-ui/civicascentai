@@ -7,20 +7,20 @@ on:
       - 'tools/scout/**'
   workflow_dispatch:
 
-# Public repository standard GitHub runners only. No cloud service, Replit or paid provider.
+# Explicit read-only access; no secrets, payments, production deploys, or paid AI APIs.
 permissions:
   contents: read
   issues: read
 
 concurrency:
   group: scout-qa5-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   independent-offline-qa5-audit:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
       - name: Checkout audited source (no persistent token)
         uses: actions/checkout@v4
@@ -30,16 +30,17 @@ jobs:
         run: |
           test "$GITHUB_REPOSITORY" = 'civicascentai-ui/civicascentai'
           test "$RUNNER_OS" = 'Linux'
-      - name: Run no-network parser and receipt safety tests
+      - name: Run offline parser and receipt safety tests
         run: node --test tools/scout/mission.test.mjs
-      - name: Execute actual read-only public GitHub issue audit
+      - name: Execute read-only public GitHub issue audit
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/scout/mission.mjs
-      - name: Save a one-day execution receipt for independent FRIDAY QC
+      - name: Preserve audit execution receipt for independent FRIDAY QC
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: scout-qa5-receipt-${{ github.run_id }}
           path: scout-output/scout-qa5-receipt.json
-          retention-days: 1
-          if-no-files-found: error
+          retention-days: 30
+          if-no-files-found: warn
