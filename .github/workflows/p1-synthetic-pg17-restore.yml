@@ -1,0 +1,54 @@
+name: P1 synthetic PostgreSQL 17 isolated restore receipt
+on:
+  push:
+    branches:
+      - test/p1-synthetic-pg17-20261023
+    paths:
+      - .github/workflows/p1-synthetic-pg17-restore.yml
+permissions:
+  contents: read
+jobs:
+  synthetic-backup-restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Run synthetic-only isolated backup and restore
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          name="civic-p1-pg17-${GITHUB_RUN_ID}"
+          trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT
+          docker run --pull=missing -d --name "$name" --network none \
+            -e POSTGRES_PASSWORD=synthetic-only \
+            -e POSTGRES_DB=source postgres:17-alpine >/dev/null
+          for i in $(seq 1 45); do
+            if docker exec "$name" pg_isready -U postgres -d source >/dev/null 2>&1; then break; fi
+            sleep 2
+          done
+          docker exec "$name" pg_isready -U postgres -d source
+          cat <<'SQL' | docker exec -i "$name" psql -X -v ON_ERROR_STOP=1 -U postgres -d source
+          CREATE TABLE departments (id integer PRIMARY KEY);
+          CREATE TABLE learners (id integer PRIMARY KEY, department_id integer NOT NULL REFERENCES departments(id));
+          INSERT INTO departments VALUES (1),(2);
+          INSERT INTO learners VALUES (1,1),(2,2),(3,1);
+          SQL
+          docker exec "$name" pg_dump -Fc -U postgres -d source > evidence/synthetic.dump
+          sha256sum evidence/synthetic.dump > evidence/SHA256SUMS
+          docker exec "$name" createdb -U postgres restored
+          docker exec -i "$name" pg_restore --exit-on-error -U postgres -d restored < evidence/synthetic.dump
+          result="$(docker exec "$name" psql -X -At -U postgres -d restored -c "SELECT (SELECT count(*) FROM departments)::text || ':' || (SELECT count(*) FROM learners)::text || ':' || (SELECT count(*) FROM pg_constraint WHERE contype='f' AND conrelid='learners'::regclass)::text")"
+          test "$result" = "2:3:1"
+          (cd evidence && sha256sum -c SHA256SUMS)
+          printf 'PASS synthetic PostgreSQL 17 source->pg_dump->pg_restore rows=%s\n' "$result" | tee evidence/result.txt
+          printf '%s\n' "$GITHUB_RUN_ID" > evidence/run-id.txt
+          date -u +%Y-%m-%dT%H:%M:%SZ > evidence/timestamp.txt
+          printf 'SYNTHETIC ONLY; NOT ACTUAL CIVICASCENT DATABASE RECOVERY\n' > evidence/scope.txt
+      - name: Upload non-sensitive execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-synthetic-pg17-${{ github.run_id }}
+          path: evidence/
+          retention-days: 7
+          if-no-files-found: warn
