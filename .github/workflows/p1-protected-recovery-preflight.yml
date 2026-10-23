@@ -1,0 +1,44 @@
+name: P1 protected recovery access preflight
+on:
+  push:
+    branches: [test/p1-synthetic-pg17-20261023]
+    paths: ['.github/workflows/p1-protected-recovery-preflight.yml']
+permissions:
+  contents: read
+jobs:
+  access-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      HAS_COMMERCE_URL: ${{ secrets.SUPABASE_COMMERCE_DATABASE_URL != '' }}
+      HAS_RAG_URL: ${{ secrets.SUPABASE_RAG_DATABASE_URL != '' }}
+      HAS_BACKUP_KEY: ${{ secrets.P1_BACKUP_STORAGE_KEY != '' }}
+      HAS_BACKUP_DESTINATION: ${{ vars.P1_BACKUP_DESTINATION != '' }}
+    steps:
+      - name: Emit booleans only, never secret values or database connections
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p evidence
+          {
+            echo "scope=CONFIGURATION_PRESENCE_ONLY"
+            echo "commerce_database_connection_configured=$HAS_COMMERCE_URL"
+            echo "rag_database_connection_configured=$HAS_RAG_URL"
+            echo "protected_storage_key_configured=$HAS_BACKUP_KEY"
+            echo "protected_storage_destination_configured=$HAS_BACKUP_DESTINATION"
+            echo "real_data_export_attempted=false"
+            echo "recovery_accepted=false"
+          } > evidence/preflight.txt
+          cat evidence/preflight.txt
+          {
+            echo '## P1 Protected Backup Access Preflight'
+            echo 'This check reads only the presence of nominated GitHub secrets/variables.'
+            echo 'No credentials, records, connection strings or backup files are accessed.'
+            cat evidence/preflight.txt
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve non-sensitive preflight receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-protected-access-preflight-${{ github.run_id }}
+          path: evidence/preflight.txt
+          retention-days: 14
